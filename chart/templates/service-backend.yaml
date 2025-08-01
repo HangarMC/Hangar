@@ -4,6 +4,7 @@ metadata:
   name: {{ include "hangar.fullname" . }}-backend
   labels:
     {{- include "hangar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "backend"
   annotations:
     service.kubernetes.io/topology-aware-hints: "auto"
 spec:
@@ -13,6 +14,10 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: 8081
+      targetPort: management
+      protocol: TCP
+      name: management
   selector:
     {{- include "hangar.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: "backend"

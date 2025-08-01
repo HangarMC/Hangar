@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>3.5.4</version>
         <relativePath/>
     </parent>
 
@@ -26,35 +26,35 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- dependency management -->
-        <jdbi3-bom.version>3.49.0</jdbi3-bom.version>
+        <jdbi3-bom.version>3.49.5</jdbi3-bom.version>
         <configurate.version>4.2.0</configurate.version>
-        <spring-cloud-aws.version>3.3.0</spring-cloud-aws.version>
+        <spring-cloud-aws.version>3.4.0</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>8.8.0</sentry.version>
-        <springdoc.version>2.8.6</springdoc.version>
+        <sentry.version>8.18.0</sentry.version>
+        <springdoc.version>2.8.9</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20250107</org-json.version>
+        <org-json.version>20250517</org-json.version>
         <bucket4j.version>8.14.0</bucket4j.version>
-        <datafaker.version>2.4.3</datafaker.version>
-        <apache-commons-lang.version>3.17.0</apache-commons-lang.version>
+        <datafaker.version>2.4.4</datafaker.version>
+        <apache-commons-lang.version>3.18.0</apache-commons-lang.version>
         <jwt.version>4.5.0</jwt.version>
         <jetbrains-annotations.version>26.0.2</jetbrains-annotations.version>
-        <caffeine.version>3.2.0</caffeine.version>
+        <caffeine.version>3.2.2</caffeine.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
-        <jgroups.version>5.4.6.Final</jgroups.version>
+        <jgroups.version>5.4.8.Final</jgroups.version>
         <jgroups-kube.version>2.0.2.Final</jgroups-kube.version>
         <totp.version>1.8.0</totp.version>
         <webp.version>0.1.6</webp.version>
-        <webauthn.version>2.6.0</webauthn.version>
+        <webauthn.version>2.7.0</webauthn.version>
         <logback-contrib.version>0.1.5</logback-contrib.version>
         <janino.version>3.1.12</janino.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <otel-semconv.version>1.30.0-alpha</otel-semconv.version>
 
         <!-- test -->
-        <testcontainer.version>1.20.6</testcontainer.version>
-        <openapi-generator.version>7.12.0</openapi-generator.version>
+        <testcontainer.version>1.21.3</testcontainer.version>
+        <openapi-generator.version>7.14.0</openapi-generator.version>
         <argLine/>
 
         <!-- plugins -->
@@ -122,17 +122,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
+            <!-- <exclusions> -->
+            <!--     <exclusion> -->
+            <!--         <groupId>org.springframework.boot</groupId> -->
+            <!--         <artifactId>spring-boot-starter-tomcat</artifactId> -->
+            <!--     </exclusion> -->
+            <!-- </exclusions> -->
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
+        <!-- <dependency> -->
+        <!--     <groupId>org.springframework.boot</groupId> -->
+        <!--     <artifactId>spring-boot-starter-undertow</artifactId> -->
+        <!-- </dependency> -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
@@ -248,6 +248,10 @@
             <groupId>io.sentry</groupId>
             <artifactId>sentry-opentelemetry-core</artifactId>
             <version>${sentry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
 
         <!-- logging -->

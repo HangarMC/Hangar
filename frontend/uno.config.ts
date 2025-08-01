@@ -1,5 +1,5 @@
-import { defineConfig, type VariantFunction } from "unocss";
-import { presetAttributify, presetTypography, presetWind, transformerDirectives, transformerVariantGroup } from "unocss";
+import { defineConfig, presetAttributify, presetTypography, presetWind, transformerDirectives, transformerVariantGroup } from "unocss";
+import type { VariantFunction } from "unocss";
 
 export function parent(name: string): VariantFunction {
   return wrap(name, "." + name);

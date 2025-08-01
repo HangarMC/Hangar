@@ -18,6 +18,7 @@ public class PlatformVersionTable extends Table {
     }
 
     public PlatformVersionTable(final Platform platform, final String version) {
+        this.createdAt = OffsetDateTime.now();
         this.platform = platform;
         this.version = version;
     }

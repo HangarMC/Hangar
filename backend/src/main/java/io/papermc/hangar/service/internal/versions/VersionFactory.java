@@ -61,6 +61,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,9 +89,10 @@ public class VersionFactory extends HangarComponent {
     private final AvatarService avatarService;
     private final VersionsApiService versionApiService;
     private final IndexService indexService;
+    private final ConcurrentTaskExecutor taskExecutor;
 
     @Autowired
-    public VersionFactory(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final IndexService indexService) {
+    public VersionFactory(final ProjectVersionDependenciesDAO projectVersionDependencyDAO, final ProjectVersionsDAO projectVersionDAO, final ProjectFiles projectFiles, final PluginDataService pluginDataService, final ChannelService channelService, final ProjectVisibilityService projectVisibilityService, final ProjectService projectService, final NotificationService notificationService, final PlatformService platformService, final UsersApiService usersApiService, final ValidationService validationService, final ProjectVersionDownloadsDAO downloadsDAO, final VersionsApiDAO versionsApiDAO, final FileService fileService, final JarScanningService jarScanningService, final ReviewService reviewService, final WebhookService webhookService, final AvatarService avatarService, final @Lazy VersionsApiService versionApiService, final IndexService indexService, ConcurrentTaskExecutor taskExecutor) {
         this.projectVersionDependenciesDAO = projectVersionDependencyDAO;
         this.projectVersionsDAO = projectVersionDAO;
         this.projectFiles = projectFiles;
@@ -111,6 +113,7 @@ public class VersionFactory extends HangarComponent {
         this.avatarService = avatarService;
         this.versionApiService = versionApiService;
         this.indexService = indexService;
+        this.taskExecutor = taskExecutor;
     }
 
     @Transactional
@@ -318,7 +321,7 @@ public class VersionFactory extends HangarComponent {
                 } catch (Throwable ex) {
                     logger.warn("Error in post publish for version {} of project {}", pendingVersion.getVersionString(), projectTable.getName(), ex);
                 }
-            });
+            }, taskExecutor);
 
             return projectVersionTable;
         } catch (final HangarApiException e) {

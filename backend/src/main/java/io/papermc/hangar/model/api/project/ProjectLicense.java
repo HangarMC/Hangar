@@ -16,6 +16,7 @@ public record ProjectLicense(@Validate(SpEL = "@validations.regex(#root, @'hanga
                              @Validate(SpEL = "@validations.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense")
                              String name,
                              @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.urlRegex)", message = "fieldError.url")
+                             @Nullable
                              String url,
                              @Validate(SpEL = "@validate.required(#root)")
                              @Validate(SpEL = "@validations.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.licenseNameRegex)", message = "project.new.error.invalidLicense")

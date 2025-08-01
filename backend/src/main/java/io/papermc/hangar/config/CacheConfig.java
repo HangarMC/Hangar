@@ -18,14 +18,12 @@ public class CacheConfig {
 
     public static final String AUTHORS = "authors-cache";
     public static final String STAFF = "staff-cache";
-    public static final String PLATFORMS = "platforms-cache";
     public static final String PLATFORMS_FULL = "platforms-full-cache";
     public static final String CATEGORIES = "categories-cache";
     public static final String PERMISSIONS = "permissions-cache";
     public static final String CHANNEL_COLORS = "channelColors-cache";
     public static final String FLAG_REASONS = "flagReasons-cache";
     public static final String SPONSOR = "sponsor-cache";
-    public static final String ANNOUNCEMENTS = "announcements-cache";
     public static final String PROJECT_ROLES = "projectRoles-cache";
     public static final String GLOBAL_ROLES = "globalRoles-cache";
     public static final String ORG_ROLES = "orgRoles-cache";
@@ -40,6 +38,7 @@ public class CacheConfig {
     public static final String USER_SITEMAP = "userSitemap-cache";
     public static final String AVATARS = "avatars-cache";
     public static final String LATEST_VERSION = "latest-version-cache";
+    public static final String GLOBAL_DATA = "global-data-cache";
 
     private final CacheMetricsRegistrar cacheMetricsRegistrar;
     private final CaffeineCacheManager cacheManager;
@@ -59,11 +58,6 @@ public class CacheConfig {
     @Bean(AUTHORS)
     Cache authorsCache() {
         return this.createCache(AUTHORS, Duration.ofHours(1), 10);
-    }
-
-    @Bean(PLATFORMS)
-    Cache platformsCache() {
-        return this.createCache(PLATFORMS, Duration.ofHours(12), 100);
     }
 
     @Bean(PLATFORMS_FULL)
@@ -94,11 +88,6 @@ public class CacheConfig {
     @Bean(SPONSOR)
     Cache sponsorCache() {
         return this.createCache(SPONSOR, Duration.ofHours(1), 1);
-    }
-
-    @Bean(ANNOUNCEMENTS)
-    Cache announcementsCache() {
-        return this.createCache(ANNOUNCEMENTS, Duration.ofHours(1), 1);
     }
 
     @Bean(PROJECT_ROLES)
@@ -169,6 +158,11 @@ public class CacheConfig {
     @Bean(LATEST_VERSION)
     Cache latestVersionCache() {
         return this.createCache(LATEST_VERSION, Duration.ofHours(6), 2000);
+    }
+
+    @Bean(GLOBAL_DATA)
+    Cache globalDataCache() {
+        return this.createCache(GLOBAL_DATA, Duration.ofHours(1), 1);
     }
 
     @PostConstruct

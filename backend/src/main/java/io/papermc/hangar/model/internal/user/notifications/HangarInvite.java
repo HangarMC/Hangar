@@ -38,7 +38,7 @@ public abstract class HangarInvite {
 
     public static class HangarProjectInvite extends HangarInvite {
 
-        private final String representingOrg;
+        private final @Nullable String representingOrg;
 
         public HangarProjectInvite(final long roleId, final String role, final String name, final String url, final @Nullable String representingOrg) {
             super(roleId, role, name, url);

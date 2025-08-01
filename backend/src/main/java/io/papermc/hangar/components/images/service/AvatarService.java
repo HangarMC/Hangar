@@ -192,7 +192,7 @@ public class AvatarService extends HangarComponent {
             logger.warn("Couldn't import project avatar from {}", avatarUrl, ex);
         } finally {
             if (clientResponse != null) {
-                clientResponse.releaseBody();
+                clientResponse.releaseBody().block();
             }
         }
     }

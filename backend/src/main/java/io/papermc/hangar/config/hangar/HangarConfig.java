@@ -1,6 +1,5 @@
 package io.papermc.hangar.config.hangar;
 
-import io.papermc.hangar.model.Announcement;
 import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -9,7 +8,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public record HangarConfig(
     boolean dev,
     String baseUrl,
-    List<Announcement> announcements,
     String urlRegex,
     List<String> licenses,
     boolean allowIndexing,

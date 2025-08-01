@@ -5,7 +5,7 @@ import unicorn from "eslint-plugin-unicorn";
 
 export default withNuxt()
   .prepend({
-    ignores: ["src/types/backend/**"],
+    ignores: ["shared/types/backend/**", "app/types/generated/**"],
   })
   .append(comments.recommended, unicorn.configs["flat/recommended"], oxlint.configs["flat/recommended"])
   .append({

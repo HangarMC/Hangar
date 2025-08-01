@@ -38,7 +38,6 @@ public class PlatformService extends HangarComponent {
         return this.platformVersionDAO.getVersionsForPlatform(platform);
     }
 
-    @Cacheable(CacheConfig.PLATFORMS)
     public List<PlatformVersion> getDescendingVersionsForPlatform(final Platform platform) {
         final List<String> versions = this.platformVersionDAO.getVersionsForPlatform(platform);
         final Map<String, List<String>> platformVersions = new LinkedHashMap<>();
@@ -74,7 +73,7 @@ public class PlatformService extends HangarComponent {
     }
 
     @Transactional
-    @CacheEvict(value = {CacheConfig.PLATFORMS, CacheConfig.PLATFORMS_FULL}, allEntries = true)
+    @CacheEvict(value = {CacheConfig.PLATFORMS_FULL}, allEntries = true)
     public void updatePlatformVersions(final Map<Platform, List<String>> platformVersions) {
         platformVersions.forEach((platform, versions) -> {
             final Map<String, PlatformVersionTable> platformVersionTables = this.platformVersionDAO.getForPlatform(platform);
@@ -90,14 +89,13 @@ public class PlatformService extends HangarComponent {
                     toBeAdded.put(version, new PlatformVersionTable(platform, version));
                 }
             });
-            this.platformVersionDAO.deleteAll(toBeRemoved.values());
-            this.platformVersionDAO.insertAll(toBeAdded.values());
+            if (!toBeRemoved.isEmpty()) {
+                this.platformVersionDAO.deleteAll(toBeRemoved.values());
+            }
+            if (!toBeAdded.isEmpty()) {
+                this.platformVersionDAO.insertAll(toBeAdded.values());
+            }
         });
         // TODO user action logging
-    }
-
-    @Cacheable(CacheConfig.PLATFORMS)
-    public PlatformVersionTable getByPlatformAndVersion(final Platform platform, final String version) {
-        return this.platformVersionDAO.getByPlatformAndVersion(platform, version);
     }
 }

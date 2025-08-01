@@ -224,191 +224,6 @@
             "permission": "10000000000000000000000000000000000000000000"
         }
     ],
-    "platforms": [
-        {
-            "name": "Paper",
-            "category": "Server",
-            "url": "https://papermc.io/downloads",
-            "enumName": "PAPER",
-            "visible": true,
-            "platformVersions": [
-                {
-                    "version": "1.19",
-                    "subVersions": [
-                        "1.19.4",
-                        "1.19.3",
-                        "1.19.2",
-                        "1.19.1",
-                        "1.19"
-                    ]
-                },
-                {
-                    "version": "1.18",
-                    "subVersions": [
-                        "1.18.2",
-                        "1.18.1",
-                        "1.18"
-                    ]
-                },
-                {
-                    "version": "1.17",
-                    "subVersions": [
-                        "1.17.1",
-                        "1.17"
-                    ]
-                },
-                {
-                    "version": "1.16",
-                    "subVersions": [
-                        "1.16.5",
-                        "1.16.4",
-                        "1.16.3",
-                        "1.16.2",
-                        "1.16.1",
-                        "1.16"
-                    ]
-                },
-                {
-                    "version": "1.15",
-                    "subVersions": [
-                        "1.15.2",
-                        "1.15.1",
-                        "1.15"
-                    ]
-                },
-                {
-                    "version": "1.14",
-                    "subVersions": [
-                        "1.14.4",
-                        "1.14.3",
-                        "1.14.2",
-                        "1.14.1",
-                        "1.14"
-                    ]
-                },
-                {
-                    "version": "1.13",
-                    "subVersions": [
-                        "1.13.2",
-                        "1.13.1",
-                        "1.13"
-                    ]
-                },
-                {
-                    "version": "1.12",
-                    "subVersions": [
-                        "1.12.2",
-                        "1.12.1",
-                        "1.12"
-                    ]
-                },
-                {
-                    "version": "1.11",
-                    "subVersions": [
-                        "1.11.2",
-                        "1.11.1",
-                        "1.11"
-                    ]
-                },
-                {
-                    "version": "1.10",
-                    "subVersions": [
-                        "1.10.2",
-                        "1.10.1",
-                        "1.10"
-                    ]
-                },
-                {
-                    "version": "1.9",
-                    "subVersions": [
-                        "1.9.4",
-                        "1.9.3",
-                        "1.9.2",
-                        "1.9.1",
-                        "1.9"
-                    ]
-                },
-                {
-                    "version": "1.8",
-                    "subVersions": []
-                }
-            ]
-        },
-        {
-            "name": "Waterfall",
-            "category": "Proxy",
-            "url": "https://papermc.io/downloads#Waterfall",
-            "enumName": "WATERFALL",
-            "visible": true,
-            "platformVersions": [
-                {
-                    "version": "1.19",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.18",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.17",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.16",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.15",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.14",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.13",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.12",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.11",
-                    "subVersions": []
-                }
-            ]
-        },
-        {
-            "name": "Velocity",
-            "category": "Proxy",
-            "url": "https://www.velocitypowered.com/downloads",
-            "enumName": "VELOCITY",
-            "visible": true,
-            "platformVersions": [
-                {
-                    "version": "3.2",
-                    "subVersions": []
-                },
-                {
-                    "version": "3.1",
-                    "subVersions": []
-                },
-                {
-                    "version": "3.0",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.1",
-                    "subVersions": []
-                },
-                {
-                    "version": "1.0",
-                    "subVersions": []
-                }
-            ]
-        }
-    ],
     "validations": {
         "project": {
             "name": {
@@ -469,12 +284,6 @@
             "name": "CHANGE_AVATAR",
             "titleKey": "prompts.changeAvatar.title",
             "messageKey": "prompts.changeAvatar.message"
-        }
-    ],
-    "announcements": [
-        {
-            "text": "This is a local server for testing purposes. There is a public staging instance at <a href=\"https://hangar.papermc.dev\" style=\"text-decoration: underline\">https://hangar.papermc.dev</a> and the production site can be found at <a href=\"https://hangar.papermc.io\" style=\"text-decoration: underline\">https://hangar.papermc.io</a>.",
-            "color": "#2f4476"
         }
     ],
     "visibilities": [
@@ -881,7 +690,8 @@
             "imgur.com",
             "giphy.com",
             "media.giphy.com",
-            "bstats.org"
+            "bstats.org",
+            "img.shields.io"
         ],
         "oauthProviders": [
             "github",

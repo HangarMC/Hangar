@@ -49,6 +49,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,9 +66,10 @@ public class ProjectService extends HangarComponent {
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
     private final AvatarService avatarService;
+    private final ConcurrentTaskExecutor taskExecutor;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService, @Lazy final ConcurrentTaskExecutor taskExecutor) {
         this.projectsDAO = projectDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
@@ -77,6 +79,7 @@ public class ProjectService extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
         this.avatarService = avatarService;
+        this.taskExecutor = taskExecutor;
     }
 
     public @Nullable ProjectTable getProjectTable(final @Nullable Long projectId) {
@@ -131,12 +134,16 @@ public class ProjectService extends HangarComponent {
         });
 
         final Map<Platform, Version> mainChannelVersions = new EnumMap<>(Platform.class);
-        final CompletableFuture<Void> mainChannelFuture = CompletableFuture.runAsync(() -> Arrays.stream(Platform.getValues()).parallel().forEach(platform -> {
-            final Version version = this.getLastVersion(projectTable.getProjectId(), platform);
-            if (version != null) {
-                mainChannelVersions.put(platform, version);
-            }
-        }));
+        CompletableFuture<Void> mainChannelFuture = CompletableFuture.allOf(
+            Arrays.stream(Platform.getValues())
+                .map(platform -> CompletableFuture.runAsync(() -> {
+                    final Version version = this.getLastVersion(projectTable.getProjectId(), platform);
+                    if (version != null) {
+                        mainChannelVersions.put(platform, version);
+                    }
+                }, taskExecutor))
+                .toArray(CompletableFuture[]::new)
+        );
 
         final HangarProject.HangarProjectInfo info = this.hangarProjectsDAO.getHangarProjectInfo(projectId);
         final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(projectId);
@@ -158,7 +165,7 @@ public class ProjectService extends HangarComponent {
     }
 
     private <T> CompletableFuture<T> supply(final Supplier<T> supplier) {
-        return CompletableFuture.supplyAsync(supplier);
+        return CompletableFuture.supplyAsync(supplier, taskExecutor);
     }
 
     /**

@@ -231,7 +231,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean
     protected ConcurrentTaskExecutor taskExecutor() {
-        ConcurrentTaskExecutor taskExecutor = new ConcurrentTaskExecutor(Executors.newFixedThreadPool(10));
+        ConcurrentTaskExecutor taskExecutor = new ConcurrentTaskExecutor(Executors.newVirtualThreadPerTaskExecutor());
         taskExecutor.setTaskDecorator(new SentryTaskDecorator());
         return taskExecutor;
     }

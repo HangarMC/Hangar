@@ -17,11 +17,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
@@ -34,30 +36,26 @@ public class StatService extends HangarComponent {
     private final HangarStatsDAO hangarStatsDAO;
     private final ProjectViewsDAO projectViewsDAO;
     private final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO;
+    private final ConcurrentTaskExecutor taskExecutor;
 
     @Autowired
-    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO) {
+    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO, final @Lazy ConcurrentTaskExecutor taskExecutor) {
         this.hangarStatsDAO = hangarStatsDAO;
         this.projectViewsDAO = projectViewsDAO;
         this.projectVersionDownloadStatsDAO = projectVersionDownloadStatsDAO;
+        this.taskExecutor = taskExecutor;
     }
 
     public List<DayStats> getStats(final LocalDate from, final LocalDate to) {
         return this.hangarStatsDAO.getStats(from, to);
     }
 
-    @Transactional
     public void addProjectView(final ProjectIdentified projectIdentified) {
         final Long userId = this.getHangarUserId();
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
         final UUID cookie = this.getStatsCookie(this.projectViewsDAO.getIndividualView(userId, address).map(ProjectViewIndividualTable::getCookie));
-        this.insertView(new ProjectViewIndividualTable(address, cookie, userId, projectIdentified.getProjectId()));
         this.setCookie(cookie);
-    }
-
-    @Async
-    void insertView(final ProjectViewIndividualTable projectViewIndividualTable) {
-        this.projectViewsDAO.insert(projectViewIndividualTable);
+        CompletableFuture.runAsync(() -> this.projectViewsDAO.insert(new ProjectViewIndividualTable(address, cookie, userId, projectIdentified.getProjectId())), taskExecutor);
     }
 
     @Transactional

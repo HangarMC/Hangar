@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "hangar.name" . }}-backend
+  labels:
+  {{- include "hangar.labels" . | nindent 4 }}
+spec:
+  endpoints:
+    - path: /actuator/prometheus
+      port: management
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "hangar.name" . }}
+      app.kubernetes.io/component: backend
+      app.kubernetes.io/instance: {{ .Release.Name }}
