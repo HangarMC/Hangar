@@ -1,0 +1,226 @@
+name: CI/CD
+
+on:
+  # allow manual dispatch
+  workflow_dispatch:
+    inputs:
+      build_backend:
+        description: "Build backend"
+        required: false
+        default: true
+        type: boolean
+      build_frontend:
+        description: "Build frontend"
+        required: false
+        default: true
+        type: boolean
+      deploy:
+        description: "Deploy"
+        required: false
+        default: true
+        type: boolean
+
+  # run on pushes to master and staging branches
+  push:
+    branches:
+      - master
+      - staging
+    paths-ignore:
+      - 'e2e/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  CI: true
+  NODE_ENV: "production"
+
+jobs:
+  cicd:
+    name: CI/CD
+    runs-on: ubuntu-latest
+    steps:
+      # <editor-fold desc="Prepare">
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Assume PRs are less than 50 commits
+          fetch-depth: 50
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v46
+        with:
+          files_yaml: |
+            backend:
+              - backend/**
+            frontend:
+              - frontend/**
+            chart:
+              - chart/**
+
+      - name: Create Vars
+        id: vars
+        run: |
+          echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
+
+          backend_changed="${{ steps.changed-files.outputs.backend_any_changed }}"
+          frontend_changed="${{ steps.changed-files.outputs.frontend_any_changed }}"
+          chart_changed="${{ steps.changed-files.outputs.chart_any_changed }}"
+
+          staging_branch=false
+          master_branch=false
+          [[ "${GITHUB_REF}" == "refs/heads/staging" ]] && staging_branch=true
+          [[ "${GITHUB_REF}" == "refs/heads/master" ]] && master_branch=true
+
+          build_backend=false
+          build_frontend=false
+          [[ "${{ inputs.deploy }}" == "true" || "${{ inputs.build_backend }}" == "true" || "$backend_changed" == "true" || "$chart_changed" == "true" ]] && build_backend=true
+          [[ "${{ inputs.deploy }}" == "true" || "${{ inputs.build_frontend }}" == "true" || "$frontend_changed" == "true" || "$chart_changed" == "true" ]] && build_frontend=true
+
+          deploy=false
+          if { [[ "$staging_branch" == "true" || "$master_branch" == "true" ]] && { [[ "$build_backend" == "true" || "$build_frontend" == "true" ]]; }; }; then
+            deploy=true
+          fi
+
+          {
+            echo "build_backend=$build_backend"
+            echo "build_frontend=$build_frontend"
+            echo "deploy=$deploy"
+            echo "staging_branch=$staging_branch"
+            echo "master_branch=$master_branch"
+          } >> $GITHUB_OUTPUT
+
+          echo "::group::Variables"
+          echo "build_backend=$build_backend"
+          echo "build_frontend=$build_frontend"
+          echo "deploy=$deploy"
+          echo "staging_branch=$staging_branch"
+          echo "master_branch=$master_branch"
+          echo "::endgroup::"
+      # </editor-fold>
+
+      # <editor-fold desc="Build Backend">
+      - name: Set up JDK
+        if: ${{ steps.vars.outputs.build_backend == 'true' }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: "maven"
+
+      - name: Build backend
+        if: ${{ steps.vars.outputs.build_backend == 'true' }}
+        working-directory: backend
+        run: mvn --batch-mode --errors --fail-at-end --show-version --no-transfer-progress install
+      # </editor-fold>
+
+      # <editor-fold desc="Build Frontend">
+      - name: Set up pnpm
+        if: ${{ steps.vars.outputs.build_frontend == 'true' }}
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node
+        if: ${{ steps.vars.outputs.build_frontend == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: "frontend/pnpm-lock.yaml"
+
+      - name: Install frontend deps
+        if: ${{ steps.vars.outputs.build_frontend == 'true' }}
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint frontend
+        if: ${{ steps.vars.outputs.build_frontend == 'true' }}
+        working-directory: frontend
+        run: (pnpm lint:oxlint && pnpm lint:eslint)
+
+      - name: Sync forth and back with crowdin
+        if: ${{ steps.vars.outputs.build_frontend == 'true' }}
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: true
+          download_translations: true
+          push_translations: false
+          create_pull_request: false
+          skip_untranslated_strings: true
+          config: "crowdin.yml"
+          crowdin_branch_name: master
+        env:
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Build frontend (prod)
+        if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.master_branch == 'true' }}
+        working-directory: frontend
+        run: pnpm build
+      - name: Build frontend (staging)
+        if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.staging_branch == 'true' }}
+        working-directory: frontend
+        run: pnpm buildStaging
+      # </editor-fold>
+
+      # <editor-fold desc="Deploy">
+      - name: Set up Docker Buildx
+        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to registry
+        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker (frontend)
+        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        id: frontend-meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
+          tags: |
+            type=sha,enable=true,format=short,prefix=${{ env.BRANCH_NAME }}-,suffix=-${{ steps.vars.outputs.timestamp }}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push frontend Dockerfile
+        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: chart/dockerfiles/frontend/Dockerfile
+          tags: ${{ steps.frontend-meta.outputs.tags }}
+          labels: ${{ steps.frontend-meta.outputs.labels }}
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Extract metadata (tags, labels) for Docker (backend)
+        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        id: backend-meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/backend
+          tags: |
+            type=sha,enable=true,format=short,prefix=${{ env.BRANCH_NAME }}-,suffix=-${{ steps.vars.outputs.timestamp }}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push backend Dockerfile
+        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: chart/dockerfiles/backend/Dockerfile
+          tags: ${{ steps.backend-meta.outputs.tags }}
+          labels: ${{ steps.backend-meta.outputs.labels }}
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      # </editor-fold>
