@@ -18,28 +18,28 @@ const { v } = useValidation(props.label, undefined, internalVal);
 </script>
 
 <template>
-  <label class="customCheckbox group relative flex items-center select-none" :cursor="disabled ? 'auto' : 'pointer'">
+  <label class="w-full flex items-center select-none relative" :class="{
+           'cursor-pointer': !disabled,
+         }">
     <input
       v-model="internalVal"
       v-bind="$attrs"
       type="checkbox"
-      class="appearance-none h-4 w-4 bg-gray-300 mr-2 rounded-sm shrink-0 group-hover:bg-gray-400 !checked:bg-primary-500"
-      dark="bg-gray-600 group-hover:bg-gray-500"
-      :cursor="disabled ? 'auto' : 'pointer'"
+      class="appearance-none peer"
       :disabled="disabled"
       :value="value"
       @blur="v.$touch()"
     />
-    <icon-mdi-check-bold class="absolute h-4 w-4 opacity-0 text-white" />
-    <slot />
-    <slot name="label">
-      <template v-if="props.label">{{ props.label }}</template>
-    </slot>
+
+    <IconMdiCheck class="absolute hidden peer-checked:block top-2.25 right-3.5 z-10" />
+    <span
+      class="flex items-center rounded-full border w-full border-transparent py-1.5 transition-all duration-250
+             peer-checked:bg-primary-500 peer-hover:bg-gray-700 peer-hover:scale-[1.015]"
+    >
+      <slot />
+      <slot name="label">
+        <span v-if="props.label" class="ml-4">{{ props.label }}</span>
+      </slot>
+    </span>
   </label>
 </template>
-
-<style>
-.customCheckbox input:checked ~ svg {
-  @apply opacity-100;
-}
-</style>

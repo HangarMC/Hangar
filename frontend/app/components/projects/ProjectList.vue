@@ -2,8 +2,10 @@
 import type { PaginatedResultProject, ProjectCompact } from "#shared/types/backend";
 
 const i18n = useI18n();
+const showSkeletons = ref(false);
+let loadingTimeout: ReturnType<typeof setTimeout> | null;
 
-defineProps<{
+const props = defineProps<{
   projects?: PaginatedResultProject;
   resetAnchor?: HTMLElement | null;
   loading?: boolean;
@@ -22,6 +24,19 @@ function updatePage(newPage: number) {
   pagination.value?.updatePage(newPage);
 }
 defineExpose({ updatePage });
+
+watch(() => props.loading, (isLoading) => {
+  if (isLoading) {
+    loadingTimeout = setTimeout(() => {
+      showSkeletons.value = true;
+    }, 800);
+  } else {
+    showSkeletons.value = false;
+    if (loadingTimeout) {
+      clearTimeout(loadingTimeout);
+    }
+  }
+});
 </script>
 
 <template>
@@ -34,9 +49,13 @@ defineExpose({ updatePage });
     @update:page="emitPageUpdate"
   >
     <template #default="{ item }">
-      <ProjectCard :project="item" :can-edit :pinned="pinned?.some((p) => p.namespace.slug === item.namespace.slug)" />
+      <Transition name="list" appear>
+        <ProjectCard :project="item" :can-edit :pinned="pinned?.some((p) => p.namespace.slug === item.namespace.slug)" />
+      </Transition>
     </template>
   </Pagination>
   <div v-if="projects?.result?.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>
-  <Skeleton v-if="loading" class="h-100" />
+  <template v-if="showSkeletons">
+    <Skeleton v-for="n in 10" :key="n" class="h-40 rounded-xl" />
+  </template>
 </template>

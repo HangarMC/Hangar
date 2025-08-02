@@ -30,17 +30,15 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
   >
     <label
       :class="[
-        'relative flex w-full outline-none p-2 border-1px rounded',
-        'border-gray-500',
+        'relative flex w-full outline-none py-2 rounded-full',
         'focus-within:border-primary-500 focus-within:hover:border-primary-500',
-        'hover:border-gray-400',
+        'dark:bg-gray-800',
         'error:border-red-400',
         'transition duration-200 ease',
       ]"
     >
       <slot class="outline-none flex-grow bg-transparent w-full py-0.5" />
       <span class="flex pl-2 self-center">
-        <span v-if="loading" class="w-[24px] h-[24px]"><Spinner class="stroke-gray-400" /></span>
         <span v-if="counter && maxlength" class="inline-flex items-center ml-2">{{ value?.length || 0 }}/{{ maxlength }}</span>
         <span v-else-if="counter">{{ value?.length || 0 }}</span>
         <slot name="append" />
@@ -48,7 +46,7 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
       <span
         v-if="label"
         :class="[
-          'absolute origin-top-left left-2 italic pointer-events-none',
+          'absolute origin-top-left left-4 pointer-events-none',
           'input-hover:(opacity-100)',
           'input-focused:(transform scale-60 opacity-100 not-italic) filled:(transform scale-60 text-black-50 not-italic)',
           'opacity-60 error:(!text-red-400) input-focused:(text-primary-400)',
