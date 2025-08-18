@@ -45,7 +45,7 @@ jobs:
     steps:
       # <editor-fold desc="Prepare">
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # Assume PRs are less than 50 commits
           fetch-depth: 50
