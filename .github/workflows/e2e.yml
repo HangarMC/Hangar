@@ -27,7 +27,7 @@ jobs:
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node
         uses: actions/setup-node@v4
