@@ -106,7 +106,7 @@ jobs:
       # <editor-fold desc="Build Backend">
       - name: Set up JDK
         if: ${{ steps.vars.outputs.build_backend == 'true' }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: 21
           distribution: temurin
