@@ -13,7 +13,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 @RegisterConstructorMapper(JobTable.class)
 public interface JobsDAO {
 
-    @SqlQuery("SELECT * FROM jobs WHERE state = 'fatal_failure' OR (jobs.job_type = 'SCHEDULED_TASK' AND state = 'not_started' AND last_error_descriptor = 'exception') ORDER BY last_updated")
+    @SqlQuery("SELECT * FROM jobs WHERE state = 'fatal_failure' OR (jobs.job_type = 'SCHEDULED_TASK' AND state = 'not_started' AND last_error_descriptor IS NOT NULL) ORDER BY last_updated")
     List<JobTable> getErroredJobs();
 
     @Timestamped
