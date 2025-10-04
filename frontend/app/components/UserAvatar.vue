@@ -34,6 +34,8 @@ const sizeClass = computed(() => {
       return "w-75px h-75px";
     case "lg":
       return "w-100px h-100px";
+    case "xl":
+      return "w-125px h-125px";
     // No default
   }
 

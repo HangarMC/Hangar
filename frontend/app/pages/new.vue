@@ -256,8 +256,7 @@ function createProject() {
     </template>
     <template #finishing>
       <div class="flex flex-col">
-        <div v-if="projectLoading" class="text-center my-8"><Spinner class="stroke-red-500" :diameter="90" :stroke="6" /></div>
-        <template v-else-if="projectCreationErrors && projectCreationErrors.length > 0">
+        <template v-if="projectCreationErrors && projectCreationErrors.length > 0">
           <div class="text-lg mt-2">
             {{ i18n.t("project.new.error.create") }}
             {{ projectCreationErrors }}

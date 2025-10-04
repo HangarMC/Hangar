@@ -21,3 +21,37 @@
     display: none;
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .collapse-enter-active {
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+  }
+
+  .collapse-leave-active {
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+  }
+
+  .collapse-enter-from,
+  .collapse-leave-to {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .collapse-enter-to,
+  .collapse-leave-from {
+    max-height: 500px; /* adjust as needed */
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .list-enter-active,
+  .list-leave-active {
+    transition: all 0.5s ease;
+  }
+  .list-enter-from,
+  .list-leave-to {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}

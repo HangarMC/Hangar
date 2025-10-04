@@ -46,20 +46,20 @@ function visibleCss(value: boolean) {
 </script>
 
 <template>
-  <div class="flex gap-1.5 rounded-md justify-center">
-    <Button class="bg-slate-400 dark:bg-slate-700 px-3" :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">
-      <span class="nav-btn">«</span>
+  <div class="flex gap-1.5 justify-center rounded-md h-10">
+    <Button class="bg-charcoal-500 py-2 w-10 h-full rounded-full" :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">
+      <IconMdiChevronDoubleLeft />
     </Button>
-    <Button class="bg-slate-400 dark:bg-slate-700 px-3" :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">
-      <span class="nav-btn">‹</span>
+    <Button class="bg-charcoal-500 py-2 w-10 h-full rounded-full" :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">
+      <IconMdiChevronLeft />
     </Button>
     <Button
       v-for="index in options"
       :key="index"
       :disabled="page === index - 1"
       :aria-label="'Page ' + index"
-      class="bg-slate-400 dark:bg-slate-700 px-3"
-      :class="{ 'disabled:bg-slate-500 disabled:dark:bg-slate-500': page === index - 1 }"
+      class="bg-transparent w-10 h-full rounded-full"
+      :class="{ 'disabled:bg-charcoal-200 disabled:dark:bg-primary-500': page === index - 1 }"
       @click="gotoPage(index - 1)"
     >
       <span class="text-white">
@@ -67,28 +67,20 @@ function visibleCss(value: boolean) {
       </span>
     </Button>
     <Button
-      class="bg-slate-400 dark:bg-slate-700 px-3"
-      :style="visibleCss(page < pages - 1)"
+      class="bg-charcoal-500 w-10 py-2 h-full rounded-full"
       :disabled="page >= pages - 1"
       aria-label="Next page"
       @click="gotoPage(page + 1)"
     >
-      <span class="nav-btn">›</span>
+      <IconMdiChevronRight />
     </Button>
     <Button
-      class="bg-slate-400 dark:bg-slate-700 px-3"
-      :style="visibleCss(page < pages - 1)"
+      class="bg-charcoal-500 w-10 py-2 h-full rounded-full"
       :disabled="page >= pages - 1"
       aria-label="Last page"
       @click="gotoPage(pages - 1)"
     >
-      <span class="nav-btn">»</span>
+      <IconMdiChevronDoubleRight />
     </Button>
   </div>
 </template>
-<style scoped>
-.nav-btn {
-  position: relative;
-  top: -2px;
-}
-</style>

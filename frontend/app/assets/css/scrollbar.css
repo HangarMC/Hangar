@@ -4,7 +4,7 @@
 }
 
 * {
-  scrollbar-color: var(--primary-400) #f2f5fb;
+  scrollbar-color: var(--primary-400) transparent;
   scrollbar-width: thin;
 }
 

@@ -3,7 +3,7 @@ import { Platform } from "#shared/types/backend";
 
 withDefaults(
   defineProps<{
-    platform: Platform;
+    platform: Platform | string;
     size?: number;
   }>(),
   {

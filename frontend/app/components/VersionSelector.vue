@@ -6,6 +6,8 @@ const props = defineProps<{
   versions: PlatformVersion[];
   modelValue?: string[];
   open: boolean;
+  showAllVersions: boolean;
+  versionSearchQuery: string;
   rules?: ValidationRule<string | undefined>[];
   col?: boolean;
 }>();
@@ -47,6 +49,21 @@ if (selected.value) {
 }
 
 // TODO All of this is horrible
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue.length === 0) {
+      selectedParents.value = [];
+      selectedSub.value = [];
+    }
+  }
+);
+const filteredVersions = computed(() => {
+  return props.versions.filter((version) =>
+    version.version.toLowerCase().includes(props.versionSearchQuery.toLowerCase())
+  );
+});
+
 watch(selectedParents, (oldValue, newValue) => {
   handleRemovedParent(newValue.filter((x) => !oldValue.includes(x)));
   handleAddedParent(oldValue.filter((x) => !newValue.includes(x)));
@@ -147,35 +164,40 @@ function handleAddedSub(removedVersions: string[]) {
     }
   }
 }
+
+const i18n = useI18n();
 </script>
 
 <template>
   <InputGroup v-model="selected" :rules="rules" :silent-errors="false" full-width>
-    <div :class="{ 'flex items-start flex-wrap': true, 'flex-col': col, 'gap-4': !col }">
-      <div v-for="version in versions" :key="version.version">
+    <div class="flex flex-col gap-1 mt-2">
+      <template v-if="filteredVersions.length === 0">
+        <span class="text-gray-400 mt-16">{{ i18n.t("hangar.projectSearch.noVersions") }}</span>
+      </template>
+      <template v-for="version in filteredVersions" v-else :key="version.version">
         <template v-if="version.subVersions?.length !== 0">
-          <ArrowSpoiler :open="open">
-            <template #title>
-              <div class="mr-7">
-                <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" :name="version.version" />
-              </div>
-            </template>
-            <template #content>
-              <div class="ml-4">
-                <InputCheckbox
-                  v-for="subversion in version.subVersions"
-                  :key="subversion"
-                  v-model="selectedSub"
-                  :value="subversion"
-                  :label="subversion"
-                  :name="subversion"
-                />
-              </div>
-            </template>
-          </ArrowSpoiler>
+          <template v-if="!showAllVersions">
+            <div class="mr-4 ml-1">
+              <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" :name="version.version" />
+            </div>
+          </template>
+          <template v-for="subversion in version.subVersions" v-else :key="subversion" >
+            <div class="mr-4 ml-1">
+              <InputCheckbox
+                v-model="selectedSub"
+                :value="subversion"
+                :label="subversion"
+                :name="subversion"
+              />
+            </div>
+          </template>
         </template>
-        <InputCheckbox v-else v-model="selectedSub" :value="version.version" :label="version.version" :name="version.version" />
-      </div>
+        <template v-else>
+          <div class="mr-4 ml-1">
+            <InputCheckbox v-model="selectedSub" :value="version.version" :label="version.version" :name="version.version" />
+          </div>
+        </template>
+      </template>
     </div>
   </InputGroup>
 </template>
