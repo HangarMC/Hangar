@@ -247,8 +247,8 @@ importers:
         specifier: 22.2.0
         version: 22.2.0(@vue/compiler-sfc@3.5.22)
       unplugin-vue-components:
-        specifier: 28.8.0
-        version: 28.8.0(@babel/parser@7.28.4)(@nuxt/kit@4.0.0(magicast@0.3.5))(vue@3.5.22(typescript@5.8.3))
+        specifier: 29.1.0
+        version: 29.1.0(@babel/parser@7.28.4)(@nuxt/kit@4.0.0(magicast@0.3.5))(vue@3.5.22(typescript@5.8.3))
       unplugin-vue-router:
         specifier: 0.14.0
         version: 0.14.0(@vue/compiler-sfc@3.5.22)(vue-router@4.5.1(vue@3.5.22(typescript@5.8.3)))(vue@3.5.22(typescript@5.8.3))
@@ -6872,8 +6872,8 @@ packages:
     resolution: {integrity: sha512-JLoggz+PvLVMJo+jZt97hdIIIZ2yTzGgft9e9q8iMrC4ewufl62ekeW7mixBghonn2gVb/ICjyvlmOCUBnJLQg==}
     engines: {node: '>=20.19.0'}
 
-  unplugin-vue-components@28.8.0:
-    resolution: {integrity: sha512-2Q6ZongpoQzuXDK0ZsVzMoshH0MWZQ1pzVL538G7oIDKRTVzHjppBDS8aB99SADGHN3lpGU7frraCG6yWNoL5Q==}
+  unplugin-vue-components@29.1.0:
+    resolution: {integrity: sha512-z/9ACPXth199s9aCTCdKZAhe5QGOpvzJYP+Hkd0GN1/PpAmsu+W3UlRY3BJAewPqQxh5xi56+Og6mfiCV1Jzpg==}
     engines: {node: '>=14'}
     peerDependencies:
       '@babel/parser': ^7.15.8
@@ -15391,7 +15391,7 @@ snapshots:
       pathe: 2.0.3
       picomatch: 4.0.3
 
-  unplugin-vue-components@28.8.0(@babel/parser@7.28.4)(@nuxt/kit@4.0.0(magicast@0.3.5))(vue@3.5.22(typescript@5.8.3)):
+  unplugin-vue-components@29.1.0(@babel/parser@7.28.4)(@nuxt/kit@4.0.0(magicast@0.3.5))(vue@3.5.22(typescript@5.8.3)):
     dependencies:
       chokidar: 3.6.0
       debug: 4.4.3
@@ -15400,7 +15400,7 @@ snapshots:
       mlly: 1.8.0
       tinyglobby: 0.2.15
       unplugin: 2.3.10
-      unplugin-utils: 0.2.5
+      unplugin-utils: 0.3.0
       vue: 3.5.22(typescript@5.8.3)
     optionalDependencies:
       '@babel/parser': 7.28.4
@@ -15605,7 +15605,7 @@ snapshots:
       picomatch: 4.0.3
       strip-ansi: 7.1.2
       tiny-invariant: 1.3.3
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
       vite: 7.1.9(@types/node@24.6.2)(jiti@2.6.1)(sass@1.89.2)(terser@5.44.0)(tsx@4.19.3)(yaml@2.8.1)
       vscode-uri: 3.1.0
     optionalDependencies:
