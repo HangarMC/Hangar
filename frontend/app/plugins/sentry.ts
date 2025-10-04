@@ -5,8 +5,8 @@ import { SEMANTIC_ATTRIBUTE_SENTRY_SOURCE } from "@sentry/nuxt";
 export default defineNuxtPlugin((nitro) => {
   nitro.hooks.hook("app:rendered", (ctx) => {
     const activeSpan = Sentry.getActiveSpan();
-    const route = useRoute();
-    if (activeSpan) {
+    const route = ctx.ssrContext?.nuxt._route;
+    if (activeSpan && route) {
       const rootSpan = Sentry.getRootSpan(activeSpan);
       if (!rootSpan) {
         return;
