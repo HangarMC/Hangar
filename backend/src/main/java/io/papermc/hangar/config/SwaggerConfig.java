@@ -248,7 +248,7 @@ public class SwaggerConfig {
                 operationParser,
                 springDocConfigProperties, springDocProviders,
                 new SpringDocCustomizers(Optional.of(groupedOpenApi.getOpenApiCustomizers()), Optional.of(groupedOpenApi.getOperationCustomizers()),
-                    Optional.of(groupedOpenApi.getRouterOperationCustomizers()), Optional.of(groupedOpenApi.getOpenApiMethodFilters()))
+                    Optional.of(groupedOpenApi.getRouterOperationCustomizers()), Optional.of(groupedOpenApi.getOpenApiMethodFilters()), Optional.empty(), Optional.empty())
 
             )).orElseThrow(RuntimeException::new);
 
