@@ -27,17 +27,17 @@ jobs:
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10
 
       - name: Get pnpm store directory
         id: pnpm-cache
