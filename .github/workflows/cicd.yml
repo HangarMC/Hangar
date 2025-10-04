@@ -181,7 +181,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker (frontend)
-        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.deploy == 'true' }}
         id: frontend-meta
         uses: docker/metadata-action@v5
         with:
@@ -191,7 +191,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push frontend Dockerfile
-        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.deploy == 'true' }}
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -203,7 +203,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Extract metadata (tags, labels) for Docker (backend)
-        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        if: ${{ steps.vars.outputs.build_backend == 'true' && steps.vars.outputs.deploy == 'true' }}
         id: backend-meta
         uses: docker/metadata-action@v5
         with:
@@ -213,7 +213,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push backend Dockerfile
-        if: ${{ steps.vars.outputs.deploy == 'true' }}
+        if: ${{ steps.vars.outputs.build_backend == 'true' && steps.vars.outputs.deploy == 'true' }}
         uses: docker/build-push-action@v6
         with:
           context: .
