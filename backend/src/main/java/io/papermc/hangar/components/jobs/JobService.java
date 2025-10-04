@@ -61,6 +61,10 @@ public class JobService extends HangarComponent {
                 this.executorService.submit(this::process);
             }
         }
+        final long stuckJobs = this.jobsDAO.fixStuckJobs();
+        if (stuckJobs > 0) {
+            this.logger.warn("Fixed {} stuck jobs", stuckJobs);
+        }
     }
 
     public List<JobTable> getErroredJobs() {
@@ -141,7 +145,7 @@ public class JobService extends HangarComponent {
                     this.jobsDAO.retryIn(job.getId(), OffsetDateTime.now().plus(scheduledTaskJob.getInterval(), ChronoUnit.MILLIS), null, null);
                 } catch (final Exception ex) {
                     // scheduled tasks get special error handling
-                    this.logger.debug("scheduled job failed to process: {} {}", ex.getMessage(), job, ex);
+                    this.logger.warn("scheduled job failed to process: {} {}", ex.getMessage(), job, ex);
                     final String error = "Encountered error when processing scheduled job\n" +
                         this.toJobString(job) +
                         "Exception: " + ex.getClass().getName() + "\n" +

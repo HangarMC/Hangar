@@ -42,4 +42,11 @@ public interface JobsDAO {
 
     @SqlQuery("SELECT * FROM jobs WHERE id = :jobId")
     JobTable getJob(long jobId);
+
+    @SqlUpdate("""
+        UPDATE jobs
+        SET state = 'not_started'
+        WHERE state = 'started' AND (last_updated < now() - INTERVAL '15 minutes');
+        """)
+    long fixStuckJobs();
 }
