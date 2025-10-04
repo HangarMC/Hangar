@@ -3,6 +3,7 @@ package io.papermc.hangar.service.internal.versions.plugindata;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.BukkitFileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperFileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileTypeHandler;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.WaterfallFileTypeHandler;
@@ -24,13 +25,30 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {PluginDataService.class, PaperFileTypeHandler.class, WaterfallFileTypeHandler.class, VelocityFileTypeHandler.class})
+@ContextConfiguration(classes = {PluginDataService.class, BukkitFileTypeHandler.class, PaperFileTypeHandler.class, WaterfallFileTypeHandler.class, VelocityFileTypeHandler.class})
 class PluginDataServiceTest {
 
     private static final Path path = Path.of("src/test/resources/io/papermc/hangar/service/internal/versions/plugindata");
 
     @Autowired
     private PluginDataService classUnderTest;
+
+    @Test
+    void testLoadBukkitPluginMetadata() throws Exception {
+        final PluginFileData data = this.classUnderTest.loadMeta("Bukkit.jar", Files.newInputStream(path.resolve("Bukkit.jar")).readAllBytes(), -1).data();
+        data.validate();
+        assertEquals("Maintenance", data.getName());
+        assertEquals("Enable maintenance mode with a custom maintenance motd and icon.", data.getDescription());
+        assertEquals("3.0.5", data.getVersion());
+        assertIterableEquals(List.of("KennyTV"), data.getAuthors().get(Platform.PAPER));
+
+        final Set<PluginDependency> deps = data.getDependencies().get(Platform.PAPER);
+        assertThat(deps).hasSize(3);
+        assertThat(deps).extracting(PluginDependency::getName).containsExactlyInAnyOrder("ProtocolLib", "ServerListPlus", "ProtocolSupport");
+        assertThat(deps).extracting(PluginDependency::isRequired).containsOnly(false);
+
+        assertIterableEquals(Set.of("1.13"), data.getPlatformDependencies().get(Platform.PAPER));
+    }
 
     @Test
     void testLoadPaperPluginMetadata() throws Exception {
@@ -44,7 +62,7 @@ class PluginDataServiceTest {
         final Set<PluginDependency> deps = data.getDependencies().get(Platform.PAPER);
         assertThat(deps).hasSize(3);
         assertThat(deps).extracting(PluginDependency::getName).containsExactlyInAnyOrder("ProtocolLib", "ServerListPlus", "ProtocolSupport");
-        assertThat(deps).extracting(PluginDependency::isRequired).containsOnly(false);
+        assertThat(deps).extracting(PluginDependency::isRequired).containsExactlyInAnyOrder(true, false, false);
 
         assertIterableEquals(Set.of("1.13"), data.getPlatformDependencies().get(Platform.PAPER));
     }
