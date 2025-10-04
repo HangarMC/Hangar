@@ -2,11 +2,10 @@ package io.papermc.hangar.service.internal.versions.plugindata.handler;
 
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.service.internal.versions.plugindata.handler.PaperFileTypeHandler.PaperFileData;
+import io.papermc.hangar.service.internal.versions.plugindata.handler.BukkitFileTypeHandler.BukkitFileData;
 import java.io.BufferedReader;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -19,22 +18,24 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {
+public class BukkitFileTypeHandler extends FileTypeHandler<BukkitFileData> {
 
-    protected PaperFileTypeHandler() {
-        super("paper-plugin.yml", Platform.PAPER);
+    protected BukkitFileTypeHandler() {
+        super("plugin.yml", Platform.PAPER);
     }
 
     @Override
-    public PaperFileData getData(final BufferedReader reader) throws ConfigurateException {
-        return YamlConfigurationLoader.builder().buildAndLoadString(reader.lines().collect(Collectors.joining("\n"))).get(PaperFileData.class);
+    public BukkitFileData getData(final BufferedReader reader) throws ConfigurateException {
+        return YamlConfigurationLoader.builder().buildAndLoadString(reader.lines().collect(Collectors.joining("\n"))).get(BukkitFileData.class);
     }
 
     @ConfigSerializable
-    public static class PaperFileData extends FileData {
+    public static class BukkitFileData extends FileTypeHandler.FileData {
 
-        @Setting("dependencies")
-        private Map<String, Map<String, Dependency>> dependencies;
+        @Setting("depend")
+        private List<String> hardDepends;
+        @Setting("softdepend")
+        private List<String> softDepends;
         @Setting("api-version")
         private String apiVersion;
 
@@ -50,19 +51,17 @@ public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {
         @Override
         protected @NotNull Set<PluginDependency> createPluginDependencies() {
             final Set<PluginDependency> dependencies = new HashSet<>();
-            if (this.dependencies != null) {
-                for (final Map.Entry<String, Map<String, Dependency>> entry : this.dependencies.entrySet()) {
-                    for (final Map.Entry<String, Dependency> dependencyEntry : entry.getValue().entrySet()) {
-                        final String dependencyName = dependencyEntry.getKey();
-                        final boolean required = dependencyEntry.getValue().required;
-                        dependencies.add(PluginDependency.of(dependencyName, required, Platform.PAPER));
-                    }
+            if (this.hardDepends != null) {
+                for (final String hardDepend : this.hardDepends) {
+                    dependencies.add(PluginDependency.of(hardDepend, true, Platform.PAPER));
+                }
+            }
+            if (this.softDepends != null) {
+                for (final String softDepend : this.softDepends) {
+                    dependencies.add(PluginDependency.of(softDepend, false, Platform.PAPER));
                 }
             }
             return dependencies;
         }
-
-        @ConfigSerializable
-        record Dependency(boolean required) {}
     }
 }

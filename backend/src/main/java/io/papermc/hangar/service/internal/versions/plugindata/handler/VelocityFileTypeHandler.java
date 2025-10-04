@@ -4,7 +4,6 @@ import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFileTypeHandler.VelocityFileData;
 import java.io.BufferedReader;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
@@ -36,23 +35,6 @@ public class VelocityFileTypeHandler extends FileTypeHandler<VelocityFileData> {
         }
 
         @ConfigSerializable
-        static class Dependency {
-
-            private String id;
-            private boolean optional;
-
-            @Override
-            public boolean equals(final Object o) {
-                if (this == o) return true;
-                if (o == null || this.getClass() != o.getClass()) return false;
-                final Dependency that = (Dependency) o;
-                return this.optional == that.optional && this.id.equals(that.id);
-            }
-
-            @Override
-            public int hashCode() {
-                return Objects.hash(this.id, this.optional);
-            }
-        }
+        record Dependency(String id, boolean optional) {}
     }
 }
