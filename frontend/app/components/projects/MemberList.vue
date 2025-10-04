@@ -24,7 +24,7 @@ const props = withDefaults(
   }
 );
 
-const sortedMembers = [...props.members].sort((r1, r2) => {
+const sortedMembers = props.members.toSorted((r1, r2) => {
   const role1 = getRole(r1.role.roleId);
   const role2 = getRole(r2.role.roleId);
   if (role1?.rank) {

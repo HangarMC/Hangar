@@ -126,5 +126,5 @@ export const validPageName = withOverrideMessage((body: { projectId: number; par
 export function isSame(arrayOne?: any[], arrayTwo?: any[]) {
   const a = uniq(arrayOne);
   const b = uniq(arrayTwo);
-  return a.length === b.length && isEmpty(difference(b.sort(), a.sort()));
+  return a.length === b.length && isEmpty(difference(b.toSorted(), a.toSorted()));
 }

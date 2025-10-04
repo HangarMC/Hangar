@@ -47,7 +47,7 @@ const platformsWithDependencies = computed(() => {
 
 function sortedDependencies(platform: Platform) {
   if (props.version && props.version.pluginDependencies[platform]) {
-    return [...props.version.pluginDependencies[platform]].sort((a, b) => Number(b.required) - Number(a.required));
+    return props.version.pluginDependencies[platform].toSorted((a, b) => Number(b.required) - Number(a.required));
   }
   return [];
 }
