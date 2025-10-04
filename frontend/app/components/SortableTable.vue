@@ -30,7 +30,7 @@ function sort() {
     sorted.value = props.items;
     return;
   }
-  sorted.value = [...props.items].sort((a, b) => {
+  sorted.value = props.items.toSorted((a, b) => {
     for (const field of Object.keys(sorter) as Array<keyof typeof sorter>) {
       if (sorter[field] === 0) continue;
       if (a[field] > b[field]) return sorter[field];

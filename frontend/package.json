@@ -13,7 +13,7 @@
     "preview": "bun --import=./.output/server/sentry.server.config.mjs --env-file=./.config/local.env run ./.output/server/index.mjs",
     "previewBuild": "nuxt build && nuxt preview",
     "lint:eslint": "eslint . --fix",
-    "lint:prettier": "prettier -w .",
+    "lint:prettier": "prettier --list-different -w .",
     "lint:oxlint": "oxlint -c .oxlint.json --import-plugin --fix",
     "lint:typecheck": "nuxt typecheck",
     "prepare": "nuxt prepare && cd .. && husky install frontend/.husky"
