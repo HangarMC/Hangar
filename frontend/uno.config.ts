@@ -22,7 +22,7 @@ export default defineConfig({
   shortcuts: {
     "background-body": "bg-gray-100 dark:bg-charcoal-800",
     "background-default": "bg-gray-50 dark:bg-charcoal-600",
-    "background-card": "dark:bg-[linear-gradient(30deg,_transparent_40%,_var(--primary-500)_250%)] scale-101",
+    "background-card": "dark:bg-[linear-gradient(30deg,_transparent_40%,_var(--primary-500)_250%)]",
     "shadow-default": "shadow-lg shadow-gray-300 dark:shadow-gray-900",
     "color-primary": "text-primary-500 dark:text-primary-300",
     "border-top-primary": "border-solid border-t-4 border-t-primary-500",

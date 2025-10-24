@@ -202,7 +202,7 @@ const filteredCategories = computed(() => {
                   <a
                     v-for="sorter in sorters"
                     :key="sorter.id"
-                    class="mx-2 px-4 py-1.5 font-semibold hover:bg-gray-100 hover:dark:bg-gray-700 rounded-full cursor-pointer decoration-none transition-all duration-250 hover:scale-[1.01]"
+                    class="mx-2 px-4 py-1.5 font-semibold hover:bg-gray-100 hover:dark:bg-gray-700 rounded-full cursor-pointer decoration-none transition-all duration-250 hover:scale-[1.005]"
                     @click="() => { activeSorter = sorter.id; close(); }"
                     v-html="sorter.label"
                   />
@@ -215,7 +215,7 @@ const filteredCategories = computed(() => {
         <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 w-90">
 
         <!-- Platform Filter -->
         <CollapsibleCard class="min-w-300px flex flex-col gap-1">
@@ -288,7 +288,7 @@ const filteredCategories = computed(() => {
               </Transition>
             </template>
             <!-- Version Search -->
-            <div class="relative hover:scale-[1.015] transition-all duration-250">
+            <div class="relative hover:scale-[1.005] transition-all duration-250">
               <input
                 v-model="versionSearch"
                 name="versionSearch"
@@ -303,7 +303,7 @@ const filteredCategories = computed(() => {
             </div>
             <div class="relative">
               <div class="h-40 -px-1 overflow-y-auto overflow-x-hidden">
-                <VersionSelector v-model="filters.versions" :version-search-query="versionSearch" :show-all-versions="showAllVersions" :versions="versions(filters.platform)" :open="false" col />
+                <VersionSelector v-model="filters.versions" :version-search-query="versionSearch" :show-all-versions="showAllVersions" :versions="usePlatformVersions(filters.platform)" :open="false" col />
               </div>
               <!-- Gradient Overlay -->
               <div class="absolute inset-x-0 bottom-0 w-full h-8
@@ -360,7 +360,7 @@ const filteredCategories = computed(() => {
         </CollapsibleCard>
 
         <!-- Categories Filter -->
-        <CollapsibleCard class="min-w-300px flex flex-col gap-1">
+        <CollapsibleCard class="flex flex-col gap-1">
           <template #title>
             {{ i18n.t("hangar.projectSearch.categories") }}
             <Transition name="collapse">
@@ -384,7 +384,7 @@ const filteredCategories = computed(() => {
             </Transition>
           </template>
           <!-- Category Search -->
-          <div class="relative hover:scale-[1.015] transition-all duration-250">
+          <div class="relative hover:scale-[1.005] transition-all duration-250">
             <input
               v-model="categorySearch"
               name="categorySearch"
