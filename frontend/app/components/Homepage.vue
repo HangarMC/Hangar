@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-import type { Category, PlatformVersion } from "~/types/backend";
-import { Platform, Tag } from "~/types/backend";
+import { Platform, Tag } from "#shared/types/backend";
+import type { Category } from "#shared/types/backend";
+import type { LocationQueryValue } from "#vue-router";
 import CollapsibleCard from "~/components/design/CollapsibleCard.vue";
 
 const props = defineProps<{
@@ -22,7 +23,8 @@ const sorters = [
   { id: "-newest", label: i18n.t("project.sorting.newest") },
 ];
 
-const toArray = (input: (string | null)[] | string | null): string[] => (Array.isArray(input) ? (input as string[]) : (input ? [input!] : []));
+const toArray = (input: LocationQueryValue | LocationQueryValue[] | undefined): string[] =>
+  Array.isArray(input) ? (input as string[]) : (input ? [input!] : []);
 const showAllVersions = ref(false);
 const filters = ref({
   versions: toArray(route.query.version),
@@ -74,21 +76,12 @@ watch(
   { deep: true }
 );
 
-function versions(platform: Platform): PlatformVersion[] {
-  const platformData = useBackendData.platforms?.get(platform);
-  if (!platformData) {
-    return [];
-  }
-
-  return platformData.platformVersions;
-}
-
 function updatePlatform(platform: any) {
   filters.value.platform = platform;
 
-  const allowedVersions = versions(platform);
+  const allowedVersions = usePlatformVersions(platform);
   filters.value.versions = filters.value.versions.filter((existingVersion) =>
-    allowedVersions.some((allowedVersion) => allowedVersion.version === existingVersion)
+    allowedVersions.some((allowedNewVersion) => allowedNewVersion.version === existingVersion)
   );
 }
 
@@ -104,7 +97,7 @@ useSeo(
     additionalScripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
+        textContent: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
           url: config.public.host,
@@ -150,7 +143,7 @@ const filteredCategories = computed(() => {
             </div>
           </template>
         </h1>
-        <div class="text-1xl text-center mb-10">
+        <div class="text-1xl text-center mb-2">
           Hangar allows you to find and download the best Paper plugins, Velocity plugins or Waterfall plugins for your Minecraft server
         </div>
       </template>
@@ -159,7 +152,7 @@ const filteredCategories = computed(() => {
           Find your favorite
           <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent"> {{ platformName }} plugins </strong>
         </h1>
-        <div class="text-1xl text-center mb-10">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
+        <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
       </template>
       <div v-if="!index" class="text-center -mt-2">
         Looking for other platforms?
