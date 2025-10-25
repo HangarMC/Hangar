@@ -228,7 +228,7 @@ const filteredCategories = computed(() => {
                   <button
                     v-if="filters.platform"
                     class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250
-                            hover:bg-red-900 hover:scale-[1.015]"
+                            hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
                     cursor="pointer"
                     @click="() => {
                       filters.platform = undefined;
@@ -271,7 +271,7 @@ const filteredCategories = computed(() => {
                     <button
                       v-if="filters.versions"
                       class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250
-                            hover:bg-red-900 hover:scale-[1.015]"
+                            hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
                       cursor="pointer"
                       @click="() => {
                         filters.versions = [];
@@ -292,13 +292,13 @@ const filteredCategories = computed(() => {
               <input
                 v-model="versionSearch"
                 name="versionSearch"
-                class="rounded-full px-9 py-2 w-full dark:bg-gray-800 my-1"
+                class="rounded-lg px-9 py-2 w-full dark:bg-gray-800 border border-transparent hover:border-gray-700 focus:border-gray-700 my-1"
                 type="text"
                 :placeholder="i18n.t('hangar.projectSearch.searchVersion')"
               />
-              <IconMdiMagnify class="absolute top-3.75 left-3 text-gray-500" />
+              <IconMdiMagnify class="absolute top-4 left-3 text-gray-500" />
               <button v-if="versionSearch.length > 0" class="transition-all duration-250" @click="versionSearch = ''">
-                <IconMdiClose class="absolute top-3.75 right-3 text-gray-500 hover:text-white" />
+                <IconMdiClose class="absolute top-4 right-3 text-gray-500 hover:text-white" />
               </button>
             </div>
             <div class="relative">
@@ -334,7 +334,7 @@ const filteredCategories = computed(() => {
                   <button
                     v-if="filters.tags"
                     class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250
-                            hover:bg-red-900 hover:scale-[1.015]"
+                            hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
                     cursor="pointer"
                     @click="filters.tags = []"
                   >
@@ -370,7 +370,7 @@ const filteredCategories = computed(() => {
                   <button
                     v-if="filters.tags"
                     class="text-sm flex items-center rounded-full border border-transparent p-1 transition-all duration-250
-                            hover:bg-red-900 hover:scale-[1.015]"
+                            hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
                     cursor="pointer"
                     @click="filters.categories = []"
                   >
@@ -388,13 +388,13 @@ const filteredCategories = computed(() => {
             <input
               v-model="categorySearch"
               name="categorySearch"
-              class="rounded-full px-9 py-2 w-full dark:bg-gray-800 my-1"
+              class="rounded-lg px-9 py-2 w-full dark:bg-gray-800 my-1 border border-transparent hover:border-gray-700 focus:border-gray-700"
               type="text"
               :placeholder="i18n.t('hangar.projectSearch.searchCategory')"
             />
-            <IconMdiMagnify class="absolute top-3.75 left-3 text-gray-500" />
+            <IconMdiMagnify class="absolute top-4 left-3 text-gray-500" />
             <button v-if="categorySearch.length > 0" class="transition-all duration-250" @click="categorySearch = ''">
-              <IconMdiClose class="absolute top-3.75 right-3 text-gray-500 hover:text-white" />
+              <IconMdiClose class="absolute top-4 right-3 text-gray-500 hover:text-white" />
             </button>
           </div>
           <div class="relative h-60 flex flex-col">
