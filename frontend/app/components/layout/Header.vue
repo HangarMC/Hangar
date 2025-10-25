@@ -23,6 +23,7 @@ import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outli
 import { NamedPermission } from "#shared/types/backend";
 import type { HangarNotification, HangarUser } from "#shared/types/backend";
 import { useUnreadCount } from "~/composables/useData";
+import GlobalSearchModal from "~/components/modals/GlobalSearchModal.vue";
 
 // @ts-expect-error marker so that you can inspect backend data in dev tools
 const backendData = useBackendData;
@@ -220,6 +221,8 @@ function isRecent(date: string): boolean {
       <!-- Gap for the left side -->
       <div class="flex-grow-1" />
 
+      <GlobalSearchModal />
+      <!--
       <input
         v-model="query"
         name="query"
@@ -227,7 +230,7 @@ function isRecent(date: string): boolean {
         type="text"
         :placeholder="i18n.t('hangar.globalSearch.query')"
       />
-
+      -->
       <!-- Gap for the right side -->
       <div class="flex-grow-1" />
 

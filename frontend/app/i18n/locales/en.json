@@ -49,6 +49,13 @@
       "legalNotice": "Legal Notice",
       "status": "Status"
     },
+    "globalSearch": {
+      "projects": "Projects",
+      "users": "Users",
+      "query": "Search in Hangar...",
+      "startTyping": "Start typing to search...",
+      "noResults": "Sorry but couldn't find any results \uD83D\uDE22"
+    },
     "projectSearch": {
       "clear": "Clear",
       "query": "Search in {0} projects...",
