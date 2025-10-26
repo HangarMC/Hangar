@@ -33,7 +33,7 @@ const props = withDefaults(
       </Button>
     </template>
     <template #content="{ close }">
-      <div class="flex flex-col z-10 py-1 rounded-xl border-1 border-gray-800 background-default shadow-default">
+      <div class="flex flex-col z-10 py-1 rounded-lg border-1 border-gray-800 background-default shadow-charcoal-900 shadow-lg">
         <slot :close="close" />
       </div>
     </template>
