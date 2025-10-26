@@ -55,6 +55,10 @@ const classes = computed<string>(() => {
   <component
     :is="to ? NuxtLink : href ? 'a' : 'button'"
     :class="classes"
+    :style="buttonType === 'primary' ? {
+        backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+        borderColor: 'var(--primary-500)'
+      } : {}"
     :disabled="disabled || loading"
     :to="to"
     :href="href"
