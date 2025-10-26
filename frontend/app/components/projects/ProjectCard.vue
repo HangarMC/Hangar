@@ -40,7 +40,7 @@ async function togglePin() {
             <div class="flex-1 w-75% overflow-x-hidden line-height-tight">
               <div class="inline-flex items-center gap-x-1">
                 <h3>
-                  <span class="text-xl font-bold">{{ project.name }}&nbsp;</span>
+                  <span class="text-xl font-bold truncate">{{ project.name }}&nbsp;</span>
                 </h3>
                 <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" />
                 <IconMdiEyeOff v-if="project.visibility !== Visibility.Public" />
@@ -50,14 +50,14 @@ async function togglePin() {
                 </button>
               </div>
               <span class="text-lg text-gray"> {{ i18n.t("general.by") }}&nbsp;</span>
-              <span class="text-lg">
+              <span class="text-lg truncate">
                     <object type="html/sucks">
                       <Link v-slot="{ classes }" custom>
                         <RouterLink :to="'/' + project.namespace.owner" :class="classes"> {{ project.namespace.owner }} </RouterLink>
                       </Link>
                     </object>
                   </span>
-              <div v-if="'description' in project && project.description" class="mb-1 text-gray">{{ project.description }}</div>
+              <div v-if="'description' in project && project.description" class="mb-1 text-gray truncate">{{ project.description }}</div>
               <div v-else />
             </div>
             <div class="lt-xl:hidden flex-grow-0 flex-basis-auto lt-sm:hidden flex flex-col items-end gap-1 pl-3 pb-2 border-b-2 border-charcoal-500">
