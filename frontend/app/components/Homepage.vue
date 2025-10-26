@@ -201,10 +201,10 @@ onMounted(() => {
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
 
-        <!-- Search and Sorter Bar -->
+        <!-- Search, Size and Sorter Bar -->
         <Card
           class="flex justify-between gap-4 sticky w-full top-4 self-start border shadow-charcoal-900 shadow-xl border-transparent
-                 transition-all duration-300 z-40"
+                 transition-all duration-300 z-12"
         >
             <!-- Search Bar -->
             <div class="relative transition-all duration-200 hover:scale-[1.005] rounded-md flex xl:w-full h-10.5 w-80 w-full">
@@ -289,6 +289,12 @@ onMounted(() => {
       <!-- Sidebar -->
       <div class="flex flex-col gap-4 w-90 sticky self-start top-4">
 
+        <Transition name="fade">
+          <div v-if="filters.platform === Platform.WATERFALL" class="px-4 py-2 text-center rounded-xl border border-[#ff544b] bg-[#ff544b60]">
+            <h1 class="text-lg font-bold">Warning!</h1>
+            <h2>Waterfall has reached end of life!</h2>
+          </div>
+        </Transition>
         <!-- Platform Filter -->
         <CollapsibleCard class="min-w-300px flex flex-col gap-1">
           <template #title>
@@ -497,6 +503,7 @@ onMounted(() => {
           </div>
 
         </CollapsibleCard>
+        <FAQModal class="w-full"/>
       </div>
     </Container>
     <h2 class="text-2xl text-center font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>
@@ -553,6 +560,16 @@ onMounted(() => {
   100% {
     top: 0;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .slide-down-enter-active,
