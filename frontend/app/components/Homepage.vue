@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { Platform, Tag } from "#shared/types/backend";
 import type { Category } from "#shared/types/backend";
 import type { LocationQueryValue } from "#vue-router";
@@ -37,15 +36,17 @@ if (props.platform) {
   filters.value.platform = props.platform;
 }
 
+const limit = ref<number>(20);
+const limits = [5, 10, 15, 20, 50, 75, 100];
 const activeSorter = ref<string>((route.query.sort as string) || "-stars");
+
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.query as string) || "");
 
 const requestParams = computed(() => {
-  const limit = 20;
   const params: ReturnType<Parameters<typeof useProjects>[0]> = {
-    limit,
-    offset: page.value * limit,
+    limit: limit.value,
+    offset: page.value * limit.value,
     version: filters.value.versions,
     category: filters.value.categories,
     platform: filters.value.platform ? [filters.value.platform] : [],
@@ -56,12 +57,13 @@ const requestParams = computed(() => {
   }
   if (activeSorter.value) {
     params.sort = activeSorter.value;
-    params.limit = 20;
   }
 
   return params;
 });
-const { projects, refreshProjects } = useProjects(() => requestParams.value, router);
+
+const { projects, projectsStatus, refreshProjects } = useProjects(() => requestParams.value, router);
+const loading = computed(() => projectsStatus.value === 'loading');
 
 // if somebody set page too high, lets reset it back
 watch(projects, () => {
@@ -69,10 +71,12 @@ watch(projects, () => {
     page.value = 0;
   }
 });
-// for some reason the watch in useProjects doesn't work for filters 🤷‍♂️
+
 watch(
-  () => filters.value.versions,
-  () => refreshProjects(),
+  () => [filters.value.versions, filters.value.categories, filters.value.tags, filters.value.platform, query.value, activeSorter.value, page.value],
+  async () => {
+    await refreshProjects();
+  },
   { deep: true }
 );
 
@@ -122,12 +126,35 @@ const filteredCategories = computed(() => {
     category.title.toLowerCase().includes(categorySearch.value.toLowerCase())
   );
 });
+
+const isStuck = ref(false);
+const headerRef = useTemplateRef<HTMLElement>('headerRef');
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+      if (entry) {
+        isStuck.value = !entry.isIntersecting;
+      }
+    },
+    { threshold: 1 }
+  );
+
+  if (headerRef.value) {
+    observer.observe(headerRef.value);
+  }
+
+  onUnmounted(() => observer.disconnect());
+});
+
 </script>
 
 <template>
   <div>
-    <Container class="flex flex-col items-center gap-4">
-      <template v-if="index">
+    <Container class="flex flex-col items-center gap-4 mb-6">
+      <div ref="headerRef">
+        <template v-if="index">
         <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col w-full" data-allow-mismatch>
           <template v-if="ssr">
             Find your favorite <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper plugins</strong>
@@ -168,20 +195,25 @@ const filteredCategories = computed(() => {
           </Button>
         </div>
       </div>
+    </div>
     </Container>
     <Container lg="flex items-start gap-4">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
-        <div class="flex justify-between">
-          <h2 class="font-bold text-3xl">Projects</h2>
-          <div class="flex justify-end gap-4 w-full">
+
+        <!-- Search and Sorter Bar -->
+        <Card
+          class="flex justify-between gap-4 sticky w-full top-4 self-start border shadow-charcoal-900 shadow-xl border-transparent
+                 transition-all duration-300 z-40"
+        >
             <!-- Search Bar -->
-            <div class="relative rounded-md flex xl:w-full h-10.5 lg:w-60 w-45 max-w-100">
+            <div class="relative transition-all duration-200 hover:scale-[1.005] rounded-md flex xl:w-full h-10.5 w-80 w-full">
               <!-- Text Input -->
               <input
                 v-model="query"
                 name="query"
-                class="rounded-2xl px-9 p-2 basis-full min-w-0 dark:bg-gray-800"
+                class="rounded-lg outline-none px-9 p-2 basis-full min-w-30 dark:bg-gray-800 truncate border border-transparent
+                       hover:border-gray-700 focus:border-gray-700 transition-all duration-200"
                 type="text"
                 :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
                 v-on="useTracking('homepage-search', { platformName })"
@@ -191,10 +223,41 @@ const filteredCategories = computed(() => {
                 <IconMdiClose class="absolute top-3 right-3 text-gray-500 hover:text-white" />
               </button>
             </div>
-            <!-- Sort by Button -->
-            <DropdownButton :button-arrow="true" button-size="medium" button-type="secondary">
+
+            <!-- Limit Button -->
+            <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent">
               <template #button-label>
-                <span class="font-medium ml-2">{{ i18n.t("hangar.projectSearch.sortBy") }}</span>:&nbsp;<span>{{ sorters.find(s => s.id === activeSorter)!.label }}</span>
+                <div class="w-14 flex justify-center gap-1 items-center">
+                  <IconMdiFormatListNumbered />
+                  <div>{{ limit }}</div>
+                </div>
+              </template>
+              <template #default="{ close }">
+                <div class="w-max flex flex-col gap-1 max-h-lg max-w-lg overflow-x-auto py-1.5">
+                  <a
+                    v-for="limitOption in limits"
+                    :key="limitOption"
+                    :style="limit === limitOption ? {
+                        backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+                        borderColor: 'var(--primary-500)'
+                      } : {}"
+                    class="mx-2 pl-2 pr-5.5 py-1.5 font-semibold rounded-lg cursor-pointer decoration-none transition-all duration-250
+                           border hover:scale-[1.005] hover:bg-gray-800 hover:border-gray-700 border-transparent"
+                    @click="() => { limit = limitOption; page = 0; close(); }"
+                  >
+                    {{ limitOption }}
+                  </a>
+                </div>
+              </template>
+            </DropdownButton>
+
+            <!-- Sort by Button -->
+            <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent">
+              <template #button-label>
+                <div class="w-48 flex justify-center gap-1 items-center">
+                  <IconMdiSwapVertical class="" />
+                  <div>{{ sorters.find(s => s.id === activeSorter)!.label }}</div>
+                </div>
               </template>
               <template #default="{ close }">
                 <div class="w-max flex flex-col gap-1 max-h-lg max-w-lg overflow-x-auto py-1.5">
@@ -202,7 +265,12 @@ const filteredCategories = computed(() => {
                   <a
                     v-for="sorter in sorters"
                     :key="sorter.id"
-                    class="mx-2 px-4 py-1.5 font-semibold hover:bg-gray-100 hover:dark:bg-gray-700 rounded-full cursor-pointer decoration-none transition-all duration-250 hover:scale-[1.005]"
+                    :style="activeSorter === sorter.id ? {
+                        backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+                        borderColor: 'var(--primary-500)'
+                      } : {}"
+                    class="mx-2 pl-2 pr-5.5 py-1.5 font-semibold rounded-lg cursor-pointer decoration-none transition-all duration-250
+                           border hover:scale-[1.005] hover:bg-gray-800 hover:border-gray-700 border-transparent"
                     @click="() => { activeSorter = sorter.id; close(); }"
                     v-html="sorter.label"
                   />
@@ -210,12 +278,16 @@ const filteredCategories = computed(() => {
                 </div>
               </template>
             </DropdownButton>
-          </div>
-        </div>
-        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage) => (page = newPage)" />
+        </Card>
+        <ProjectList
+          :projects="loading ? undefined : projects"
+          :loading="loading || !projects"
+          :reset-anchor="pageChangeScrollAnchor"
+          @update:page="(newPage) => (page = newPage)"
+        />
       </div>
       <!-- Sidebar -->
-      <div class="flex flex-col gap-4 w-90">
+      <div class="flex flex-col gap-4 w-90 sticky self-start top-4">
 
         <!-- Platform Filter -->
         <CollapsibleCard class="min-w-300px flex flex-col gap-1">
@@ -481,5 +553,19 @@ const filteredCategories = computed(() => {
   100% {
     top: 0;
   }
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-down-enter-from {
+  opacity: 0;
+  transform: translate(-50%, -100%);
+}
+
+.slide-down-leave-to {
+  opacity: 0;
 }
 </style>
