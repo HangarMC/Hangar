@@ -279,6 +279,11 @@ onMounted(() => {
               </template>
             </DropdownButton>
         </Card>
+        <Transition name="fade">
+          <div v-if="filters.platform === Platform.WATERFALL" class="px-4 py-2 text-center rounded-xl border border-[#ff544b] bg-[#ff544b60]">
+            <span class="text-lg font-bold">Warning!</span> Waterfall has reached end of life and is no longer actively maintained. It is highly recommended to migrate to  <Link class="!text-white font-bold decoration-underline" href="https://papermc.io/software/velocity/">Velocity</Link>!
+          </div>
+        </Transition>
         <ProjectList
           :projects="loading ? undefined : projects"
           :loading="loading || !projects"
@@ -288,13 +293,6 @@ onMounted(() => {
       </div>
       <!-- Sidebar -->
       <div class="flex flex-col gap-4 w-90 sticky self-start top-4">
-
-        <Transition name="fade">
-          <div v-if="filters.platform === Platform.WATERFALL" class="px-4 py-2 text-center rounded-xl border border-[#ff544b] bg-[#ff544b60]">
-            <h1 class="text-lg font-bold">Warning!</h1>
-            <h2>Waterfall has reached end of life!</h2>
-          </div>
-        </Transition>
         <!-- Platform Filter -->
         <CollapsibleCard class="min-w-300px flex flex-col gap-1">
           <template #title>
@@ -564,7 +562,7 @@ onMounted(() => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.5s ease;
 }
 
 .fade-enter-from,
