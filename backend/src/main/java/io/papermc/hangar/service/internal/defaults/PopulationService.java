@@ -78,21 +78,25 @@ public class PopulationService extends HangarComponent {
     private void populatePlatformVersions() {
         record FillResponseData(Data data) {
             record Data(List<Project> projects) {
-                record Project(String id, List<Version> versions) {
-                    record Version(String id) {
+                record Project(String key, Nodes<Version> versions) {
+                    record Nodes<T>(List<T> nodes) {
+                    }
+                    record Version(String key) {
                     }
                 }
             }
         }
 
-        var fillResponse = this.restClient.post().uri("https://fill.papermc.io/graphql").header("Hangar/1.0 (https://hangar.papermc.io)").body(Map.of("query", """
+        var fillResponse = this.restClient.post().uri("https://fill.papermc.io/graphql").body(Map.of("query", """
             {
-              projects {
-                id
-                versions {
-                  id
-                }
-              }
+               projects {
+                 key
+                 versions(first: 100) {
+                   nodes {
+                     key
+                   }
+                 }
+               }
             }
             """)).retrieve().toEntity(FillResponseData.class);
         if (!fillResponse.getStatusCode().is2xxSuccessful() || !fillResponse.hasBody()) {
@@ -101,13 +105,14 @@ public class PopulationService extends HangarComponent {
 
         List<PlatformVersionTable> tables = new ArrayList<>();
         for (final var project : Objects.requireNonNull(fillResponse.getBody()).data().projects()) {
-            switch (project.id) {
-                case "paper" -> project.versions.stream().map(v -> new PlatformVersionTable(Platform.PAPER, v.id)).forEach(tables::add);
-                case "waterfall" -> project.versions.stream().map(v -> new PlatformVersionTable(Platform.WATERFALL, v.id)).forEach(tables::add);
-                case "velocity" -> project.versions.stream().map(v -> new PlatformVersionTable(Platform.VELOCITY, v.id)).forEach(tables::add);
+            switch (project.key) {
+                case "paper" -> project.versions.nodes.forEach(v -> tables.add(new PlatformVersionTable(Platform.PAPER, v.key)));
+                case "waterfall" -> project.versions.nodes.forEach(v -> tables.add(new PlatformVersionTable(Platform.WATERFALL, v.key)));
+                case "velocity" -> project.versions.nodes.forEach(v -> tables.add(new PlatformVersionTable(Platform.VELOCITY, v.key)));
             }
         }
 
+        // remove pres and snapshots
         // https://regex101.com/r/JdIutj/1
         var pattern = Pattern.compile("^\\d+.\\d+(.\\d)?$");
         tables.removeIf(t -> !pattern.matcher(t.getVersion()).matches());
