@@ -46,11 +46,15 @@ public class PopulationService extends HangarComponent {
 
     @EventListener
     public void populateTables(final ContextRefreshedEvent event) {
-        withTransaction("task", "PopulationService#populateTables()", () -> {
-            this.populateRoles();
-            this.populatePlatformVersions();
-            this.populateAnnouncements();
-        });
+        try {
+            withTransaction("task", "PopulationService#populateTables()", () -> {
+                this.populateRoles();
+                this.populatePlatformVersions();
+                this.populateAnnouncements();
+            });
+        } catch (Exception ex) {
+            log.warn("Error while populating tables", ex);
+        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
