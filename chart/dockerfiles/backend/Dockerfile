@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-runtime-container:jdk-25-cds-slim-musl
+FROM bellsoft/liberica-runtime-container:jdk-25.0.1_11-cds-slim-musl
 
 RUN addgroup -g 1000 java \
   && adduser -Ss /bin/false -u 1000 -G java -h /home/java java
