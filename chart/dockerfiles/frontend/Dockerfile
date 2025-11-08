@@ -1,4 +1,4 @@
-FROM oven/bun:1.2.23
+FROM oven/bun:1.3.2
 
 USER bun
 WORKDIR /hangar-frontend
