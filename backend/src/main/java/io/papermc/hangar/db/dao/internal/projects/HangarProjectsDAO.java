@@ -51,8 +51,8 @@ public interface HangarProjectsDAO {
                hp.avatar,
                hp.avatar_fallback,
                hp.supported_platforms
-          FROM home_projects hp
-                 JOIN projects_extra p ON hp.id = p.id
+          FROM projects_extra p
+              LEFT JOIN home_projects hp ON hp.id = p.id
                  JOIN users u ON p.owner_id = u.id
                  WHERE p.id = :projectId""")
     Project getProject(long projectId, Long currentUserId);
