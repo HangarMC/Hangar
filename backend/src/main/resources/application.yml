@@ -238,10 +238,6 @@ hangar:
     cdn-endpoint: "http://127.0.0.1:9000"
     cdn-include-bucket: true
 
-  cors:
-    allowed-hosts:
-      - api.spigotmc.org
-
   image:
     quality: 0.75
     size: 256

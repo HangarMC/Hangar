@@ -33,8 +33,6 @@ public record HangarConfig(
     @NestedConfigurationProperty
     StorageConfig storage,
     @NestedConfigurationProperty
-    CorsConfig cors,
-    @NestedConfigurationProperty
     ImageConfig image,
     @NestedConfigurationProperty
     MailConfig mail,
