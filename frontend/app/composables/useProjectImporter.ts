@@ -10,15 +10,6 @@ export interface SpigotAuthor {
   username: string;
 }
 
-export async function getSpigotAuthor(author: string) {
-  return (await useInternalApi("cors/", "GET", {
-    url: buildSpigotUrl({
-      action: "findAuthor",
-      name: author,
-    }),
-  })) as SpigotAuthor;
-}
-
 export interface SpigotResource {
   id: string;
   title: string;
@@ -51,21 +42,27 @@ export async function getAllSpigotResourcesByAuthor(authorId: string) {
 }
 
 export async function getSpigotResourcesByAuthor(authorId: string, page = 1) {
-  return (await useInternalApi("cors/", "GET", {
-    url: buildSpigotUrl({
-      action: "getResourcesByAuthor",
-      id: authorId,
-      page,
-    }),
-  })) as SpigotResource[];
+  return doSpigotRequest<SpigotResource[]>({
+    action: "getResourcesByAuthor",
+    id: authorId,
+    page: page + "",
+  });
 }
 
-function buildSpigotUrl(params: Record<string, string | number>) {
-  const url = new URL("https://api.spigotmc.org/simple/0.2/index.php");
-  for (const key in params) {
-    url.searchParams.append(key, params[key] + "");
+export async function getSpigotAuthor(author: string) {
+  return doSpigotRequest<SpigotAuthor>({
+    action: "findAuthor",
+    name: author,
+  });
+}
+
+async function doSpigotRequest<T>(params: Record<string, string>): Promise<T> {
+  const request = await fetch("https://cors.papermc.io/s?" + new URLSearchParams(params).toString());
+  if (request.ok) {
+    return await request.json();
+  } else {
+    throw new Error(`Spigot request failed: ${request.status} ${request.statusText}: ` + (await request.text()));
   }
-  return url.href;
 }
 
 const categoryMapping = {
