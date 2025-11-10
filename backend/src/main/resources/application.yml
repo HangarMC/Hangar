@@ -90,8 +90,8 @@ hangar:
     - "Other"
 
   update-tasks:
-    homepage: 2m
-    version-downloads: 2m
+    homepage: 10m
+    version-downloads: 10m
     project-views: 10m
     project-index: 10m
     version-index: 10m
