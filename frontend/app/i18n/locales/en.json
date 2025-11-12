@@ -898,7 +898,8 @@
     "noPlatform": "No platform detected",
     "missingFileProjects": "Missing File",
     "empty": "Empty! All good!",
-    "jobRetryScheduled": "Job retry scheduled"
+    "jobRetryScheduled": "Job retry scheduled",
+    "reportQueued": "Health Report queued"
   },
   "reviews": {
     "headline": "{0} released {1} on ",

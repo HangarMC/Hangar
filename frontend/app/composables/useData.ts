@@ -1,5 +1,5 @@
 import type { Router } from "vue-router";
-import { NamedPermission } from "#shared/types/backend";
+import { type FinishedOrPendingHealthReport, NamedPermission } from "#shared/types/backend";
 import type {
   ApiKey,
   DayStats,
@@ -240,12 +240,16 @@ export function useAdminStats(params: () => { from: string; to: string }) {
 }
 
 export function useHealthReport() {
-  const { data: healthReport, status: healthReportStatus } = useData(
+  const {
+    data: healthReport,
+    status: healthReportStatus,
+    refresh: healthReportRefresh,
+  } = useData(
     () => ({}),
     () => "healthReport",
-    () => useInternalApi<HealthReport>("admin/health", "GET", undefined, { timeout: 60_000 })
+    () => useInternalApi<FinishedOrPendingHealthReport>("health/", "GET")
   );
-  return { healthReport, healthReportStatus };
+  return { healthReport, healthReportStatus, healthReportRefresh };
 }
 
 export function useResolvedFlags() {

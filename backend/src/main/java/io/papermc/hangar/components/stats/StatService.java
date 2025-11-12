@@ -1,4 +1,4 @@
-package io.papermc.hangar.service.internal.admin;
+package io.papermc.hangar.components.stats;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.HangarStatsDAO;

@@ -1,4 +1,4 @@
-package io.papermc.hangar.db.dao.internal;
+package io.papermc.hangar.components.health;
 
 import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
 import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
@@ -7,12 +7,16 @@ import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.Define;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 @JdbiRepository
 @RegisterConstructorMapper(UnhealthyProject.class)
-public interface HealthDAO {
+@RegisterConstructorMapper(HealthReportTable.class)
+interface HealthDAO {
 
     // TODO remove view, what about last_updated?
     @SqlQuery("""
@@ -22,7 +26,7 @@ public interface HealthDAO {
                   hp.visibility
            FROM home_projects hp
            WHERE hp.last_updated < (now() - interval <age>)
-           ORDER BY hp.created_at DESC
+           ORDER BY hp.last_updated DESC
         """)
     List<UnhealthyProject> getStaleProjects(@Define("age") String staleAgeSeconds);
 
@@ -54,4 +58,30 @@ public interface HealthDAO {
           AND pvd.file_name IS NOT NULL
         GROUP BY p.id, pv.id;""")
     List<MissingFileCheck> getVersionsForMissingFiles();
+
+    @GetGeneratedKeys
+    @SqlUpdate("""
+        INSERT INTO health_reports (report, queued_by, queued_at, finished_at, status)
+        VALUES (:report, :queuedBy, :queuedAt, :finishedAt, :status)
+        """)
+    HealthReportTable insertHealthReport(@BindBean HealthReportTable healthReport);
+
+    @SqlUpdate("""
+        UPDATE health_reports
+        SET report      = :report,
+            queued_by   = :queuedBy,
+            queued_at   = :queuedAt,
+            finished_at = :finishedAt,
+            status      = :status
+        WHERE id = :id
+        """)
+    void updateHealthReport(@BindBean HealthReportTable healthReport);
+
+    @SqlQuery("""
+        SELECT id, report, queued_by, queued_at, finished_at, status
+        FROM health_reports
+        ORDER BY queued_at DESC
+        LIMIT 1
+        """)
+    HealthReportTable getHealthReport();
 }

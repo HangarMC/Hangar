@@ -383,6 +383,26 @@ export interface GlobalNotificationTable {
   key: string;
 }
 
+export interface HealthReport {
+  erroredJobs: JobTable[];
+  /** @format date-time */
+  generatedAt: string;
+  missingFiles: MissingFileCheck[];
+  nonPublicProjects: UnhealthyProject[];
+  staleProjects: UnhealthyProject[];
+}
+
+export interface FinishedOrPendingHealthReport {
+  finished: HealthReport;
+  pending: PendingHealthReport;
+}
+
+export interface PendingHealthReport {
+  queuedAt: string;
+  queuedBy: string;
+  status: string;
+}
+
 export interface Webhook {
   canceledBy: string;
   details: Details;
@@ -1788,13 +1808,6 @@ export interface UpdatePluginDependencies {
   pluginDependencies: Record<string, PluginDependency>;
 }
 
-export interface HealthReport {
-  erroredJobs: JobTable[];
-  missingFiles: MissingFileCheck[];
-  nonPublicProjects: UnhealthyProject[];
-  staleProjects: UnhealthyProject[];
-}
-
 export interface PossibleProjectOwner {
   /** @format int64 */
   id: number;
@@ -1908,7 +1921,6 @@ export interface LogSubject {
 export interface LogVersion {
   /** @format int64 */
   id: number;
-  platforms: Platform[];
   versionString: string;
 }
 
@@ -2131,7 +2143,7 @@ export interface HangarOrganizationInvite {
 
 export interface HangarProjectInvite {
   name: string;
-  representingOrg?: string;
+  representingOrg: string;
   role: string;
   /** @format int64 */
   roleId: number;

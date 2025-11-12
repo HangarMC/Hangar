@@ -20,23 +20,17 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.components.jobs.db.JobTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.model.internal.admin.DayStats;
-import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
-import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.admin.ChangeRoleForm;
-import io.papermc.hangar.model.internal.api.responses.HealthReport;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
-import io.papermc.hangar.components.jobs.JobService;
-import io.papermc.hangar.service.internal.admin.HealthService;
-import io.papermc.hangar.service.internal.admin.StatService;
+import io.papermc.hangar.components.stats.StatService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
@@ -75,8 +69,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController extends HangarComponent {
 
     private final StatService statService;
-    private final HealthService healthService;
-    private final JobService jobService;
     private final UserService userService;
     private final ObjectMapper mapper;
     private final GlobalRoleService globalRoleService;
@@ -89,10 +81,8 @@ public class AdminController extends HangarComponent {
     private final AvatarService avatarService;
 
     @Autowired
-    public AdminController(final StatService statService, final HealthService healthService, final JobService jobService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
+    public AdminController(final StatService statService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
         this.statService = statService;
-        this.healthService = healthService;
-        this.jobService = jobService;
         this.userService = userService;
         this.mapper = mapper;
         this.globalRoleService = globalRoleService;
@@ -155,23 +145,6 @@ public class AdminController extends HangarComponent {
             to = from;
         }
         return this.mapper.valueToTree(this.statService.getStats(from, to));
-    }
-
-    @PermissionRequired(NamedPermission.VIEW_HEALTH)
-    @GetMapping(path = "/health", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HealthReport getHealthReport() {
-        // TODO make health report less slow
-        final List<UnhealthyProject> staleProjects = List.of(); // this.healthService.getStaleProjects();
-        final List<MissingFileCheck> missingFiles = List.of(); //this.healthService.getVersionsWithMissingFiles();
-        final List<UnhealthyProject> nonPublicProjects = List.of(); //this.healthService.getNonPublicProjects();
-        final List<JobTable> erroredJobs = this.jobService.getErroredJobs();
-        return new HealthReport(staleProjects, missingFiles, nonPublicProjects, erroredJobs);
-    }
-
-    @PermissionRequired(NamedPermission.VIEW_HEALTH)
-    @PostMapping(path = "/health/retry/{jobId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void retryJob(@PathVariable final long jobId) {
-        this.jobService.retryJob(jobId);
     }
 
     @ResponseStatus(HttpStatus.OK)
