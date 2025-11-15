@@ -266,6 +266,7 @@ logging:
   level:
     root: INFO
     org.springframework: INFO
+    #org.springframework.web: DEBUG
     org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR
     io.papermc.hangar.service.internal.JobService: DEBUG
     http-client-logger: INFO
