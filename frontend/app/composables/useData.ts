@@ -1,13 +1,13 @@
 import type { Router } from "vue-router";
-import { type FinishedOrPendingHealthReport, NamedPermission } from "#shared/types/backend";
+import { NamedPermission } from "#shared/types/backend";
 import type {
+  FinishedOrPendingHealthReport,
   ApiKey,
   DayStats,
   HangarChannel,
   HangarProjectFlag,
   HangarProjectNote,
   HangarReview,
-  HealthReport,
   Invites,
   JarScanResult,
   OrganizationRoleTable,

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Tab } from "#shared/types/components/design/Tabs";
+import { InviteType } from "#shared/types/backend";
 import type { HangarNotification, HangarOrganizationInvite, HangarProjectInvite } from "#shared/types/backend";
 
 definePageMeta({
@@ -73,13 +74,17 @@ async function markNotificationRead(notification: HangarNotification, push = tru
   }
 }
 
-async function updateInvite(invite: HangarProjectInvite & { accepted?: boolean }, status: "accept" | "decline") {
+async function updateInvite(invite: (HangarOrganizationInvite | HangarProjectInvite) & { accepted?: boolean }, status: "accept" | "decline") {
   await useInternalApi(`invites/${invite.type}/${invite.roleId}/${status}`, "post").catch((err) => handleRequestError(err));
   if (status === "accept") {
     invite.accepted = true;
   } else {
     if (!invites.value) return;
-    invites.value[invite.type] = invites.value[invite.type].filter((i) => i.roleId !== invite.roleId);
+    if (invite.type === InviteType.Project) {
+      invites.value.project = invites.value.project.filter((i) => i.roleId !== invite.roleId);
+    } else {
+      invites.value.organization = invites.value.organization.filter((i) => i.roleId !== invite.roleId);
+    }
   }
   notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
 }
