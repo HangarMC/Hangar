@@ -6,7 +6,7 @@ import io.papermc.hangar.components.globaldata.dao.GlobalDataDAO;
 import io.papermc.hangar.components.globaldata.dao.GlobalNotificationTable;
 import io.papermc.hangar.config.CacheConfig;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.common.PlatformVersion;
+import io.papermc.hangar.model.api.platform.PlatformVersion;
 import io.papermc.hangar.service.internal.PlatformService;
 import jakarta.validation.Valid;
 import java.util.Arrays;
