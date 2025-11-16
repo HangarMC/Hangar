@@ -21,5 +21,5 @@ public interface IPlatformController {
         tags = "Platforms"
     )
     @GetMapping("/platforms/{platform}/versions")
-    List<PlatformVersion> getPlatformVersions(@Parameter(description = "The platform of the version to download") @PathVariable Platform platform);
+    List<PlatformVersion> getPlatformVersions(@Parameter(description = "The platform to get versions for") @PathVariable Platform platform);
 }
