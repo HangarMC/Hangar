@@ -235,7 +235,7 @@
             },
             "license": {
                 "regex": "^[a-zA-Z0-9-_.() +]*$",
-                "max": 15
+                "max": 20
             },
             "keywords": {
                 "max": 5
@@ -269,7 +269,7 @@
         },
         "version": {
             "regex": "^[a-zA-Z0-9-_.+]+$",
-            "max": 30
+            "max": 32
         },
         "org": {
             "regex": "^[a-zA-Z0-9-_]+$",
