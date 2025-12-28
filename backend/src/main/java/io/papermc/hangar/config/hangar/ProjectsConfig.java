@@ -14,7 +14,7 @@ public record ProjectsConfig( // TODO split into ProjectsConfig and VersionsConf
                               @DefaultValue("^[a-zA-Z0-9-_.+]+$") PatternWrapper versionNameRegex,
                               @DefaultValue("^[a-zA-Z0-9-_.() +]*$") PatternWrapper licenseNameRegex,
                               @DefaultValue("28") int maxNameLen,
-                              @DefaultValue("30") int maxVersionNameLen,
+                              @DefaultValue("32") int maxVersionNameLen,
                               @DefaultValue("15") int maxLicenseNameLen,
                               @DefaultValue("100") int maxDependencies,
                               @DefaultValue("50") int maxPages,

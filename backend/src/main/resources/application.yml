@@ -117,8 +117,8 @@ hangar:
 
   projects:
     max-name-len: 28
-    max-version-name-len: 30
-    max-license-name-len: 15
+    max-version-name-len: 32
+    max-license-name-len: 20
     max-dependencies: 100
     max-pages: 50
     max-bbcode-len: 40000
