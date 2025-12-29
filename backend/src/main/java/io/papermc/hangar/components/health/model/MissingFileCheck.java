@@ -1,4 +1,4 @@
-package io.papermc.hangar.model.internal.admin.health;
+package io.papermc.hangar.components.health.model;
 
 import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Platform;

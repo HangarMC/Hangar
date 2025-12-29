@@ -1,15 +1,15 @@
 package io.papermc.hangar.components.health;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.health.model.FileSizeCheck;
+import io.papermc.hangar.components.health.model.MissingFileCheck;
+import io.papermc.hangar.components.health.model.UnhealthyProject;
 import io.papermc.hangar.components.jobs.JobService;
 import io.papermc.hangar.components.jobs.db.JobTable;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.common.Platform;
-import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
-import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
-import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +46,10 @@ class HealthService extends HangarComponent {
 
     private List<UnhealthyProject> getNonPublicProjects() {
         return this.healthDAO.getNonPublicProjects();
+    }
+
+    private List<FileSizeCheck> getProjectsByFileSize() {
+        return this.healthDAO.getProjectsByFileSize();
     }
 
     private List<MissingFileCheck> getVersionsWithMissingFiles(final HealthReportTable healthReport) {
@@ -87,9 +91,13 @@ class HealthService extends HangarComponent {
         healthReport.setStatus("checking missing files");
         this.healthDAO.updateHealthReport(healthReport);
 
+        final List<FileSizeCheck> fileSizeChecks = this.getProjectsByFileSize();
+        healthReport.setStatus("checking file sizes");
+        this.healthDAO.updateHealthReport(healthReport);
+
         final List<MissingFileCheck> missingFiles = this.getVersionsWithMissingFiles(healthReport);
         healthReport.setFinishedAt(OffsetDateTime.now());
-        healthReport.setReport(new JSONB(new HealthReport(staleProjects, missingFiles, nonPublicProjects, null, OffsetDateTime.now())));
+        healthReport.setReport(new JSONB(new HealthReport(staleProjects, missingFiles, nonPublicProjects, fileSizeChecks, null, OffsetDateTime.now())));
         healthReport.setStatus("done");
         this.healthDAO.updateHealthReport(healthReport);
     }

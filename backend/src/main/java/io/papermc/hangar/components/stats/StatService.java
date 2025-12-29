@@ -21,9 +21,9 @@ import java.util.concurrent.CompletableFuture;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
-import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.WebUtils;
@@ -36,14 +36,14 @@ public class StatService extends HangarComponent {
     private final HangarStatsDAO hangarStatsDAO;
     private final ProjectViewsDAO projectViewsDAO;
     private final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO;
-    private final ConcurrentTaskExecutor taskExecutor;
+    private final TaskExecutor taskExecutor;
 
     @Autowired
-    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO, final @Lazy ConcurrentTaskExecutor taskExecutor) {
+    public StatService(final HangarStatsDAO hangarStatsDAO, final ProjectViewsDAO projectViewsDAO, final ProjectVersionDownloadStatsDAO projectVersionDownloadStatsDAO, @Lazy final TaskExecutor taskScheduler) {
         this.hangarStatsDAO = hangarStatsDAO;
         this.projectViewsDAO = projectViewsDAO;
         this.projectVersionDownloadStatsDAO = projectVersionDownloadStatsDAO;
-        this.taskExecutor = taskExecutor;
+        this.taskExecutor = taskScheduler;
     }
 
     public List<DayStats> getStats(final LocalDate from, final LocalDate to) {

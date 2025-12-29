@@ -895,6 +895,7 @@
     "jobText": "Job type: {0}, Error Type: {1}, Happened: {2}",
     "staleProjects": "Stale projects",
     "notPublicProjects": "Hidden projects",
+    "fileSizes": "Project file sizes",
     "noPlatform": "No platform detected",
     "missingFileProjects": "Missing File",
     "empty": "Empty! All good!",

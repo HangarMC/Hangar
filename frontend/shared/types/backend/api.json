@@ -112,12 +112,6 @@
       "get": {
         "operationId": "getActionLog",
         "parameters": [
-          {
-            "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
-          },
           { "description": "Filters by log action", "in": "query", "name": "logAction", "schema": { "type": "string" }, "style": "form" },
           { "description": "Filters based on a project page", "in": "query", "name": "pageId", "schema": { "type": "string" }, "style": "form" },
           { "description": "Filters logs by a project namespace", "in": "query", "name": "projectSlug", "schema": { "type": "string" }, "style": "form" },
@@ -142,6 +136,22 @@
             "in": "query",
             "name": "versionString",
             "schema": { "type": "string" },
+            "style": "form"
+          },
+          {
+            "description": "The maximum amount of items to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
             "style": "form"
           }
         ],
@@ -911,10 +921,20 @@
         "operationId": "getResolvedFlags",
         "parameters": [
           {
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -937,10 +957,20 @@
         "operationId": "getUnresolvedFlags",
         "parameters": [
           {
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -1303,10 +1333,20 @@
         "operationId": "getNotifications",
         "parameters": [
           {
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -1327,10 +1367,20 @@
         "operationId": "getNotifications_1",
         "parameters": [
           {
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -2054,10 +2104,20 @@
         "operationId": "getReadNotifications",
         "parameters": [
           {
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -2078,10 +2138,20 @@
         "operationId": "getReadNotifications_1",
         "parameters": [
           {
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -2279,10 +2349,20 @@
         "operationId": "getUnreadNotifications",
         "parameters": [
           {
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -2303,10 +2383,20 @@
         "operationId": "getUnreadNotifications_1",
         "parameters": [
           {
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -2698,17 +2788,26 @@
         "parameters": [
           { "description": "The search query", "in": "query", "name": "query", "required": true, "schema": { "type": "string" } },
           {
-            "description": "Pagination information",
-            "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
-          },
-          {
             "description": "Used to sort the result",
             "in": "query",
             "name": "sort",
             "schema": { "type": "string", "enum": ["name", "createdAt", "projectCount"] },
+            "style": "form"
+          },
+          {
+            "description": "The maximum amount of items to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
             "style": "form"
           }
         ],
@@ -3055,6 +3154,31 @@
         "tags": ["Permissions"]
       }
     },
+    "/api/v1/platforms/{platform}/versions": {
+      "get": {
+        "description": "Gets a list of platform versions, including children.",
+        "operationId": "getPlatformVersions",
+        "parameters": [
+          {
+            "description": "The platform to get versions for",
+            "in": "path",
+            "name": "platform",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.common.Platform" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.platform.PlatformVersion" } } }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Gets a list of versions for a platform",
+        "tags": ["Platforms", "Platform versions"]
+      }
+    },
     "/api/v1/projects": {
       "get": {
         "description": "Searches all the projects on Hangar, or for a single user. Requires the `view_public_info` permission.",
@@ -3067,13 +3191,6 @@
             "name": "prioritizeExactMatch",
             "required": false,
             "schema": { "type": "boolean", "default": true }
-          },
-          {
-            "description": "Pagination information",
-            "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
           },
           {
             "description": "Used to sort the result",
@@ -3090,7 +3207,23 @@
           { "description": "A license to filter for", "in": "query", "name": "license", "schema": { "type": "string" }, "style": "form" },
           { "description": "A platform version to filter for", "in": "query", "name": "version", "schema": { "type": "string" }, "style": "form" },
           { "description": "A tag to filter for", "in": "query", "name": "tag", "schema": { "type": "string" }, "style": "form" },
-          { "description": "The member of the project", "in": "query", "name": "member", "schema": { "type": "string" }, "style": "form" }
+          { "description": "The member of the project", "in": "query", "name": "member", "schema": { "type": "string" }, "style": "form" },
+          {
+            "description": "The maximum amount of items to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
+          }
         ],
         "responses": {
           "200": {
@@ -3239,11 +3372,20 @@
             "schema": { "type": "string" }
           },
           {
-            "description": "Pagination information",
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -3464,11 +3606,20 @@
             "schema": { "type": "string" }
           },
           {
-            "description": "Pagination information",
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -3515,11 +3666,20 @@
             "schema": { "type": "string" }
           },
           {
-            "description": "Pagination information",
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -3669,13 +3829,6 @@
             "schema": { "type": "string" }
           },
           {
-            "description": "Pagination information",
-            "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
-          },
-          {
             "description": "Whether to include hidden-by-default channels in the result, defaults to true",
             "in": "query",
             "name": "includeHiddenChannels",
@@ -3684,7 +3837,23 @@
           },
           { "description": "A name of a version channel to filter for", "in": "query", "name": "channel", "schema": { "type": "string" }, "style": "form" },
           { "description": "A platform name to filter for", "in": "query", "name": "platform", "schema": { "type": "string" }, "style": "form" },
-          { "description": "A platform version to filter for", "in": "query", "name": "platformVersion", "schema": { "type": "string" }, "style": "form" }
+          { "description": "A platform version to filter for", "in": "query", "name": "platformVersion", "schema": { "type": "string" }, "style": "form" },
+          {
+            "description": "The maximum amount of items to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
+          }
         ],
         "responses": {
           "200": {
@@ -3864,11 +4033,20 @@
             "schema": { "type": "string" }
           },
           {
-            "description": "Pagination information",
+            "description": "The maximum amount of items to return",
             "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
+            "style": "form"
           }
         ],
         "responses": {
@@ -3903,17 +4081,26 @@
         "parameters": [
           { "description": "The search query", "in": "query", "name": "query", "required": true, "schema": { "type": "string" } },
           {
-            "description": "Pagination information",
-            "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
-          },
-          {
             "description": "Used to sort the result",
             "in": "query",
             "name": "sort",
             "schema": { "type": "string", "enum": ["name", "createdAt", "roles"] },
+            "style": "form"
+          },
+          {
+            "description": "The maximum amount of items to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
             "style": "form"
           }
         ],
@@ -3949,17 +4136,26 @@
         "parameters": [
           { "description": "The search query", "in": "query", "name": "query", "required": true, "schema": { "type": "string" } },
           {
-            "description": "Pagination information",
-            "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
-          },
-          {
             "description": "Used to sort the result",
             "in": "query",
             "name": "sort",
             "schema": { "type": "string", "enum": ["name", "createdAt", "projectCount", "locked", "org", "roles"] },
+            "style": "form"
+          },
+          {
+            "description": "The maximum amount of items to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
             "style": "form"
           }
         ],
@@ -4068,17 +4264,26 @@
             "schema": { "type": "string" }
           },
           {
-            "description": "Pagination information",
-            "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
-          },
-          {
             "description": "Used to sort the result",
             "in": "query",
             "name": "sort",
             "schema": { "type": "string", "enum": ["views", "downloads", "newest", "stars", "updated", "recent_downloads", "recent_views", "slug"] },
+            "style": "form"
+          },
+          {
+            "description": "The maximum amount of items to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
             "style": "form"
           }
         ],
@@ -4126,17 +4331,26 @@
             "schema": { "type": "string" }
           },
           {
-            "description": "Pagination information",
-            "in": "query",
-            "name": "pagination",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.requests.RequestPagination" }
-          },
-          {
             "description": "Used to sort the result",
             "in": "query",
             "name": "sort",
             "schema": { "type": "string", "enum": ["views", "downloads", "newest", "stars", "updated", "recent_downloads", "recent_views", "slug"] },
+            "style": "form"
+          },
+          {
+            "description": "The maximum amount of items to return",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": { "type": "string", "example": "1", "maximum": 25, "minimum": 1 },
+            "style": "form"
+          },
+          {
+            "description": "Where to start searching",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": { "type": "string", "example": "0", "minimum": 0 },
             "style": "form"
           }
         ],
@@ -4460,7 +4674,7 @@
           "category": { "$ref": "#/components/schemas/io.papermc.hangar.model.common.Platform.Category" },
           "enumName": { "type": "string" },
           "name": { "type": "string" },
-          "platformVersions": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.common.PlatformVersion" } },
+          "platformVersions": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.platform.PlatformVersion" } },
           "url": { "type": "string" },
           "visible": { "type": "boolean" }
         },
@@ -4495,12 +4709,13 @@
         "type": "object",
         "properties": {
           "erroredJobs": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.components.jobs.db.JobTable" } },
+          "fileSizes": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.components.health.model.FileSizeCheck" } },
           "generatedAt": { "type": "string", "format": "date-time" },
-          "missingFiles": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.internal.admin.health.MissingFileCheck" } },
-          "nonPublicProjects": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.internal.admin.health.UnhealthyProject" } },
-          "staleProjects": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.internal.admin.health.UnhealthyProject" } }
+          "missingFiles": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.components.health.model.MissingFileCheck" } },
+          "nonPublicProjects": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.components.health.model.UnhealthyProject" } },
+          "staleProjects": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.components.health.model.UnhealthyProject" } }
         },
-        "required": ["staleProjects", "erroredJobs", "missingFiles", "generatedAt", "nonPublicProjects"]
+        "required": ["staleProjects", "erroredJobs", "missingFiles", "generatedAt", "nonPublicProjects", "fileSizes"]
       },
       "io.papermc.hangar.components.health.HealthReport.FinishedOrPendingHealthReport": {
         "type": "object",
@@ -4514,6 +4729,34 @@
         "type": "object",
         "properties": { "queuedAt": { "type": "string" }, "queuedBy": { "type": "string" }, "status": { "type": "string" } },
         "required": ["queuedBy", "queuedAt", "status"]
+      },
+      "io.papermc.hangar.components.health.model.FileSizeCheck": {
+        "type": "object",
+        "properties": {
+          "fileCount": { "type": "integer", "format": "int64" },
+          "namespace": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.project.ProjectNamespace" },
+          "totalSize": { "type": "integer", "format": "int64" }
+        },
+        "required": ["totalSize", "namespace", "fileCount"]
+      },
+      "io.papermc.hangar.components.health.model.MissingFileCheck": {
+        "type": "object",
+        "properties": {
+          "fileNames": { "type": "array", "items": { "type": "string" } },
+          "namespace": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.project.ProjectNamespace" },
+          "platforms": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.common.Platform" } },
+          "versionString": { "type": "string" }
+        },
+        "required": ["versionString", "namespace", "fileNames", "platforms"]
+      },
+      "io.papermc.hangar.components.health.model.UnhealthyProject": {
+        "type": "object",
+        "properties": {
+          "lastUpdated": { "type": "string", "format": "date-time" },
+          "namespace": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.project.ProjectNamespace" },
+          "visibility": { "$ref": "#/components/schemas/io.papermc.hangar.model.common.projects.Visibility" }
+        },
+        "required": ["lastUpdated", "visibility", "namespace"]
       },
       "io.papermc.hangar.components.index.webhook.Webhook": {
         "type": "object",
@@ -5469,6 +5712,11 @@
         },
         "required": ["permissions", "permissionBinString", "type"]
       },
+      "io.papermc.hangar.model.api.platform.PlatformVersion": {
+        "type": "object",
+        "properties": { "subVersions": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }, "version": { "type": "string" } },
+        "required": ["subVersions", "version"]
+      },
       "io.papermc.hangar.model.api.project.DayProjectStats": {
         "type": "object",
         "properties": { "downloads": { "type": "integer", "format": "int64" }, "views": { "type": "integer", "format": "int64" } },
@@ -5736,14 +5984,6 @@
         },
         "required": ["reason", "comment", "projectId"]
       },
-      "io.papermc.hangar.model.api.requests.RequestPagination": {
-        "type": "object",
-        "properties": {
-          "limit": { "type": "integer", "format": "int64", "description": "The maximum amount of items to return", "example": 1, "maximum": 25, "minimum": 1 },
-          "offset": { "type": "integer", "format": "int64", "description": "Where to start searching", "example": 0, "minimum": 0 }
-        },
-        "required": ["offset", "limit"]
-      },
       "io.papermc.hangar.model.common.ChannelFlag": { "type": "string", "enum": ["FROZEN", "UNSTABLE", "PINNED", "SENDS_NOTIFICATIONS", "HIDE_BY_DEFAULT"] },
       "io.papermc.hangar.model.common.Color": {
         "type": "string",
@@ -5812,11 +6052,6 @@
         "example": "PAPER"
       },
       "io.papermc.hangar.model.common.Platform.Category": { "type": "string", "enum": ["Server", "Proxy"] },
-      "io.papermc.hangar.model.common.PlatformVersion": {
-        "type": "object",
-        "properties": { "subVersions": { "type": "array", "items": { "type": "string" } }, "version": { "type": "string" } },
-        "required": ["subVersions", "version"]
-      },
       "io.papermc.hangar.model.common.Prompt": { "type": "string", "enum": ["CHANGE_AVATAR"] },
       "io.papermc.hangar.model.common.ReviewAction": {
         "type": "string",
@@ -6012,25 +6247,6 @@
           "versionString": { "type": "string" }
         },
         "required": ["versionString", "endedAt", "namespace", "platforms"]
-      },
-      "io.papermc.hangar.model.internal.admin.health.MissingFileCheck": {
-        "type": "object",
-        "properties": {
-          "fileNames": { "type": "array", "items": { "type": "string" } },
-          "namespace": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.project.ProjectNamespace" },
-          "platforms": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.common.Platform" } },
-          "versionString": { "type": "string" }
-        },
-        "required": ["versionString", "namespace", "fileNames", "platforms"]
-      },
-      "io.papermc.hangar.model.internal.admin.health.UnhealthyProject": {
-        "type": "object",
-        "properties": {
-          "lastUpdated": { "type": "string", "format": "date-time" },
-          "namespace": { "$ref": "#/components/schemas/io.papermc.hangar.model.api.project.ProjectNamespace" },
-          "visibility": { "$ref": "#/components/schemas/io.papermc.hangar.model.common.projects.Visibility" }
-        },
-        "required": ["lastUpdated", "visibility", "namespace"]
       },
       "io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm": {
         "type": "object",

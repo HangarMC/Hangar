@@ -1,7 +1,8 @@
 package io.papermc.hangar.components.health;
 
-import io.papermc.hangar.model.internal.admin.health.MissingFileCheck;
-import io.papermc.hangar.model.internal.admin.health.UnhealthyProject;
+import io.papermc.hangar.components.health.model.FileSizeCheck;
+import io.papermc.hangar.components.health.model.MissingFileCheck;
+import io.papermc.hangar.components.health.model.UnhealthyProject;
 import java.util.List;
 import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.spring.JdbiRepository;
@@ -58,6 +59,18 @@ interface HealthDAO {
           AND pvd.file_name IS NOT NULL
         GROUP BY p.id, pv.id;""")
     List<MissingFileCheck> getVersionsForMissingFiles();
+
+    @RegisterConstructorMapper(FileSizeCheck.class)
+    @SqlQuery("""
+        SELECT p.owner_name as owner, p.slug, sum(pvd.file_size) total_size, count(pvd.id) file_count
+        FROM project_version_downloads pvd
+            JOIN project_versions pv ON pvd.version_id = pv.id
+            JOIN projects p ON pv.project_id = p.id
+        WHERE pvd.file_size IS NOT NULL
+        GROUP BY p.id
+        ORDER BY total_size DESC;
+        """)
+    List<FileSizeCheck> getProjectsByFileSize();
 
     @GetGeneratedKeys
     @SqlUpdate("""

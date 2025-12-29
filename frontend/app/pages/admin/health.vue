@@ -106,6 +106,21 @@ useSeo(computed(() => ({ title: i18n.t("health.title"), route })));
             </li>
           </ul>
         </Card>
+        <Card>
+          <template #header> {{ i18n.t("health.fileSizes") }} ({{ healthReport.finished.fileSizes?.length }})</template>
+
+          <ul class="max-h-xs overflow-auto">
+            <li v-for="project in healthReport.finished.fileSizes" :key="project.namespace.owner + project.namespace.slug" class="flex justify-between">
+              <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
+                {{ project.namespace.owner + "/" + project.namespace.slug }}
+              </Link>
+              <span>{{ formatSize(project.totalSize) }}</span>
+            </li>
+            <li v-if="!healthReport.finished.fileSizes?.length">
+              {{ i18n.t("health.empty") }}
+            </li>
+          </ul>
+        </Card>
       </div>
     </template>
     <div v-else-if="healthReport?.pending">

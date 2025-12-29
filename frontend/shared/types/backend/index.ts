@@ -385,6 +385,7 @@ export interface GlobalNotificationTable {
 
 export interface HealthReport {
   erroredJobs: JobTable[];
+  fileSizes: FileSizeCheck[];
   /** @format date-time */
   generatedAt: string;
   missingFiles: MissingFileCheck[];
@@ -401,6 +402,29 @@ export interface PendingHealthReport {
   queuedAt: string;
   queuedBy: string;
   status: string;
+}
+
+export interface FileSizeCheck {
+  /** @format int64 */
+  fileCount: number;
+  namespace: ProjectNamespace;
+  /** @format int64 */
+  totalSize: number;
+}
+
+export interface MissingFileCheck {
+  fileNames: string[];
+  namespace: ProjectNamespace;
+  platforms: Platform[];
+  versionString: string;
+}
+
+export interface UnhealthyProject {
+  /** @format date-time */
+  lastUpdated: string;
+  namespace: ProjectNamespace;
+  /** The visibility of a project or version */
+  visibility: Visibility;
 }
 
 export interface Webhook {
@@ -1228,6 +1252,12 @@ export interface UserPermissions {
   type: PermissionType;
 }
 
+export interface PlatformVersion {
+  /** @uniqueItems true */
+  subVersions: string[];
+  version: string;
+}
+
 export interface DayProjectStats {
   /** @format int64 */
   downloads: number;
@@ -1480,29 +1510,6 @@ export interface FlagForm {
   reason: FlagReason;
 }
 
-export interface RequestPagination {
-  /**
-   * The maximum amount of items to return
-   * @format int64
-   * @min 1
-   * @max 25
-   * @example 1
-   */
-  limit: number;
-  /**
-   * Where to start searching
-   * @format int64
-   * @min 0
-   * @example 0
-   */
-  offset: number;
-}
-
-export interface PlatformVersion {
-  subVersions: string[];
-  version: string;
-}
-
 export interface UnreadCount {
   /** @format int64 */
   invites: number;
@@ -1645,21 +1652,6 @@ export interface ReviewActivity {
   namespace: ProjectNamespace;
   platforms: Platform[];
   versionString: string;
-}
-
-export interface MissingFileCheck {
-  fileNames: string[];
-  namespace: ProjectNamespace;
-  platforms: Platform[];
-  versionString: string;
-}
-
-export interface UnhealthyProject {
-  /** @format date-time */
-  lastUpdated: string;
-  namespace: ProjectNamespace;
-  /** The visibility of a project or version */
-  visibility: Visibility;
 }
 
 /** Data about the key to create */
