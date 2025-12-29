@@ -32,11 +32,11 @@ class HealthService extends HangarComponent {
     private final JobService jobService;
 
     @Autowired
-    HealthService(final HealthDAO healthDAO, final ProjectFiles projectFiles, final FileService fileService, final TaskExecutor taskExecutor, final JobService jobService) {
+    HealthService(final HealthDAO healthDAO, final ProjectFiles projectFiles, final FileService fileService, final TaskExecutor taskScheduler, final JobService jobService) {
         this.healthDAO = healthDAO;
         this.projectFiles = projectFiles;
         this.fileService = fileService;
-        this.taskExecutor = taskExecutor;
+        this.taskExecutor = taskScheduler;
         this.jobService = jobService;
     }
 

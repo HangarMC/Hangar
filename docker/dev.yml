@@ -31,19 +31,66 @@ services:
       - "4437:4437"
       - "1025:1025"
 
-  minio:
-    image: "bitnami/minio:latest"
+  rustfs:
+    image: "rustfs/rustfs:latest"
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
-      - MINIO_ROOT_USER=hangar_root
-      - MINIO_ROOT_PASSWORD=hangar_pass
-      - MINIO_DEFAULT_BUCKETS=hangar:public
+      - RUSTFS_VOLUMES=/data
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ADDRESS=0.0.0.0:9001
+      - RUSTFS_EXTERNAL_ADDRESS=:9000
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_ACCESS_KEY=hangar_root
+      - RUSTFS_SECRET_KEY=hangar_pass
+      - RUSTFS_CORS_ALLOWED_ORIGINS=*
+      - RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS=*
     volumes:
-      - minio_data:/data
+      - rustfs_data:/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "sh", "-c",
+          "curl -f http://localhost:9000/health && curl -f http://localhost:9001/rustfs/console/health"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  rustfs_setup:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z
+    environment:
+      MINIO_HOST: rustfs
+      MINIO_PORT: 9000
+      MINIO_USER: hangar_root
+      MINIO_PASS: hangar_pass
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+
+        until mc alias set rustfs http://rustfs:9000 hangar_root hangar_pass; do
+          echo 'RustFS is not ready yet, retrying in 2 seconds...'
+          sleep 2
+        done
+
+        echo 'Create hangar bucket if it doesnt exists'
+        mc mb rustfs/hangar --ignore-existing
+
+        echo 'Make hangar bucket public for download'
+        mc anonymous set download rustfs/hangar
+
+        echo 'RustFS Configuration Complete!'
+    restart: "no"
 
 volumes:
   postgres_data:
-  minio_data:
+  rustfs_data:
   meilisearch_data:

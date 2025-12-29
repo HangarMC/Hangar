@@ -441,6 +441,7 @@
                     <testSource>${java.version}</testSource>
                     <testTarget>${java.version}</testTarget>
                     <encoding>${encoding}</encoding>
+                    <parameters>true</parameters>
                 </configuration>
             </plugin>
             <plugin>
