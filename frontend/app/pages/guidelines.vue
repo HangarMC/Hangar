@@ -32,7 +32,6 @@ off-site addons or "full" versions of a "lite" plugin version. Hooks into paid s
 compatibility reasons or are part of a feature that is also usable through other, not similarly restricted means.
 
 Advertisements are not allowed, with the exception of informative mentions of (optional) platform or plugin dependencies.
-Revenue generating links (such as adfly) are not permitted.
 
 On the resource page, you may link to the following:
 
@@ -53,6 +52,19 @@ information about sponsors may be put into the sponsors field.
 
 To circumvent license issues and the effort involved in reviewing obfuscated code, we do not allow submitted plugins to be
 obfuscated in any capacity.
+
+## External downloads
+
+When uploading a version, you are able to upload directly to Hangar or provide a link to an external place which hosts your
+version. We strongly encourage authors to upload their plugins directly to Hangar and avoid external links if possible. If
+you do provide an external link, please provide a link which points directly to the version download and avoid linking to
+general resource overviews.
+
+In particular, the following type of links are not allowed:
+
+* Revenue-generating links, such as adfly.
+* Links that require a password or some other identification to be accessed.
+* Download links that require an account to download the version.
 
 ## EULA
 
@@ -123,7 +135,7 @@ Other malicious actions, such as deleting a server's data or banning random play
 These guidelines are loosely based on [Ore's plugin submission guidelines](https://docs.spongepowered.org/stable/en/ore/guidelines.html),
 licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Last updated: May 08, 2023
+Last updated: December 30, 2025
 
 `;
 
