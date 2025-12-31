@@ -1,3 +1,7 @@
+<script lang="ts">
+export const guidelinesLastUpdated = new Date("2025-12-30T12:00:00Z");
+</script>
+
 <script lang="ts" setup>
 const i18n = useI18n();
 const route = useRoute("guidelines");
@@ -134,9 +138,6 @@ Other malicious actions, such as deleting a server's data or banning random play
 ---
 These guidelines are loosely based on [Ore's plugin submission guidelines](https://docs.spongepowered.org/stable/en/ore/guidelines.html),
 licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-
-Last updated: December 30, 2025
-
 `;
 
 useSeo(computed(() => ({ title: i18n.t("pages.guidelinesTitle"), route })));
@@ -145,5 +146,10 @@ useSeo(computed(() => ({ title: i18n.t("pages.guidelinesTitle"), route })));
 <template>
   <div>
     <Markdown :raw="text" />
+    Last updated:
+    <Tooltip>
+      <template #content><PrettyTime :time="guidelinesLastUpdated" long /> </template>
+      <PrettyTime :time="guidelinesLastUpdated" short-relative />
+    </Tooltip>
   </div>
 </template>
