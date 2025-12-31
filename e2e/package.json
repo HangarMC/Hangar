@@ -12,7 +12,7 @@
     "dependencies": {
         "@types/chai": "4.3.20",
         "browserstack-local": "1.5.8",
-        "chai": "4.5.0",
+        "chai": "6.2.2",
         "codeceptjs": "3.7.5",
         "dotenv": "16.6.1",
         "jwt-decode": "4.0.0",
