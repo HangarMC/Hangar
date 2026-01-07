@@ -16,7 +16,7 @@
         "codeceptjs": "3.7.5",
         "dotenv": "16.6.1",
         "jwt-decode": "4.0.0",
-        "totp-generator": "1.0.0",
+        "totp-generator": "2.0.1",
         "ts-node": "10.9.2",
         "webdriverio": "7.40.0"
     },
