@@ -95,7 +95,7 @@
     "eslint": "9.37.0",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-plugin-oxlint": "1.19.0",
-    "eslint-plugin-unicorn": "61.0.2",
+    "eslint-plugin-unicorn": "62.0.0",
     "husky": "9.1.7",
     "import-in-the-middle": "1.14.4",
     "lint-staged": "16.2.3",
