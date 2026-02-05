@@ -43,6 +43,73 @@ class ProjectsControllerTest extends ControllerTest {
             .andExpect(status().is(404));
     }
 
+    // Authorization tests for @VisibilityRequired annotation
+    @Test
+    void testGetHiddenProjectAsAdmin() throws Exception {
+        // Admin should be able to see hidden projects
+        this.mockMvc.perform(get("/api/v1/projects/PrivateProject")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.name", is("PrivateProject")));
+    }
+
+    @Test
+    void testGetHiddenProjectAsOwner() throws Exception {
+        // Project owner should be able to see their own hidden project
+        // Note: PaperMC org owns PrivateProject
+        this.mockMvc.perform(get("/api/v1/projects/PrivateProject")
+                .with(this.apiKey(TestData.KEY_ADMIN)))  // Admin is part of PaperMC org
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.name", is("PrivateProject")));
+    }
+
+    @Test
+    void testGetHiddenProjectWithoutPermission() throws Exception {
+        // Regular user without permission should get 404
+        this.mockMvc.perform(get("/api/v1/projects/PrivateProject"))
+            .andExpect(status().is(404));
+    }
+
+    @Test
+    void testGetHiddenProjectByIdAsAdmin() throws Exception {
+        // Admin should be able to see hidden projects by ID
+        this.mockMvc.perform(get("/api/v1/projects/" + TestData.PRIVATE_PROJECT.getProjectId())
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.name", is("PrivateProject")));
+    }
+
+    @Test
+    void testGetHiddenProjectByIdWithoutPermission() throws Exception {
+        // Regular user without permission should get 404
+        this.mockMvc.perform(get("/api/v1/projects/" + TestData.PRIVATE_PROJECT.getProjectId()))
+            .andExpect(status().is(404));
+    }
+
+    // Authorization tests for @PermissionRequired annotation
+    @Test
+    void testGetProjectStatsWithPermission() throws Exception {
+        // Admin with IS_SUBJECT_MEMBER permission should access stats
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/stats?fromDate=2020-01-01T00:00:00Z&toDate=2030-12-31T23:59:59Z")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200));
+    }
+
+    @Test
+    void testGetProjectStatsWithoutPermission() throws Exception {
+        // User without IS_SUBJECT_MEMBER permission should be denied
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/stats?fromDate=2020-01-01T00:00:00Z&toDate=2030-12-31T23:59:59Z")
+                .with(this.apiKey(TestData.KEY_PROJECT_ONLY)))
+            .andExpect(status().is(404));
+    }
+
+    @Test
+    void testGetProjectStatsWithoutAuth() throws Exception {
+        // Unauthenticated user should be denied
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/stats?fromDate=2020-01-01T00:00:00Z&toDate=2030-12-31T23:59:59Z"))
+            .andExpect(status().is(404));
+    }
+
     @Test
     void testGetMembers() throws Exception {
         this.mockMvc.perform(get("/api/v1/projects/TestProject/members")
