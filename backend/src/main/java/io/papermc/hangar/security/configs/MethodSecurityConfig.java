@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.authorization.method.AuthorizationInterceptorsOrder;
 import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
@@ -37,18 +38,19 @@ public class MethodSecurityConfig {
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public Advisor customAuthorizationMethodInterceptor(List<HangarAuthorizationManager> authorizationManagers) {
-        
+
         // Create a unanimous-based authorization manager with all custom managers
-        AuthorizationManager<MethodInvocation> authorizationManager = 
-            new HangarUnanimousAuthorizationManager(authorizationManagers);
-        
+        AuthorizationManager<MethodInvocation> authorizationManager = new HangarUnanimousAuthorizationManager(authorizationManagers);
+
         // Create a pointcut that matches our custom annotations
         Pointcut pointcut = this.customAnnotationsPointcut();
-        
+
         // Create and return the method interceptor with the custom pointcut
-        return AuthorizationManagerBeforeMethodInterceptor.authorization(pointcut, authorizationManager);
+        AuthorizationManagerBeforeMethodInterceptor interceptor = new AuthorizationManagerBeforeMethodInterceptor(pointcut, authorizationManager);
+        interceptor.setOrder(AuthorizationInterceptorsOrder.PRE_AUTHORIZE.getOrder());
+        return interceptor;
     }
-    
+
     /**
      * Creates a pointcut that matches methods or classes annotated with our custom security annotations.
      * This ensures the interceptor only applies to our custom annotations and doesn't interfere
@@ -59,27 +61,27 @@ public class MethodSecurityConfig {
         ComposablePointcut pointcut = new ComposablePointcut(
             new AnnotationMatchingPointcut(PermissionRequired.class, true)
         ).union(new AnnotationMatchingPointcut(null, PermissionRequired.class, true));
-        
+
         // Add Privileged
         pointcut = pointcut.union(new AnnotationMatchingPointcut(Privileged.class, true));
         pointcut = pointcut.union(new AnnotationMatchingPointcut(null, Privileged.class, true));
-        
+
         // Add Unlocked
         pointcut = pointcut.union(new AnnotationMatchingPointcut(Unlocked.class, true));
         pointcut = pointcut.union(new AnnotationMatchingPointcut(null, Unlocked.class, true));
-        
+
         // Add RequireAal
         pointcut = pointcut.union(new AnnotationMatchingPointcut(RequireAal.class, true));
         pointcut = pointcut.union(new AnnotationMatchingPointcut(null, RequireAal.class, true));
-        
+
         // Add CurrentUser
         pointcut = pointcut.union(new AnnotationMatchingPointcut(CurrentUser.class, true));
         pointcut = pointcut.union(new AnnotationMatchingPointcut(null, CurrentUser.class, true));
-        
+
         // Add VisibilityRequired
         pointcut = pointcut.union(new AnnotationMatchingPointcut(VisibilityRequired.class, true));
         pointcut = pointcut.union(new AnnotationMatchingPointcut(null, VisibilityRequired.class, true));
-        
+
         return pointcut;
     }
 }
