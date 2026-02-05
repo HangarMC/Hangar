@@ -35,7 +35,7 @@ public class PrivilegedAuthorizationManager extends HangarAuthorizationManager {
         
         Authentication auth = authentication.get();
         if (!(auth instanceof HangarAuthenticationToken)) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.privileged");
+            return denied();
         }
         
         if (!((HangarAuthenticationToken) auth).getPrincipal().isPrivileged()) {

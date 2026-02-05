@@ -36,7 +36,7 @@ public class AalAuthorizationManager extends HangarAuthorizationManager {
         
         Authentication auth = authentication.get();
         if (!(auth instanceof HangarAuthenticationToken)) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.aal" + annotation.value());
+            return denied();
         }
         
         final int aal = ((HangarAuthenticationToken) auth).getPrincipal().getAal();

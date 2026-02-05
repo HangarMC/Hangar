@@ -35,7 +35,7 @@ public class UnlockedAuthorizationManager extends HangarAuthorizationManager {
         
         Authentication auth = authentication.get();
         if (!(auth instanceof HangarAuthenticationToken)) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.userLocked");
+            return denied();
         }
         
         if (((HangarAuthenticationToken) auth).getPrincipal().isLocked()) {
