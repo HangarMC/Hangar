@@ -35,13 +35,13 @@ public class PrivilegedAuthorizationManager extends HangarAuthorizationManager {
         
         Authentication auth = authentication.get();
         if (!(auth instanceof HangarAuthenticationToken)) {
-            return denied();
+            return this.denied();
         }
         
         if (!((HangarAuthenticationToken) auth).getPrincipal().isPrivileged()) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.privileged");
         }
         
-        return granted();
+        return this.granted();
     }
 }

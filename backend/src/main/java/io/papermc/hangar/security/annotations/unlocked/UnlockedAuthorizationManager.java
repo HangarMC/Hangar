@@ -35,13 +35,13 @@ public class UnlockedAuthorizationManager extends HangarAuthorizationManager {
         
         Authentication auth = authentication.get();
         if (!(auth instanceof HangarAuthenticationToken)) {
-            return denied();
+            return this.denied();
         }
         
         if (((HangarAuthenticationToken) auth).getPrincipal().isLocked()) {
             throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.userLocked");
         }
         
-        return granted();
+        return this.granted();
     }
 }

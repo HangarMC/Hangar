@@ -50,7 +50,7 @@ public class CurrentUserAuthorizationManager extends HangarAuthorizationManager 
         
         // Check for global permission to edit all user settings
         if (hangarAuthenticationToken.getPrincipal().isAllowedGlobal(Permission.EditAllUserSettings)) {
-            return granted();
+            return this.granted();
         }
         
         // Evaluate SpEL expression to get the username
@@ -75,6 +75,6 @@ public class CurrentUserAuthorizationManager extends HangarAuthorizationManager 
             throw HangarApiException.forbidden();
         }
         
-        return granted();
+        return this.granted();
     }
 }

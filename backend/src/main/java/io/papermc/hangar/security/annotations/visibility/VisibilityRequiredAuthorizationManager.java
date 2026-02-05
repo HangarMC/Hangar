@@ -81,14 +81,14 @@ public class VisibilityRequiredAuthorizationManager extends HangarAuthorizationM
                 if (arguments.length == 1) {
                     if (arguments[0] instanceof ProjectTable projectTable) {
                         if (this.projectVisibilityService.checkVisibility(projectTable) != null) {
-                            return granted();
+                            return this.granted();
                         }
                     } else if (arguments[0] instanceof String slug) {
                         if (this.projectService.getProjectTable(slug) != null) {
-                            return granted();
+                            return this.granted();
                         }
                     } else if (this.projectService.getProjectTable((long) arguments[0]) != null) {
-                        return granted();
+                        return this.granted();
                     }
                 }
                 throw HangarApiException.notFound();
@@ -96,18 +96,18 @@ public class VisibilityRequiredAuthorizationManager extends HangarAuthorizationM
                 if (arguments.length == 1) {
                     if (arguments[0] instanceof final ProjectVersionTable projectVersionTable) {
                         if (this.projectVersionVisibilityService.checkVisibility(projectVersionTable) != null) {
-                            return granted();
+                            return this.granted();
                         }
                     } else if (this.versionService.getProjectVersionTable((long) arguments[0]) != null) {
-                        return granted();
+                        return this.granted();
                     }
                 } else if (arguments.length == 2) {
                     if (arguments[1] instanceof final ProjectVersionTable projectVersionTable) {
                         if (this.projectVersionVisibilityService.checkVisibility(projectVersionTable) != null) {
-                            return granted();
+                            return this.granted();
                         }
                     } else if (this.versionService.getProjectVersionTable((String) arguments[0], (String) arguments[1]) != null) {
-                        return granted();
+                        return this.granted();
                     }
                 }
                 throw HangarApiException.notFound();

@@ -36,7 +36,7 @@ public class AalAuthorizationManager extends HangarAuthorizationManager {
         
         Authentication auth = authentication.get();
         if (!(auth instanceof HangarAuthenticationToken)) {
-            return denied();
+            return this.denied();
         }
         
         final int aal = ((HangarAuthenticationToken) auth).getPrincipal().getAal();
@@ -48,6 +48,6 @@ public class AalAuthorizationManager extends HangarAuthorizationManager {
             }
         }
         
-        return granted();
+        return this.granted();
     }
 }

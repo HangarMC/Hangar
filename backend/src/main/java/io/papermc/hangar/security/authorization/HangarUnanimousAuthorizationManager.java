@@ -17,9 +17,9 @@ import org.springframework.security.core.Authentication;
  */
 public class HangarUnanimousAuthorizationManager implements AuthorizationManager<MethodInvocation> {
 
-    private final List<AuthorizationManager<MethodInvocation>> authorizationManagers;
+    private final List<HangarAuthorizationManager> authorizationManagers;
 
-    public HangarUnanimousAuthorizationManager(List<AuthorizationManager<MethodInvocation>> authorizationManagers) {
+    public HangarUnanimousAuthorizationManager(List<HangarAuthorizationManager> authorizationManagers) {
         this.authorizationManagers = new ArrayList<>(authorizationManagers);
     }
 
@@ -27,7 +27,7 @@ public class HangarUnanimousAuthorizationManager implements AuthorizationManager
     public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation methodInvocation) {
         int grants = 0;
         
-        for (AuthorizationManager<MethodInvocation> manager : this.authorizationManagers) {
+        for (HangarAuthorizationManager manager : this.authorizationManagers) {
             AuthorizationDecision decision = manager.check(authentication, methodInvocation);
             
             // null means abstain

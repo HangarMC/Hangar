@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,6 @@ import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.annotation.RepeatableContainers;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.http.HttpStatus;
@@ -53,9 +51,9 @@ public class PermissionRequiredAuthorizationManager extends HangarAuthorizationM
         Method method = methodInvocation.getMethod();
         Class<?> targetClass = methodInvocation.getThis() != null ? methodInvocation.getThis().getClass() : method.getDeclaringClass();
         
-        Set<PermissionRequired> annotations = AnnotationUtils.getRepeatableAnnotations(method, PermissionRequired.class, RepeatableContainers.standardRepeatables());
+        Set<PermissionRequired> annotations = AnnotationUtils.getRepeatableAnnotations(method, PermissionRequired.class);
         if (annotations.isEmpty()) {
-            annotations = AnnotationUtils.getRepeatableAnnotations(targetClass, PermissionRequired.class, RepeatableContainers.standardRepeatables());
+            annotations = AnnotationUtils.getRepeatableAnnotations(targetClass, PermissionRequired.class);
         }
         
         if (annotations.isEmpty()) {
@@ -72,10 +70,10 @@ public class PermissionRequiredAuthorizationManager extends HangarAuthorizationM
         
         // Check each permission requirement
         for (PermissionRequired annotation : annotations) {
-            checkPermission(auth, userId, methodInvocation, annotation);
+            this.checkPermission(auth, userId, methodInvocation, annotation);
         }
         
-        return granted();
+        return this.granted();
     }
 
     private void checkPermission(Authentication auth, Long userId, MethodInvocation methodInvocation, PermissionRequired annotation) {
@@ -146,7 +144,7 @@ public class PermissionRequiredAuthorizationManager extends HangarAuthorizationM
             if (!hangarAuthenticationToken.getPrincipal().isAllowed(requiredPerm, currentPerm)) {
                 throw new HangarApiException(HttpStatus.NOT_FOUND);
             }
-        } else if (!isAllowed(requiredPerm, currentPerm)) {
+        } else if (!this.isAllowed(requiredPerm, currentPerm)) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }
     }
