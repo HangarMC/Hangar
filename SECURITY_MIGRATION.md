@@ -123,16 +123,11 @@ public class MethodSecurityConfig {
     
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public Advisor customAuthorizationMethodInterceptor(...) {
+    public Advisor customAuthorizationMethodInterceptor(
+            @Autowired List<HangarAuthorizationManager> authorizationManagers) {
+        
         AuthorizationManager<MethodInvocation> authorizationManager = 
-            new HangarUnanimousAuthorizationManager(List.of(
-                permissionRequiredAuthorizationManager,
-                privilegedAuthorizationManager,
-                unlockedAuthorizationManager,
-                aalAuthorizationManager,
-                currentUserAuthorizationManager,
-                visibilityRequiredAuthorizationManager
-            ));
+            new HangarUnanimousAuthorizationManager(authorizationManagers);
         
         return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(authorizationManager);
     }
@@ -155,6 +150,12 @@ All custom annotation classes (`@PermissionRequired`, `@Privileged`, etc.) are p
 
 ### 5. Direct Annotation Lookup
 Instead of metadata extractors, the new managers directly check for annotations using `AnnotationUtils.findAnnotation()`. This is simpler and more aligned with Spring Security 6's design.
+
+### 6. Co-located Organization
+Authorization managers are placed in the same packages as their corresponding annotations for better organization and maintainability. This keeps related code together.
+
+### 7. Automatic Discovery
+All `HangarAuthorizationManager` beans are automatically discovered and wired into the configuration. Adding new authorization managers requires no configuration changes.
 
 ## Behavioral Equivalence
 
@@ -214,17 +215,17 @@ If issues are discovered, the old implementation can be restored from git histor
 ## Files Changed
 
 ### Added:
-- `security/authorization/HangarAuthorizationManager.java`
-- `security/authorization/HangarUnanimousAuthorizationManager.java`
-- `security/authorization/PermissionRequiredAuthorizationManager.java`
-- `security/authorization/PrivilegedAuthorizationManager.java`
-- `security/authorization/UnlockedAuthorizationManager.java`
-- `security/authorization/AalAuthorizationManager.java`
-- `security/authorization/CurrentUserAuthorizationManager.java`
-- `security/authorization/VisibilityRequiredAuthorizationManager.java`
+- `security/authorization/HangarAuthorizationManager.java` - Base class for all authorization managers
+- `security/authorization/HangarUnanimousAuthorizationManager.java` - Composite manager
+- `security/annotations/permission/PermissionRequiredAuthorizationManager.java` - Co-located with @PermissionRequired
+- `security/annotations/privileged/PrivilegedAuthorizationManager.java` - Co-located with @Privileged
+- `security/annotations/unlocked/UnlockedAuthorizationManager.java` - Co-located with @Unlocked
+- `security/annotations/aal/AalAuthorizationManager.java` - Co-located with @RequireAal
+- `security/annotations/currentuser/CurrentUserAuthorizationManager.java` - Co-located with @CurrentUser
+- `security/annotations/visibility/VisibilityRequiredAuthorizationManager.java` - Co-located with @VisibilityRequired
 
 ### Modified:
-- `security/configs/MethodSecurityConfig.java`
+- `security/configs/MethodSecurityConfig.java` - Now autowires all HangarAuthorizationManager beans instead of hardcoding
 
 ### Removed:
 - `security/HangarUnanimousBased.java`
