@@ -39,10 +39,8 @@ public interface IPagesController {
 
     @GetMapping(value = "/pages/main/{author}/{project}", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
-    default String getMainPage(@Parameter(description = "The author of the project to return the page for") @PathVariable String author,
-                       @Parameter(description = "The slug or id of the project to return the page for") @PathVariable ProjectTable project) {
-        return this.getMainPage(project);
-    }
+    String getMainPage(@Parameter(description = "The author of the project to return the page for") @PathVariable String author,
+                       @Parameter(description = "The slug or id of the project to return the page for") @PathVariable ProjectTable project);
 
     @Operation(
         summary = "Returns a page of a project",
@@ -61,11 +59,9 @@ public interface IPagesController {
 
     @GetMapping(value = "/pages/page/{author}/{project}", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
-    default String getPage(@Parameter(description = "The author of the project to return the page for") @PathVariable String author,
+    String getPage(@Parameter(description = "The author of the project to return the page for") @PathVariable String author,
                    @Parameter(description = "The slug or id of the project to return the page for") @PathVariable ProjectTable project,
-                   @Parameter(description = "The path of the page") @RequestParam String path) {
-        return this.getPage(project, path);
-    }
+                   @Parameter(description = "The path of the page") @RequestParam String path);
 
     @Operation(
         summary = "Edits the main page of a project",
@@ -85,11 +81,9 @@ public interface IPagesController {
 
     @PatchMapping(path = "/pages/editmain/{author}/{project}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Deprecated(forRemoval = true)
-    default void editMainPage(@Parameter(description = "The author of the project to change the page for") @PathVariable String author,
+    void editMainPage(@Parameter(description = "The author of the project to change the page for") @PathVariable String author,
                       @Parameter(description = "The slug or id of the project to change the page for") @PathVariable ProjectTable project,
-                      @Parameter(description = "The path and new contents of the page") @RequestBody StringContent pageEditForm) {
-        this.editMainPage(project, pageEditForm);
-    }
+                      @Parameter(description = "The path and new contents of the page") @RequestBody StringContent pageEditForm);
 
     @Operation(
         summary = "Edits a page of a project",
@@ -109,9 +103,7 @@ public interface IPagesController {
 
     @PatchMapping(path = "/pages/edit/{author}/{project}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Deprecated(forRemoval = true)
-    default void editPage(@Parameter(description = "The author of the project to change the page for") @PathVariable String author,
+    void editPage(@Parameter(description = "The author of the project to change the page for") @PathVariable String author,
                   @Parameter(description = "The slug or id of the project to change the page for") @PathVariable ProjectTable project,
-                  @Parameter(description = "The path and new contents of the page") @RequestBody PageEditForm pageEditForm) {
-        this.editPage(project, pageEditForm);
-    }
+                  @Parameter(description = "The path and new contents of the page") @RequestBody PageEditForm pageEditForm);
 }

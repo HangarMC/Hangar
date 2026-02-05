@@ -41,13 +41,29 @@ public class PermissionsController extends HangarComponent implements IPermissio
     }
 
     @Override
+    public ResponseEntity<PermissionCheck> hasAllPermissionsLegacy(final Set<NamedPermission> permissions, final ProjectTable slug, final OrganizationTable organization) {
+        return this.has(permissions, slug, organization, (namedPerms, perm) -> namedPerms.stream().allMatch(p -> perm.has(p.getPermission())));
+    }
+
+    @Override
     public ResponseEntity<PermissionCheck> hasAny(final Set<NamedPermission> permissions, final ProjectTable project, final OrganizationTable organization) {
         return this.has(permissions, project, organization, (namedPerms, perm) -> namedPerms.stream().anyMatch(p -> perm.has(p.getPermission())));
     }
 
     @Override
+    public ResponseEntity<PermissionCheck> hasAnyLegacy(final Set<NamedPermission> permissions, final ProjectTable slug, final OrganizationTable organization) {
+        return this.has(permissions, slug, organization, (namedPerms, perm) -> namedPerms.stream().anyMatch(p -> perm.has(p.getPermission())));
+    }
+
+    @Override
     public ResponseEntity<UserPermissions> showPermissions(final ProjectTable project, final OrganizationTable organization) {
         final Pair<PermissionType, Permission> scopedPerms = this.getPermissionsInScope(project, organization);
+        return ResponseEntity.ok(new UserPermissions(scopedPerms.getLeft(), scopedPerms.getRight().toBinString(), scopedPerms.getRight().toNamed()));
+    }
+
+    @Override
+    public ResponseEntity<UserPermissions> showPermissionsLegacy(final ProjectTable slug, final OrganizationTable organization) {
+        final Pair<PermissionType, Permission> scopedPerms = this.getPermissionsInScope(slug, organization);
         return ResponseEntity.ok(new UserPermissions(scopedPerms.getLeft(), scopedPerms.getRight().toBinString(), scopedPerms.getRight().toNamed()));
     }
 

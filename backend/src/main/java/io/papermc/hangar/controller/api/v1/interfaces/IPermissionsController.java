@@ -56,13 +56,11 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
     @GetMapping(value = "/permissions/hasAll", params = "slug")
-    default ResponseEntity<PermissionCheck> hasAllPermissionsLegacy(
+    ResponseEntity<PermissionCheck> hasAllPermissionsLegacy(
         @Parameter(description = "The permissions to check", required = true) @RequestParam final @Size(max = 50) Set<NamedPermission> permissions,
         @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false, name = "slug") final ProjectTable slug,
         @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `slug`") @RequestParam(required = false, name = "organization") final OrganizationTable organization
-    ) {
-        return this.hasAllPermissions(permissions, slug, organization);
-    }
+    );
 
 
     @Operation(
@@ -97,13 +95,11 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
     @GetMapping(value = "/permissions/hasAny", params = "slug")
-    default ResponseEntity<PermissionCheck> hasAnyLegacy(
+    ResponseEntity<PermissionCheck> hasAnyLegacy(
         @Parameter(description = "The permissions to check", required = true) @RequestParam final Set<NamedPermission> permissions,
         @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false, name = "slug") final ProjectTable slug,
         @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`") @RequestParam(required = false, name = "organization") final OrganizationTable organization
-    ) {
-        return this.hasAny(permissions, slug, organization);
-    }
+    );
 
     @Operation(
         summary = "Returns your permissions",
@@ -136,10 +132,8 @@ public interface IPermissionsController {
         @ApiResponse(responseCode = "401", description = "Api session missing, invalid or expired")
     })
     @GetMapping(value = "/permissions", params = "slug", produces = MediaType.APPLICATION_JSON_VALUE)
-    default ResponseEntity<UserPermissions> showPermissionsLegacy(
+    ResponseEntity<UserPermissions> showPermissionsLegacy(
         @Deprecated @Parameter(description = "Deprecated alias for `project`") @RequestParam(required = false, name = "slug") final ProjectTable slug,
         @Parameter(description = "The id or name of the organization to check permissions in. Must not be used together with `project`", name = "organization") @RequestParam(required = false) final OrganizationTable organization
-    ) {
-        return this.showPermissions(slug, organization);
-    }
+    );
 }
