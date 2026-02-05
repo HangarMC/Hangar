@@ -91,8 +91,14 @@ class ApiKeysControllerTest extends ControllerTest {
             .andExpect(status().is(403));
     }
 
-    // Note: Testing @Unlocked and @RequireAal annotations would require:
-    // - Setting user lock status for @Unlocked tests
-    // - Setting AAL (Authentication Assurance Level) for @RequireAal tests
-    // These would be more complex integration tests
+    // Authorization tests for @Unlocked annotation
+    @Test
+    void testCreateKeyWithLockedUser() throws Exception {
+        // Locked/banned user should be denied by @Unlocked annotation
+        this.mockMvc.perform(post("/api/v1/keys")
+                .with(this.apiKey(TestData.KEY_BANNED))
+                .header("Content-Type", "application/json")
+                .content(this.objectMapper.writeValueAsBytes(new CreateAPIKeyForm("test_key", Set.of(NamedPermission.CREATE_PROJECT)))))
+            .andExpect(status().is(403));
+    }
 }

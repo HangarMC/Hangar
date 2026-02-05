@@ -189,6 +189,14 @@ class VersionsControllerTest extends ControllerTest {
             .andExpect(status().is(401));
     }
 
-    // Note: Testing @Unlocked and @RequireAal would require setting user lock status and AAL level
-    // These are integration tests that would need more complex setup
+    // Authorization tests for @Unlocked annotation
+    @Test
+    @Disabled // TODO upload
+    void testUploadVersionWithLockedUser() throws Exception {
+        // Locked/banned user should be denied by @Unlocked annotation
+        this.mockMvc.perform(post("/api/v1/projects/TestProject/upload")
+                .with(this.apiKey(TestData.KEY_BANNED))
+                .header("Content-Type", "multipart/form-data"))
+            .andExpect(status().is(403));
+    }
 }

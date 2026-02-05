@@ -178,8 +178,24 @@ class PagesControllerTest extends ControllerTest {
             .andExpect(status().is(403));
     }
 
-    // Note: Testing @Unlocked and @RequireAal annotations on edit operations would require:
-    // - Setting user lock status for @Unlocked tests
-    // - Setting AAL (Authentication Assurance Level) for @RequireAal tests
-    // These would be more complex integration tests
+    // Authorization tests for @Unlocked annotation
+    @Test
+    void testEditMainPageWithLockedUser() throws Exception {
+        // Locked/banned user should be denied by @Unlocked annotation
+        this.mockMvc.perform(patch("/api/v1/pages/editmain/" + TestData.PROJECT.getSlug())
+                .content(this.objectMapper.writeValueAsBytes(new StringContent("# Locked user edit")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(this.apiKey(TestData.KEY_BANNED)))
+            .andExpect(status().is(403));
+    }
+
+    @Test
+    void testEditPageWithLockedUser() throws Exception {
+        // Locked/banned user should be denied by @Unlocked annotation
+        this.mockMvc.perform(patch("/api/v1/pages/edit/" + TestData.PROJECT.getSlug())
+                .content(this.objectMapper.writeValueAsBytes(new PageEditForm(TestData.PAGE_PARENT.getSlug(), "# Locked user edit")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(this.apiKey(TestData.KEY_BANNED)))
+            .andExpect(status().is(403));
+    }
 }
