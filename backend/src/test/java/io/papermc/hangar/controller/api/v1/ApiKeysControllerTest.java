@@ -40,4 +40,60 @@ class ApiKeysControllerTest extends ControllerTest {
             .andExpect(jsonPath("$[*].name").value(not(hasItem("cool_key"))))
             .andExpect(jsonPath("$[*].tokenIdentifier").value(not(hasItem(identifier))));
     }
+
+    // Authorization tests for @PermissionRequired annotation
+    @Test
+    void testCreateKeyWithoutPermission() throws Exception {
+        // User without EDIT_API_KEYS permission should be denied
+        this.mockMvc.perform(post("/api/v1/keys")
+                .with(this.apiKey(TestData.KEY_NO_PERMISSIONS))
+                .header("Content-Type", "application/json")
+                .content(this.objectMapper.writeValueAsBytes(new CreateAPIKeyForm("test_key", Set.of(NamedPermission.CREATE_PROJECT)))))
+            .andExpect(status().is(403));
+    }
+
+    @Test
+    void testGetKeysWithoutPermission() throws Exception {
+        // User without EDIT_API_KEYS permission should be denied
+        this.mockMvc.perform(get("/api/v1/keys")
+                .with(this.apiKey(TestData.KEY_NO_PERMISSIONS)))
+            .andExpect(status().is(403));
+    }
+
+    @Test
+    void testDeleteKeyWithoutPermission() throws Exception {
+        // User without EDIT_API_KEYS permission should be denied
+        this.mockMvc.perform(delete("/api/v1/keys?name=test")
+                .with(this.apiKey(TestData.KEY_NO_PERMISSIONS)))
+            .andExpect(status().is(403));
+    }
+
+    @Test
+    void testCreateKeyWithoutAuth() throws Exception {
+        // Unauthenticated user should be denied
+        this.mockMvc.perform(post("/api/v1/keys")
+                .header("Content-Type", "application/json")
+                .content(this.objectMapper.writeValueAsBytes(new CreateAPIKeyForm("test_key", Set.of(NamedPermission.CREATE_PROJECT)))))
+            .andExpect(status().is(401));
+    }
+
+    @Test
+    void testGetKeysWithoutAuth() throws Exception {
+        // Unauthenticated user should be denied
+        this.mockMvc.perform(get("/api/v1/keys"))
+            .andExpect(status().is(401));
+    }
+
+    @Test
+    void testDeleteKeyWithoutAuth() throws Exception {
+        // Unauthenticated user should be denied
+        this.mockMvc.perform(delete("/api/v1/keys?name=test"))
+            .andExpect(status().is(401));
+    }
+
+    // Note: Testing @Unlocked and @RequireAal annotations would require:
+    // - Setting user lock status for @Unlocked tests
+    // - Setting AAL (Authentication Assurance Level) for @RequireAal tests
+    // These would be more complex integration tests
+}
 }

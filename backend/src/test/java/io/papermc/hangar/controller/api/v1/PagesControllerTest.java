@@ -124,4 +124,64 @@ class PagesControllerTest extends ControllerTest {
                 .with(this.apiKey(TestData.KEY_ADMIN)))
             .andExpect(status().is(200));
     }
+
+    // Authorization tests for @PermissionRequired annotation
+    @Test
+    void testGetMainPageWithoutPermission() throws Exception {
+        // User without VIEW_PUBLIC_INFO permission should be denied
+        this.mockMvc.perform(get("/api/v1/pages/main/" + TestData.PROJECT.getSlug())
+                .with(this.apiKey(TestData.KEY_NO_PERMISSIONS)))
+            .andExpect(status().is(403));
+    }
+
+    @Test
+    void testGetMainPageWithoutAuth() throws Exception {
+        // Unauthenticated user should be denied for endpoints requiring authentication
+        this.mockMvc.perform(get("/api/v1/pages/main/" + TestData.PROJECT.getSlug()))
+            .andExpect(status().is(401));
+    }
+
+    @Test
+    void testEditMainPageWithoutPermission() throws Exception {
+        // User without EDIT_PAGE permission should be denied
+        this.mockMvc.perform(patch("/api/v1/pages/editmain/" + TestData.PROJECT.getSlug())
+                .content(this.objectMapper.writeValueAsBytes(new StringContent("# Test\nUnauthorized")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(this.apiKey(TestData.KEY_PROJECT_ONLY)))
+            .andExpect(status().is(403));
+    }
+
+    @Test
+    void testEditMainPageWithoutAuth() throws Exception {
+        // Unauthenticated user should be denied
+        this.mockMvc.perform(patch("/api/v1/pages/editmain/" + TestData.PROJECT.getSlug())
+                .content(this.objectMapper.writeValueAsBytes(new StringContent("# Test\nUnauthorized")))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is(401));
+    }
+
+    @Test
+    void testEditPageWithoutPermission() throws Exception {
+        // User without EDIT_PAGE permission should be denied
+        this.mockMvc.perform(patch("/api/v1/pages/edit/" + TestData.PROJECT.getSlug())
+                .content(this.objectMapper.writeValueAsBytes(new PageEditForm(TestData.PAGE_PARENT.getSlug(), "# Unauthorized")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(this.apiKey(TestData.KEY_PROJECT_ONLY)))
+            .andExpect(status().is(403));
+    }
+
+    @Test
+    void testEditPageWithoutAuth() throws Exception {
+        // Unauthenticated user should be denied
+        this.mockMvc.perform(patch("/api/v1/pages/edit/" + TestData.PROJECT.getSlug())
+                .content(this.objectMapper.writeValueAsBytes(new PageEditForm(TestData.PAGE_PARENT.getSlug(), "# Unauthorized")))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().is(401));
+    }
+
+    // Note: Testing @Unlocked and @RequireAal annotations on edit operations would require:
+    // - Setting user lock status for @Unlocked tests
+    // - Setting AAL (Authentication Assurance Level) for @RequireAal tests
+    // These would be more complex integration tests
+}
 }

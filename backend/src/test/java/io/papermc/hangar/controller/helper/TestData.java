@@ -62,10 +62,13 @@ public class TestData {
     public static UserTable USER_MEMBER;
     public static UserTable USER_ADMIN;
     public static UserTable USER_BANNED;
+    public static UserTable USER_PROJECT_OWNER;
 
     public static String KEY_ADMIN;
     public static String KEY_PROJECT_ONLY;
     public static String KEY_SEE_HIDDEN;
+    public static String KEY_PROJECT_OWNER;
+    public static String KEY_NO_PERMISSIONS;
 
     public static OrganizationTable ORG;
 
@@ -112,16 +115,19 @@ public class TestData {
         USER_MEMBER = this.authService.registerUser(new SignupForm("TestMember", "testmember@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
         USER_ADMIN = this.authService.registerUser(new SignupForm("TestAdmin", "testadmin@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
         USER_BANNED = this.authService.registerUser(new SignupForm("TestBanned", "testbanned@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
+        USER_PROJECT_OWNER = this.authService.registerUser(new SignupForm("TestOwner", "testowner@papermc.io", "W45nNUefrsB8ucQeiKDdbEQijH5KP", true, null));
 
         USER_NORMAL.setEmailVerified(true);
         USER_MEMBER.setEmailVerified(true);
         USER_ADMIN.setEmailVerified(true);
         USER_BANNED.setEmailVerified(true);
+        USER_PROJECT_OWNER.setEmailVerified(true);
         USER_BANNED.setLocked(true);
         this.userDAO.update(USER_NORMAL);
         this.userDAO.update(USER_MEMBER);
         this.userDAO.update(USER_ADMIN);
         this.userDAO.update(USER_BANNED);
+        this.userDAO.update(USER_PROJECT_OWNER);
 
         this.globalRoleService.addRole(new GlobalRoleTable(USER_ADMIN.getUserId(), GlobalRole.HANGAR_ADMIN));
 
@@ -150,6 +156,8 @@ public class TestData {
         KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values())), Permission.All);
         KEY_PROJECT_ONLY = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("Project Only", Set.of(NamedPermission.CREATE_PROJECT)), Permission.All);
         KEY_SEE_HIDDEN = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("See Hidden", Set.of(NamedPermission.SEE_HIDDEN)), Permission.All);
+        KEY_PROJECT_OWNER = this.apiKeyService.createApiKey(USER_PROJECT_OWNER, new CreateAPIKeyForm("Project Owner", Set.of(NamedPermission.values())), Permission.All);
+        KEY_NO_PERMISSIONS = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("No Permissions", Set.of()), Permission.None);
 
         this.userService.toggleStarred(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);
         this.userService.toggleWatching(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);
