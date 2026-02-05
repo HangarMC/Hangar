@@ -114,7 +114,8 @@ public class PermissionRequiredAuthorizationManager extends HangarAuthorizationM
                     } else if (argument1 instanceof final Long id) {
                         projectId = id;
                     } else {
-                        throw new IllegalStateException("Bad annotation configuration, expected ProjectTable or Long but got " + argument1);
+                        throw new IllegalStateException("Bad annotation configuration, expected ProjectTable or Long but got " + 
+                            (argument1 != null ? argument1.getClass().getName() : "null"));
                     }
                     
                     currentPerm = this.permissionService.getProjectPermissions(userId, projectId);
@@ -129,7 +130,8 @@ public class PermissionRequiredAuthorizationManager extends HangarAuthorizationM
                         case final String name -> this.permissionService.getOrganizationPermissions(userId, name);
                         case final OrganizationTable org -> this.permissionService.getOrganizationPermissions(userId, org.getId());
                         case null, default ->
-                            throw new IllegalStateException("Bad annotation configuration, expected Long or String but got " + arguments[0]);
+                            throw new IllegalStateException("Bad annotation configuration, expected Long or String but got " + 
+                                (arguments[0] != null ? arguments[0].getClass().getName() : "null"));
                     };
                 } else {
                     currentPerm = Permission.None;

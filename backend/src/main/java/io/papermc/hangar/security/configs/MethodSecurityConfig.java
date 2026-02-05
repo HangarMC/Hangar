@@ -5,7 +5,6 @@ import io.papermc.hangar.security.authorization.HangarUnanimousAuthorizationMana
 import java.util.List;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Advisor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +26,7 @@ public class MethodSecurityConfig {
      */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public Advisor customAuthorizationMethodInterceptor(
-            @Autowired List<HangarAuthorizationManager> authorizationManagers) {
+    public Advisor customAuthorizationMethodInterceptor(List<HangarAuthorizationManager> authorizationManagers) {
         
         // Create a unanimous-based authorization manager with all custom managers
         AuthorizationManager<MethodInvocation> authorizationManager = 
