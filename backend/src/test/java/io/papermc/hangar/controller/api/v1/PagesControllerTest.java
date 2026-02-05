@@ -184,4 +184,3 @@ class PagesControllerTest extends ControllerTest {
     // - Setting AAL (Authentication Assurance Level) for @RequireAal tests
     // These would be more complex integration tests
 }
-}

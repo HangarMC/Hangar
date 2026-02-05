@@ -188,4 +188,3 @@ class VersionsControllerTest extends ControllerTest {
     // Note: Testing @Unlocked and @RequireAal would require setting user lock status and AAL level
     // These are integration tests that would need more complex setup
 }
-}
