@@ -99,6 +99,6 @@ class ApiKeysControllerTest extends ControllerTest {
                 .with(this.apiKey(TestData.KEY_BANNED))
                 .header("Content-Type", "application/json")
                 .content(this.objectMapper.writeValueAsBytes(new CreateAPIKeyForm("test_key", Set.of(NamedPermission.CREATE_PROJECT)))))
-            .andExpect(status().is(403));
+            .andExpect(status().is(401));
     }
 }

@@ -137,7 +137,7 @@ class PagesControllerTest extends ControllerTest {
     @Test
     void testGetMainPageOfHiddenWithoutAuth() throws Exception {
         this.mockMvc.perform(get("/api/v1/pages/main/" + TestData.PRIVATE_PROJECT.getSlug()))
-            .andExpect(status().is(401));
+            .andExpect(status().is(404));
     }
 
     @Test
@@ -186,7 +186,7 @@ class PagesControllerTest extends ControllerTest {
                 .content(this.objectMapper.writeValueAsBytes(new StringContent("# Locked user edit")))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(this.apiKey(TestData.KEY_BANNED)))
-            .andExpect(status().is(403));
+            .andExpect(status().is(404));
     }
 
     @Test
@@ -196,6 +196,6 @@ class PagesControllerTest extends ControllerTest {
                 .content(this.objectMapper.writeValueAsBytes(new PageEditForm(TestData.PAGE_PARENT.getSlug(), "# Locked user edit")))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(this.apiKey(TestData.KEY_BANNED)))
-            .andExpect(status().is(403));
+            .andExpect(status().is(404));
     }
 }
