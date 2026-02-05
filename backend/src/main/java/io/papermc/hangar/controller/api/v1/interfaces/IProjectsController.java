@@ -45,10 +45,8 @@ public interface IProjectsController {
 
     @GetMapping("/projects/{author}/{slugOrId}")
     @Deprecated(forRemoval = true)
-    default ResponseEntity<Project> getProject(@Parameter(description = "The author of the project to return") @PathVariable String author,
-                                       @Parameter(description = "The slug or id of the project to return") @PathVariable("slugOrId") ProjectTable project) {
-        return this.getProject(project);
-    }
+    ResponseEntity<Project> getProject(@Parameter(description = "The author of the project to return") @PathVariable String author,
+                                       @Parameter(description = "The slug or id of the project to return") @PathVariable("slugOrId") ProjectTable project);
 
     @Operation(
         summary = "Returns project of the first version that matches the given file hash (SHA-256)",
@@ -84,13 +82,11 @@ public interface IProjectsController {
 
     @GetMapping("/projects/{author}/{slugOrId}/members")
     @Deprecated(forRemoval = true)
-    default ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
+    ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
         @Parameter(description = "The author of the project to return members for") @PathVariable("author") String author,
         @Parameter(description = "The slug or id of the project to return members for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
-    ) {
-        return this.getProjectMembers(project, pagination);
-    }
+    );
 
     @Operation(
         summary = "Searches the projects on Hangar",
@@ -130,13 +126,11 @@ public interface IProjectsController {
 
     @GetMapping("/projects/{author}/{slugOrId}/stats")
     @Deprecated(forRemoval = true)
-    default ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@Parameter(description = "The author of the project to return stats for") @PathVariable String author,
+    ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@Parameter(description = "The author of the project to return stats for") @PathVariable String author,
                                                                  @Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
                                                                  @NotNull @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
                                                                  @NotNull @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
-    ) {
-        return this.getProjectStats(project, fromDate, toDate);
-    }
+    );
 
     @Operation(
         summary = "Returns the stargazers of a project",
@@ -158,13 +152,11 @@ public interface IProjectsController {
 
     @GetMapping("/projects/{author}/{slugOrId}/stargazers")
     @Deprecated(forRemoval = true)
-    default ResponseEntity<PaginatedResult<User>> getProjectStargazers(
+    ResponseEntity<PaginatedResult<User>> getProjectStargazers(
         @Parameter(description = "The author of the project to return stargazers for") @PathVariable("author") String author,
         @Parameter(description = "The slug or id of the project to return stargazers for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
-    ) {
-        return this.getProjectStargazers(project, pagination);
-    }
+    );
 
     @Operation(
         summary = "Returns the watchers of a project",
@@ -186,11 +178,9 @@ public interface IProjectsController {
 
     @GetMapping("/projects/{author}/{slugOrId}/watchers")
     @Deprecated(forRemoval = true)
-    default ResponseEntity<PaginatedResult<User>> getProjectWatchers(
+    ResponseEntity<PaginatedResult<User>> getProjectWatchers(
         @Parameter(description = "The author of the project to return watchers for") @PathVariable("author") String author,
         @Parameter(description = "The slug or id of the project to return watchers for") @PathVariable("slugOrId") ProjectTable project,
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
-    ) {
-        return this.getProjectWatchers(project, pagination);
-    }
+    );
 }
