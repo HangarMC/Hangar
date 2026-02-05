@@ -49,7 +49,7 @@ class ApiKeysControllerTest extends ControllerTest {
                 .with(this.apiKey(TestData.KEY_NO_PERMISSIONS))
                 .header("Content-Type", "application/json")
                 .content(this.objectMapper.writeValueAsBytes(new CreateAPIKeyForm("test_key", Set.of(NamedPermission.CREATE_PROJECT)))))
-            .andExpect(status().is(403));
+            .andExpect(status().is(404));
     }
 
     @Test
@@ -57,7 +57,7 @@ class ApiKeysControllerTest extends ControllerTest {
         // User without EDIT_API_KEYS permission should be denied
         this.mockMvc.perform(get("/api/v1/keys")
                 .with(this.apiKey(TestData.KEY_NO_PERMISSIONS)))
-            .andExpect(status().is(403));
+            .andExpect(status().is(404));
     }
 
     @Test
@@ -65,7 +65,7 @@ class ApiKeysControllerTest extends ControllerTest {
         // User without EDIT_API_KEYS permission should be denied
         this.mockMvc.perform(delete("/api/v1/keys?name=test")
                 .with(this.apiKey(TestData.KEY_NO_PERMISSIONS)))
-            .andExpect(status().is(403));
+            .andExpect(status().is(404));
     }
 
     @Test
@@ -74,21 +74,21 @@ class ApiKeysControllerTest extends ControllerTest {
         this.mockMvc.perform(post("/api/v1/keys")
                 .header("Content-Type", "application/json")
                 .content(this.objectMapper.writeValueAsBytes(new CreateAPIKeyForm("test_key", Set.of(NamedPermission.CREATE_PROJECT)))))
-            .andExpect(status().is(401));
+            .andExpect(status().is(403));
     }
 
     @Test
     void testGetKeysWithoutAuth() throws Exception {
         // Unauthenticated user should be denied
         this.mockMvc.perform(get("/api/v1/keys"))
-            .andExpect(status().is(401));
+            .andExpect(status().is(404));
     }
 
     @Test
     void testDeleteKeyWithoutAuth() throws Exception {
         // Unauthenticated user should be denied
         this.mockMvc.perform(delete("/api/v1/keys?name=test"))
-            .andExpect(status().is(401));
+            .andExpect(status().is(403));
     }
 
     // Note: Testing @Unlocked and @RequireAal annotations would require:

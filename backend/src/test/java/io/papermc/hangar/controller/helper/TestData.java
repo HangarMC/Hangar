@@ -69,6 +69,7 @@ public class TestData {
     public static String KEY_SEE_HIDDEN;
     public static String KEY_PROJECT_OWNER;
     public static String KEY_NO_PERMISSIONS;
+    public static String KEY_BANNED;
 
     public static OrganizationTable ORG;
 
@@ -158,6 +159,7 @@ public class TestData {
         KEY_SEE_HIDDEN = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("See Hidden", Set.of(NamedPermission.SEE_HIDDEN)), Permission.All);
         KEY_PROJECT_OWNER = this.apiKeyService.createApiKey(USER_PROJECT_OWNER, new CreateAPIKeyForm("Project Owner", Set.of(NamedPermission.values())), Permission.All);
         KEY_NO_PERMISSIONS = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("No Permissions", Set.of()), Permission.None);
+        KEY_BANNED = this.apiKeyService.createApiKey(USER_BANNED, new CreateAPIKeyForm("No Permissions", Set.of(NamedPermission.VIEW_PUBLIC_INFO, NamedPermission.EDIT_OWN_USER_SETTINGS, NamedPermission.EDIT_API_KEYS)), Permission.All);
 
         this.userService.toggleStarred(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);
         this.userService.toggleWatching(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);

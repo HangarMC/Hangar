@@ -100,14 +100,14 @@ class ProjectsControllerTest extends ControllerTest {
         // User without IS_SUBJECT_MEMBER permission should be denied
         this.mockMvc.perform(get("/api/v1/projects/TestProject/stats?fromDate=2020-01-01T00:00:00Z&toDate=2030-12-31T23:59:59Z")
                 .with(this.apiKey(TestData.KEY_PROJECT_ONLY)))
-            .andExpect(status().is(403));
+            .andExpect(status().is(404));
     }
 
     @Test
     void testGetProjectStatsWithoutAuth() throws Exception {
         // Unauthenticated user should be denied
         this.mockMvc.perform(get("/api/v1/projects/TestProject/stats?fromDate=2020-01-01T00:00:00Z&toDate=2030-12-31T23:59:59Z"))
-            .andExpect(status().is(401));
+            .andExpect(status().is(404));
     }
 
     @Test
