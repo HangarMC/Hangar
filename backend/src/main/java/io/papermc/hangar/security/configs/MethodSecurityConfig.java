@@ -1,68 +1,54 @@
 package io.papermc.hangar.security.configs;
 
-import io.papermc.hangar.security.HangarMetadataSources;
-import io.papermc.hangar.security.HangarUnanimousBased;
-import java.util.ArrayList;
+import io.papermc.hangar.security.authorization.AalAuthorizationManager;
+import io.papermc.hangar.security.authorization.CurrentUserAuthorizationManager;
+import io.papermc.hangar.security.authorization.HangarUnanimousAuthorizationManager;
+import io.papermc.hangar.security.authorization.PermissionRequiredAuthorizationManager;
+import io.papermc.hangar.security.authorization.PrivilegedAuthorizationManager;
+import io.papermc.hangar.security.authorization.UnlockedAuthorizationManager;
+import io.papermc.hangar.security.authorization.VisibilityRequiredAuthorizationManager;
 import java.util.List;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.aop.Advisor;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.annotation.AnnotationMetadataExtractor;
-import org.springframework.security.access.annotation.Jsr250Voter;
-import org.springframework.security.access.expression.method.ExpressionBasedPreInvocationAdvice;
-import org.springframework.security.access.method.MethodSecurityMetadataSource;
-import org.springframework.security.access.prepost.PreInvocationAuthorizationAdviceVoter;
-import org.springframework.security.access.vote.AuthenticatedVoter;
-import org.springframework.security.access.vote.RoleVoter;
-import org.springframework.security.access.vote.UnanimousBased;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.context.annotation.Role;
+import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 @Configuration
 @AutoConfigureBefore(SecurityConfig.class)
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+public class MethodSecurityConfig {
 
-    private final ApplicationContext applicationContext;
-    private final List<AnnotationMetadataExtractor> annotationMetadataExtractors;
-    private final List<AccessDecisionVoter<?>> accessDecisionVoters;
-
-    @Autowired
-    public MethodSecurityConfig(final ApplicationContext applicationContext, final List<AnnotationMetadataExtractor> annotationMetadataExtractors, final List<AccessDecisionVoter<?>> accessDecisionVoters) {
-        this.applicationContext = applicationContext;
-        this.annotationMetadataExtractors = annotationMetadataExtractors;
-        this.accessDecisionVoters = accessDecisionVoters;
-    }
-
-    @Override
-    protected MethodSecurityMetadataSource customMethodSecurityMetadataSource() {
-        return new HangarMetadataSources(this.annotationMetadataExtractors);
-    }
-
-    @Override
-    protected AccessDecisionManager accessDecisionManager() {
-        final List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
-        final ExpressionBasedPreInvocationAdvice expressionAdvice =
-            new ExpressionBasedPreInvocationAdvice();
-        expressionAdvice.setExpressionHandler(this.getExpressionHandler());
-        decisionVoters.add(new PreInvocationAuthorizationAdviceVoter(expressionAdvice));
-        decisionVoters.add(new Jsr250Voter());
-        final RoleVoter roleVoter = new RoleVoter();
-        try {
-            final GrantedAuthorityDefaults grantedAuthorityDefaults = this.applicationContext.getBean(GrantedAuthorityDefaults.class);
-            roleVoter.setRolePrefix(grantedAuthorityDefaults.getRolePrefix());
-        } catch (final BeansException ignored) {
-        }
-        decisionVoters.add(roleVoter);
-        decisionVoters.add(new AuthenticatedVoter());
-        decisionVoters.addAll(this.accessDecisionVoters);
-        final UnanimousBased accessDecisionManager = new HangarUnanimousBased(decisionVoters);
-        accessDecisionManager.setAllowIfAllAbstainDecisions(true);
-        return accessDecisionManager;
+    /**
+     * Creates a method interceptor for our custom authorization logic.
+     * This interceptor is applied to all methods and checks custom annotations.
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public Advisor customAuthorizationMethodInterceptor(
+            PermissionRequiredAuthorizationManager permissionRequiredAuthorizationManager,
+            PrivilegedAuthorizationManager privilegedAuthorizationManager,
+            UnlockedAuthorizationManager unlockedAuthorizationManager,
+            AalAuthorizationManager aalAuthorizationManager,
+            CurrentUserAuthorizationManager currentUserAuthorizationManager,
+            VisibilityRequiredAuthorizationManager visibilityRequiredAuthorizationManager) {
+        
+        // Create a unanimous-based authorization manager with all custom managers
+        AuthorizationManager<MethodInvocation> authorizationManager = new HangarUnanimousAuthorizationManager(List.of(
+            permissionRequiredAuthorizationManager,
+            privilegedAuthorizationManager,
+            unlockedAuthorizationManager,
+            aalAuthorizationManager,
+            currentUserAuthorizationManager,
+            visibilityRequiredAuthorizationManager
+        ));
+        
+        // Create and return the method interceptor
+        return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(authorizationManager);
     }
 }
