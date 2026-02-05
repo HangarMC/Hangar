@@ -1,9 +1,9 @@
-package io.papermc.hangar.security.authorization;
+package io.papermc.hangar.security.annotations.visibility;
 
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
-import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
+import io.papermc.hangar.security.authorization.HangarAuthorizationManager;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.versions.VersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVersionVisibilityService;

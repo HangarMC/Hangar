@@ -1,10 +1,10 @@
-package io.papermc.hangar.security.authorization;
+package io.papermc.hangar.security.annotations.currentuser;
 
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
-import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
+import io.papermc.hangar.security.authorization.HangarAuthorizationManager;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import org.aopalliance.intercept.MethodInvocation;

@@ -1,12 +1,12 @@
-package io.papermc.hangar.security.authorization;
+package io.papermc.hangar.security.annotations.permission;
 
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
-import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
+import io.papermc.hangar.security.authorization.HangarAuthorizationManager;
 import io.papermc.hangar.service.PermissionService;
 import java.lang.reflect.Method;
 import java.util.Arrays;

@@ -1,8 +1,8 @@
-package io.papermc.hangar.security.authorization;
+package io.papermc.hangar.security.annotations.unlocked;
 
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
+import io.papermc.hangar.security.authorization.HangarAuthorizationManager;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import org.aopalliance.intercept.MethodInvocation;
@@ -13,23 +13,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 /**
- * Authorization manager for {@link RequireAal} annotation.
- * Requires the user to have a minimum Account Authentication Level (AAL).
+ * Authorization manager for {@link Unlocked} annotation.
+ * Requires the user account to not be locked.
  */
 @Component
-public class AalAuthorizationManager extends HangarAuthorizationManager {
+public class UnlockedAuthorizationManager extends HangarAuthorizationManager {
 
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation methodInvocation) {
-        // Check if method or class has @RequireAal annotation
+        // Check if method or class has @Unlocked annotation
         Method method = methodInvocation.getMethod();
         Class<?> targetClass = methodInvocation.getThis() != null ? methodInvocation.getThis().getClass() : method.getDeclaringClass();
         
-        RequireAal methodAnnotation = AnnotationUtils.findAnnotation(method, RequireAal.class);
-        RequireAal classAnnotation = AnnotationUtils.findAnnotation(targetClass, RequireAal.class);
-        RequireAal annotation = methodAnnotation != null ? methodAnnotation : classAnnotation;
+        boolean hasAnnotation = AnnotationUtils.findAnnotation(method, Unlocked.class) != null ||
+                               AnnotationUtils.findAnnotation(targetClass, Unlocked.class) != null;
         
-        if (annotation == null) {
+        if (!hasAnnotation) {
             // Abstain if annotation not present
             return null;
         }
@@ -39,13 +38,8 @@ public class AalAuthorizationManager extends HangarAuthorizationManager {
             return denied();
         }
         
-        final int aal = ((HangarAuthenticationToken) auth).getPrincipal().getAal();
-        if (aal < annotation.value()) {
-            if (annotation.value() == 1) {
-                throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.aal1");
-            } else {
-                throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.aal2");
-            }
+        if (((HangarAuthenticationToken) auth).getPrincipal().isLocked()) {
+            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.userLocked");
         }
         
         return granted();

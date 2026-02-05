@@ -1,15 +1,11 @@
 package io.papermc.hangar.security.configs;
 
-import io.papermc.hangar.security.authorization.AalAuthorizationManager;
-import io.papermc.hangar.security.authorization.CurrentUserAuthorizationManager;
+import io.papermc.hangar.security.authorization.HangarAuthorizationManager;
 import io.papermc.hangar.security.authorization.HangarUnanimousAuthorizationManager;
-import io.papermc.hangar.security.authorization.PermissionRequiredAuthorizationManager;
-import io.papermc.hangar.security.authorization.PrivilegedAuthorizationManager;
-import io.papermc.hangar.security.authorization.UnlockedAuthorizationManager;
-import io.papermc.hangar.security.authorization.VisibilityRequiredAuthorizationManager;
 import java.util.List;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Advisor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.context.annotation.Bean;
@@ -27,26 +23,16 @@ public class MethodSecurityConfig {
     /**
      * Creates a method interceptor for our custom authorization logic.
      * This interceptor is applied to all methods and checks custom annotations.
+     * All HangarAuthorizationManager beans are automatically autowired and included.
      */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public Advisor customAuthorizationMethodInterceptor(
-            PermissionRequiredAuthorizationManager permissionRequiredAuthorizationManager,
-            PrivilegedAuthorizationManager privilegedAuthorizationManager,
-            UnlockedAuthorizationManager unlockedAuthorizationManager,
-            AalAuthorizationManager aalAuthorizationManager,
-            CurrentUserAuthorizationManager currentUserAuthorizationManager,
-            VisibilityRequiredAuthorizationManager visibilityRequiredAuthorizationManager) {
+            @Autowired List<HangarAuthorizationManager> authorizationManagers) {
         
         // Create a unanimous-based authorization manager with all custom managers
-        AuthorizationManager<MethodInvocation> authorizationManager = new HangarUnanimousAuthorizationManager(List.of(
-            permissionRequiredAuthorizationManager,
-            privilegedAuthorizationManager,
-            unlockedAuthorizationManager,
-            aalAuthorizationManager,
-            currentUserAuthorizationManager,
-            visibilityRequiredAuthorizationManager
-        ));
+        AuthorizationManager<MethodInvocation> authorizationManager = 
+            new HangarUnanimousAuthorizationManager(authorizationManagers);
         
         // Create and return the method interceptor
         return AuthorizationManagerBeforeMethodInterceptor.preAuthorize(authorizationManager);

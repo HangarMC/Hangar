@@ -1,8 +1,8 @@
-package io.papermc.hangar.security.authorization;
+package io.papermc.hangar.security.annotations.privileged;
 
 import io.papermc.hangar.exceptions.HangarApiException;
-import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.authentication.HangarAuthenticationToken;
+import io.papermc.hangar.security.authorization.HangarAuthorizationManager;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import org.aopalliance.intercept.MethodInvocation;
@@ -13,20 +13,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 /**
- * Authorization manager for {@link Unlocked} annotation.
- * Requires the user account to not be locked.
+ * Authorization manager for {@link Privileged} annotation.
+ * Requires the user to be logged in AND unlocked.
  */
 @Component
-public class UnlockedAuthorizationManager extends HangarAuthorizationManager {
+public class PrivilegedAuthorizationManager extends HangarAuthorizationManager {
 
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation methodInvocation) {
-        // Check if method or class has @Unlocked annotation
+        // Check if method or class has @Privileged annotation
         Method method = methodInvocation.getMethod();
         Class<?> targetClass = methodInvocation.getThis() != null ? methodInvocation.getThis().getClass() : method.getDeclaringClass();
         
-        boolean hasAnnotation = AnnotationUtils.findAnnotation(method, Unlocked.class) != null ||
-                               AnnotationUtils.findAnnotation(targetClass, Unlocked.class) != null;
+        boolean hasAnnotation = AnnotationUtils.findAnnotation(method, Privileged.class) != null ||
+                               AnnotationUtils.findAnnotation(targetClass, Privileged.class) != null;
         
         if (!hasAnnotation) {
             // Abstain if annotation not present
@@ -38,8 +38,8 @@ public class UnlockedAuthorizationManager extends HangarAuthorizationManager {
             return denied();
         }
         
-        if (((HangarAuthenticationToken) auth).getPrincipal().isLocked()) {
-            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.userLocked");
+        if (!((HangarAuthenticationToken) auth).getPrincipal().isPrivileged()) {
+            throw new HangarApiException(HttpStatus.UNAUTHORIZED, "error.privileged");
         }
         
         return granted();
