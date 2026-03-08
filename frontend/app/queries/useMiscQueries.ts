@@ -1,4 +1,4 @@
-import type { NamedPermission, ApiKey, HangarReview, JarScanResult, ProjectOwner, SettingsResponse, VersionInfo  } from "#shared/types/backend";
+import type { NamedPermission, ApiKey, HangarReview, JarScanResult, ProjectOwner, SettingsResponse, VersionInfo } from "#shared/types/backend";
 
 export function useVersionInfoQuery() {
   return useQuery({
