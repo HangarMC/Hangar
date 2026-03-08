@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Hangar is a **plugin repository platform** for Paper, Velocity, and Waterfall Minecraft server plugins. It is the community-maintained successor to [Ore](https://github.com/SpongePowered/Ore), rebuilt from scratch with modern technologies.
+Hangar is a **plugin repository platform** for Paper, Velocity, and Waterfall Minecraft server plugins. It is inspired by [Ore](https://github.com/SpongePowered/Ore), rebuilt from scratch with modern technologies, for PaperMC's needs.
 
 - **Production**: https://hangar.papermc.io/
 - **Staging**: https://hangar.papermc.dev/
