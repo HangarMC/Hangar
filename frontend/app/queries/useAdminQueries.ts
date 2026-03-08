@@ -5,7 +5,6 @@ import type {
   PaginatedResultHangarProjectFlag,
   ReviewQueue,
 } from "#shared/types/backend";
-import type { Router } from "vue-router";
 
 export function useAdminStatsQuery(params: () => { from: string; to: string }) {
   return useQuery({
@@ -48,11 +47,19 @@ export function useVersionApprovalsQuery() {
 }
 
 export function useActionLogsQuery(
-  params: () => { limit: number; offset: number; sort: string[]; user?: string; logAction?: string; authorName?: string; projectSlug?: string },
-  router?: Router
+  params: () => { limit: number; offset: number; sort: string[]; user?: string; logAction?: string; authorName?: string; projectSlug?: string }
 ) {
   return useQuery({
-    key: () => ["actionLogs", params().offset, params().sort, params().user, params().logAction, params().authorName, params().projectSlug] as const,
+    key: () =>
+      [
+        "actionLogs",
+        params().offset,
+        params().sort,
+        params().user ?? "",
+        params().logAction ?? "",
+        params().authorName ?? "",
+        params().projectSlug ?? "",
+      ] as const,
     query: () => useInternalApi<PaginatedResultHangarLoggedAction>("admin/log", "get", params()),
     staleTime: 30_000,
   });

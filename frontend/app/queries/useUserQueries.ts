@@ -1,8 +1,4 @@
-import type {
-  PaginatedResultUser,
-  OrganizationRoleTable,
-  User,
-} from "#shared/types/backend";
+import type { PaginatedResultUser, OrganizationRoleTable, User } from "#shared/types/backend";
 import { NamedPermission } from "#shared/types/backend";
 
 export function useOrganizationVisibilityQuery(user: () => string) {
@@ -41,7 +37,7 @@ export function useUserQuery(userName: () => string) {
 
 export function useUsersQuery(params: () => { query?: string; limit?: number; offset?: number; sort?: string[] }) {
   return useQuery({
-    key: () => ["users", params().query, params().offset, params().sort] as const,
+    key: () => ["users", params().query ?? "", params().offset ?? 0, params().sort ?? []] as const,
     query: () => useApi<PaginatedResultUser>("users", "get", params()),
     staleTime: 30_000,
   });
@@ -49,7 +45,7 @@ export function useUsersQuery(params: () => { query?: string; limit?: number; of
 
 export function useStaffQuery(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
   return useQuery({
-    key: () => ["staff", params().offset, params().sort, params().query] as const,
+    key: () => ["staff", params().offset ?? 0, params().sort ?? [], params().query ?? ""] as const,
     query: () => useApi<PaginatedResultUser>("staff", "GET", params()),
     staleTime: 60_000,
   });
@@ -57,7 +53,7 @@ export function useStaffQuery(params: () => { offset?: number; limit?: number; s
 
 export function useAuthorsQuery(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
   return useQuery({
-    key: () => ["authors", params().offset, params().sort, params().query] as const,
+    key: () => ["authors", params().offset ?? 0, params().sort ?? [], params().query ?? ""] as const,
     query: () => useApi<PaginatedResultUser>("authors", "GET", params()),
     staleTime: 60_000,
   });

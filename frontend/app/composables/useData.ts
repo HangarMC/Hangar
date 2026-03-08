@@ -1,13 +1,5 @@
 import type { Router } from "vue-router";
-import type {
-  ApiKey,
-  Invites,
-  PaginatedResultHangarNotification,
-  PaginatedResultProject,
-  PaginatedResultVersion,
-  ProjectOwner,
-  Platform,
-} from "#shared/types/backend";
+import type { PaginatedResultProject, PaginatedResultVersion, ProjectOwner, Platform } from "#shared/types/backend";
 
 type LegacyStatus = "idle" | "loading" | "success" | "error";
 
@@ -44,9 +36,9 @@ export function useProjects(
     tag?: string[];
     sort?: string;
   },
-  router?: Router
+  _router?: Router
 ) {
-  const q = useProjectsQuery(params, router);
+  const q = useProjectsQuery(params);
   return { projects: q.data as Ref<PaginatedResultProject | undefined>, projectsStatus: mapStatus(q), refreshProjects: () => q.refetch() };
 }
 
@@ -87,7 +79,12 @@ export function useUnreadNotifications() {
 
 export function useReadNotifications() {
   const q = useReadNotificationsQuery();
-  return { readNotifications: q.data, readNotificationsStatus: mapStatus(q) };
+  const queryCache = useQueryCache();
+  const readNotifications = computed({
+    get: () => q.data.value,
+    set: (val) => queryCache.setQueryData(["readNotifications"], val),
+  });
+  return { readNotifications, readNotificationsStatus: mapStatus(q) };
 }
 
 export function useUnreadCount() {
@@ -187,9 +184,9 @@ export function useUsers(params: () => { query?: string; limit?: number; offset?
 
 export function useActionLogs(
   params: () => { limit: number; offset: number; sort: string[]; user?: string; logAction?: string; authorName?: string; projectSlug?: string },
-  router?: Router
+  _router?: Router
 ) {
-  const q = useActionLogsQuery(params, router);
+  const q = useActionLogsQuery(params);
   return { actionLogs: q.data, actionLogsStatus: mapStatus(q) };
 }
 
@@ -235,9 +232,9 @@ export function useProjectFlags(project: () => string) {
 
 export function useProjectVersions(
   params: () => { project: string; data: { limit: number; offset: number; channel: string[]; platform: Platform[]; includeHiddenChannels: boolean } },
-  router: Router
+  _router: Router
 ) {
-  const q = useProjectVersionsQuery(params, router);
+  const q = useProjectVersionsQuery(params);
   return { versions: q.data as Ref<PaginatedResultVersion | undefined>, versionsStatus: mapStatus(q) };
 }
 

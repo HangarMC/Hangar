@@ -1,7 +1,4 @@
-import type {
-  PaginatedResultHangarNotification,
-  Invites,
-} from "#shared/types/backend";
+import type { PaginatedResultHangarNotification, Invites } from "#shared/types/backend";
 
 export function useUnreadNotificationsQuery() {
   return useQuery({

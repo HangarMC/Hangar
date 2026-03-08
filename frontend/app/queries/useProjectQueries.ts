@@ -1,4 +1,3 @@
-import type { Router } from "vue-router";
 import type {
   HangarChannel,
   HangarProjectFlag,
@@ -23,12 +22,10 @@ export function useProjectsQuery(
     platform?: Platform[];
     tag?: string[];
     sort?: string;
-  },
-  router?: Router
+  }
 ) {
-  const p = params();
   return useQuery({
-    key: () => ["projects", params().member || params().owner || "main", params().offset] as const,
+    key: () => ["projects", params().member || params().owner || "main", params().offset ?? 0] as const,
     query: () => useApi<PaginatedResultProject>("projects", "get", { ...params() }),
     staleTime: 30_000,
   });
@@ -83,10 +80,11 @@ export function useProjectFlagsQuery(project: () => string) {
 }
 
 export function useProjectVersionsQuery(
-  params: () => { project: string; data: { limit: number; offset: number; channel: string[]; platform: Platform[]; includeHiddenChannels: boolean } },
-  router: Router
+  params: () => {
+    project: string;
+    data: { limit: number; offset: number; channel: string[]; platform: Platform[]; includeHiddenChannels: boolean };
+  }
 ) {
-  const p = params();
   return useQuery({
     key: () =>
       ["versions", params().project, params().data.offset, params().data.channel, params().data.platform, params().data.includeHiddenChannels] as const,
@@ -97,8 +95,11 @@ export function useProjectVersionsQuery(
 
 export function usePageQuery(params: () => { project: string; path?: string }) {
   return useQuery({
-    key: () => ["page", params().project, params().path] as const,
-    query: () => useInternalApi<ProjectPageTable>(`pages/page/${params().project}` + (params().path ? "/" + params().path.replaceAll(",", "/") : "")),
+    key: () => ["page", params().project, params().path ?? ""] as const,
+    query: () => {
+      const p = params();
+      return useInternalApi<ProjectPageTable>(`pages/page/${p.project}` + (p.path ? "/" + p.path.replaceAll(",", "/") : ""));
+    },
     staleTime: 60_000,
   });
 }
