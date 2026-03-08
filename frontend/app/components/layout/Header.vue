@@ -86,7 +86,7 @@ function markNotificationsRead() {
 function markNotificationRead(notification: HangarNotification) {
   if (!notification.read) {
     notification.read = true;
-    unreadCount.value.notifications--;
+    unreadCount.value = { ...unreadCount.value, notifications: unreadCount.value.notifications - 1 };
     loadedUnreadNotifications.value--;
     useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
   }

@@ -1,53 +1,26 @@
 import type { Router } from "vue-router";
-import { NamedPermission } from "#shared/types/backend";
-import type {
-  FinishedOrPendingHealthReport,
-  ApiKey,
-  DayStats,
-  HangarChannel,
-  HangarProjectFlag,
-  HangarProjectNote,
-  HangarReview,
-  Invites,
-  JarScanResult,
-  OrganizationRoleTable,
-  PaginatedResultHangarLoggedAction,
-  PaginatedResultHangarNotification,
-  PaginatedResultHangarProjectFlag,
-  PaginatedResultProject,
-  PaginatedResultProjectCompact,
-  PaginatedResultUser,
-  PaginatedResultVersion,
-  ProjectCompact,
-  ProjectOwner,
-  ReviewQueue,
-  SettingsResponse,
-  User,
-  VersionInfo,
-  ProjectPageTable,
-  Platform,
-} from "#shared/types/backend";
+import type { PaginatedResultProject, PaginatedResultVersion, ProjectOwner, Platform } from "#shared/types/backend";
+
+type LegacyStatus = "idle" | "loading" | "success" | "error";
+
+// Maps Pinia Colada's status/asyncStatus to the legacy status values used by consumers
+function mapStatus(queryReturn: { asyncStatus: { value: string }; status: { value: string } }): ComputedRef<LegacyStatus> {
+  return computed(() => {
+    if (queryReturn.asyncStatus.value === "loading") return "loading";
+    if (queryReturn.status.value === "success") return "success";
+    if (queryReturn.status.value === "error") return "error";
+    return "idle";
+  });
+}
 
 export function useOrganizationVisibility(user: () => string) {
-  const { data: organizationVisibility, status: organizationVisibilityStatus } = useData(
-    user,
-    (u) => "organizationVisibility:" + u,
-    (u) => useInternalApi<{ [key: string]: boolean }>(`organizations/${u}/userOrganizationsVisibility`),
-    false,
-    (u) => u !== useAuthStore().user?.name
-  );
-  return { organizationVisibility, organizationVisibilityStatus };
+  const q = useOrganizationVisibilityQuery(user);
+  return { organizationVisibility: q.data, organizationVisibilityStatus: mapStatus(q) };
 }
 
 export function usePossibleAlts(user: () => string) {
-  const { data: possibleAlts, status: possibleAltsStatus } = useData(
-    user,
-    (u) => "possibleAlts:" + u,
-    (u) => useInternalApi<string[]>(`users/${u}/alts`),
-    false,
-    () => !hasPerms(NamedPermission.IsStaff)
-  );
-  return { possibleAlts, possibleAltsStatus };
+  const q = usePossibleAltsQuery(user);
+  return { possibleAlts: q.data, possibleAltsStatus: mapStatus(q) };
 }
 
 export function useProjects(
@@ -63,388 +36,219 @@ export function useProjects(
     tag?: string[];
     sort?: string;
   },
-  router?: Router
+  _router?: Router
 ) {
-  const {
-    data: projects,
-    status: projectsStatus,
-    refresh: refreshProjects,
-  } = useData(
-    params,
-    (p) => "projects:" + (p.member || p.owner || "main") + ":" + p.offset,
-    (p) => useApi<PaginatedResultProject>("projects", "get", { ...p }),
-    true,
-    () => false,
-    ({ offset, limit, member, ...paramsWithoutLimit }) => {
-      if (router) {
-        const oldQuery = router.currentRoute.value.query;
-        router.replace({ query: { ...oldQuery, page: offset && limit ? Math.floor(offset / limit) : undefined, ...paramsWithoutLimit } });
-      }
-    }
-  );
-  return { projects, projectsStatus, refreshProjects };
+  const q = useProjectsQuery(params);
+  return { projects: q.data as Ref<PaginatedResultProject | undefined>, projectsStatus: mapStatus(q), refreshProjects: () => q.refetch() };
 }
 
 export function useStarred(user: () => string) {
-  const { data: starred, status: starredStatus } = useData(
-    user,
-    (u) => "starred:" + u,
-    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/starred`)
-  );
-  return { starred, starredStatus };
+  const q = useStarredQuery(user);
+  return { starred: q.data, starredStatus: mapStatus(q) };
 }
 
 export function useWatching(user: () => string) {
-  const { data: watching, status: watchingStatus } = useData(
-    user,
-    (u) => "watching:" + u,
-    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/watching`)
-  );
-  return { watching, watchingStatus };
+  const q = useWatchingQuery(user);
+  return { watching: q.data, watchingStatus: mapStatus(q) };
 }
 
 export function usePinned(user: () => string) {
-  const { data: pinned, status: pinnedStatus } = useData(
-    user,
-    (u) => "pinned:" + u,
-    (u) => useApi<ProjectCompact[]>(`users/${u}/pinned`)
-  );
-  return { pinned, pinnedStatus };
+  const q = usePinnedQuery(user);
+  return { pinned: q.data, pinnedStatus: mapStatus(q) };
 }
 
 export function useOrganizations(user: () => string) {
-  const { data: organizations, status: organizationsStatus } = useData(
-    user,
-    (u) => "organizations:" + u,
-    (u) => useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${u}/userOrganizations`)
-  );
-  return { organizations, organizationsStatus };
+  const q = useOrganizationsQuery(user);
+  return { organizations: q.data, organizationsStatus: mapStatus(q) };
 }
 
 export function useVersionInfo() {
-  const { data: version, status: versionStatus } = useData(
-    () => ({}),
-    () => "versionInfo",
-    () => useInternalApi<VersionInfo>(`data/version-info`)
-  );
-  return { version, versionStatus };
+  const q = useVersionInfoQuery();
+  return { version: q.data, versionStatus: mapStatus(q) };
 }
 
 export function useUnreadNotifications() {
-  const { data: unreadNotifications, status: unreadNotificationsStatus } = useData(
-    () => ({}),
-    () => "unreadNotifications",
-    () => useInternalApi<PaginatedResultHangarNotification>("unreadnotifications")
-  );
-  return { unreadNotifications, unreadNotificationsStatus };
+  const q = useUnreadNotificationsQuery();
+  const queryCache = useQueryCache();
+  const unreadNotifications = computed({
+    get: () => q.data.value,
+    set: (val) => queryCache.setQueryData(["unreadNotifications"], val),
+  });
+  return { unreadNotifications, unreadNotificationsStatus: mapStatus(q) };
 }
 
 export function useReadNotifications() {
-  const { data: readNotifications, status: readNotificationsStatus } = useData(
-    () => ({}),
-    () => "readNotifications",
-    () => useInternalApi<PaginatedResultHangarNotification>("readnotifications")
-  );
-  return { readNotifications, readNotificationsStatus };
+  const q = useReadNotificationsQuery();
+  const queryCache = useQueryCache();
+  const readNotifications = computed({
+    get: () => q.data.value,
+    set: (val) => queryCache.setQueryData(["readNotifications"], val),
+  });
+  return { readNotifications, readNotificationsStatus: mapStatus(q) };
 }
 
 export function useUnreadCount() {
-  const authStore = useAuthStore();
-  const {
-    data: unreadCount,
-    status: unreadCountStatus,
-    refresh: refreshUnreadCount,
-  } = useData(
-    () => ({}),
-    () => "unreadCount",
-    () => useInternalApi<{ notifications: number; invites: number }>("unreadcount"),
-    false,
-    () => !authStore.user,
-    () => {},
-    authStore.user?.headerData?.unreadCount
-  );
-  // TODO a default value should change the type so that this cast isnt needed
-  return { unreadCount: unreadCount as Ref<{ notifications: number; invites: number }>, unreadCountStatus, refreshUnreadCount };
+  const q = useUnreadCountQuery();
+  // Provide a safe default so consumers don't need to handle undefined
+  const unreadCount = computed({
+    get: () => q.data.value ?? { notifications: 0, invites: 0 },
+    set: (val) => {
+      // Allow consumers to update the value optimistically
+      const queryCache = useQueryCache();
+      queryCache.setQueryData(["unreadCount"], val);
+    },
+  });
+  return { unreadCount, unreadCountStatus: mapStatus(q), refreshUnreadCount: () => q.refetch() };
 }
 
 export function useNotifications() {
-  const { data: notifications, status: notificationsStatus } = useData(
-    () => ({}),
-    () => "notifications",
-    () => useInternalApi<PaginatedResultHangarNotification>("notifications")
-  );
-  return { notifications, notificationsStatus };
+  const q = useNotificationsQuery();
+  const queryCache = useQueryCache();
+  const notifications = computed({
+    get: () => q.data.value,
+    set: (val) => queryCache.setQueryData(["notifications"], val),
+  });
+  return { notifications, notificationsStatus: mapStatus(q) };
 }
 
 export function useInvites() {
-  const { data: invites, status: invitesStatus } = useData(
-    () => ({}),
-    () => "invites",
-    () => useInternalApi<Invites>("invites")
-  );
-  return { invites, invitesStatus };
+  const q = useInvitesQuery();
+  const queryCache = useQueryCache();
+  const invites = computed({
+    get: () => q.data.value,
+    set: (val) => queryCache.setQueryData(["invites"], val),
+  });
+  return { invites, invitesStatus: mapStatus(q) };
 }
 
 export function usePossibleOwners() {
-  const { data: projectOwners, status: projectOwnersStatus } = useData(
-    () => ({}),
-    () => "possibleOwners",
-    () => useInternalApi<ProjectOwner[]>("projects/possibleOwners"),
-    true,
-    () => false,
-    () => {},
-    []
-  );
-  // TODO a default value should change the type so that this cast isnt needed
-  return { projectOwners: projectOwners as Ref<ProjectOwner[]>, projectOwnersStatus };
+  const q = usePossibleOwnersQuery();
+  const projectOwners = computed(() => q.data.value ?? ([] as ProjectOwner[]));
+  return { projectOwners, projectOwnersStatus: mapStatus(q) };
 }
 
 export function useAuthSettings() {
-  const {
-    data: authSettings,
-    status: authSettingsStatus,
-    refresh: refreshAuthSettings,
-  } = useData(
-    () => ({}),
-    () => "authSettings",
-    () => useInternalApi<SettingsResponse>(`auth/settings`, "POST")
-  );
-  return { authSettings, authSettingsStatus, refreshAuthSettings };
+  const q = useAuthSettingsQuery();
+  return { authSettings: q.data, authSettingsStatus: mapStatus(q), refreshAuthSettings: () => q.refetch() };
 }
 
 export function useApiKeys(user: () => string) {
-  const { data: apiKeys, status: apiKeysStatus } = useData(
-    user,
-    (u) => "apiKeys:" + u,
-    (u) => useInternalApi<ApiKey[]>("api-keys/existing-keys/" + u)
-  );
-  return { apiKeys, apiKeysStatus };
+  const q = useApiKeysQuery(user);
+  const queryCache = useQueryCache();
+  const apiKeys = computed({
+    get: () => q.data.value,
+    set: (val) => queryCache.setQueryData(["apiKeys", user()], val),
+  });
+  return { apiKeys, apiKeysStatus: mapStatus(q) };
 }
 
 export function usePossiblePerms(user: () => string) {
-  const { data: possiblePerms, status: possiblePermsStatus } = useData(
-    user,
-    (u) => "possiblePerms:" + u,
-    (u) => useInternalApi<NamedPermission[]>("api-keys/possible-perms/" + u)
-  );
-  return { possiblePerms, possiblePermsStatus };
+  const q = usePossiblePermsQuery(user);
+  return { possiblePerms: q.data, possiblePermsStatus: mapStatus(q) };
 }
 
 export function useAdminStats(params: () => { from: string; to: string }) {
-  const { data: adminStats, status: adminStatsStatus } = useData(
-    params,
-    (p) => "adminStats:" + p.from + ":" + p.to,
-    (p) => useInternalApi<DayStats[]>("admin/stats", "get", p)
-  );
-  return { adminStats, adminStatsStatus };
+  const q = useAdminStatsQuery(params);
+  return { adminStats: q.data, adminStatsStatus: mapStatus(q) };
 }
 
 export function useHealthReport() {
-  const {
-    data: healthReport,
-    status: healthReportStatus,
-    refresh: healthReportRefresh,
-  } = useData(
-    () => ({}),
-    () => "healthReport",
-    () => useInternalApi<FinishedOrPendingHealthReport>("health/", "GET")
-  );
-  return { healthReport, healthReportStatus, healthReportRefresh };
+  const q = useHealthReportQuery();
+  return { healthReport: q.data, healthReportStatus: mapStatus(q), healthReportRefresh: () => q.refetch() };
 }
 
 export function useResolvedFlags() {
-  const { data: flags, status: flagsStatus } = useData(
-    () => ({}),
-    () => "resolvedFlags",
-    () => useInternalApi<PaginatedResultHangarProjectFlag>("flags/resolved")
-  );
-  return { flags, flagsStatus };
+  const q = useResolvedFlagsQuery();
+  return { flags: q.data, flagsStatus: mapStatus(q) };
 }
 
 export function useUnresolvedFlags() {
-  const { data: flags, status: flagsStatus } = useData(
-    () => ({}),
-    () => "unresolvedFlags",
-    () => useInternalApi<PaginatedResultHangarProjectFlag>("flags/unresolved")
-  );
-  return { flags, flagsStatus };
+  const q = useUnresolvedFlagsQuery();
+  return { flags: q.data, flagsStatus: mapStatus(q) };
 }
 
 export function useVersionApprovals() {
-  const { data: versionApprovals, status: versionApprovalsStatus } = useData(
-    () => ({}),
-    () => "versionApprovals",
-    () => useInternalApi<ReviewQueue>("admin/approval/versions")
-  );
-  return { versionApprovals, versionApprovalsStatus };
+  const q = useVersionApprovalsQuery();
+  return { versionApprovals: q.data, versionApprovalsStatus: mapStatus(q) };
 }
 
 export function useUser(userName: () => string) {
-  const {
-    data: user,
-    status: userStatus,
-    refresh: refreshUser,
-  } = useData(
-    userName,
-    (u) => "user:" + u,
-    (u) => useApi<User>("users/" + u)
-  );
-  return { user, userStatus, refreshUser };
+  const q = useUserQuery(userName);
+  return { user: q.data, userStatus: mapStatus(q), refreshUser: () => q.refetch() };
 }
 
 export function useUsers(params: () => { query?: string; limit?: number; offset?: number; sort?: string[] }) {
-  const { data: users, status: usersStatus } = useData(
-    params,
-    (p) => "users:" + p.query + ":" + p.offset + ":" + p.sort,
-    (p) => useApi<PaginatedResultUser>("users", "get", p)
-  );
-  return { users, usersStatus };
+  const q = useUsersQuery(params);
+  return { users: q.data, usersStatus: mapStatus(q) };
 }
 
 export function useActionLogs(
   params: () => { limit: number; offset: number; sort: string[]; user?: string; logAction?: string; authorName?: string; projectSlug?: string },
-  router?: Router
+  _router?: Router
 ) {
-  const { data: actionLogs, status: actionLogsStatus } = useData(
-    params,
-    (p) => "actionLogs:" + p.offset + ":" + p.sort + ":" + p.user + ":" + p.logAction + ":" + p.authorName + ":" + p.projectSlug,
-    (p) => useInternalApi<PaginatedResultHangarLoggedAction>("admin/log", "get", p),
-    true,
-    () => false,
-    ({ offset, limit, ...paramsWithoutLimit }) => {
-      if (router) {
-        const oldQuery = router.currentRoute.value.query;
-        router.replace({ query: { ...oldQuery, ...paramsWithoutLimit } });
-      }
-    }
-  );
-  return { actionLogs, actionLogsStatus };
+  const q = useActionLogsQuery(params);
+  return { actionLogs: q.data, actionLogsStatus: mapStatus(q) };
 }
 
 export function useStaff(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
-  const { data: staff, status: staffStatus } = useData(
-    params,
-    (p) => "staff:" + p.offset + ":" + p.sort + ":" + p.query,
-    (p) => useApi<PaginatedResultUser>("staff", "GET", p)
-  );
-  return { staff, staffStatus };
+  const q = useStaffQuery(params);
+  return { staff: q.data, staffStatus: mapStatus(q) };
 }
 
 export function useAuthors(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
-  const { data: authors, status: authorStatus } = useData(
-    params,
-    (p) => "authors:" + p.offset + ":" + p.sort + ":" + p.query,
-    (p) => useApi<PaginatedResultUser>("authors", "GET", p)
-  );
-  return { authors, authorStatus };
+  const q = useAuthorsQuery(params);
+  return { authors: q.data, authorStatus: mapStatus(q) };
 }
 
 export function useWatchers(project: () => string) {
-  const { data: watchers, status: watchersStatus } = useData(
-    project,
-    (p) => "watchers:" + p,
-    (p) => useApi<PaginatedResultUser>(`projects/${p}/watchers`)
-  );
-  return { watchers, watchersStatus };
+  const q = useWatchersQuery(project);
+  return { watchers: q.data, watchersStatus: mapStatus(q) };
 }
 
 export function useStargazers(project: () => string) {
-  const { data: stargazers, status: stargazersStatus } = useData(
-    project,
-    (p) => "stargazers:" + p,
-    (p) => useApi<PaginatedResultUser>(`projects/${p}/stargazers`)
-  );
-  return { stargazers, stargazersStatus };
+  const q = useStargazersQuery(project);
+  return { stargazers: q.data, stargazersStatus: mapStatus(q) };
 }
 
 export function useProjectChannels(project: () => string) {
-  const {
-    data: channels,
-    status: channelsStatus,
-    refresh: refreshChannels,
-    promise: channelPromise,
-  } = useData(
-    project,
-    (p) => "channels:" + p,
-    (p) => useInternalApi<(HangarChannel & { temp?: boolean })[]>(`channels/${p}`)
-  );
-  return { channels, channelsStatus, refreshChannels, channelPromise };
+  const q = useProjectChannelsQuery(project);
+  return {
+    channels: q.data,
+    channelsStatus: mapStatus(q),
+    refreshChannels: () => q.refetch(),
+    channelPromise: undefined as Promise<void> | undefined,
+  };
 }
 
 export function useProjectNotes(project: () => string) {
-  const {
-    data: notes,
-    status: notesStatus,
-    refresh: refreshNotes,
-  } = useData(
-    project,
-    (p) => "notes:" + p,
-    (p) => useInternalApi<HangarProjectNote[]>("projects/notes/" + p)
-  );
-  return { notes, notesStatus, refreshNotes };
+  const q = useProjectNotesQuery(project);
+  return { notes: q.data, notesStatus: mapStatus(q), refreshNotes: () => q.refetch() };
 }
 
 export function useProjectFlags(project: () => string) {
-  const { data: flags, status: flagsStatus } = useData(
-    project,
-    (p) => "flags:" + p,
-    (p) => useInternalApi<HangarProjectFlag[]>("flags/" + p)
-  );
-  return { flags, flagsStatus };
+  const q = useProjectFlagsQuery(project);
+  return { flags: q.data, flagsStatus: mapStatus(q) };
 }
 
 export function useProjectVersions(
   params: () => { project: string; data: { limit: number; offset: number; channel: string[]; platform: Platform[]; includeHiddenChannels: boolean } },
-  router: Router
+  _router: Router
 ) {
-  const { data: versions, status: versionsStatus } = useData(
-    params,
-    (p) => "versions:" + p.project + ":" + p.data.offset + ":" + p.data.channel + ":" + p.data.platform + ":" + p.data.includeHiddenChannels,
-    (p) => useApi<PaginatedResultVersion>(`projects/${p.project}/versions`, "GET", p.data),
-    true,
-    () => false,
-    ({ data }) => {
-      const { offset, limit, channel, platform } = data;
-      if (router) {
-        const oldQuery = router.currentRoute.value.query;
-        router.replace({ query: { ...oldQuery, page: offset && limit ? Math.floor(offset / limit) : undefined, channel, platform } });
-      }
-    }
-  );
-  return { versions, versionsStatus };
+  const q = useProjectVersionsQuery(params);
+  return { versions: q.data as Ref<PaginatedResultVersion | undefined>, versionsStatus: mapStatus(q) };
 }
 
 export function usePage(params: () => { project: string; path?: string }) {
-  const { data: page, status: pageStatus } = useData(
-    params,
-    (p) => "page:" + p.project + ":" + p.path,
-    (p) => useInternalApi<ProjectPageTable>(`pages/page/${p.project}` + (p.path ? "/" + p.path.replaceAll(",", "/") : ""))
-  );
-  return { page, pageStatus };
+  const q = usePageQuery(params);
+  return { page: q.data, pageStatus: mapStatus(q) };
 }
 
 export function useReviews(version: () => string) {
-  const {
-    data: reviews,
-    status: reviewsStatus,
-    refresh: refreshReviews,
-  } = useData(
-    version,
-    (v) => "reviews:" + v,
-    (v) => useInternalApi<HangarReview[]>(`reviews/${v}/reviews`)
-  );
-  return { reviews, reviewsStatus, refreshReviews };
+  const q = useReviewsQuery(version);
+  return { reviews: q.data, reviewsStatus: mapStatus(q), refreshReviews: () => q.refetch() };
 }
 
 export function useJarScans(version: () => string) {
-  const {
-    data: jarScans,
-    status: jarScansStatus,
-    refresh: refreshJarScans,
-  } = useData(
-    version,
-    (v) => "jarScans:" + v,
-    (v) => useInternalApi<JarScanResult[]>(`jarscanning/result/${v}`)
-  );
-  return { jarScans, jarScansStatus, refreshJarScans };
+  const q = useJarScansQuery(version);
+  return { jarScans: q.data, jarScansStatus: mapStatus(q), refreshJarScans: () => q.refetch() };
 }
