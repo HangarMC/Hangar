@@ -124,14 +124,18 @@ export default defineNuxtConfig({
         "accept-language-parser", // CJS
         "qs", // CJS
         "universal-cookie",
-        "easymde", // CJS
+        "easymde",
         "filesize",
         "github-slugger",
         "marked",
         "marked-linkify-it",
         "marked-extended-tables",
         "marked-alert",
-        "prismjs", // CJS
+        "prismjs",
+        "@headlessui/vue",
+        "@vuelidate/core",
+        "@vuelidate/validators",
+        "lodash-es",
       ],
     },
   },

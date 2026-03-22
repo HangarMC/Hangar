@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 
-import type { RouteLocationRaw, RouteMap } from "vue-router";
+import type { RouteLocationRaw } from "vue-router";
+import type { RouteNamedMap } from "vue-router/auto-routes";
 import hangarLogo from "~/assets/hangar-logo.svg";
 
 import IconMdiHome from "~icons/mdi/home";
@@ -38,7 +39,7 @@ const notifications = ref<HangarNotification[]>([]);
 const { unreadCount, refreshUnreadCount } = useUnreadCount();
 const loadedUnreadNotifications = ref<number>(0);
 
-type NavBarLinks = { link: keyof RouteMap; label: string; icon?: any }[];
+type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
 
 const navBarLinks: NavBarLinks = [
   { link: "index", label: t("nav.indexTitle") },
