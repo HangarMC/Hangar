@@ -115,7 +115,24 @@ export default defineNuxtConfig({
       },
     },
     optimizeDeps: {
-      include: ["dompurify", "debug", "nprogress", "axios", "jwt-decode", "accept-language-parser", "qs", "universal-cookie"],
+      include: [
+        "dompurify",
+        "debug", // CJS
+        "nprogress", // CJS
+        "axios",
+        "jwt-decode",
+        "accept-language-parser", // CJS
+        "qs", // CJS
+        "universal-cookie",
+        "easymde", // CJS
+        "filesize",
+        "github-slugger",
+        "marked",
+        "marked-linkify-it",
+        "marked-extended-tables",
+        "marked-alert",
+        "prismjs", // CJS
+      ],
     },
   },
   build: {
