@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ProjectPublishedEvent.class, name = ProjectPublishedEvent.TYPE),
     @JsonSubTypes.Type(value = VersionPublishedEvent.class, name = VersionPublishedEvent.TYPE),
+    @JsonSubTypes.Type(value = ProjectFlaggedEvent.class, name = ProjectFlaggedEvent.TYPE),
 })
 public abstract class WebhookEvent {
 
