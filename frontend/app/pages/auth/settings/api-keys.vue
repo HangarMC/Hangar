@@ -29,15 +29,13 @@ async function create() {
   }).catch((err) => handleRequestError(err));
   if (key) {
     createdKey.value = key;
-    if (!apiKeys.value) {
-      apiKeys.value = [];
-    }
-    apiKeys.value.unshift({
+    const newKey = {
       tokenIdentifier: key.slice(0, Math.max(0, key.indexOf("."))),
       name: name.value,
       permissions: selectedPerms.value,
       createdAt: new Date().toISOString(),
-    });
+    };
+    apiKeys.value = [newKey, ...(apiKeys.value ?? [])];
     const val = name.value;
     name.value = "";
     selectedPerms.value = [];
@@ -52,7 +50,7 @@ async function deleteKey(key: ApiKey) {
   await useInternalApi(`api-keys/delete-key/${auth.user?.name}`, "post", {
     content: key.name,
   }).catch((err) => handleRequestError(err));
-  apiKeys.value = apiKeys.value?.filter((k) => k.name !== key.name);
+  apiKeys.value = (apiKeys.value ?? []).filter((k) => k.name !== key.name);
   notification.success(i18n.t("apiKeys.success.delete", [key.name]));
   loadingDelete[key.name] = false;
 }

@@ -58,17 +58,23 @@ useSeo(computed(() => ({ title: "Notifications", route })));
 async function markAllAsRead() {
   await useInternalApi(`markallread`, "post").catch((err) => handleRequestError(err));
   if (!unreadNotifications.value) return;
-  unreadNotifications.value.result = [];
-  unreadNotifications.value.pagination.limit = 0;
-  unreadNotifications.value.pagination.offset = 0;
-  unreadNotifications.value.pagination.count = 0;
+  unreadNotifications.value = {
+    ...unreadNotifications.value,
+    result: [],
+    pagination: { ...unreadNotifications.value.pagination, limit: 0, offset: 0, count: 0 },
+  };
 }
 
 async function markNotificationRead(notification: HangarNotification, push = true) {
   await useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
   notification.read = true;
-  if (!notifications.value) return;
-  notifications.value.result = notifications.value.result.filter((n) => n !== notification);
+  // Update the source data based on selected tab
+  const source = selectedTab.value === "unread" ? unreadNotifications : (selectedTab.value === "read" ? readNotifications : allNotifications);
+  if (!source.value) return;
+  source.value = {
+    ...source.value,
+    result: source.value.result.filter((n) => n !== notification),
+  };
   if (notification.action && push) {
     await router.push(notification.action);
   }
@@ -80,11 +86,13 @@ async function updateInvite(invite: (HangarOrganizationInvite | HangarProjectInv
     invite.accepted = true;
   } else {
     if (!invites.value) return;
-    if (invite.type === InviteType.Project) {
-      invites.value.project = invites.value.project.filter((i) => i.roleId !== invite.roleId);
-    } else {
-      invites.value.organization = invites.value.organization.filter((i) => i.roleId !== invite.roleId);
-    }
+    invites.value = invite.type === InviteType.Project ? {
+        ...invites.value,
+        project: invites.value.project.filter((i) => i.roleId !== invite.roleId),
+      } : {
+        ...invites.value,
+        organization: invites.value.organization.filter((i) => i.roleId !== invite.roleId),
+      };
   }
   notificationStore.success(i18n.t(`notifications.invite.msgs.${status}`, [invite.name]));
 }

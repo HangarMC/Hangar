@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     },
   ],
   imports: {
-    dirs: ["store"],
+    dirs: ["store", "queries"],
     presets: [
       {
         from: "@vuelidate/core",
@@ -56,6 +56,7 @@ export default defineNuxtConfig({
   modules: [
     "@unocss/nuxt",
     "@pinia/nuxt",
+    "@pinia/colada-nuxt",
     "@vueuse/nuxt",
     "@nuxt/eslint",
     "@nuxtjs/i18n",

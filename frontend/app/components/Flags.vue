@@ -19,7 +19,8 @@ function resolve(flag: HangarProjectFlag) {
           handleRequestError(err)
         );
         if (newFlags) {
-          flags.value = newFlags;
+          const queryCache = useQueryCache();
+          queryCache.setQueryData([props.resolved ? "resolvedFlags" : "unresolvedFlags"], newFlags);
         }
       }
     })
