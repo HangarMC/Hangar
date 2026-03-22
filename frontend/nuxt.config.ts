@@ -114,6 +114,9 @@ export default defineNuxtConfig({
         },
       },
     },
+    optimizeDeps: {
+      include: ["dompurify", "debug", "nprogress", "axios", "jwt-decode", "accept-language-parser", "qs", "universal-cookie"],
+    },
   },
   build: {
     transpile: ["form-data"],
