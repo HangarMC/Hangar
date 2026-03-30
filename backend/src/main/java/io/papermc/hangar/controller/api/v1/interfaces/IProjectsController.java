@@ -43,6 +43,7 @@ public interface IProjectsController {
     @GetMapping("/projects/{slugOrId}")
     ResponseEntity<Project> getProject(@Parameter(description = "The slug or id or id of the project to return") @PathVariable("slugOrId") ProjectTable project);
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}")
     @Deprecated(forRemoval = true)
     ResponseEntity<Project> getProject(@Parameter(description = "The author of the project to return") @PathVariable String author,
@@ -80,6 +81,7 @@ public interface IProjectsController {
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     );
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/members")
     @Deprecated(forRemoval = true)
     ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
@@ -124,6 +126,7 @@ public interface IProjectsController {
                                                                  @NotNull @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
     );
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/stats")
     @Deprecated(forRemoval = true)
     ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@Parameter(description = "The author of the project to return stats for") @PathVariable String author,
@@ -150,6 +153,7 @@ public interface IProjectsController {
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     );
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/stargazers")
     @Deprecated(forRemoval = true)
     ResponseEntity<PaginatedResult<User>> getProjectStargazers(
@@ -176,6 +180,7 @@ public interface IProjectsController {
         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
     );
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/watchers")
     @Deprecated(forRemoval = true)
     ResponseEntity<PaginatedResult<User>> getProjectWatchers(

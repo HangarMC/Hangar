@@ -61,6 +61,7 @@ public interface IVersionsController {
                        @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false, name = "files") @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
                        @Parameter(description = "Version data. See the VersionUpload schema for more info") @RequestPart("versionUpload") @Valid VersionUpload versionUpload);
 
+    @Operation(deprecated = true)
     @PostMapping(path = "/projects/{author}/{slugOrId}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Deprecated(forRemoval = true)
     UploadedVersion uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
@@ -84,6 +85,7 @@ public interface IVersionsController {
     Version getVersion(@Parameter(description = "The slug or id of the project to return the version for") @PathVariable("slugOrId") ProjectTable project,
                        @Parameter(description = "The name or id of the version to return") @PathVariable("nameOrId") ProjectVersionTable version);
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/versions/{nameOrId}")
     @Deprecated(forRemoval = true)
     Version getVersion(@Parameter(description = "The author of the project to return the version for") @PathVariable String author,
@@ -122,6 +124,7 @@ public interface IVersionsController {
                                          @Parameter(description = "Pagination information") @NotNull RequestPagination pagination,
                                          @Parameter(description = "Whether to include hidden-by-default channels in the result, defaults to true") boolean includeHiddenChannels);
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/versions")
     @Deprecated(forRemoval = true)
     PaginatedResult<Version> getVersions(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
@@ -143,6 +146,7 @@ public interface IVersionsController {
     @GetMapping(value = "/projects/{slugOrId}/latestrelease", produces = MediaType.TEXT_PLAIN_VALUE)
     String getLatestReleaseVersion(@Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project);
 
+    @Operation(deprecated = true)
     @GetMapping(value = "/projects/{author}/{slugOrId}/latestrelease", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
     String getLatestReleaseVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
@@ -164,6 +168,7 @@ public interface IVersionsController {
     String getLatestVersion(@Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project,
                             @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel);
 
+    @Operation(deprecated = true)
     @GetMapping(value = "/projects/{author}/{slugOrId}/latest", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
     String getLatestVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
@@ -188,6 +193,7 @@ public interface IVersionsController {
                                               @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
                                               @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/versions/{nameOrId}/stats")
     @Deprecated(forRemoval = true)
     Map<String, VersionStats> getVersionStats(@Parameter(description = "The author of the version to return the stats for") @PathVariable String author,
@@ -234,6 +240,7 @@ public interface IVersionsController {
                              HttpServletResponse response
     );
 
+    @Operation(deprecated = true)
     @GetMapping(value = "/projects/{author}/{slugOrId}/versions/{nameOrId}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @Deprecated(forRemoval = true)
     ResponseEntity<?> downloadVersion(@Parameter(description = "The author of the project to download the version from") @PathVariable String author,

@@ -37,6 +37,7 @@ public interface IPagesController {
     @GetMapping(value = "/pages/main/{project}", produces = MediaType.TEXT_PLAIN_VALUE)
     String getMainPage(@Parameter(description = "The slug or id of the project to return the page for") @PathVariable ProjectTable project);
 
+    @Operation(deprecated = true)
     @GetMapping(value = "/pages/main/{author}/{project}", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
     String getMainPage(@Parameter(description = "The author of the project to return the page for") @PathVariable String author,
@@ -57,6 +58,7 @@ public interface IPagesController {
     String getPage(@Parameter(description = "The slug or id of the project to return the page for") @PathVariable ProjectTable project,
                    @Parameter(description = "The path of the page") @RequestParam String path);
 
+    @Operation(deprecated = true)
     @GetMapping(value = "/pages/page/{author}/{project}", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
     String getPage(@Parameter(description = "The author of the project to return the page for") @PathVariable String author,
@@ -79,6 +81,7 @@ public interface IPagesController {
     void editMainPage(@Parameter(description = "The slug or id of the project to change the page for") @PathVariable ProjectTable project,
                       @Parameter(description = "The path and new contents of the page") @RequestBody StringContent pageEditForm);
 
+    @Operation(deprecated = true)
     @PatchMapping(path = "/pages/editmain/{author}/{project}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Deprecated(forRemoval = true)
     void editMainPage(@Parameter(description = "The author of the project to change the page for") @PathVariable String author,
@@ -101,6 +104,7 @@ public interface IPagesController {
     void editPage(@Parameter(description = "The slug or id of the project to change the page for") @PathVariable ProjectTable project,
                   @Parameter(description = "The path and new contents of the page") @RequestBody PageEditForm pageEditForm);
 
+    @Operation(deprecated = true)
     @PatchMapping(path = "/pages/edit/{author}/{project}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Deprecated(forRemoval = true)
     void editPage(@Parameter(description = "The author of the project to change the page for") @PathVariable String author,
