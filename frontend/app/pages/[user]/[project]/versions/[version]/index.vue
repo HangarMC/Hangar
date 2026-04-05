@@ -377,7 +377,7 @@ async function restoreVersion() {
                 <ul>
                   <li v-for="dep in sortedDependencies(platform)" :key="dep.name">
                     <Link
-                      :href="dep.externalUrl || ('/api/internal/projects/project-redirect/' + dep.name)"
+                      :href="dep.externalUrl || '/api/internal/projects/project-redirect/' + dep.name"
                       :target="dep.externalUrl ? '_blank' : undefined"
                       class="font-normal ml-1"
                     >
