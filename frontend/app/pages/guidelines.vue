@@ -13,7 +13,7 @@ const text = `
 Remember that these are just guidelines and that the Hangar team may choose to allow or disallow an action that is not
 explicitly listed here at our own discretion.
 
-In general, our [Community Guidelines](https://papermc.io/community-guidelines) also apply to resources submitted on
+In general, our [Community Guidelines](https://papermc.io/community/guidelines) also apply to resources submitted on
 Hangar.
 
 ## Resource Updates
