@@ -104,7 +104,7 @@
     "pnpm": "10.33.0",
     "prettier": "3.8.1",
     "sass": "1.99.0",
-    "typescript": "5.9.3",
+    "typescript": "6.0.3",
     "ufo": "1.6.3",
     "unplugin-icons": "23.0.1",
     "unplugin-vue-components": "32.0.0",
