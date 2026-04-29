@@ -192,7 +192,7 @@ jobs:
 
       - name: Build and push frontend Dockerfile
         if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.deploy == 'true' }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: chart/dockerfiles/frontend/Dockerfile
@@ -214,7 +214,7 @@ jobs:
 
       - name: Build and push backend Dockerfile
         if: ${{ steps.vars.outputs.build_backend == 'true' && steps.vars.outputs.deploy == 'true' }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: chart/dockerfiles/backend/Dockerfile
