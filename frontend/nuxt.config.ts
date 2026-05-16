@@ -78,13 +78,6 @@ export default defineNuxtConfig({
     defaultLocale: "en",
     locales: loadLocales(),
     detectBrowserLanguage: false,
-    compilation: {
-      strictMessage: false,
-    },
-    bundle: {
-      runtimeOnly: true,
-      dropMessageCompiler: true,
-    },
   },
   vite: {
     plugins: [
@@ -166,7 +159,7 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    preset: "bun",
+    preset: "node_server",
     compressPublicAssets: true,
     timing: false,
   },
