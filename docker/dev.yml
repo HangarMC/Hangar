@@ -19,7 +19,7 @@ services:
       - "7700:7700"
     environment:
       MEILI_NO_ANALYTICS: "true"
-      MEILI_TASK_WEBHOOK_URL: "http://192.168.178.34:8080/api/internal/meili/webhook"
+      MEILI_TASK_WEBHOOK_URL: "http://172.17.0.1:8080/api/internal/meili/webhook"
     volumes:
       - meilisearch_data:/meili_data
 

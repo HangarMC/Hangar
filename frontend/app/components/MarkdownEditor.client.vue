@@ -109,7 +109,7 @@ async function startEditing() {
       delay: 300,
     },
     maxHeight: props.maxHeight,
-    previewClass: ["prose", "markdown", "background-default"],
+    previewClass: ["prose", "dark:prose-invert", "markdown", "background-default"],
     previewRender: (markdownPlaintext, previewElement) => {
       const html = useDomPurify(parseMarkdown(markdownPlaintext)?.html);
       previewElement.innerHTML = html;

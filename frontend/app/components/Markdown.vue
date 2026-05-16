@@ -53,7 +53,7 @@ watchPostEffect(async () => {
       </template>
     </DropdownButton>
   </div>
-  <div class="iframe-container prose max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
+  <div class="iframe-container prose dark:prose-invert max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-html="renderedMarkdown.html" />
   </div>
