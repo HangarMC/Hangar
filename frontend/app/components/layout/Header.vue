@@ -87,7 +87,7 @@ function markNotificationsRead() {
 function markNotificationRead(notification: HangarNotification) {
   if (!notification.read) {
     notification.read = true;
-    unreadCount.value.notifications--;
+    unreadCount && unreadCount.value.notifications--;
     loadedUnreadNotifications.value--;
     useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
   }
@@ -247,7 +247,7 @@ function isRecent(date: string): boolean {
               class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
               aria-label="Notifications"
               @click="updateNotifications"
-              v-on="useTracking('nav-notifications', () => ({ unread: unreadCount?.notifications + unreadCount?.invites }))"
+              v-on="useTracking('nav-notifications', () => ({ unread: unreadCount ? unreadCount.notifications + unreadCount.invites : -1 }))"
             >
               <IconMdiBellOutline v-show="!unreadCount || unreadCount.notifications + unreadCount.invites === 0" class="text-[1.2em]" />
               <div v-show="unreadCount && unreadCount.notifications + unreadCount.invites !== 0" class="relative">
@@ -261,7 +261,7 @@ function isRecent(date: string): boolean {
             <template #content="{ close }">
               <ClientOnly>
                 <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-500 background-default filter shadow-default overflow-auto max-w-150">
-                  <div v-if="unreadCount.invites != 0">
+                  <div v-if="unreadCount?.invites">
                     <span class="flex shadow-0 p-2 pb-0 mt-2 ml-3 mr-2">
                       <Link class="font-bold" to="/notifications" @click="close()">
                         {{ i18n.t("notifications.invitesPending", [unreadCount.invites]) }}
@@ -303,7 +303,7 @@ function isRecent(date: string): boolean {
                   </div>
                   <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
                     <Link to="/notifications" @click="close()">
-                      <span :class="loadedUnreadNotifications >= unreadCount.notifications ? 'font-normal' : ''">
+                      <span v-if="unreadCount" :class="loadedUnreadNotifications >= unreadCount.notifications ? 'font-normal' : ''">
                         {{
                           loadedUnreadNotifications >= unreadCount.notifications
                             ? i18n.t("notifications.viewAll")
