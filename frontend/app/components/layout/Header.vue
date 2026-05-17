@@ -247,10 +247,10 @@ function isRecent(date: string): boolean {
               class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
               aria-label="Notifications"
               @click="updateNotifications"
-              v-on="useTracking('nav-notifications', { unread: unreadCount.notifications + unreadCount.invites })"
+              v-on="useTracking('nav-notifications', () => ({ unread: unreadCount?.notifications + unreadCount?.invites }))"
             >
-              <IconMdiBellOutline v-show="unreadCount.notifications + unreadCount.invites === 0" class="text-[1.2em]" />
-              <div v-show="unreadCount.notifications + unreadCount.invites !== 0" class="relative">
+              <IconMdiBellOutline v-show="!unreadCount || unreadCount.notifications + unreadCount.invites === 0" class="text-[1.2em]" />
+              <div v-show="unreadCount && unreadCount.notifications + unreadCount.invites !== 0" class="relative">
                 <!-- This is fine:tm: -->
                 <IconMdiBellBadge class="text-[1.2em]" />
                 <svg class="absolute top-0.6 left-3.3" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
