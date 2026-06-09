@@ -2,6 +2,7 @@
 import type { Step } from "#shared/types/components/design/Steps";
 import type { Tab } from "#shared/types/components/design/Tabs";
 import type { HangarChannel, HangarProject, PendingVersion, Platform, PlatformData } from "#shared/types/backend";
+import { guidelinesLastUpdated } from "~/pages/guidelines.vue";
 
 definePageMeta({
   projectPermsRequired: ["CreateVersion"],
@@ -320,9 +321,19 @@ useSeo(
             </div>
           </div>
         </div>
-        <Button :disabled="!!globalData?.platforms?.length && platformFiles.length >= globalData.platforms.length" @click="addPlatformFile()">
+        <Button class="mb-2" :disabled="!!globalData?.platforms?.length && platformFiles.length >= globalData.platforms.length" @click="addPlatformFile()">
           <IconMdiPlus /> Add file/url for another platform
         </Button>
+
+        <Alert class="my-4">
+          <Link to="/guidelines" class="color-white! font-medium!">
+            {{ i18n.t("project.new.step1.text2") }}
+          </Link>
+          <Tooltip>
+            <template #content><PrettyTime :time="guidelinesLastUpdated" long /> </template>
+            <span class="text-gray-300">&nbsp;(Last updated <PrettyTime :time="guidelinesLastUpdated" short-relative />)</span>
+          </Tooltip>
+        </Alert>
       </template>
       <template #basic>
         <p class="mb-4">{{ i18n.t("version.new.form.versionDescription") }}</p>

@@ -90,8 +90,8 @@ hangar:
     - "Other"
 
   update-tasks:
-    homepage: 2m
-    version-downloads: 2m
+    homepage: 10m
+    version-downloads: 10m
     project-views: 10m
     project-index: 10m
     version-index: 10m
@@ -117,8 +117,8 @@ hangar:
 
   projects:
     max-name-len: 28
-    max-version-name-len: 30
-    max-license-name-len: 15
+    max-version-name-len: 32
+    max-license-name-len: 20
     max-dependencies: 100
     max-pages: 50
     max-bbcode-len: 40000
@@ -238,10 +238,6 @@ hangar:
     cdn-endpoint: "http://127.0.0.1:9000"
     cdn-include-bucket: true
 
-  cors:
-    allowed-hosts:
-      - api.spigotmc.org
-
   image:
     quality: 0.75
     size: 256
@@ -270,6 +266,7 @@ logging:
   level:
     root: INFO
     org.springframework: INFO
+    #org.springframework.web: DEBUG
     org.springframework.context.support.PostProcessorRegistrationDelegate: ERROR
     io.papermc.hangar.service.internal.JobService: DEBUG
     http-client-logger: INFO

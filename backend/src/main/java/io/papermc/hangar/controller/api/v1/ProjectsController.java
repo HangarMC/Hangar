@@ -55,6 +55,12 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public ResponseEntity<Project> getProject(final String author, final ProjectTable project) {
+        return ResponseEntity.ok(this.projectsApiService.getProject(project.getId()));
+    }
+
+    @Override
     public ResponseEntity<Project> getProjectFromVersionHash(final String hash) {
         return ResponseEntity.ok(this.projectsApiService.getProjectForVersionHash(hash));
     }
@@ -62,6 +68,12 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final ProjectTable project, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectMembers(project, pagination));
+    }
+
+    @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final String author, final ProjectTable project, final @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectMembers(project, pagination));
     }
 
@@ -79,6 +91,12 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
     }
 
     @Override
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#project}")
+    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final String author, final ProjectTable project, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectStats(project, fromDate, toDate));
+    }
+
+    @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final ProjectTable project, final @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectStargazers(project, pagination));
@@ -86,7 +104,19 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final String author, final ProjectTable project, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectStargazers(project, pagination));
+    }
+
+    @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final ProjectTable project, final @NotNull RequestPagination pagination) {
+        return ResponseEntity.ok(this.projectsApiService.getProjectWatchers(project, pagination));
+    }
+
+    @Override
+    @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
+    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final String author, final ProjectTable project, final @NotNull RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectWatchers(project, pagination));
     }
 }

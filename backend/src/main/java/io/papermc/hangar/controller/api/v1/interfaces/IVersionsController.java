@@ -61,14 +61,13 @@ public interface IVersionsController {
                        @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false, name = "files") @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
                        @Parameter(description = "Version data. See the VersionUpload schema for more info") @RequestPart("versionUpload") @Valid VersionUpload versionUpload);
 
+    @Operation(deprecated = true)
     @PostMapping(path = "/projects/{author}/{slugOrId}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Deprecated(forRemoval = true)
-    default UploadedVersion uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
+    UploadedVersion uploadVersion(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
                         @Parameter(description = "The slug or id of the project to return versions for") @PathVariable("slugOrId") ProjectTable project,
                         @Parameter(description = "The version files in order of selected platforms, if any") @RequestPart(required = false) @Size(max = 3, message = "version.new.error.invalidNumOfPlatforms") List<@Valid MultipartFile> files,
-                        @RequestPart @Valid VersionUpload versionUpload) {
-       return this.uploadVersion(project, files, versionUpload);
-    }
+                        @RequestPart @Valid VersionUpload versionUpload);
 
     @Operation(
         summary = "Returns a specific version of a project",
@@ -86,13 +85,12 @@ public interface IVersionsController {
     Version getVersion(@Parameter(description = "The slug or id of the project to return the version for") @PathVariable("slugOrId") ProjectTable project,
                        @Parameter(description = "The name or id of the version to return") @PathVariable("nameOrId") ProjectVersionTable version);
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/versions/{nameOrId}")
     @Deprecated(forRemoval = true)
-    default Version getVersion(@Parameter(description = "The author of the project to return the version for") @PathVariable String author,
+    Version getVersion(@Parameter(description = "The author of the project to return the version for") @PathVariable String author,
                        @Parameter(description = "The slug or id of the project to return the version for") @PathVariable("slugOrId") ProjectTable project,
-                       @Parameter(description = "The name of the version to return") @PathVariable("nameOrId") ProjectVersionTable version) {
-        return this.getVersion(project, version);
-    }
+                       @Parameter(description = "The name of the version to return") @PathVariable("nameOrId") ProjectVersionTable version);
 
     @Operation(
         summary = "Returns a specific version by its ID",
@@ -126,13 +124,12 @@ public interface IVersionsController {
                                          @Parameter(description = "Pagination information") @NotNull RequestPagination pagination,
                                          @Parameter(description = "Whether to include hidden-by-default channels in the result, defaults to true") boolean includeHiddenChannels);
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/versions")
     @Deprecated(forRemoval = true)
-    default PaginatedResult<Version> getVersions(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
+    PaginatedResult<Version> getVersions(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
                                          @Parameter(description = "The slug or id of the project to return versions for") @PathVariable("slugOrId") ProjectTable project,
-                                         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination) {
-        return this.getVersions(project, pagination, true);
-    }
+                                         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
 
     @Operation(
         summary = "Returns the latest release version of a project",
@@ -149,12 +146,11 @@ public interface IVersionsController {
     @GetMapping(value = "/projects/{slugOrId}/latestrelease", produces = MediaType.TEXT_PLAIN_VALUE)
     String getLatestReleaseVersion(@Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project);
 
+    @Operation(deprecated = true)
     @GetMapping(value = "/projects/{author}/{slugOrId}/latestrelease", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
-    default String getLatestReleaseVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
-                                         @Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project) {
-        return this.getLatestReleaseVersion(project);
-    }
+    String getLatestReleaseVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
+                                         @Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project);
 
     @Operation(
         summary = "Returns the latest version of a project for a specific channel",
@@ -172,13 +168,12 @@ public interface IVersionsController {
     String getLatestVersion(@Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project,
                             @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel);
 
+    @Operation(deprecated = true)
     @GetMapping(value = "/projects/{author}/{slugOrId}/latest", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
-    default String getLatestVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
+    String getLatestVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
                             @Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project,
-                            @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel) {
-        return this.getLatestVersion(project, channel);
-    }
+                            @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel);
 
     @Operation(
         summary = "Returns the stats for a version",
@@ -198,15 +193,14 @@ public interface IVersionsController {
                                               @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
                                               @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
 
+    @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/versions/{nameOrId}/stats")
     @Deprecated(forRemoval = true)
-    default Map<String, VersionStats> getVersionStats(@Parameter(description = "The author of the version to return the stats for") @PathVariable String author,
+    Map<String, VersionStats> getVersionStats(@Parameter(description = "The author of the version to return the stats for") @PathVariable String author,
                                               @Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
                                               @Parameter(description = "The name or id of the version to return the stats for") @PathVariable("nameOrId") ProjectVersionTable version,
                                               @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
-                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate) {
-        return this.getVersionStats(project, version, fromDate, toDate);
-    }
+                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
 
     @Operation(
         summary = "Returns the stats for a version by its ID",
@@ -246,16 +240,15 @@ public interface IVersionsController {
                              HttpServletResponse response
     );
 
+    @Operation(deprecated = true)
     @GetMapping(value = "/projects/{author}/{slugOrId}/versions/{nameOrId}/{platform}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @Deprecated(forRemoval = true)
-    default ResponseEntity<?> downloadVersion(@Parameter(description = "The author of the project to download the version from") @PathVariable String author,
+    ResponseEntity<?> downloadVersion(@Parameter(description = "The author of the project to download the version from") @PathVariable String author,
                              @Parameter(description = "The slug or id of the project to download the version from") @PathVariable("slugOrId") ProjectTable project,
                              @Parameter(description = "The name of the version to download") @PathVariable("nameOrId") ProjectVersionTable version,
                              @Parameter(description = "The platform of the version to download") @PathVariable Platform platform,
                              HttpServletResponse response
-    ) {
-        return this.downloadVersion(project, version, platform, response);
-    }
+    );
 
     @Operation(
         summary = "Downloads a version by its ID",

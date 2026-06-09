@@ -2,6 +2,7 @@
 import type { Step } from "#shared/types/components/design/Steps";
 import { Category, Tag } from "#shared/types/backend";
 import type { NewProjectForm, ProjectSettingsForm } from "#shared/types/backend";
+import { guidelinesLastUpdated } from "~/pages/guidelines.vue";
 
 definePageMeta({
   loginRequired: true,
@@ -132,6 +133,10 @@ function createProject() {
           <Link to="/guidelines">
             {{ i18n.t("project.new.step1.text2") }}
           </Link>
+          <Tooltip>
+            <template #content><PrettyTime :time="guidelinesLastUpdated" long /> </template>
+            <span class="text-gray-400">(Last updated <PrettyTime :time="guidelinesLastUpdated" short-relative />)</span>
+          </Tooltip>
         </p>
       </div>
     </template>

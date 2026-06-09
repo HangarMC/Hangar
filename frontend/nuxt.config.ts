@@ -79,13 +79,6 @@ export default defineNuxtConfig({
     defaultLocale: "en",
     locales: loadLocales(),
     detectBrowserLanguage: false,
-    compilation: {
-      strictMessage: false,
-    },
-    bundle: {
-      runtimeOnly: true,
-      dropMessageCompiler: true,
-    },
   },
   vite: {
     plugins: [
@@ -115,6 +108,30 @@ export default defineNuxtConfig({
         },
       },
     },
+    optimizeDeps: {
+      include: [
+        "dompurify",
+        "debug", // CJS
+        "nprogress", // CJS
+        "axios",
+        "jwt-decode",
+        "accept-language-parser", // CJS
+        "qs", // CJS
+        "universal-cookie",
+        "easymde",
+        "filesize",
+        "github-slugger",
+        "marked",
+        "marked-linkify-it",
+        "marked-extended-tables",
+        "marked-alert",
+        "prismjs",
+        "@headlessui/vue",
+        "@vuelidate/core",
+        "@vuelidate/validators",
+        "lodash-es",
+      ],
+    },
   },
   build: {
     transpile: ["form-data"],
@@ -143,7 +160,7 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    preset: "bun",
+    preset: "node_server",
     compressPublicAssets: true,
     timing: false,
   },

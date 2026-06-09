@@ -6,12 +6,12 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 @JdbiRepository
 public interface SchedulerDAO {
 
-    @SqlUpdate("REFRESH MATERIALIZED VIEW home_projects")
+    @SqlUpdate("REFRESH MATERIALIZED VIEW CONCURRENTLY home_projects")
     void refreshHomeProjects();
 
-    @SqlUpdate("REFRESH MATERIALIZED VIEW version_stats_view")
+    @SqlUpdate("REFRESH MATERIALIZED VIEW CONCURRENTLY version_stats_view")
     void refreshVersionStatsView();
 
-    @SqlUpdate("REFRESH MATERIALIZED VIEW project_stats_view")
+    @SqlUpdate("REFRESH MATERIALIZED VIEW CONCURRENTLY project_stats_view")
     void refreshProjectStatsView();
 }

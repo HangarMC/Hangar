@@ -18,6 +18,9 @@ const value = defineModel<T, M>();
 // vue has readonly already :/
 // noinspection PointlessBooleanExpressionJS
 const isReadonly = computed(() => !!props.readonly);
+// vue has readonly already :/
+// noinspection PointlessBooleanExpressionJS
+const isReadonly = computed(() => !!props.readonly);
 
 const errorMessages = computed(() => props.errorMessages);
 const { v, errors, hasError } = useValidation(props.label, props.rules, value, errorMessages, false, props.readonly);
@@ -36,6 +39,7 @@ defineExpose({ validation: v });
     :label="label"
     :value="value"
     :disabled="disabled"
+    :readonly="isReadonly"
     :readonly="isReadonly"
     :no-error-tooltip="noErrorTooltip"
   >

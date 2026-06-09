@@ -11,7 +11,6 @@ import org.springframework.security.access.annotation.Secured;
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Secured("ROLE_USER")
 public @interface RequireAal {
 
     int value();

@@ -66,8 +66,8 @@ class UserControllerTest extends ControllerTest {
         this.mockMvc.perform(get("/api/v1/users?query=Test")
                         .with(this.apiKey(TestData.KEY_ADMIN)))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.pagination.count", is(4)))
-                .andExpect(jsonPath("$.result[*].name", contains("TestUser", "TestMember", "TestAdmin", TestData.USER_BANNED.getName())));
+                .andExpect(jsonPath("$.pagination.count", is(5)))
+                .andExpect(jsonPath("$.result[*].name", contains("TestUser", "TestMember", "TestAdmin", TestData.USER_BANNED.getName(), "TestOwner")));
     }
 
     @Test

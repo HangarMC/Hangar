@@ -48,6 +48,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.stereotype.Service;
@@ -66,10 +67,10 @@ public class ProjectService extends HangarComponent {
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
     private final AvatarService avatarService;
-    private final ConcurrentTaskExecutor taskExecutor;
+    private final TaskExecutor taskExecutor;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService, @Lazy final ConcurrentTaskExecutor taskExecutor) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService, @Lazy final TaskExecutor taskScheduler) {
         this.projectsDAO = projectDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
@@ -79,7 +80,7 @@ public class ProjectService extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
         this.avatarService = avatarService;
-        this.taskExecutor = taskExecutor;
+        this.taskExecutor = taskScheduler;
     }
 
     public @Nullable ProjectTable getProjectTable(final @Nullable Long projectId) {
@@ -165,7 +166,7 @@ public class ProjectService extends HangarComponent {
     }
 
     private <T> CompletableFuture<T> supply(final Supplier<T> supplier) {
-        return CompletableFuture.supplyAsync(supplier, taskExecutor);
+        return CompletableFuture.supplyAsync(supplier, this.taskExecutor);
     }
 
     /**

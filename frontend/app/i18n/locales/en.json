@@ -46,6 +46,7 @@
       "org": "GitHub",
       "terms": "Terms and Conditions",
       "privacypolicy": "Privacy Policy",
+      "guidelines": "Resource Guidelines",
       "legalNotice": "Legal Notice",
       "status": "Status"
     },
@@ -907,10 +908,12 @@
     "jobText": "Job type: {0}, Error Type: {1}, Happened: {2}",
     "staleProjects": "Stale projects",
     "notPublicProjects": "Hidden projects",
+    "fileSizes": "Project file sizes",
     "noPlatform": "No platform detected",
     "missingFileProjects": "Missing File",
     "empty": "Empty! All good!",
-    "jobRetryScheduled": "Job retry scheduled"
+    "jobRetryScheduled": "Job retry scheduled",
+    "reportQueued": "Health Report queued"
   },
   "reviews": {
     "headline": "{0} released {1} on ",

@@ -31,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.task.SimpleAsyncTaskSchedulerBuilder;
+import org.springframework.boot.task.SimpleAsyncTaskSchedulerCustomizer;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -224,16 +226,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
         return builder.build();
     }
 
-    @Override
-    protected void configureAsyncSupport(final AsyncSupportConfigurer configurer) {
-        configurer.setTaskExecutor(this.taskExecutor());
-    }
-
     @Bean
-    protected ConcurrentTaskExecutor taskExecutor() {
-        ConcurrentTaskExecutor taskExecutor = new ConcurrentTaskExecutor(Executors.newVirtualThreadPerTaskExecutor());
-        taskExecutor.setTaskDecorator(new SentryTaskDecorator());
-        return taskExecutor;
+    SimpleAsyncTaskSchedulerCustomizer configureSentryTaskDecorator() {
+        return (s) -> s.setTaskDecorator(new SentryTaskDecorator());
     }
 
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {

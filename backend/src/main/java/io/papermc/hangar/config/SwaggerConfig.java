@@ -19,6 +19,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -132,8 +133,8 @@ public class SwaggerConfig {
 
                             Method method = null;
                             for (final String prefix : List.of("get", "is", "has", "")) {
-                                 method = ReflectionUtils.findMethod(clazz, !prefix.isEmpty() ? prefix + key.substring(0, 1).toUpperCase() + key.substring(1) : key );
-                                 if (method != null) break;
+                                method = ReflectionUtils.findMethod(clazz, !prefix.isEmpty() ? prefix + key.substring(0, 1).toUpperCase() + key.substring(1) : key);
+                                if (method != null) break;
                             }
 
                             if (method != null && (method.getAnnotatedReturnType().isAnnotationPresent(Nullable.class) || method.getAnnotatedReturnType().isAnnotationPresent(jakarta.annotation.Nullable.class))) {
@@ -224,6 +225,27 @@ public class SwaggerConfig {
                         operation.addParametersItem(param);
                     }
                 }
+            }
+
+            final Parameter pagination = operation.getParameters() == null ? null : operation.getParameters().stream().filter(p -> p.getName().equals("pagination")).findFirst().orElse(null);
+            if (pagination != null) {
+                operation.getParameters().remove(pagination);
+                operation.addParametersItem(new Parameter()
+                    .name("limit")
+                    .in("query")
+                    .description("The maximum amount of items to return")
+                    .style(Parameter.StyleEnum.FORM)
+                    .required(false)
+                    .schema(new StringSchema().minimum(new BigDecimal(1)).maximum(new BigDecimal(25)).example("1"))
+                );
+                operation.addParametersItem(new Parameter()
+                    .name("offset")
+                    .in("query")
+                    .description("Where to start searching")
+                    .style(Parameter.StyleEnum.FORM)
+                    .required(false)
+                    .schema(new StringSchema().minimum(new BigDecimal(0)).example("0"))
+                );
             }
 
             return operation;

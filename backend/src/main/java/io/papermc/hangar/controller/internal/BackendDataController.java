@@ -76,7 +76,6 @@ public class BackendDataController extends HangarComponent {
     public record ColorData(String name, String hex) {
     }
 
-    @Secured("ROLE_USER")
     @GetMapping("/flagReasons")
     @Cacheable(CacheConfig.FLAG_REASONS)
     public List<FlagReasonData> getFlagReasons() {

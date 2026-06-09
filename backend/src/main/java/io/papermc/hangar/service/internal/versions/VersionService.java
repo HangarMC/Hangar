@@ -12,7 +12,7 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
-import io.papermc.hangar.service.internal.admin.StatService;
+import io.papermc.hangar.components.stats.StatService;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;

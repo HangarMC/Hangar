@@ -1,5 +1,5 @@
 import type { Script } from "@unhead/vue";
-import type { RouteLocationNormalized } from "vue-router/auto";
+import type { RouteLocationNormalized } from "vue-router";
 
 export function useSeo(
   input: ComputedRef<{

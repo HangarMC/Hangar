@@ -1,6 +1,7 @@
 package io.papermc.hangar.controller.extras.pagination.filters.projects;
 
 import io.papermc.hangar.controller.extras.pagination.Filter;
+import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.Platform;
 import java.util.Arrays;
 import java.util.Set;
@@ -38,6 +39,10 @@ public class ProjectPlatformVersionFilter implements Filter<ProjectPlatformVersi
 
     @Override
     public @NotNull ProjectPlatformVersionFilterInstance create(final NativeWebRequest webRequest) {
+        if (!webRequest.getParameterMap().containsKey("platform")) {
+            throw new HangarApiException("Platform parameter is required for platform version filter");
+        }
+
         return new ProjectPlatformVersionFilterInstance(
             this.conversionService.convert(webRequest.getParameterValues("platform"), Platform[].class),
             this.conversionService.convert(this.getValue(webRequest), String[].class));

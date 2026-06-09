@@ -126,4 +126,77 @@ class VersionsControllerTest extends ControllerTest {
         // TODO testDownload
         throw new RuntimeException();
     }
+
+    // Authorization tests for @VisibilityRequired annotation
+    @Test
+    void testGetHiddenVersionAsAdmin() throws Exception {
+        // Admin should be able to see hidden versions
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/versions/" + TestData.VERSION_HIDDEN.getId())
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.name", is("2.0")));
+    }
+
+    @Test
+    @Disabled // TODO wtf
+    void testGetHiddenVersionWithSeeHiddenPermission() throws Exception {
+        // User with SEE_HIDDEN permission should see hidden versions
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/versions/" + TestData.VERSION_HIDDEN.getId())
+                .with(this.apiKey(TestData.KEY_SEE_HIDDEN)))
+            .andExpect(status().is(200))
+            .andExpect(jsonPath("$.name", is("2.0")));
+    }
+
+    @Test
+    void testGetHiddenVersionWithoutPermission() throws Exception {
+        // Regular user should get 404 for hidden version
+        this.mockMvc.perform(get("/api/v1/projects/TestProject/versions/" + TestData.VERSION_HIDDEN.getId()))
+            .andExpect(status().is(404));
+    }
+
+    @Test
+    void testGetVersionsOfHiddenProjectAsAdmin() throws Exception {
+        // Admin should see versions of hidden projects
+        this.mockMvc.perform(get("/api/v1/projects/PrivateProject/versions")
+                .with(this.apiKey(TestData.KEY_ADMIN)))
+            .andExpect(status().is(200));
+    }
+
+    @Test
+    void testGetVersionsOfHiddenProjectWithoutPermission() throws Exception {
+        // Regular user should get 404 for hidden project versions
+        this.mockMvc.perform(get("/api/v1/projects/PrivateProject/versions"))
+            .andExpect(status().is(404));
+    }
+
+    // Authorization tests for @PermissionRequired, @Unlocked, @RequireAal annotations
+    @Test
+    @Disabled // TODO upload
+    void testUploadVersionWithoutPermission() throws Exception {
+        // User without CREATE_VERSION permission should be denied
+        this.mockMvc.perform(post("/api/v1/projects/TestProject/upload")
+                .with(this.apiKey(TestData.KEY_PROJECT_ONLY))
+                .header("Content-Type", "multipart/form-data"))
+            .andExpect(status().is(403));
+    }
+
+    @Test
+    @Disabled // TODO upload
+    void testUploadVersionWithoutAuth() throws Exception {
+        // Unauthenticated user should be denied
+        this.mockMvc.perform(post("/api/v1/projects/TestProject/upload")
+                .header("Content-Type", "multipart/form-data"))
+            .andExpect(status().is(401));
+    }
+
+    // Authorization tests for @Unlocked annotation
+    @Test
+    @Disabled // TODO upload
+    void testUploadVersionWithLockedUser() throws Exception {
+        // Locked/banned user should be denied by @Unlocked annotation
+        this.mockMvc.perform(post("/api/v1/projects/TestProject/upload")
+                .with(this.apiKey(TestData.KEY_BANNED))
+                .header("Content-Type", "multipart/form-data"))
+            .andExpect(status().is(403));
+    }
 }

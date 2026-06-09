@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import * as webauthnJson from "@github/webauthn-json";
 import type { LoginResponse } from "#shared/types/backend";
 
 const route = useRoute("auth-login");
@@ -76,8 +75,8 @@ async function loginWebAuthN() {
   loading.value = true;
   try {
     const credentialGetOptions = await useInternalApi<string>("auth/webauthn/assert", "POST", username.value, { headers: { "content-type": "text/plain" } });
-    const parsed = JSON.parse(credentialGetOptions);
-    const publicKeyCredential = await webauthnJson.get(parsed);
+    const publicKey = PublicKeyCredential.parseRequestOptionsFromJSON(JSON.parse(credentialGetOptions).publicKey);
+    const publicKeyCredential = await navigator.credentials.get({ publicKey });
     const response = await useInternalApi<LoginResponse>("auth/login/webauthn", "POST", {
       usernameOrEmail: username.value,
       password: password.value,

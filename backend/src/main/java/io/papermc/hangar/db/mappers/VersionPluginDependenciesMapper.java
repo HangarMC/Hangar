@@ -40,9 +40,9 @@ public class VersionPluginDependenciesMapper implements ColumnMapper<Map<Platfor
                 final String name = download.get("name").asText();
                 final JsonNode projectId = download.get("project_id");
                 final boolean required = download.get("required").asBoolean();
-                final String externalUrl = download.get("external_url").asText();
+                final String externalUrl = download.get("external_url").asText(null);
                 final Platform platform = Platform.values()[download.get("platform").asInt()];
-                final PluginDependency pluginDependency = new PluginDependency(name, projectId instanceof NullNode ? null : projectId.asLong(), required, null, externalUrl, platform);
+                final PluginDependency pluginDependency = new PluginDependency(name, projectId.isNull() ? null : projectId.asLong(), required, null, externalUrl, platform);
                 result.computeIfAbsent(platform, k -> new TreeSet<>()).add(pluginDependency);
             }
         } catch (JsonProcessingException e) {

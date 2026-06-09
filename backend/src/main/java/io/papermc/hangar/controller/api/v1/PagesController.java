@@ -46,7 +46,27 @@ public class PagesController extends HangarComponent implements IPagesController
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#project}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
+    public String getMainPage(final String author, final ProjectTable project) {
+        final ProjectPageTable projectPage = this.projectPageService.getProjectPage(project, "");
+        return projectPage.getContents();
+    }
+
+    @Override
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#project}")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     public String getPage(final ProjectTable project, final String path) {
+        final ProjectPageTable projectPage = this.projectPageService.getProjectPage(project, path);
+        return projectPage.getContents();
+    }
+
+    @Override
+    @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 5)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.VIEW_PUBLIC_INFO, args = "{#project}")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public String getPage(final String author, final ProjectTable project, final String path) {
         final ProjectPageTable projectPage = this.projectPageService.getProjectPage(project, path);
         return projectPage.getContents();
     }
@@ -67,7 +87,28 @@ public class PagesController extends HangarComponent implements IPagesController
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
     @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#project}")
     @ResponseStatus(HttpStatus.OK)
+    public void editMainPage(final String author, final ProjectTable project, final StringContent pageEditForm) {
+        this.editPage(project, new PageEditForm("", pageEditForm.getContent()));
+    }
+
+    @Unlocked
+    @RequireAal(1)
+    @Override
+    @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
+    @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#project}")
+    @ResponseStatus(HttpStatus.OK)
     public void editPage(final ProjectTable project, final PageEditForm pageEditForm) {
+        final ProjectPageTable projectPage = this.projectPageService.getProjectPage(project, pageEditForm.path());
+        this.projectPageService.saveProjectPage(projectPage.getProjectId(), projectPage.getId(), pageEditForm.content());
+    }
+
+    @Unlocked
+    @RequireAal(1)
+    @Override
+    @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 20)
+    @PermissionRequired(perms = NamedPermission.EDIT_PAGE, type = PermissionType.PROJECT, args = "{#project}")
+    @ResponseStatus(HttpStatus.OK)
+    public void editPage(final String author, final ProjectTable project, final PageEditForm pageEditForm) {
         final ProjectPageTable projectPage = this.projectPageService.getProjectPage(project, pageEditForm.path());
         this.projectPageService.saveProjectPage(projectPage.getProjectId(), projectPage.getId(), pageEditForm.content());
     }

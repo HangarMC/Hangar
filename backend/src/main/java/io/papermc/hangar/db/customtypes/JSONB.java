@@ -8,11 +8,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import org.postgresql.util.PGobject;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 public class JSONB extends PGobject {
 
     private static final String TYPE_STRING = "jsonb";
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new Jackson2ObjectMapperBuilder().build();
 
     private transient JsonNode json;
     private transient Map<String, String> map;
@@ -86,6 +87,9 @@ public class JSONB extends PGobject {
     }
 
     private void parseJson() {
+        if (this.value == null) {
+            return;
+        }
         try {
             this.json = objectMapper.readTree(this.value);
         } catch (final JsonProcessingException | ClassCastException e) {

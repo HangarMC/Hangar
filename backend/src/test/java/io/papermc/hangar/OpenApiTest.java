@@ -47,7 +47,8 @@ class OpenApiTest extends ControllerTest {
         assertThat(parameters).isNotNull();
         assertThat(parameters.stream().anyMatch(p -> "sort".equals(p.getName()))).isTrue();
         assertThat(parameters.stream().anyMatch(p -> "category".equals(p.getName()))).isTrue();
-        assertThat(parameters.stream().anyMatch(p -> "pagination".equals(p.getName()))).isTrue();
         assertThat(parameters.stream().anyMatch(p -> "owner".equals(p.getName()))).isTrue();
+        assertThat(parameters.stream().anyMatch(p -> "limit".equals(p.getName()))).isTrue();
+        assertThat(parameters.stream().anyMatch(p -> "offset".equals(p.getName()))).isTrue();
     }
 }

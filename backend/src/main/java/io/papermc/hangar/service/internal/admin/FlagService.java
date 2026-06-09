@@ -1,6 +1,9 @@
 package io.papermc.hangar.service.internal.admin;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.components.webhook.model.event.ProjectFlaggedEvent;
+import io.papermc.hangar.components.webhook.service.WebhookService;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectFlagNofiticationsDAO;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectFlagsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectFlagNotificationsDAO;
@@ -12,14 +15,17 @@ import io.papermc.hangar.model.api.requests.RequestPagination;
 import io.papermc.hangar.model.common.projects.FlagReason;
 import io.papermc.hangar.model.db.projects.ProjectFlagNotificationTable;
 import io.papermc.hangar.model.db.projects.ProjectFlagTable;
+import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlag;
 import io.papermc.hangar.model.internal.projects.HangarProjectFlagNotification;
 import io.papermc.hangar.model.internal.user.notifications.NotificationType;
+import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.service.internal.users.NotificationService;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +41,27 @@ public class FlagService extends HangarComponent {
     private final ProjectFlagNotificationsDAO flagNotificationsDAO;
     private final HangarProjectFlagNofiticationsDAO hangarProjectFlagNofiticationsDAO;
     private final NotificationService notificationService;
+    private final WebhookService webhookService;
+    private final ProjectService projectService;
+    private final AvatarService avatarService;
 
     @Autowired
-    public FlagService(final ProjectFlagsDAO projectFlagsDAO, final HangarProjectFlagsDAO hangarProjectFlagsDAO, final ProjectFlagNotificationsDAO flagNotificationsDAO, final HangarProjectFlagNofiticationsDAO hangarProjectFlagNofiticationsDAO, final NotificationService notificationService) {
+    public FlagService(final ProjectFlagsDAO projectFlagsDAO, final HangarProjectFlagsDAO hangarProjectFlagsDAO, final ProjectFlagNotificationsDAO flagNotificationsDAO, final HangarProjectFlagNofiticationsDAO hangarProjectFlagNofiticationsDAO, final NotificationService notificationService, final WebhookService webhookService, final ProjectService projectService, final AvatarService avatarService) {
         this.projectFlagsDAO = projectFlagsDAO;
         this.hangarProjectFlagsDAO = hangarProjectFlagsDAO;
         this.flagNotificationsDAO = flagNotificationsDAO;
         this.hangarProjectFlagNofiticationsDAO = hangarProjectFlagNofiticationsDAO;
         this.notificationService = notificationService;
+        this.webhookService = webhookService;
+        this.projectService = projectService;
+        this.avatarService = avatarService;
     }
 
     @Transactional
     public void createFlag(final long projectId, final FlagReason reason, final String comment) {
+        if (!(this.projectService.getProjectTable(projectId) instanceof ProjectTable projectTable)) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project table not found");
+        }
         if (this.hasUnresolvedFlag(projectId, this.getHangarPrincipal().getId())) {
             throw new HangarApiException("project.flag.error.alreadyOpen");
         }
@@ -55,6 +70,19 @@ public class FlagService extends HangarComponent {
         }
         this.projectFlagsDAO.insert(new ProjectFlagTable(projectId, this.getHangarPrincipal().getId(), reason, comment));
         this.actionLogger.project(LogAction.PROJECT_FLAGGED.create(ProjectContext.of(projectId), "Flagged by " + this.getHangarPrincipal().getName(), ""));
+        // TODO rewrite avatar fetching (for move this code to an async method)
+        final String avatarUrl = this.avatarService.getProjectAvatarUrl(projectTable.getProjectId(), projectTable.getOwnerName());
+        this.webhookService.handleEvent(new ProjectFlaggedEvent(this.getHangarPrincipal().getName(),
+            this.config.baseUrl() + "/" + this.getHangarPrincipal().getName(),
+            reason.name().toLowerCase(Locale.ROOT),
+            comment,
+            projectTable.getOwnerName(),
+            projectTable.getName(),
+            avatarUrl,
+            this.config.baseUrl() + "/" + projectTable.getOwnerName() + "/" + projectTable.getName(),
+            List.of(),
+            this.config.baseUrl() + "/admin/flags"
+        ));
     }
 
     public boolean hasUnresolvedFlag(final long projectId, final long userId) {

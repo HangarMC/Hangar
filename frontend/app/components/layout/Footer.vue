@@ -34,6 +34,9 @@ const { t } = useI18n();
           <NuxtLink :to="{ name: 'privacy' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
             {{ t("hangar.footer.privacypolicy") }}
           </NuxtLink>
+          <NuxtLink :to="{ name: 'guidelines' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
+            {{ t("hangar.footer.guidelines") }}
+          </NuxtLink>
           <NuxtLink href="https://forums.papermc.io/help/legal-notice/" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
             {{ t("hangar.footer.legalNotice") }}
           </NuxtLink>

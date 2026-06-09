@@ -1,4 +1,4 @@
-import type { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router/auto";
+import type { RouteLocationNamedRaw, RouteLocationNormalized } from "vue-router";
 import { NamedPermission, PermissionType } from "#shared/types/backend";
 import type { PermissionCheck, UserPermissions } from "#shared/types/backend";
 

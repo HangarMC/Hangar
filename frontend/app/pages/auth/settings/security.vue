@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import * as webauthnJson from "@github/webauthn-json";
 import { isAxiosError } from "axios";
 import type { AxiosRequestConfig } from "axios";
 import type { Authenticator, SettingsResponse } from "#shared/types/backend";
@@ -31,8 +30,8 @@ async function addAuthenticator() {
     const credentialCreateOptions = await useInternalApi<string>("auth/webauthn/setup", "POST", authenticatorName.value, {
       headers: { "content-type": "text/plain" },
     });
-    const parsed = JSON.parse(credentialCreateOptions);
-    const publicKeyCredential = await webauthnJson.create(parsed);
+    const publicKey = PublicKeyCredential.parseCreationOptionsFromJSON(JSON.parse(credentialCreateOptions).publicKey);
+    const publicKeyCredential = await navigator.credentials.create({ publicKey });
     await useInternalApi("auth/webauthn/register", "POST", JSON.stringify(publicKeyCredential), { headers: { "content-type": "text/plain" } });
     authenticatorName.value = "";
     emit("refreshSettings");

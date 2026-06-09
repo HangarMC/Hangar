@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.papermc.hangar.components.webhook.dao.WebhookDAO;
 import io.papermc.hangar.components.webhook.model.DiscordWebhook;
 import io.papermc.hangar.components.webhook.model.event.ProjectEvent;
+import io.papermc.hangar.components.webhook.model.event.ProjectFlaggedEvent;
 import io.papermc.hangar.components.webhook.model.event.ProjectPublishedEvent;
 import io.papermc.hangar.components.webhook.model.event.VersionPublishedEvent;
 import io.papermc.hangar.components.webhook.model.event.WebhookEvent;
@@ -64,6 +65,22 @@ public class WebhookService {
         ]
         """;
 
+    private static final String discordProjectFlagTemplate = """
+        [
+          {
+            "id": {{id}},
+            "title": "Project {{author}}/{{name}} flagged for {{reason}}",
+            "color": 2326507,
+            "description": "{{comment}}",
+            "author": {
+              "name": "{{flaggerName}}",
+              "url": "{{flaggerUrl}}"
+            },
+            "url": "{{flagUrl}}"
+          }
+        ]
+        """;
+
     private final RestTemplate restTemplate;
     private final JobService jobService;
     private final ObjectMapper objectMapper;
@@ -117,6 +134,7 @@ public class WebhookService {
         return switch (type) {
             case "discord_project" -> new DiscordWebhook(this.fillTemplate(discordProjectTemplate, event));
             case "discord_version" -> new DiscordWebhook(this.fillTemplate(discordVersionTemplate, event));
+            case "discord_project_flag"-> new DiscordWebhook(this.fillTemplate(discordProjectFlagTemplate, event));
             case "rest" -> event;
             default -> throw new IllegalArgumentException("Unknown webhook type: " + type);
         };
@@ -140,6 +158,12 @@ public class WebhookService {
         } else if (event instanceof final VersionPublishedEvent versionPublishedEvent) {
             template = template.replace("{{description}}", versionPublishedEvent.getDescription());
             template = template.replace("{{version}}", versionPublishedEvent.getVersion());
+        } else if (event instanceof final ProjectFlaggedEvent  projectFlaggedEvent) {
+            template = template.replace("{{flaggerName}}",  projectFlaggedEvent.getFlaggerName());
+            template = template.replace("{{flaggerUrl}}",  projectFlaggedEvent.getFlaggerUrl());
+            template = template.replace("{{flagUrl}}",  projectFlaggedEvent.getFlagUrl());
+            template = template.replace("{{reason}}",  projectFlaggedEvent.getReason());
+            template = template.replace("{{comment}}",  projectFlaggedEvent.getComment());
         }
 
         return template.replace("\n", "");

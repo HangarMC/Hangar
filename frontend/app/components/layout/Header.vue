@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 
-import type { RouteLocationRaw, RouteMap } from "vue-router";
+import type { RouteLocationRaw } from "vue-router";
+import type { RouteNamedMap } from "vue-router/auto-routes";
 import hangarLogo from "~/assets/hangar-logo.svg";
 
 import IconMdiHome from "~icons/mdi/home";
@@ -39,7 +40,7 @@ const notifications = ref<HangarNotification[]>([]);
 const { unreadCount, refreshUnreadCount } = useUnreadCount();
 const loadedUnreadNotifications = ref<number>(0);
 
-type NavBarLinks = { link: keyof RouteMap; label: string; icon?: any }[];
+type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
 
 const navBarLinks: NavBarLinks = [
   { link: "index", label: t("nav.indexTitle") },
@@ -87,7 +88,7 @@ function markNotificationsRead() {
 function markNotificationRead(notification: HangarNotification) {
   if (!notification.read) {
     notification.read = true;
-    unreadCount.value.notifications--;
+    unreadCount && unreadCount.value.notifications--;
     loadedUnreadNotifications.value--;
     useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
   }
@@ -260,10 +261,10 @@ function isRecent(date: string): boolean {
               class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
               aria-label="Notifications"
               @click="updateNotifications"
-              v-on="useTracking('nav-notifications', { unread: unreadCount.notifications + unreadCount.invites })"
+              v-on="useTracking('nav-notifications', () => ({ unread: unreadCount ? unreadCount.notifications + unreadCount.invites : -1 }))"
             >
-              <IconMdiBellOutline v-show="unreadCount.notifications + unreadCount.invites === 0" class="text-[1.2em]" />
-              <div v-show="unreadCount.notifications + unreadCount.invites !== 0" class="relative">
+              <IconMdiBellOutline v-show="!unreadCount || unreadCount.notifications + unreadCount.invites === 0" class="text-[1.2em]" />
+              <div v-show="unreadCount && unreadCount.notifications + unreadCount.invites !== 0" class="relative">
                 <!-- This is fine:tm: -->
                 <IconMdiBellBadge class="text-[1.2em]" />
                 <svg class="absolute top-0.6 left-3.3" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -274,7 +275,7 @@ function isRecent(date: string): boolean {
             <template #content="{ close }">
               <ClientOnly>
                 <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-500 background-default filter shadow-default overflow-auto max-w-150">
-                  <div v-if="unreadCount.invites != 0">
+                  <div v-if="unreadCount?.invites">
                     <span class="flex shadow-0 p-2 pb-0 mt-2 ml-3 mr-2">
                       <Link class="font-bold" to="/notifications" @click="close()">
                         {{ i18n.t("notifications.invitesPending", [unreadCount.invites]) }}
@@ -316,7 +317,7 @@ function isRecent(date: string): boolean {
                   </div>
                   <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
                     <Link to="/notifications" @click="close()">
-                      <span :class="loadedUnreadNotifications >= unreadCount.notifications ? 'font-normal' : ''">
+                      <span v-if="unreadCount" :class="loadedUnreadNotifications >= unreadCount.notifications ? 'font-normal' : ''">
                         {{
                           loadedUnreadNotifications >= unreadCount.notifications
                             ? i18n.t("notifications.viewAll")

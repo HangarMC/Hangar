@@ -57,7 +57,7 @@ public abstract class HangarModelResolver<M> extends AbstractNamedValueMethodArg
                 }
                 return null;
             }
-            return this.handleValue(this.resolveParameter(param, request), param, name, "path variable");
+            return this.handleValue(this.resolveParameter(param, request), param, name, "path variable", pathVariable.required());
         }
         final RequestParam requestParam = parameter.getParameterAnnotation(RequestParam.class);
         if (requestParam != null) {
@@ -69,13 +69,13 @@ public abstract class HangarModelResolver<M> extends AbstractNamedValueMethodArg
                 return null;
             }
             Assert.state(paramArray.length == 1, "Expected single value for parameter '" + name + "' but got " + paramArray.length);
-            return this.handleValue(this.resolveParameter(paramArray[0], request), paramArray[0], name, "request param");
+            return this.handleValue(this.resolveParameter(paramArray[0], request), paramArray[0], name, "request param", requestParam.required());
         }
         return null;
     }
 
-    private M handleValue(final M resolvedValue, final String value, final String name, final String type) {
-        if (resolvedValue == null) {
+    private M handleValue(final M resolvedValue, final String value, final String name, final String type, final boolean required) {
+        if (resolvedValue == null && required) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Unknown value '" + value + "' for " + type + " '" + name + "'");
         }
         return resolvedValue;

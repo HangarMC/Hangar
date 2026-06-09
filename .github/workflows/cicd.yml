@@ -45,14 +45,14 @@ jobs:
     steps:
       # <editor-fold desc="Prepare">
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Assume PRs are less than 50 commits
           fetch-depth: 50
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         with:
           files_yaml: |
             backend:
@@ -127,7 +127,7 @@ jobs:
 
       - name: Set up Node
         if: ${{ steps.vars.outputs.build_frontend == 'true' }}
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
           cache: "pnpm"
@@ -174,7 +174,7 @@ jobs:
 
       - name: Login to registry
         if: ${{ steps.vars.outputs.deploy == 'true' }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -192,7 +192,7 @@ jobs:
 
       - name: Build and push frontend Dockerfile
         if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.deploy == 'true' }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: chart/dockerfiles/frontend/Dockerfile
@@ -214,7 +214,7 @@ jobs:
 
       - name: Build and push backend Dockerfile
         if: ${{ steps.vars.outputs.build_backend == 'true' && steps.vars.outputs.deploy == 'true' }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: chart/dockerfiles/backend/Dockerfile
