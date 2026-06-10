@@ -39,6 +39,16 @@ const globalData = useGlobalData();
 const notifications = ref<HangarNotification[]>([]);
 const { unreadCount, refreshUnreadCount } = useUnreadCount();
 const loadedUnreadNotifications = ref<number>(0);
+const hasProfileAdminLinks = computed(
+  () =>
+    hasPerms(NamedPermission.ModNotesAndFlags) ||
+    hasPerms(NamedPermission.Reviewer) ||
+    hasPerms(NamedPermission.ViewStats) ||
+    hasPerms(NamedPermission.ViewHealth) ||
+    hasPerms(NamedPermission.ViewLogs) ||
+    hasPerms(NamedPermission.ManualValueChanges) ||
+    hasPerms(NamedPermission.EditAllUserSettings)
+);
 
 type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
 
@@ -136,10 +146,10 @@ function isRecent(date: string): boolean {
 <template>
   <header class="max-w-screen-2xl mx-auto">
     <div v-if="globalData?.announcements" class="-px-100 w-full">
-      <Announcement  v-for="(announcement, idx) in globalData?.announcements" :key="idx" class="my-2 mx-8" :announcement="announcement" />
+      <Announcement v-for="(announcement, idx) in globalData?.announcements" :key="idx" class="my-2 mx-8" :announcement="announcement" />
     </div>
     <!-- Navbar -->
-    <nav class="mx-4 flex flex-wrap justify-end px-4 py-2 gap-3">
+    <nav class="relative mx-4 flex flex-wrap justify-end px-4 py-2 gap-3">
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close, open }" class="relative">
@@ -222,7 +232,10 @@ function isRecent(date: string): boolean {
       <!-- Gap for the left side -->
       <div class="flex-grow-1" />
 
-      <GlobalSearchModal />
+      <div class="lg:absolute lg:left-1/2 lg:top-2 lg:-translate-x-1/2">
+        <GlobalSearchModal />
+      </div>
+      <div class="flex-grow-1 lg:hidden" />
       <!--
       <input
         v-model="query"
@@ -232,33 +245,41 @@ function isRecent(date: string): boolean {
         :placeholder="i18n.t('hangar.globalSearch.query')"
       />
       -->
-      <!-- Gap for the right side -->
-      <div class="flex-grow-1" />
-
       <!-- Right side items -->
       <div class="flex items-center gap-2">
         <div v-if="authStore.user" class="flex items-center lt-sm:hidden">
-          <DropdownButton :name="t('nav.new.title')" v-on="useTracking('nav-create-dropdwon')">
+          <DropdownButton
+            button-type="borderless"
+            button-class="!h-10.5 !w-10.5 min-w-0 !p-1"
+            :button-arrow="false"
+            :name="t('nav.new.title')"
+            v-on="useTracking('nav-create-dropdwon')"
+          >
+            <template #button-label>
+              <IconMdiPlus class="text-[1.2em]" />
+              <span class="sr-only">{{ t("nav.new.title") }}</span>
+            </template>
             <template #default="{ close }">
               <DropdownItem to="/new" @click="close()" v-on="useTracking('nav-new')">{{ t("nav.new.project") }}</DropdownItem>
               <DropdownItem to="/neworganization" @click="close()" v-on="useTracking('nav-new-org')">{{ t("nav.new.organization") }}</DropdownItem>
             </template>
           </DropdownButton>
         </div>
-        <button
-          class="flex rounded-md p-2"
-          hover="text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700)"
-          aria-label="Toogle dark mode"
+        <Button
+          button-type="borderless"
+          size="medium"
+          aria-label="Toggle dark mode"
           @click="settings.toggleDarkMode()"
           v-on="useTracking('nav-theme', { darkMode: settings.darkMode })"
         >
           <icon-mdi-weather-night v-if="settings.darkMode" class="text-[1.2em]" />
           <icon-mdi-white-balance-sunny v-else class="text-[1.2em]" />
-        </button>
+        </Button>
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
-            <button
-              class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
+            <Button
+              button-type="borderless"
+              size="medium"
               aria-label="Notifications"
               @click="updateNotifications"
               v-on="useTracking('nav-notifications', () => ({ unread: unreadCount ? unreadCount.notifications + unreadCount.invites : -1 }))"
@@ -271,7 +292,7 @@ function isRecent(date: string): boolean {
                   <circle style="fill: #c83737" r="3.75" cx="3.75" cy="3.75" />
                 </svg>
               </div>
-            </button>
+            </Button>
             <template #content="{ close }">
               <ClientOnly>
                 <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-500 background-default filter shadow-default overflow-auto max-w-150">
@@ -338,20 +359,24 @@ function isRecent(date: string): boolean {
       <div class="flex items-center gap-2">
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
-          <Popper placement="bottom-end">
-            <button
-              class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
-              @click="updateNavData"
-              v-on="useTracking('nav-profile-dropdown')"
-            >
+          <DropdownButton
+            button-type="borderless"
+            button-class="!h-12 !w-12 min-w-0 !p-1.5 !space-x-0"
+            :button-arrow="false"
+            name="Profile"
+            @click="updateNavData"
+            v-on="useTracking('nav-profile-dropdown')"
+          >
+            <template #button-label>
               <UserAvatar :username="authStore.user.name" :avatar-url="authStore.user.avatarUrl" size="xs" :disable-link="true" />
-            </button>
-            <template #content="{ close }">
-              <div class="-mt-2 py-1 rounded border-t-2 border-primary-500 background-default filter shadow-default flex flex-col" @click="close()">
+              <span class="sr-only">Profile</span>
+            </template>
+            <template #default="{ close }">
+              <div class="flex min-w-48 flex-col" @click="close()">
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
-                <hr class="border-zinc-200 dark:border-zinc-700" />
+                <div v-if="hasProfileAdminLinks" class="mx-1 my-1 border-t border-zinc-200 dark:border-zinc-700" />
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
                   <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>
@@ -373,11 +398,11 @@ function isRecent(date: string): boolean {
                 <DropdownItem v-if="hasPerms(NamedPermission.EditAllUserSettings)" to="/admin/user/">
                   {{ t("nav.user.userList") }}
                 </DropdownItem>
-                <hr class="border-zinc-200 dark:border-zinc-700" />
+                <div class="mx-1 my-1 border-t border-zinc-200 dark:border-zinc-700" />
                 <DropdownItem @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
               </div>
             </template>
-          </Popper>
+          </DropdownButton>
         </div>
 
         <!-- Login/register buttons -->

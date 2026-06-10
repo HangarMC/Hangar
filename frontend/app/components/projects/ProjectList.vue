@@ -25,18 +25,21 @@ function updatePage(newPage: number) {
 }
 defineExpose({ updatePage });
 
-watch(() => props.loading, (isLoading) => {
-  if (isLoading) {
-    loadingTimeout = setTimeout(() => {
-      showSkeletons.value = true;
-    }, 500);
-  } else {
-    showSkeletons.value = false;
-    if (loadingTimeout) {
-      clearTimeout(loadingTimeout);
+watch(
+  () => props.loading,
+  (isLoading) => {
+    if (isLoading) {
+      loadingTimeout = setTimeout(() => {
+        showSkeletons.value = true;
+      }, 500);
+    } else {
+      showSkeletons.value = false;
+      if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+      }
     }
   }
-});
+);
 </script>
 
 <template>
@@ -50,7 +53,7 @@ watch(() => props.loading, (isLoading) => {
   >
     <template #default="{ item }">
       <Transition name="list" appear>
-        <ProjectCard class="hover:scale-[1.005] transition-all duration-200" :project="item" :can-edit :pinned="pinned?.some((p) => p.namespace.slug === item.namespace.slug)" />
+        <ProjectCard :project="item" :can-edit="canEdit" :pinned="pinned?.some((p) => p.namespace.slug === item.namespace.slug)" />
       </Transition>
     </template>
   </Pagination>

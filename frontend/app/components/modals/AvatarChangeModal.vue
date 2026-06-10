@@ -1,44 +1,79 @@
 <template>
-  <Modal ref="modal" :title="t('organization.settings.changeAvatar')" window-classes="w-125" @open="openModal">
+  <Modal
+    ref="modal"
+    :title="t('organization.settings.changeAvatar')"
+    window-classes="w-full max-w-2xl !rounded-lg border border-gray-200 dark:border-gray-800 shadow-xl"
+    close-button-right
+    @open="openModal"
+    @close="reset"
+  >
     <template #activator="{ on }">
       <slot name="activator" :on="on">
         <Button button-type="primary" v-bind="$attrs" @click.prevent="on.click">{{ t("organization.settings.changeAvatar") }}</Button>
       </slot>
     </template>
 
-    <div class="mb-2">
-      <InputFile
-        v-model="selectedFile"
-        :placeholder="t('settings.avatar.inputPlaceholder')"
-        :rules="[required(), maxFileSize()(useBackendData.validations.project.maxFileSize)]"
-        accept="image/png,image/jpeg,image/webp"
-      />
+    <p class="mb-4 text-sm text-gray">Choose a PNG, JPG, or WebP image. Reposition and resize it inside the square before saving.</p>
+
+    <div
+      class="group flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-gray-300 p-3 transition-colors hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-600"
+      role="button"
+      tabindex="0"
+      @click="openFilePicker"
+      @keydown.enter.prevent="openFilePicker"
+      @keydown.space.prevent="openFilePicker"
+    >
+      <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-gray dark:bg-charcoal-500">
+        <IconMdiImagePlusOutline class="text-xl" />
+      </span>
+      <span class="min-w-0 flex-grow">
+        <span class="block font-semibold">{{ selectedFile?.name || "Choose an image" }}</span>
+        <span class="block truncate text-xs text-gray">
+          {{ selectedFile ? formatSize(selectedFile.size) : "Click to browse your files" }}
+        </span>
+      </span>
+      <Button button-type="secondary" size="medium" tabindex="-1" @click.stop="openFilePicker">Browse</Button>
+      <input ref="fileInput" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp" @change="onFileChange" />
     </div>
-    <cropper
-      v-if="cropperInput"
-      :src="cropperInput"
-      class="h-200px"
-      :min-height="150"
-      :default-size="{
-        width: 256,
-        height: 256,
-      }"
-      :canvas="{
-        imageSmoothingQuality: 'high',
-      }"
-      :stencil-props="{
-        handlers: { eastNorth: true, westNorth: true, eastSouth: true, westSouth: true },
-        movable: true,
-        scalable: true,
-        aspectRatio: 1,
-      }"
-      :resize-image="{
-        adjustStencil: false,
-      }"
-      image-restriction="stencil"
-      @change="changeImage"
-    />
-    <Button class="mt-2" button-type="primary" :disabled="!cropperResult" @click.prevent="save">{{ t("general.save") }}</Button>
+
+    <div class="mt-4 overflow-hidden rounded-lg border bg-black dark:border-gray-800">
+      <cropper
+        v-if="cropperInput"
+        :src="cropperInput"
+        class="h-80"
+        :min-height="200"
+        :default-size="{
+          width: 256,
+          height: 256,
+        }"
+        :canvas="{
+          imageSmoothingQuality: 'high',
+        }"
+        :stencil-props="{
+          handlers: { eastNorth: true, westNorth: true, eastSouth: true, westSouth: true },
+          movable: true,
+          scalable: true,
+          aspectRatio: 1,
+        }"
+        :resize-image="{
+          adjustStencil: false,
+        }"
+        image-restriction="stencil"
+        @change="changeImage"
+      />
+      <div v-else class="flex h-80 flex-col items-center justify-center gap-2 text-gray">
+        <IconMdiImageOutline class="text-4xl" />
+        <span>No image selected</span>
+      </div>
+    </div>
+
+    <div class="mt-4 flex items-center justify-end gap-2 border-t pt-4 dark:border-gray-800">
+      <Button button-type="secondary" size="medium" @click="modal?.close()">Cancel</Button>
+      <Button button-type="primary" size="medium" :disabled="!cropperResult || saving" :loading="saving" @click.prevent="save">
+        <IconMdiContentSaveOutline class="mr-1" />
+        {{ t("general.save") }}
+      </Button>
+    </div>
   </Modal>
 </template>
 
@@ -57,12 +92,22 @@ const props = defineProps<{
   csrfToken?: string;
 }>();
 
-const v = useVuelidate({ $stopPropagation: true });
 const selectedFile = ref<File>();
 const cropperInput = ref<ArrayBuffer>();
 const mimeType = ref<string>();
 const cropperResult = ref<Blob | null>();
 const modal = useTemplateRef("modal");
+const fileInput = useTemplateRef("fileInput");
+const saving = ref(false);
+
+function onFileChange(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) selectedFile.value = file;
+}
+
+function openFilePicker() {
+  fileInput.value?.click();
+}
 
 let reader: FileReader | undefined;
 onMounted(() => {
@@ -134,9 +179,10 @@ function changeImage({ canvas }: CropperResult) {
 }
 
 async function save() {
-  if (!(await v.value.$validate())) return;
+  if (!cropperResult.value) return;
+  saving.value = true;
   const form = new FormData();
-  form.append("avatar", cropperResult.value!);
+  form.append("avatar", cropperResult.value);
   if (props.csrfToken) {
     form.append("csrf_token", props.csrfToken);
   }
@@ -147,8 +193,8 @@ async function save() {
     window.location.reload();
   } catch (err) {
     handleRequestError(err, "Error while saving avatar");
-    reset();
-    modal.value?.close();
+  } finally {
+    saving.value = false;
   }
 }
 
@@ -156,6 +202,8 @@ function reset() {
   cropperResult.value = undefined;
   selectedFile.value = undefined;
   cropperInput.value = undefined;
-  v.value.$reset();
+  mimeType.value = undefined;
+  saving.value = false;
+  if (fileInput.value) fileInput.value.value = "";
 }
 </script>

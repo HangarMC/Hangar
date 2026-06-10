@@ -8,6 +8,7 @@ defineProps<{
 }>();
 const emit = defineEmits<{
   refreshSettings: [];
+  openEmailConfirmModal: [];
 }>();
 
 const auth = useAuthStore();
@@ -20,6 +21,30 @@ const route = useRoute("auth-settings");
 const backendData = useBackendData;
 
 const loading = ref(false);
+const accountLoading = ref(false);
+
+const accountForm = reactive({
+  username: auth.user?.name,
+  email: auth.user?.email,
+  currentPassword: "",
+  newPassword: "",
+});
+
+async function saveAccount() {
+  accountLoading.value = true;
+  try {
+    await useInternalApi("auth/account", "POST", accountForm);
+    notification.success("Saved!");
+    accountForm.currentPassword = "";
+    accountForm.newPassword = "";
+    emit("refreshSettings");
+    useAuth.updateUser(true);
+  } catch (err) {
+    notification.fromError(i18n, err);
+  } finally {
+    accountLoading.value = false;
+  }
+}
 
 const authenticatorName = ref<string>();
 
@@ -264,115 +289,244 @@ function closeUnlinkModal() {
 </script>
 
 <template>
-  <div v-if="auth.user">
-    <PageTitle>{{ t("auth.settings.security.header") }}</PageTitle>
-    <h3 class="text-lg font-bold mb-2">{{ t("auth.settings.security.authApp.name") }}</h3>
-    <p class="mb-2">{{ settings?.hasTotp ? t("auth.settings.security.authApp.active") : t("auth.settings.security.authApp.none") }}</p>
-    <Button v-if="settings?.hasTotp" :disabled="loading" @click="unlinkTotp">{{ t("auth.settings.security.button.unlinkTotp") }}</Button>
-    <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp"> {{ t("auth.settings.security.button.setupAuthApp") }} </Button>
-    <div v-else class="flex lt-sm:flex-col gap-8">
-      <div class="flex flex-col gap-2 basis-1/2">
-        <p>{{ t("auth.settings.security.authAppSetup.scan") }}</p>
-        <p>{{ t("auth.settings.security.authAppSetup.cantScan") }}</p>
-        <div class="mt-auto flex flex-col gap-2">
-          <p>{{ t("auth.settings.security.authAppSetup.enterTotp") }}</p>
-          <InputText v-model="totpCode" label="TOTP Code" inputmode="numeric" :rules="[requiredIf()(() => totpData != undefined)]" />
-          <Button :disabled="loading || v.$invalid" @click="addTotp"> {{ t("auth.settings.security.authAppSetup.verifyTotp") }} </Button>
-        </div>
+  <div v-if="auth.user" class="min-w-0">
+    <div class="mb-4">
+      <PageTitle>{{ t("auth.settings.security.header") }}</PageTitle>
+      <p class="text-sm text-gray">Manage your account details, password, authentication methods, and connected accounts.</p>
+    </div>
+
+    <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
+      <div class="space-y-4">
+        <Card>
+          <div class="mb-4">
+            <h2 class="text-xl font-bold">Account details</h2>
+            <p class="mt-1 text-sm text-gray">Update the identity and email address used to sign in.</p>
+          </div>
+          <form class="space-y-3">
+            <div>
+              <label class="mb-1.5 block text-sm font-semibold" for="security-email">Email</label>
+              <div class="relative flex h-10.5 rounded-md transition-all duration-200 hover:scale-[1.002]">
+                <input
+                  id="security-email"
+                  v-model="accountForm.email"
+                  class="min-w-0 flex-grow truncate rounded-lg border border-transparent bg-gray-100 px-3 py-2 outline-none transition-colors hover:border-gray-300 focus:border-gray-400 dark:bg-gray-800 dark:hover:border-gray-700 dark:focus:border-gray-600"
+                  autocomplete="username"
+                  type="email"
+                />
+              </div>
+              <Button
+                v-if="!settings?.emailConfirmed"
+                class="mt-2"
+                button-type="secondary"
+                size="small"
+                :disabled="accountLoading"
+                @click.prevent="$emit('openEmailConfirmModal')"
+              >
+                {{ t("auth.settings.account.verifyEmail") }}
+              </Button>
+            </div>
+            <template v-if="settings?.hasPassword">
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="current-password">
+                  {{ t("auth.settings.account.currentPassword") }}
+                </label>
+                <div class="relative flex h-10.5 rounded-md transition-all duration-200 hover:scale-[1.002]">
+                  <input
+                    id="current-password"
+                    v-model="accountForm.currentPassword"
+                    class="min-w-0 flex-grow rounded-lg border border-transparent bg-gray-100 px-3 py-2 outline-none transition-colors hover:border-gray-300 focus:border-gray-400 dark:bg-gray-800 dark:hover:border-gray-700 dark:focus:border-gray-600"
+                    autocomplete="current-password"
+                    type="password"
+                  />
+                </div>
+              </div>
+              <div>
+                <label class="mb-1.5 block text-sm font-semibold" for="new-password">
+                  {{ t("auth.settings.account.newPassword") }}
+                </label>
+                <div class="relative flex h-10.5 rounded-md transition-all duration-200 hover:scale-[1.002]">
+                  <input
+                    id="new-password"
+                    v-model="accountForm.newPassword"
+                    class="min-w-0 flex-grow rounded-lg border border-transparent bg-gray-100 px-3 py-2 outline-none transition-colors hover:border-gray-300 focus:border-gray-400 dark:bg-gray-800 dark:hover:border-gray-700 dark:focus:border-gray-600"
+                    autocomplete="new-password"
+                    type="password"
+                  />
+                </div>
+              </div>
+            </template>
+            <div class="flex justify-end">
+              <Button type="submit" size="medium" :disabled="accountLoading" :loading="accountLoading" @click.prevent="saveAccount">
+                <IconMdiContentSaveOutline class="mr-1" />
+                {{ t("general.save") }}
+              </Button>
+            </div>
+          </form>
+        </Card>
+
+        <Card>
+          <div class="mb-3 flex items-start gap-3">
+            <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-xl dark:bg-charcoal-500">
+              <IconMdiCellphoneKey />
+            </span>
+            <div>
+              <h2 class="text-xl font-bold">{{ t("auth.settings.security.authApp.name") }}</h2>
+              <p class="mt-1 text-sm text-gray">
+                {{ settings?.hasTotp ? t("auth.settings.security.authApp.active") : t("auth.settings.security.authApp.none") }}
+              </p>
+            </div>
+          </div>
+          <Button v-if="settings?.hasTotp" button-type="secondary" :disabled="loading" @click="unlinkTotp">
+            {{ t("auth.settings.security.button.unlinkTotp") }}
+          </Button>
+          <Button v-else-if="!totpData" :disabled="loading" @click="setupTotp">{{ t("auth.settings.security.button.setupAuthApp") }}</Button>
+          <div v-else class="grid gap-4 md:grid-cols-[1fr_auto]">
+            <div class="space-y-3">
+              <p class="text-sm text-gray">{{ t("auth.settings.security.authAppSetup.scan") }}</p>
+              <p class="text-sm text-gray">{{ t("auth.settings.security.authAppSetup.cantScan") }}</p>
+              <InputText v-model="totpCode" label="TOTP Code" inputmode="numeric" :rules="[requiredIf()(() => totpData != undefined)]" />
+              <Button :disabled="loading || v.$invalid" @click="addTotp">{{ t("auth.settings.security.authAppSetup.verifyTotp") }}</Button>
+            </div>
+            <div class="text-center">
+              <img :src="totpData.qrCode" alt="QR code for TOTP setup" class="mx-auto w-48 rounded-lg bg-white p-2" />
+              <code class="mt-2 block max-w-48 break-all text-xs">{{ totpData.secret }}</code>
+            </div>
+          </div>
+        </Card>
+
+        <Card v-if="settings?.hasBackupCodes">
+          <h2 class="text-xl font-bold">{{ t("auth.settings.security.backupCodes.name") }}</h2>
+          <p class="mt-1 text-sm text-gray">{{ t("auth.settings.security.backupCodes.info") }}</p>
+          <div v-if="showCodes" class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <code v-for="code in codes" :key="code.code" class="rounded-md bg-gray-100 p-2 text-center text-xs dark:bg-charcoal-500">
+              {{ code["used_at"] ? t("general.used") : code.code }}
+            </code>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <Button v-if="!showCodes" button-type="secondary" :disabled="loading" @click="revealCodes">{{ t("general.reveal") }}</Button>
+            <Button :disabled="loading" @click="generateNewCodes">{{ t("auth.settings.security.backupCodes.generateNew") }}</Button>
+          </div>
+        </Card>
       </div>
-      <div class="basis-1/2">
-        <img :src="totpData.qrCode" alt="QR code for TOTP setup" class="w-60" />
-        <small>{{ totpData.secret }}</small>
+
+      <div class="space-y-4">
+        <Card>
+          <h2 class="text-xl font-bold">{{ t("auth.settings.security.securityKeys.name") }}</h2>
+          <p class="mt-1 text-sm text-gray">Use passkeys or hardware security keys for strong, phishing-resistant authentication.</p>
+          <ul v-if="settings?.authenticators?.length" class="mt-3 space-y-2">
+            <li
+              v-for="authenticator in settings.authenticators"
+              :key="authenticator.id"
+              class="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 bg-gray-100/60 p-3 dark:border-gray-800 dark:bg-charcoal-500/60"
+            >
+              <IconMdiKeyVariant class="text-xl text-gray" />
+              <div class="min-w-0 flex-grow">
+                <p class="truncate font-semibold">{{ authenticator.displayName }}</p>
+                <p class="text-xs text-gray">Added <PrettyTime :time="authenticator.addedAt" long /></p>
+              </div>
+              <Button button-type="borderless" size="small" :disabled="loading" @click.prevent="renameAuthenticatorModal(authenticator)">
+                <IconMdiPencil />
+              </Button>
+              <button
+                class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent hover:border-red-600 hover:bg-red-900/50"
+                :disabled="loading"
+                @click.prevent="unregisterAuthenticator(authenticator)"
+              >
+                <IconMdiBin />
+              </button>
+            </li>
+          </ul>
+          <p v-else class="mt-3 rounded-lg border border-dashed p-4 text-center text-sm text-gray dark:border-gray-700">
+            {{ t("auth.settings.security.securityKeys.none") }}
+          </p>
+          <div class="mt-4 border-t pt-4 dark:border-gray-800">
+            <h3 class="font-semibold">{{ t("auth.settings.security.securityKeys.registerTitle") }}</h3>
+            <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+              <div class="relative flex h-10.5 min-w-0 flex-grow rounded-md transition-all duration-200 hover:scale-[1.002]">
+                <input
+                  v-model="authenticatorName"
+                  class="min-w-0 flex-grow truncate rounded-lg border border-transparent bg-gray-100 px-3 py-2 outline-none transition-colors hover:border-gray-300 focus:border-gray-400 dark:bg-gray-800 dark:hover:border-gray-700 dark:focus:border-gray-600"
+                  :placeholder="t('auth.settings.security.securityKeys.keyName')"
+                  type="text"
+                />
+              </div>
+              <Button class="sm:self-center" :disabled="loading" @click="addAuthenticator">
+                {{ t("auth.settings.security.button.setupSecurityKey") }}
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <h2 class="text-xl font-bold">Connected accounts</h2>
+          <p class="mt-1 text-sm text-gray">Link an identity provider for another secure way to sign in.</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <Button
+              v-for="provider in backendData.security.oauthProviders"
+              :key="provider"
+              button-type="secondary"
+              :disabled="loading"
+              @click="setupOAuth(provider)"
+            >
+              <IconMdiGithub v-if="provider === 'github'" class="mr-1" />
+              <IconMdiGoogle v-else-if="provider === 'google'" class="mr-1" />
+              <IconMdiMicrosoft v-else-if="provider === 'microsoft'" class="mr-1" />
+              {{
+                provider === "github"
+                  ? t("auth.settings.security.button.linkGithub")
+                  : provider === "google"
+                    ? t("auth.settings.security.button.linkGoogle")
+                    : provider === "microsoft"
+                      ? t("auth.settings.security.button.linkMicrosoft")
+                      : t("auth.settings.security.button.linkOther", [provider])
+              }}
+            </Button>
+          </div>
+          <div v-if="settings?.oauthConnections?.length" class="mt-4 space-y-2 border-t pt-4 dark:border-gray-800">
+            <div
+              v-for="credential in settings.oauthConnections"
+              :key="credential.provider + credential.id"
+              class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-800"
+            >
+              <IconMdiGithub v-if="credential.provider === 'github'" class="text-xl" />
+              <IconMdiLinkVariant v-else class="text-xl" />
+              <div class="min-w-0 flex-grow">
+                <p class="font-semibold capitalize">{{ credential.provider }}</p>
+                <p class="truncate text-xs text-gray">{{ credential.name }}</p>
+              </div>
+              <button
+                class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent hover:border-red-600 hover:bg-red-900/50"
+                :disabled="!settings?.hasPassword && settings.oauthConnections.length === 1"
+                :title="
+                  !settings?.hasPassword && settings.oauthConnections.length === 1 ? t('auth.settings.security.unlinkOAuth.cantUnlink') : 'Unlink account'
+                "
+                @click="unlinkOAuth(credential.provider, credential.id)"
+              >
+                <IconMdiLinkOff />
+              </button>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
 
-    <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.security.securityKeys.name") }}</h3>
-    <ul v-if="settings?.authenticators">
-      <li v-for="authenticator in settings.authenticators" :key="authenticator.id" class="my-1">
-        {{ authenticator.displayName }} <small class="mr-2">(added at <PrettyTime :time="authenticator.addedAt" long />)</small>
-        <Button size="small" :disabled="loading" @click.prevent="unregisterAuthenticator(authenticator)">
-          {{ t("auth.settings.security.securityKeys.unregister") }}
-        </Button>
-        <Button class="ml-2" size="small" :disabled="loading" @click.prevent="renameAuthenticatorModal(authenticator)">
-          {{ t("auth.settings.security.securityKeys.rename") }}
-        </Button>
-      </li>
-      <Modal
-        ref="authenticatorRenameModal"
-        title="Rename authenticator"
-        @close="
-          authenticatorRenameModal!.isOpen = false;
-          v.$reset();
-        "
-      >
-        <InputText
-          v-model="newAuthenticatorName"
-          :label="t('auth.settings.security.securityKeys.keyName')"
-          :rules="[requiredIf()(() => authenticatorRenameModal?.isOpen || false)]"
-        />
-        <Button class="mt-2" size="small" :disabled="loading" @click.prevent="renameAuthenticator">
-          {{ t("auth.settings.security.securityKeys.rename") }}
-        </Button>
-      </Modal>
-    </ul>
-    <p v-if="settings?.authenticators.length == 0">{{ t("auth.settings.security.securityKeys.none") }}</p>
-    <h4 class="font-semibold mt-4 mb-2">{{ t("auth.settings.security.securityKeys.registerTitle") }}</h4>
-    <div class="my-2">
+    <Modal
+      ref="authenticatorRenameModal"
+      title="Rename authenticator"
+      @close="
+        authenticatorRenameModal!.isOpen = false;
+        v.$reset();
+      "
+    >
       <InputText
-        v-model="authenticatorName"
+        v-model="newAuthenticatorName"
         :label="t('auth.settings.security.securityKeys.keyName')"
-        :rules="[requiredIf()(() => totpData == undefined && !authenticatorRenameModal?.isOpen)]"
+        :rules="[requiredIf()(() => authenticatorRenameModal?.isOpen || false)]"
       />
-    </div>
-    <Button :disabled="loading" @click="addAuthenticator"> {{ t("auth.settings.security.button.setupSecurityKey") }} </Button>
-
-    <template v-if="settings?.hasBackupCodes">
-      <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.security.backupCodes.name") }}</h3>
-      <p class="mb-2">{{ t("auth.settings.security.backupCodes.info") }}</p>
-      <div v-if="showCodes" class="flex flex-wrap mt-2 mb-2">
-        <div v-for="code in codes" :key="code.code" class="basis-3/12">
-          <code>{{ code["used_at"] ? t("general.used") : code.code }}</code>
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <Button v-if="!showCodes" :disabled="loading" @click="revealCodes"> {{ t("general.reveal") }} </Button>
-        <Button :disabled="loading" @click="generateNewCodes"> {{ t("auth.settings.security.backupCodes.generateNew") }} </Button>
-      </div>
-    </template>
-
-    <h3 class="text-lg font-bold mt-4 mb-2">OAuth</h3>
-    <div class="flex gap-2 mt-2">
-      <Button v-for="provider in backendData.security.oauthProviders" :key="provider" :disabled="loading" @click="setupOAuth(provider)">
-        <template v-if="provider === 'github'">
-          <IconMdiGithub class="mr-1" />
-          {{ t("auth.settings.security.button.linkGithub") }}
-        </template>
-        <template v-else-if="provider === 'google'">
-          <IconMdiGoogle class="mr-1" />
-          {{ t("auth.settings.security.button.linkGoogle") }}
-        </template>
-        <template v-else-if="provider === 'microsoft'">
-          <IconMdiMicrosoft class="mr-1" />
-          {{ t("auth.settings.security.button.linkMicrosoft") }}
-        </template>
-        <template v-else> {{ t("auth.settings.security.button.linkOther", [provider]) }} </template>
+      <Button class="mt-3" :disabled="loading" @click.prevent="renameAuthenticator">
+        {{ t("auth.settings.security.securityKeys.rename") }}
       </Button>
-    </div>
-    <div class="flex gap-2 mt-2">
-      <Button
-        v-for="credential in settings?.oauthConnections"
-        :key="credential.provider + credential.id"
-        :disabled="!settings?.hasPassword && settings?.oauthConnections.length === 1"
-        :title="!settings?.hasPassword && settings?.oauthConnections.length === 1 ? t('auth.settings.security.unlinkOAuth.cantUnlink') : undefined"
-        @click="unlinkOAuth(credential.provider, credential.id)"
-      >
-        <template v-if="credential.provider === 'github'">
-          <IconMdiGithub class="mr-1" />
-          {{ t("auth.settings.security.button.unlinkAccount", ["GitHub", credential.name]) }}
-        </template>
-        <template v-else> {{ t("auth.settings.security.button.unlinkAccount", [credential.provider, credential.name]) }} </template>
-      </Button>
-    </div>
+    </Modal>
 
     <Modal ref="oauthModal" :title="t('auth.settings.security.unlinkOAuth.modal.title')" @close="closeUnlinkModal">
       <p>{{ t("auth.settings.security.unlinkOAuth.modal.message", [currentlyUnlinkingProvider]) }}</p>
@@ -394,14 +548,5 @@ function closeUnlinkModal() {
       />
       <Button class="mt-2" :disabled="v.$invalid" @click="confirmAndRepeat">{{ t("general.confirm") }}</Button>
     </Modal>
-
-    <!-- TODO: implement session list
-    <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.security.devices") }}</h3>
-    <ComingSoon>
-      last login<br />
-      on revoke iphone<br />
-      revoke all
-    </ComingSoon>
-    -->
   </div>
 </template>

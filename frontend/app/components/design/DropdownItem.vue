@@ -46,7 +46,10 @@ const attrs = computed(() => {
 <template>
   <component
     :is="type"
-    :class="'px-4 py-2 font-semibold hover:(bg-gray-100 dark:bg-gray-700) ' + (disabled ? 'cursor-not-allowed text-opacity-50' : 'cursor-pointer')"
+    :class="
+      'rounded-lg border border-transparent px-2 py-1 font-semibold decoration-none transition-all duration-250 hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800 ' +
+      (disabled ? 'cursor-not-allowed text-opacity-50' : 'cursor-pointer')
+    "
     v-bind="attrs"
   >
     <slot />

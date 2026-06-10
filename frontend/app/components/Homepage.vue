@@ -23,7 +23,7 @@ const sorters = [
 ];
 
 const toArray = (input: LocationQueryValue | LocationQueryValue[] | undefined): string[] =>
-  Array.isArray(input) ? (input as string[]) : (input ? [input!] : []);
+  Array.isArray(input) ? (input as string[]) : input ? [input!] : [];
 const showAllVersions = ref(false);
 const filters = ref({
   versions: toArray(route.query.version),
@@ -63,7 +63,7 @@ const requestParams = computed(() => {
 });
 
 const { projects, projectsStatus, refreshProjects } = useProjects(() => requestParams.value, router);
-const loading = computed(() => projectsStatus.value === 'loading');
+const loading = computed(() => projectsStatus.value === "loading");
 
 // if somebody set page too high, lets reset it back
 watch(projects, () => {
@@ -118,17 +118,15 @@ useSeo(
   }))
 );
 
-const versionSearch = ref('');
+const versionSearch = ref("");
 
-const categorySearch = ref('');
+const categorySearch = ref("");
 const filteredCategories = computed(() => {
-  return useVisibleCategories.value.filter((category) =>
-    category.title.toLowerCase().includes(categorySearch.value.toLowerCase())
-  );
+  return useVisibleCategories.value.filter((category) => category.title.toLowerCase().includes(categorySearch.value.toLowerCase()));
 });
 
 const isStuck = ref(false);
-const headerRef = useTemplateRef<HTMLElement>('headerRef');
+const headerRef = useTemplateRef<HTMLElement>("headerRef");
 
 onMounted(() => {
   const observer = new IntersectionObserver(
@@ -147,7 +145,6 @@ onMounted(() => {
 
   onUnmounted(() => observer.disconnect());
 });
-
 </script>
 
 <template>
@@ -155,133 +152,132 @@ onMounted(() => {
     <Container class="flex flex-col items-center gap-4 mb-6">
       <div ref="headerRef">
         <template v-if="index">
-        <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col w-full" data-allow-mismatch>
-          <template v-if="ssr">
-            Find your favorite <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper plugins</strong>
-          </template>
-          <template v-else>
+          <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col w-full" data-allow-mismatch>
+            <template v-if="ssr">
+              Find your favorite <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper plugins</strong>
+            </template>
+            <template v-else>
+              Find your favorite
+              <div class="h-[36px] overflow-hidden relative">
+                <span class="flex flex-col absolute w-full anim">
+                  <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper plugins</strong>
+                  <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Velocity plugins</strong>
+                  <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Waterfall plugins</strong>
+                </span>
+              </div>
+            </template>
+          </h1>
+          <div class="text-1xl text-center mb-2">
+            Hangar allows you to find and download the best Paper plugins, Velocity plugins or Waterfall plugins for your Minecraft server
+          </div>
+        </template>
+        <template v-else>
+          <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4">
             Find your favorite
-            <div class="h-[36px] overflow-hidden relative">
-              <span class="flex flex-col absolute w-full anim">
-                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Paper plugins</strong>
-                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Velocity plugins</strong>
-                <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent">Waterfall plugins</strong>
-              </span>
-            </div>
-          </template>
-        </h1>
-        <div class="text-1xl text-center mb-2">
-          Hangar allows you to find and download the best Paper plugins, Velocity plugins or Waterfall plugins for your Minecraft server
-        </div>
-      </template>
-      <template v-else>
-        <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4">
-          Find your favorite
-          <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent"> {{ platformName }} plugins </strong>
-        </h1>
-        <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
-      </template>
-      <div v-if="!index" class="text-center -mt-2">
-        Looking for other platforms?
-        <div class="flex gap-3 mt-2 mb-2">
-          <Button v-if="platform != Platform.PAPER" to="/paper">
-            Download Paper plugins <PlatformLogo :platform="Platform.PAPER" :size="24" class="ml-1" />
-          </Button>
-          <Button v-if="platform != Platform.VELOCITY" to="/velocity">
-            Download Velocity Plugins <PlatformLogo :platform="Platform.VELOCITY" :size="24" class="ml-1" />
-          </Button>
-          <Button v-if="platform != Platform.WATERFALL" to="/waterfall">
-            Download Waterfall plugins <PlatformLogo :platform="Platform.WATERFALL" :size="24" class="ml-1" />
-          </Button>
-        </div>
+            <strong class="highlight bg-gradient-to-r from-primary-500 to-primary-400 text-transparent"> {{ platformName }} plugins </strong>
+          </h1>
+          <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
+        </template>
       </div>
-    </div>
     </Container>
     <Container lg="flex items-start gap-4">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
-
         <!-- Search, Size and Sorter Bar -->
         <Card
-          class="flex justify-between gap-4 sticky w-full top-4 self-start border shadow-charcoal-900 shadow-xl border-transparent
-                 transition-all duration-300 z-12"
+          class="flex justify-between gap-4 sticky w-full top-4 self-start border shadow-charcoal-900 shadow-xl border-transparent transition-all duration-300 z-12"
         >
-            <!-- Search Bar -->
-            <div class="relative transition-all duration-200 hover:scale-[1.005] rounded-md flex xl:w-full h-10.5 w-80 w-full">
-              <!-- Text Input -->
-              <input
-                v-model="query"
-                name="query"
-                class="rounded-lg outline-none px-9 p-2 basis-full min-w-30 dark:bg-gray-800 truncate border border-transparent
-                       hover:border-gray-700 focus:border-gray-700 transition-all duration-200"
-                type="text"
-                :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
-                v-on="useTracking('homepage-search', { platformName })"
-              />
-              <IconMdiMagnify class="absolute top-3 left-3 text-gray-500" />
-              <button v-if="query.length > 0" class="transition-all duration-250" @click="query = ''">
-                <IconMdiClose class="absolute top-3 right-3 text-gray-500 hover:text-white" />
-              </button>
-            </div>
+          <!-- Search Bar -->
+          <div class="relative transition-all duration-200 hover:scale-[1.005] rounded-md flex xl:w-full h-10.5 w-80 w-full">
+            <!-- Text Input -->
+            <input
+              v-model="query"
+              name="query"
+              class="rounded-lg outline-none px-9 p-2 basis-full min-w-30 dark:bg-gray-800 truncate border border-transparent hover:border-gray-700 focus:border-gray-700 transition-all duration-200"
+              type="text"
+              :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
+              v-on="useTracking('homepage-search', { platformName })"
+            />
+            <IconMdiMagnify class="absolute top-3 left-3 text-gray-500" />
+            <button v-if="query.length > 0" class="transition-all duration-250" @click="query = ''">
+              <IconMdiClose class="absolute top-3 right-3 text-gray-500 hover:text-white" />
+            </button>
+          </div>
 
-            <!-- Limit Button -->
-            <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent">
-              <template #button-label>
-                <div class="w-14 flex justify-center gap-1 items-center">
-                  <IconMdiFormatListNumbered />
-                  <div>{{ limit }}</div>
-                </div>
-              </template>
-              <template #default="{ close }">
-                <div class="w-max flex flex-col gap-1 max-h-lg max-w-lg overflow-x-auto py-1.5">
-                  <a
-                    v-for="limitOption in limits"
-                    :key="limitOption"
-                    :style="limit === limitOption ? {
-                        backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
-                        borderColor: 'var(--primary-500)'
-                      } : {}"
-                    class="mx-2 pl-2 pr-5.5 py-1.5 font-semibold rounded-lg cursor-pointer decoration-none transition-all duration-250
-                           border hover:scale-[1.005] hover:bg-gray-800 hover:border-gray-700 border-transparent"
-                    @click="() => { limit = limitOption; page = 0; close(); }"
-                  >
-                    {{ limitOption }}
-                  </a>
-                </div>
-              </template>
-            </DropdownButton>
+          <!-- Limit Button -->
+          <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent" match-width spread-arrow>
+            <template #button-label>
+              <div class="w-14 flex justify-start gap-1 items-center">
+                <IconMdiFormatListNumbered />
+                <div>{{ limit }}</div>
+              </div>
+            </template>
+            <template #default="{ close }">
+              <div class="flex max-h-lg w-full max-w-lg flex-col gap-1 overflow-y-auto overflow-x-visible">
+                <DropdownItem
+                  v-for="limitOption in limits"
+                  :key="limitOption"
+                  :style="
+                    limit === limitOption
+                      ? {
+                          backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+                          borderColor: 'var(--primary-500)',
+                        }
+                      : {}
+                  "
+                  @click="
+                    () => {
+                      limit = limitOption;
+                      page = 0;
+                      close();
+                    }
+                  "
+                >
+                  {{ limitOption }}
+                </DropdownItem>
+              </div>
+            </template>
+          </DropdownButton>
 
-            <!-- Sort by Button -->
-            <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent">
-              <template #button-label>
-                <div class="w-48 flex justify-center gap-1 items-center">
-                  <IconMdiSwapVertical class="" />
-                  <div>{{ sorters.find(s => s.id === activeSorter)!.label }}</div>
-                </div>
-              </template>
-              <template #default="{ close }">
-                <div class="w-max flex flex-col gap-1 max-h-lg max-w-lg overflow-x-auto py-1.5">
-                  <!-- eslint-disable vue/no-v-html -->
-                  <a
-                    v-for="sorter in sorters"
-                    :key="sorter.id"
-                    :style="activeSorter === sorter.id ? {
-                        backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
-                        borderColor: 'var(--primary-500)'
-                      } : {}"
-                    class="mx-2 pl-2 pr-5.5 py-1.5 font-semibold rounded-lg cursor-pointer decoration-none transition-all duration-250
-                           border hover:scale-[1.005] hover:bg-gray-800 hover:border-gray-700 border-transparent"
-                    @click="() => { activeSorter = sorter.id; close(); }"
-                    v-html="sorter.label"
-                  />
-                  <!-- eslint-enable vue/no-v-html -->
-                </div>
-              </template>
-            </DropdownButton>
+          <!-- Sort by Button -->
+          <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent" match-width spread-arrow>
+            <template #button-label>
+              <div class="w-48 flex justify-start gap-1 items-center">
+                <IconMdiSwapVertical class="" />
+                <div>{{ sorters.find((s) => s.id === activeSorter)!.label }}</div>
+              </div>
+            </template>
+            <template #default="{ close }">
+              <div class="flex max-h-lg w-full max-w-lg flex-col gap-1 overflow-y-auto overflow-x-visible">
+                <!-- eslint-disable vue/no-v-html -->
+                <DropdownItem
+                  v-for="sorter in sorters"
+                  :key="sorter.id"
+                  :style="
+                    activeSorter === sorter.id
+                      ? {
+                          backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+                          borderColor: 'var(--primary-500)',
+                        }
+                      : {}
+                  "
+                  @click="
+                    () => {
+                      activeSorter = sorter.id;
+                      close();
+                    }
+                  "
+                  v-html="sorter.label"
+                />
+                <!-- eslint-enable vue/no-v-html -->
+              </div>
+            </template>
+          </DropdownButton>
         </Card>
         <Transition name="fade">
           <div v-if="filters.platform === Platform.WATERFALL" class="px-4 py-2 text-center rounded-xl border border-[#ff544b] bg-[#ff544b60]">
-            <span class="text-lg font-bold">Warning!</span> Waterfall has reached end of life and is no longer actively maintained. It is highly recommended to migrate to  <Link class="!text-white font-bold decoration-underline" href="https://papermc.io/software/velocity/">Velocity</Link>!
+            <span class="text-lg font-bold">Warning!</span> Waterfall has reached end of life and is no longer actively maintained. It is highly recommended to
+            migrate to <Link class="!text-white font-bold decoration-underline" href="https://papermc.io/software/velocity/">Velocity</Link>!
           </div>
         </Transition>
         <ProjectList
@@ -296,24 +292,25 @@ onMounted(() => {
         <!-- Platform Filter -->
         <CollapsibleCard class="min-w-300px flex flex-col gap-1">
           <template #title>
-            {{ i18n.t('hangar.projectSearch.platforms') }}
+            {{ i18n.t("hangar.projectSearch.platforms") }}
             <Transition name="collapse">
-              <div v-if="!platform" class="flex items-center justify-between w-full h-full">
+              <div v-if="filters.platform" class="flex items-center justify-between w-full h-full">
                 <span />
                 <Tooltip>
                   <button
-                    v-if="filters.platform"
-                    class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250
-                            hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
+                    class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
                     cursor="pointer"
-                    @click="() => {
-                      filters.platform = undefined;
-                      filters.versions = [];
-                    }">
+                    @click="
+                      () => {
+                        filters.platform = undefined;
+                        filters.versions = [];
+                      }
+                    "
+                  >
                     <IconMdiBroom class="text-sm" />
                   </button>
                   <template #content>
-                    {{ i18n.t('hangar.projectSearch.clear') }}
+                    {{ i18n.t("hangar.projectSearch.clear") }}
                   </template>
                 </Tooltip>
               </div>
@@ -339,25 +336,26 @@ onMounted(() => {
         <Transition name="collapse">
           <CollapsibleCard v-if="filters.platform" class="min-w-300px flex flex-col gap-1" :title="i18n.t('hangar.projectSearch.versions.' + filters.platform)">
             <template #title>
-              <span  class="text-nowrap">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</span>
+              <span class="text-nowrap">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</span>
               <Transition name="collapse">
                 <div v-if="filters.versions.length > 0" class="flex items-center justify-between w-full h-full">
                   <span />
                   <Tooltip>
                     <button
                       v-if="filters.versions"
-                      class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250
-                            hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
+                      class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
                       cursor="pointer"
-                      @click="() => {
-                        filters.versions = [];
-                        versionSearch = '';
-                      }"
+                      @click="
+                        () => {
+                          filters.versions = [];
+                          versionSearch = '';
+                        }
+                      "
                     >
                       <IconMdiBroom class="text-sm" />
                     </button>
                     <template #content>
-                      {{ i18n.t('hangar.projectSearch.clear') }}
+                      {{ i18n.t("hangar.projectSearch.clear") }}
                     </template>
                   </Tooltip>
                 </div>
@@ -379,19 +377,22 @@ onMounted(() => {
             </div>
             <div class="relative">
               <div class="h-40 -px-1 overflow-y-auto overflow-x-hidden">
-                <VersionSelector v-model="filters.versions" :version-search-query="versionSearch" :show-all-versions="showAllVersions" :versions="usePlatformVersions(filters.platform)" :open="false" col />
+                <VersionSelector
+                  v-model="filters.versions"
+                  :version-search-query="versionSearch"
+                  :show-all-versions="showAllVersions"
+                  :versions="usePlatformVersions(filters.platform)"
+                  :open="false"
+                  col
+                />
               </div>
               <!-- Gradient Overlay -->
-              <div class="absolute inset-x-0 bottom-0 w-full h-8
-                bg-gradient-to-b from-transparent to-charcoal-600
-                pointer-events-none" />
-              <div class="absolute inset-x-0 top-0 w-full h-3
-                bg-gradient-to-b to-transparent from-charcoal-600
-                pointer-events-none" />
+              <div class="absolute inset-x-0 bottom-0 w-full h-8 bg-gradient-to-b from-transparent to-charcoal-600 pointer-events-none" />
+              <div class="absolute inset-x-0 top-0 w-full h-3 bg-gradient-to-b to-transparent from-charcoal-600 pointer-events-none" />
             </div>
             <Transition name="collapse">
               <div v-if="filters.platform === Platform.PAPER" class="mt-2 pt-2 border-t border-gray-800">
-                <InputCheckbox v-model:model-value="showAllVersions">
+                <InputCheckbox v-model="showAllVersions">
                   <span class="ml-4">{{ i18n.t("hangar.projectSearch.showAllVersions") }}</span>
                 </InputCheckbox>
               </div>
@@ -402,22 +403,21 @@ onMounted(() => {
         <!-- Tags Filter -->
         <CollapsibleCard class="min-w-300px flex flex-col gap-1">
           <template #title>
-            {{ i18n.t('hangar.projectSearch.tags') }}
+            {{ i18n.t("hangar.projectSearch.tags") }}
             <Transition name="collapse">
               <div v-if="filters.tags.length > 0" class="flex items-center justify-between w-full h-full">
                 <span />
                 <Tooltip>
                   <button
                     v-if="filters.tags"
-                    class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250
-                            hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
+                    class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
                     cursor="pointer"
                     @click="filters.tags = []"
                   >
                     <IconMdiBroom class="text-sm" />
                   </button>
                   <template #content>
-                    {{ i18n.t('hangar.projectSearch.clear') }}
+                    {{ i18n.t("hangar.projectSearch.clear") }}
                   </template>
                 </Tooltip>
               </div>
@@ -426,9 +426,9 @@ onMounted(() => {
           <div class="flex flex-col gap-1 mt-1">
             <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
               <template #label>
-                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" class="ml-3 mr-1"/>
-                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" class="ml-3 mr-1"/>
-                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" class="ml-3 mr-1"/>
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" class="ml-3 mr-1" />
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" class="ml-3 mr-1" />
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" class="ml-3 mr-1" />
                 <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
               </template>
             </InputCheckbox>
@@ -445,15 +445,14 @@ onMounted(() => {
                 <Tooltip>
                   <button
                     v-if="filters.tags"
-                    class="text-sm flex items-center rounded-full border border-transparent p-1 transition-all duration-250
-                            hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
+                    class="text-sm flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
                     cursor="pointer"
                     @click="filters.categories = []"
                   >
                     <IconMdiBroom class="text-sm" />
                   </button>
                   <template #content>
-                    {{ i18n.t('hangar.projectSearch.clear') }}
+                    {{ i18n.t("hangar.projectSearch.clear") }}
                   </template>
                 </Tooltip>
               </div>
@@ -480,28 +479,17 @@ onMounted(() => {
             <div v-else class="flex flex-col gap-1 mt-1 h-60 -px-1 overflow-y-auto overflow-x-hidden pt-2 pb-3">
               <template v-for="category in filteredCategories" :key="category.apiName">
                 <div class="mr-4 ml-1">
-                  <InputCheckbox
-                    v-model="filters.categories"
-                    :value="category.apiName"
-                    :label="i18n.t(category.title)"
-                  >
+                  <InputCheckbox v-model="filters.categories" :value="category.apiName" :label="i18n.t(category.title)">
                     <CategoryLogo :category="category.apiName as Category" :size="22" class="ml-3 mr-1" />
                   </InputCheckbox>
                 </div>
               </template>
-
             </div>
             <!-- Gradient Overlay -->
-            <div class="absolute inset-x-0 bottom-0 w-full h-8
-                bg-gradient-to-b from-transparent to-charcoal-600
-                pointer-events-none" />
-            <div class="absolute inset-x-0 top-0 w-full h-3
-                bg-gradient-to-b to-transparent from-charcoal-600
-                pointer-events-none" />
+            <div class="absolute inset-x-0 bottom-0 w-full h-8 bg-gradient-to-b from-transparent to-charcoal-600 pointer-events-none" />
+            <div class="absolute inset-x-0 top-0 w-full h-3 bg-gradient-to-b to-transparent from-charcoal-600 pointer-events-none" />
           </div>
-
         </CollapsibleCard>
-        <FAQModal class="w-full"/>
       </div>
     </Container>
     <h2 class="text-2xl text-center font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>

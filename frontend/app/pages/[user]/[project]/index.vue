@@ -11,7 +11,6 @@ const props = defineProps<{
 const config = useRuntimeConfig();
 const i18n = useI18n();
 const route = useRoute("user-project-pages-page");
-const openProjectPages = useOpenProjectPages(route, props.project);
 
 const sponsors = ref(props.project?.settings?.sponsors);
 const editingSponsors = ref(false);
@@ -65,10 +64,10 @@ useSeo(
 </script>
 
 <template>
-  <div class="flex flex-wrap md:flex-nowrap gap-4">
-    <section class="basis-full md:basis-11/15 flex-grow overflow-auto">
+  <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_320px]">
+    <section class="min-w-0 overflow-auto">
       <ProjectPageMarkdown v-slot="{ editingPage, changeEditingPage, savePage }" :project="props.project" :page="props.project?.mainPage" main-page>
-        <Card v-if="project?.mainPage?.contents" class="pb-0 overflow-clip overflow-hidden">
+        <Card v-if="project?.mainPage?.contents" class="!p-0 pb-0 overflow-clip overflow-hidden">
           <ClientOnly v-if="hasPerms(NamedPermission.EditPage)">
             <MarkdownEditor
               :editing="editingPage"
@@ -89,7 +88,7 @@ useSeo(
           <Markdown v-else :raw="project?.mainPage.contents" />
         </Card>
       </ProjectPageMarkdown>
-      <Card v-if="sponsors || hasPerms(NamedPermission.EditSubjectSettings)" class="mt-2 pb-0 overflow-clip overflow-visible">
+      <Card v-if="sponsors || hasPerms(NamedPermission.EditSubjectSettings)" class="mt-4 pb-0 overflow-clip overflow-visible">
         <ClientOnly v-if="hasPerms(NamedPermission.EditSubjectSettings)">
           <MarkdownEditor
             v-model:editing="editingSponsors"
@@ -121,7 +120,7 @@ useSeo(
           <Markdown :raw="sponsors" class="pt-0" />
         </template>
       </Card>
-      <Alert v-if="hasPerms(NamedPermission.EditSubjectSettings)" type="neutral" class="mt-2">
+      <Alert v-if="hasPerms(NamedPermission.EditSubjectSettings)" type="neutral" class="mt-4">
         <div>
           {{ i18n.t("project.bannersInfo") }}&nbsp;
           <Link :to="'/' + project?.namespace?.owner + '/' + project?.namespace?.slug + '/settings/banners'">
@@ -130,59 +129,69 @@ useSeo(
         </div>
       </Alert>
     </section>
-    <section class="basis-full md:basis-4/15 space-y-4 min-w-280px">
+    <aside class="space-y-4 self-start lg:sticky lg:top-4">
       <ProjectInfo :project="project" />
-      <Card v-if="project?.pinnedVersions?.length">
+      <Card v-if="project?.pinnedVersions?.length" class="!p-0 overflow-hidden">
         <template #header>
-          <h2>{{ i18n.t("project.pinnedVersions") }}</h2>
+          <div class="flex items-center gap-2 px-4 pt-3.5 pb-1">
+            <h2>{{ i18n.t("project.pinnedVersions") }}</h2>
+          </div>
         </template>
-        <ul class="divide-y divide-blue-500/50">
-          <li v-for="(version, index) in project?.pinnedVersions" :key="`${index}-${version.name}`" class="p-1 py-2">
-            <div class="flex">
-              <NuxtLink :to="createPinnedVersionUrl(version)" class="flex-grow truncate">
-                <div class="truncate">
-                  <span class="font-semibold truncate">{{ version.name }}</span>
+        <ul class="flex flex-col gap-2 px-3 pt-1 pb-3">
+          <li
+            v-for="(version, index) in project?.pinnedVersions"
+            :key="`${index}-${version.name}`"
+            class="overflow-hidden rounded-lg border border-gray-200 bg-gray-100/60 transition-colors hover:border-gray-300 dark:border-gray-800 dark:bg-charcoal-500/60 dark:hover:border-gray-700"
+          >
+            <div class="flex min-w-0 items-center gap-3 p-3">
+              <NuxtLink :to="createPinnedVersionUrl(version)" class="min-w-0 flex-grow">
+                <div class="mb-1 flex items-center gap-2">
+                  <Tag :name="version.channel.name" :color="{ background: version.channel.color }" :tooltip="version.channel.description" />
                 </div>
+                <div class="truncate text-lg font-semibold">{{ version.name }}</div>
               </NuxtLink>
-              <div class="ml-1 space-y-2 flex flex-col">
-                <Tag :name="version.channel.name" :color="{ background: version.channel.color }" :tooltip="version.channel.description" />
-              </div>
+              <DownloadButton v-if="project" :project="project" :pinned-version="version" small :show-versions="false" />
             </div>
-            <div class="flex pt-1">
-              <NuxtLink :to="createPinnedVersionUrl(version)" class="flex-grow">
-                <div class="inline-flex items-center mt-1">
-                  <div class="flex flex-col">
-                    <div v-for="(v, p) in version.platformDependenciesFormatted" :key="p" class="flex flex-row items-center">
-                      <PlatformLogo :key="p" :platform="p as Platform" :size="20" class="mr-1 flex-shrink-0" />
-                      <span :key="p" class="text-0.875rem light:text-gray-600">{{ v.join(", ") }}</span>
-                    </div>
-                  </div>
-                </div>
-              </NuxtLink>
-              <div class="ml-1 space-y-2 flex flex-col mt-1">
-                <DownloadButton v-if="project" :project="project" :pinned-version="version" small :show-versions="false" class="self-end" />
-              </div>
-            </div>
+            <NuxtLink :to="createPinnedVersionUrl(version)" class="flex flex-wrap gap-1.5 border-t border-gray-200 px-3 py-2 dark:border-gray-700">
+              <span
+                v-for="(v, p) in version.platformDependenciesFormatted"
+                :key="p"
+                class="inline-flex min-w-0 items-center gap-1.5 rounded-md bg-gray-50 px-2 py-1 text-xs dark:bg-charcoal-600"
+              >
+                <PlatformLogo :platform="p as Platform" :size="16" class="flex-shrink-0" />
+                <span class="truncate">{{ v.join(", ") }}</span>
+              </span>
+            </NuxtLink>
           </li>
         </ul>
         <Skeleton v-if="!project" />
       </Card>
-      <ProjectPageList :project="project" :open="openProjectPages" />
 
       <template v-for="section in project?.settings?.links">
-        <Card v-if="section.type === 'sidebar'" :key="section.id">
+        <Card v-if="section.type === 'sidebar'" :key="section.id" class="!p-0 overflow-hidden">
           <template #header>
-            <h2>{{ section.title }}</h2>
+            <div class="flex items-center gap-2 px-4 pt-3.5 pb-1">
+              <h2 class="min-w-0 truncate">{{ section.title }}</h2>
+              <span class="ml-auto rounded-full bg-gray-100 px-2 py-0.5 text-xs font-normal text-gray dark:bg-charcoal-500">
+                {{ section.links.length }}
+              </span>
+            </div>
           </template>
-          <div class="flex flex-col">
-            <template v-for="link in section.links" :key="link.id">
-              <Link :href="linkout(link.url)">{{ link.name }}</Link>
-            </template>
+          <div class="flex flex-col gap-2 px-3 pt-1 pb-3">
+            <Link
+              v-for="link in section.links"
+              :key="link.id"
+              :href="linkout(link.url)"
+              class="flex min-w-0 items-center gap-2 rounded-lg border border-gray-200 bg-gray-100/60 px-3 py-2 font-semibold transition-colors hover:border-gray-300 dark:border-gray-800 dark:bg-charcoal-500/60 dark:hover:border-gray-700"
+            >
+              <span class="min-w-0 flex-grow truncate">{{ link.name }}</span>
+              <IconMdiOpenInNew class="flex-shrink-0 text-sm text-gray" />
+            </Link>
           </div>
         </Card>
       </template>
 
       <MemberList v-if="project?.members" :members="project.members" :author="project.namespace.owner" :slug="project.name" class="overflow-visible" />
-    </section>
+    </aside>
   </div>
 </template>

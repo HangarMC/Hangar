@@ -20,6 +20,55 @@ const selected = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
+const missingPatchVersions: Record<string, string[]> = {
+  "1.21": ["1.21.11", "1.21.10"],
+};
+
+function patchParent(version: string): string | undefined {
+  const segments = version.split(".");
+  if (segments.length !== 3 || segments.some((segment) => !/^\d+$/.test(segment)) || Number(segments[0]) <= 1) {
+    return undefined;
+  }
+  return segments.slice(0, 2).join(".");
+}
+
+const normalizedVersions = computed<PlatformVersion[]>(() => {
+  const groupedVersions = new Map<string, { subVersions: string[]; hasSubVersions: boolean }>();
+
+  for (const platformVersion of props.versions) {
+    const parent = platformVersion.subVersions.length === 0 ? patchParent(platformVersion.version) : undefined;
+    const group = parent ?? platformVersion.version;
+    const existingGroup = groupedVersions.get(group) ?? { subVersions: [], hasSubVersions: false };
+    const subVersions = platformVersion.subVersions.length > 0 ? platformVersion.subVersions : [platformVersion.version];
+
+    for (const subVersion of subVersions) {
+      if (!existingGroup.subVersions.includes(subVersion)) {
+        existingGroup.subVersions.push(subVersion);
+      }
+    }
+    existingGroup.hasSubVersions ||= platformVersion.subVersions.length > 0 || parent !== undefined;
+    groupedVersions.set(group, existingGroup);
+  }
+
+  for (const [parent, missingVersions] of Object.entries(missingPatchVersions)) {
+    const group = groupedVersions.get(parent);
+    if (!group) {
+      continue;
+    }
+    group.subVersions = [...missingVersions, ...group.subVersions.filter((version) => !missingVersions.includes(version))];
+    group.hasSubVersions = true;
+  }
+
+  return [...groupedVersions].map(([version, group]) => ({
+    version,
+    subVersions: group.hasSubVersions ? group.subVersions : [],
+  }));
+});
+
+const realVersions = computed(
+  () => new Set(normalizedVersions.value.flatMap((version) => (version.subVersions.length > 0 ? version.subVersions : [version.version])))
+);
+
 const selectedParents = ref<string[]>([]);
 const selectedSub = ref<string[]>([]);
 if (selected.value) {
@@ -31,7 +80,7 @@ if (selected.value) {
       continue;
     }
     const cutVersion = version.slice(0, Math.max(0, lastSeparator));
-    const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
+    const platformVersion = normalizedVersions.value.find((v) => v.version === cutVersion || v.version === version);
     if (!platformVersion) {
       continue;
     }
@@ -52,16 +101,14 @@ if (selected.value) {
 watch(
   () => props.modelValue,
   (newValue) => {
-    if (newValue.length === 0) {
+    if (!newValue?.length) {
       selectedParents.value = [];
       selectedSub.value = [];
     }
   }
 );
 const filteredVersions = computed(() => {
-  return props.versions.filter((version) =>
-    version.version.toLowerCase().includes(props.versionSearchQuery.toLowerCase())
-  );
+  return normalizedVersions.value.filter((version) => version.version.toLowerCase().includes(props.versionSearchQuery.toLowerCase()));
 });
 
 watch(selectedParents, (oldValue, newValue) => {
@@ -75,7 +122,7 @@ watch(selectedSub, (oldValue, newValue) => {
 
 function handleRemovedParent(removedVersions: string[]) {
   for (const version of removedVersions) {
-    const platformVersion = props.versions.find((v) => v.version === version);
+    const platformVersion = normalizedVersions.value.find((v) => v.version === version);
     if (!platformVersion) {
       continue;
     }
@@ -90,7 +137,7 @@ function handleRemovedParent(removedVersions: string[]) {
 
 function handleAddedParent(addedVersions: string[]) {
   for (const version of addedVersions) {
-    const platformVersion = props.versions.find((v) => v.version === version);
+    const platformVersion = normalizedVersions.value.find((v) => v.version === version);
     if (!platformVersion) {
       continue;
     }
@@ -115,7 +162,7 @@ function handleRemovedSub(removedVersions: string[]) {
     }
 
     const cutVersion = version.slice(0, Math.max(0, lastSeparator));
-    const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
+    const platformVersion = normalizedVersions.value.find((v) => v.version === cutVersion || v.version === version);
     if (!platformVersion) {
       continue;
     }
@@ -140,7 +187,7 @@ function handleAddedSub(removedVersions: string[]) {
     }
 
     const cutVersion = version.slice(0, Math.max(0, lastSeparator));
-    const platformVersion = props.versions.find((v) => v.version === cutVersion || v.version === version);
+    const platformVersion = normalizedVersions.value.find((v) => v.version === cutVersion || v.version === version);
     if (!platformVersion) {
       continue;
     }
@@ -158,7 +205,7 @@ function handleAddedSub(removedVersions: string[]) {
       if (!selectedParents.value.includes(platformVersion.version)) {
         selectedParents.value.push(platformVersion.version);
       }
-      if (!selected.value.includes(platformVersion.version)) {
+      if (realVersions.value.has(platformVersion.version) && !selected.value.includes(platformVersion.version)) {
         selected.value.push(platformVersion.version);
       }
     }
@@ -181,14 +228,9 @@ const i18n = useI18n();
               <InputCheckbox v-model="selectedParents" :value="version.version" :label="version.version" :name="version.version" />
             </div>
           </template>
-          <template v-for="subversion in version.subVersions" v-else :key="subversion" >
+          <template v-for="subversion in version.subVersions" v-else :key="subversion">
             <div class="mr-4 ml-1">
-              <InputCheckbox
-                v-model="selectedSub"
-                :value="subversion"
-                :label="subversion"
-                :name="subversion"
-              />
+              <InputCheckbox v-model="selectedSub" :value="subversion" :label="subversion" :name="subversion" />
             </div>
           </template>
         </template>

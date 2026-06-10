@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Tab } from "#shared/types/components/design/Tabs";
-
 definePageMeta({
   loginRequired: true,
 });
@@ -20,11 +18,10 @@ if (import.meta.client && route.path.endsWith("settings")) {
 
 const tabs = [
   { value: "profile", header: t("auth.settings.profile.header") },
-  { value: "account", header: t("auth.settings.account.header") },
   { value: "security", header: t("auth.settings.security.header") },
+  { value: "other", header: "Preferences" },
   { value: "api-keys", header: t("auth.settings.apiKeys.header") },
-  { value: "other", header: t("auth.settings.misc.header") },
-] as const satisfies Tab<string>[];
+] as const;
 
 const emailConfirmModal = useTemplateRef("emailConfirmModal");
 const hasPendingMail = ref(authSettings.value?.emailPending);
@@ -81,23 +78,27 @@ useSeo(computed(() => ({ title: "Settings", route })));
       to change that
     </Alert>
 
-    <Card>
-      <Tabs :tabs="tabs" router>
-        <router-view v-slot="{ Component }">
-          <Suspense>
-            <div>
-              <component
-                :is="Component"
-                :settings="authSettings"
-                @refresh-settings="refreshAuthSettings"
-                @open-email-confirm-modal="emailConfirmModal!.isOpen = true"
-              />
-            </div>
-            <template #fallback><Delayed> Loading... </Delayed></template>
-          </Suspense>
-        </router-view>
-      </Tabs>
-    </Card>
+    <nav class="background-default w-fit max-w-full overflow-hidden rounded-xl border dark:border-gray-800">
+      <div class="flex max-w-full items-center gap-1 overflow-x-auto whitespace-nowrap p-1">
+        <ProjectNavItem v-for="tab in tabs" :key="tab.value" :to="`/auth/settings/${tab.value}`" :title="tab.header" compact>
+          {{ tab.header }}
+        </ProjectNavItem>
+      </div>
+    </nav>
+
+    <router-view v-slot="{ Component }">
+      <Suspense>
+        <div>
+          <component
+            :is="Component"
+            :settings="authSettings"
+            @refresh-settings="refreshAuthSettings"
+            @open-email-confirm-modal="emailConfirmModal!.isOpen = true"
+          />
+        </div>
+        <template #fallback><Delayed> Loading... </Delayed></template>
+      </Suspense>
+    </router-view>
 
     <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal!.isOpen = false">
       <template v-if="!hasPendingMail">

@@ -9,7 +9,7 @@ const props = withDefaults(
   defineProps<{
     disabled?: boolean;
     size?: "small" | "medium" | "large";
-    buttonType?: "primary" | "secondary" | "red" | "transparent";
+    buttonType?: "primary" | "secondary" | "red" | "transparent" | "borderless";
     loading?: boolean;
     to?: string | RouteLocationRaw | object;
     href?: string;
@@ -37,17 +37,24 @@ const paddingClass = computed<string>(() => {
 });
 
 const classes = computed<string>(() => {
-  const button = " button-" + props.buttonType;
-  const loading = props.loading ? " !cursor-wait" : " cursor-pointer";
-  return (
-    "rounded-lg font-semibold inline-flex items-center justify-center border-1 border-gray-800 hover:scale-[1.005] transition-all duration-250" +
-    (props.buttonType === "transparent"
-      ? "text-black dark:text-white disabled:cursor-not-allowed disabled:text-gray-400 "
-      : "text-white disabled:(bg-gray-300 cursor-not-allowed) disabled:dark:(text-gray-500 bg-charcoal-600) ") +
-    paddingClass.value +
-    button +
-    loading
-  );
+  const isTextButton = props.buttonType === "transparent" || props.buttonType === "borderless";
+  const border = props.buttonType === "borderless" ? "border-1 border-transparent" : "border-1 border-gray-800";
+  const interaction =
+    props.buttonType === "borderless" ? "hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800" : "hover:scale-[1.005]";
+  const colors = isTextButton
+    ? "text-black dark:text-white disabled:cursor-not-allowed disabled:text-gray-400"
+    : "text-white disabled:(bg-gray-300 cursor-not-allowed) disabled:dark:(text-gray-500 bg-charcoal-600)";
+  const loading = props.loading ? "!cursor-wait" : "cursor-pointer";
+
+  return [
+    "rounded-lg font-semibold inline-flex items-center justify-center transition-all duration-250",
+    border,
+    interaction,
+    colors,
+    paddingClass.value,
+    `button-${props.buttonType}`,
+    loading,
+  ].join(" ");
 });
 </script>
 
@@ -55,10 +62,14 @@ const classes = computed<string>(() => {
   <component
     :is="to ? NuxtLink : href ? 'a' : 'button'"
     :class="classes"
-    :style="buttonType === 'primary' ? {
-        backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
-        borderColor: 'var(--primary-500)'
-      } : {}"
+    :style="
+      buttonType === 'primary'
+        ? {
+            backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+            borderColor: 'var(--primary-500)',
+          }
+        : {}
+    "
     :disabled="disabled || loading"
     :to="to"
     :href="href"

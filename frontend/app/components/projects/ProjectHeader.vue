@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AxiosError } from "axios";
-import { NamedPermission, ReviewState, Visibility } from "#shared/types/backend";
+import { NamedPermission, ReviewState, Tag, Visibility } from "#shared/types/backend";
 import type { Platform, HangarProject } from "#shared/types/backend";
 
 const i18n = useI18n();
@@ -10,7 +10,7 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 
-const user = useAuthStore().user;
+const authStore = useAuthStore();
 
 const starred = computed(() => props.project?.userActions?.starred);
 const watching = computed(() => props.project?.userActions?.watching);
@@ -18,7 +18,8 @@ const starredCount = computed(() => props.project?.stats?.stars);
 const watchingCount = computed(() => props.project?.stats?.watchers);
 const reported = computed(() => props.project?.userActions?.flagged);
 
-const isOwn = computed(() => !user || user.name === props.project?.namespace?.owner);
+const isLoggedIn = computed(() => authStore.authenticated && !!authStore.user);
+const isOwn = computed(() => authStore.user?.name === props.project?.namespace?.owner);
 
 const starredChanged = ref(false);
 const watchingChanged = ref(false);
@@ -32,11 +33,13 @@ function toggleState(route: string, completedKey: string, revokedKey: string, va
 }
 
 function toggleStar() {
+  if (!isLoggedIn.value) return;
   starredChanged.value = !starredChanged.value;
   toggleState("star", "starred", "unstarred", hasStarred());
 }
 
 function toggleWatch() {
+  if (!isLoggedIn.value) return;
   watchingChanged.value = !watchingChanged.value;
   toggleState("watch", "watched", "unwatched", isWatching());
 }
@@ -122,39 +125,57 @@ function requiresConfirmation(): ConfirmationType {
       <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" inline />
     </Alert>
   </div>
-  <Card accent>
-    <div class="flex lt-sm:flex-col">
+  <Card class="project-hero !p-4 sm:!p-5 overflow-visible">
+    <div class="flex gap-4 lt-sm:flex-col">
       <UserAvatar
-        class="flex-shrink-0 mr-3 lt-sm:hidden"
+        class="flex-shrink-0 lt-sm:hidden shadow-lg"
         :loading="!project"
         :username="project?.namespace?.owner"
         :to="'/' + project?.namespace?.owner + '/' + project?.name"
         :img-src="project?.avatarUrl"
+        size="xl"
       />
-      <div class="flex-grow sm:mr-4 lt-sm:mb-4 overflow-clip overflow-hidden">
-        <div class="text-2xl lt-sm:text-lg pb-1 inline-flex space-x-0.3 items-center">
+      <div class="min-w-0 flex-grow overflow-hidden">
+        <div class="inline-flex items-center gap-3">
           <UserAvatar
-            class="!w-8 !h-8 sm:hidden"
+            class="!w-14 !h-14 sm:hidden shadow-lg"
             :loading="!project"
             :username="project?.namespace?.owner"
             :to="'/' + project?.namespace?.owner + '/' + project?.name"
             :img-src="project?.avatarUrl"
           />
           <template v-if="project">
-            <NuxtLink class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">
-              {{ project.namespace.owner }}
-            </NuxtLink>
-            <span class="text-gray-500 dark:text-gray-400"> / </span>
-            <NuxtLink class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
-              <h1 class="font-semibold">{{ project.name }}</h1>
-            </NuxtLink>
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-baseline gap-x-3">
+                <NuxtLink :to="'/' + project.namespace.owner + '/' + project.name">
+                  <h1 class="truncate text-2xl sm:text-3xl font-bold">{{ project.name }}</h1>
+                </NuxtLink>
+                <span class="text-sm text-gray">
+                  by
+                  <NuxtLink class="color-primary hover:underline" :to="'/' + project.namespace.owner">
+                    {{ project.namespace.owner }}
+                  </NuxtLink>
+                </span>
+              </div>
+              <p class="mt-1 text-gray-600 dark:text-gray-300">{{ project.description }}</p>
+            </div>
           </template>
           <Skeleton v-else />
         </div>
-        <p v-if="project" class="sm:ml-1">{{ project.description }}</p>
-        <Skeleton v-else />
+        <div v-if="project" class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+          <span class="inline-flex items-center gap-1.5">
+            <IconMdiShapeOutline class="color-primary" />
+            {{ i18n.t("project.category." + project.category) }}
+          </span>
+          <span v-for="tag in project.settings.tags" :key="tag" class="inline-flex items-center gap-1.5 text-gray">
+            <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+            <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+            <IconMdiLeaf v-else />
+            {{ i18n.t("project.settings.tags." + tag + ".title") }}
+          </span>
+        </div>
       </div>
-      <div class="flex flex-col justify-around lt-sm:items-center space-y-2 items-end justify-between flex-shrink-0">
+      <div class="flex flex-col items-end justify-between gap-5 flex-shrink-0 lt-sm:items-stretch">
         <span v-if="project?.mainChannelVersions" class="inline-flex items-center">
           <Tooltip v-if="requiresConfirmation() !== ConfirmationType.NO">
             <template #content>
@@ -167,14 +188,15 @@ function requiresConfirmation(): ConfirmationType {
           </Tooltip>
           <DownloadButton :project="project" />
         </span>
-        <div class="flex">
+        <div class="flex justify-end">
           <Tooltip>
             <template #content>
-              <span v-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
+              <span v-if="!isLoggedIn">{{ i18n.t("general.error.401") }}</span>
+              <span v-else-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
               <span v-else-if="hasStarred()">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button button-type="secondary" size="small" @click="toggleStar">
+            <Button button-type="secondary" size="medium" :disabled="!isLoggedIn" @click="toggleStar">
               <IconMdiStar v-if="hasStarred()" />
               <IconMdiStarOutline v-else />
               <span class="ml-2">{{ getStarredCount()?.toLocaleString("en-US") }}</span>
@@ -184,11 +206,12 @@ function requiresConfirmation(): ConfirmationType {
           <div class="px-1" />
           <Tooltip>
             <template #content>
-              <span v-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
+              <span v-if="!isLoggedIn">{{ i18n.t("general.error.401") }}</span>
+              <span v-else-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
               <span v-else-if="isWatching()">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button button-type="secondary" size="small" @click="toggleWatch">
+            <Button button-type="secondary" size="medium" :disabled="!isLoggedIn" @click="toggleWatch">
               <IconMdiBell v-if="isWatching()" />
               <IconMdiBellOutline v-else />
               <span class="ml-2">{{ getWatchingCount()?.toLocaleString("en-US") }}</span>
@@ -201,3 +224,13 @@ function requiresConfirmation(): ConfirmationType {
     </div>
   </Card>
 </template>
+
+<style scoped>
+.project-hero {
+  background: linear-gradient(105deg, color-mix(in srgb, var(--primary-500) 22%, transparent), transparent 62%), var(--charcoal-600);
+}
+
+.light .project-hero {
+  background: linear-gradient(105deg, color-mix(in srgb, var(--primary-500) 16%, transparent), transparent 62%), var(--gray-50);
+}
+</style>

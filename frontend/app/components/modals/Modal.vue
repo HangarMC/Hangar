@@ -3,9 +3,11 @@ const props = withDefaults(
   defineProps<{
     title: string;
     windowClasses?: string;
+    closeButtonRight?: boolean;
   }>(),
   {
     windowClasses: "",
+    closeButtonRight: false,
   }
 );
 
@@ -54,13 +56,14 @@ defineExpose({
     class="background-default rounded max-w-10/12 >md:max-w-250 py-6 px-5 text-[#262626] dark:text-[#E0E6f0]"
     :class="windowClasses"
     :data-title="title"
+    @cancel="close"
     @close="close"
   >
-    <div class="inline-flex items-center w-full pb-4 pr-1 text-xl">
-      <button data-close @click="close">
-        <IconMdiClose class="cursor-pointer mr-1" />
-      </button>
+    <div class="flex items-center w-full pb-4 text-xl">
       <div class="font-bold">{{ props.title }}</div>
+      <button data-close :class="closeButtonRight ? 'ml-auto' : 'order-first mr-1'" aria-label="Close modal" @click="close">
+        <IconMdiClose class="cursor-pointer" />
+      </button>
     </div>
     <slot :on="{ click: close }" />
   </dialog>
@@ -69,6 +72,6 @@ defineExpose({
 
 <style lang="scss" scoped>
 dialog::backdrop {
-  @apply bg-black opacity-60;
+  background: rgb(0 0 0 / 70%);
 }
 </style>

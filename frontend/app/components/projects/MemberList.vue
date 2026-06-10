@@ -135,58 +135,79 @@ async function doSearch(val?: string) {
 </script>
 
 <template>
-  <Card v-if="sortedMembers.length > 0 || canEdit" :class="props.class">
+  <Card v-if="sortedMembers.length > 0 || canEdit" :class="'!p-0 overflow-hidden ' + props.class">
     <template #header>
-      <div class="inline-flex w-full flex-cols space-between items-center">
+      <div class="flex w-full items-center gap-2 px-4 pt-3.5 pb-1">
         <h2>{{ i18n.t("project.members") }}</h2>
         <Tooltip v-if="canEdit" class="text-base font-normal">
           <template #content>
             {{ i18n.t("form.memberList.info") }}
           </template>
-          <IconMdiHelpCircleOutline class="ml-1 text-gray-400" />
+          <IconMdiHelpCircleOutline class="text-gray-400" />
         </Tooltip>
         <div class="flex-grow" />
         <MemberLeaveModal v-if="canLeave && author" :author="author" :organization="organization" :slug="slug" />
+        <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-normal text-gray dark:bg-charcoal-500">
+          <IconMdiAccount class="text-xs" />
+          {{ sortedMembers.length }}
+        </span>
       </div>
     </template>
 
-    <div
-      v-for="member in sortedMembers"
-      :key="member.user.name"
-      class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
-    >
-      <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" class="flex-shrink-0" />
-      <div class="flex-grow truncate">
-        <p class="font-semibold">
-          <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
-        </p>
-        <Tooltip v-if="!member.role.accepted">
-          <template #content>
-            {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId)?.title]) }}
+    <div class="flex flex-col gap-2 px-3 pt-1 pb-3">
+      <div
+        v-for="member in sortedMembers"
+        :key="member.user.name"
+        class="inline-flex w-full items-center rounded-lg border border-gray-200 bg-gray-100/60 transition-colors hover:border-gray-300 dark:border-gray-800 dark:bg-charcoal-500/60 dark:hover:border-gray-700"
+      >
+        <NuxtLink
+          :to="'/' + member.user.name"
+          class="group flex min-w-0 flex-grow items-center gap-3 rounded-lg p-3 decoration-none focus-visible:outline-2 focus-visible:outline-primary"
+        >
+          <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" disable-link class="flex-shrink-0" />
+          <div class="min-w-0 flex-grow">
+            <Tooltip v-if="!member.role.accepted" class="mb-1 text-xs">
+              <template #content>
+                {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId)?.title]) }}
+              </template>
+              <span
+                class="inline-flex items-center gap-1 rounded-md border border-gray-300 bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+              >
+                {{ getRole(member.role.roleId)?.title }}
+                <IconMdiClock />
+              </span>
+            </Tooltip>
+            <span
+              v-else
+              class="background-default mb-1 inline-flex items-center rounded-md border border-primary-400 px-2 py-0.5 text-xs font-medium color-primary"
+            >
+              {{ getRole(member.role.roleId)?.title }}
+            </span>
+            <p class="truncate font-semibold leading-tight transition-colors group-hover:color-primary">
+              {{ member.user.name }}
+            </p>
+          </div>
+        </NuxtLink>
+        <!-- todo confirmation modal -->
+        <DropdownButton v-if="canEdit && getRole(member.role.roleId)?.assignable" :name="i18n.t('general.edit')" class="mr-2.5">
+          <template #button-label>
+            <IconMdiPencil />
           </template>
-          <span class="items-center inline-flex"> {{ getRole(member.role.roleId)?.title }} <IconMdiClock class="ml-1" /> </span>
-        </Tooltip>
-        <span v-else class="items-center inline-flex"> {{ getRole(member.role.roleId)?.title }}</span>
+          <DropdownItem v-for="role of filteredRoles(member.role.roleId)" :key="role.title" :disabled="saving" @click="setRole(member, role)">
+            {{ role.title }}
+          </DropdownItem>
+          <hr />
+          <DropdownItem @click="removeMember(member)">{{ i18n.t("form.memberList.remove") }}</DropdownItem>
+        </DropdownButton>
+        <DropdownButton v-if="canEdit && !getRole(member.role.roleId)?.assignable && !member.role.accepted" :name="i18n.t('general.edit')" class="mr-2.5">
+          <template #button-label>
+            <IconMdiPencil />
+          </template>
+          <DropdownItem @click="cancelTransfer()">{{ i18n.t("form.memberList.cancelTransfer") }}</DropdownItem>
+        </DropdownButton>
       </div>
-      <!-- todo confirmation modal -->
-      <DropdownButton v-if="canEdit && getRole(member.role.roleId)?.assignable" :name="i18n.t('general.edit')">
-        <template #button-label>
-          <IconMdiPencil />
-        </template>
-        <DropdownItem v-for="role of filteredRoles(member.role.roleId)" :key="role.title" :disabled="saving" @click="setRole(member, role)">
-          {{ role.title }}
-        </DropdownItem>
-        <hr />
-        <DropdownItem @click="removeMember(member)">{{ i18n.t("form.memberList.remove") }}</DropdownItem>
-      </DropdownButton>
-      <DropdownButton v-if="canEdit && !getRole(member.role.roleId)?.assignable && !member.role.accepted" :name="i18n.t('general.edit')">
-        <template #button-label>
-          <IconMdiPencil />
-        </template>
-        <DropdownItem @click="cancelTransfer()">{{ i18n.t("form.memberList.cancelTransfer") }}</DropdownItem>
-      </DropdownButton>
     </div>
-    <div v-if="canEdit" class="items-center inline-flex mt-3 w-full">
+    <div v-if="canEdit" class="inline-flex w-full items-center border-t border-gray-200 bg-gray-50/50 p-3 dark:border-gray-800 dark:bg-charcoal-500/30">
       <InputAutocomplete
         id="membersearch"
         v-model="search"

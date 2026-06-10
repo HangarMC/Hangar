@@ -9,6 +9,7 @@ const props = withDefaults(
     inline: false,
   }
 );
+const route = useRoute();
 
 const renderedMarkdown = computed(() => {
   const { html, headings } = parseMarkdown(props.raw);
@@ -31,18 +32,21 @@ watchPostEffect(async () => {
 </script>
 
 <template>
-  <div v-if="(renderedMarkdown.headings?.length || 0) > 0" class="mb-4 relative">
-    <DropdownButton :button-arrow="false" button-size="small" class="absolute top-2 left-0">
+  <div
+    v-if="!inline && !route.params.project && (renderedMarkdown.headings?.length || 0) > 0"
+    class="flex items-center border-b px-4 py-3 dark:border-gray-800"
+  >
+    <DropdownButton :button-arrow="false" button-size="medium" button-type="transparent" placement="bottom-start">
       <template #button-label>
         <IconMdiFormatListBulleted />
       </template>
       <template #default="{ close }">
-        <div class="w-max flex flex-col max-h-lg max-w-lg overflow-x-auto">
+        <div class="flex max-h-lg min-w-56 max-w-lg flex-col gap-1 overflow-y-auto px-2 py-1.5">
           <!-- eslint-disable vue/no-v-html -->
           <a
             v-for="heading in renderedMarkdown.headings"
             :key="heading.id"
-            class="px-4 py-2 font-semibold hover:bg-gray-100 hover:dark:bg-gray-700 cursor-pointer decoration-none"
+            class="rounded-lg border border-transparent px-3 py-2 font-semibold decoration-none transition-all duration-250 hover:scale-[1.005] hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800"
             :class="'toc-' + heading.level"
             :href="`#${heading.id}`"
             @click="close"
@@ -53,7 +57,7 @@ watchPostEffect(async () => {
       </template>
     </DropdownButton>
   </div>
-  <div class="iframe-container prose dark:prose-invert max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
+  <div class="iframe-container prose dark:prose-invert max-w-full rounded markdown break-words" :class="{ 'p-5': !inline, inline: inline }">
     <!-- eslint-disable-next-line vue/no-v-html -->
     <div v-html="renderedMarkdown.html" />
   </div>

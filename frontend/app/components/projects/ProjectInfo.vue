@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NamedPermission, Tag } from "#shared/types/backend";
+import { NamedPermission } from "#shared/types/backend";
 import type { HangarProject } from "#shared/types/backend";
 
 const props = defineProps<{
@@ -10,111 +10,124 @@ const namespace = computed(() => props.project?.namespace?.owner + "/" + props.p
 </script>
 
 <template>
-  <Card>
+  <Card class="!p-0 overflow-hidden">
     <template #header>
-      <h2>{{ i18n.t("project.info.title") }}</h2>
+      <div class="flex items-center gap-2 px-4 pt-3.5 pb-1">
+        <h2>{{ i18n.t("project.info.title") }}</h2>
+      </div>
     </template>
     <template #default>
-      <table class="w-full">
-        <tbody>
-          <tr>
-            <th class="text-left">{{ i18n.t("project.category.info") }}</th>
-            <td v-if="project">{{ i18n.t("project.category." + project.category) }}</td>
-            <td v-else><Skeleton /></td>
-          </tr>
-          <tr>
-            <th class="text-left">{{ i18n.t("project.info.publishDate") }}</th>
-            <td v-if="project">{{ i18n.d(project.createdAt, "date") }}</td>
-            <td v-else><Skeleton /></td>
-          </tr>
-          <tr>
-            <th class="text-left">{{ i18n.t("project.info.license") }}</th>
-            <td v-if="project && (project.settings.license?.type === '(custom)' || project.settings.license?.type === 'Other')">
-              <Link v-if="project?.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">
+      <div class="px-4 pt-1 pb-3">
+        <div class="flex items-center gap-3 py-1.5">
+          <IconMdiCalendarOutline class="flex-shrink-0 text-lg text-gray" />
+          <div class="min-w-0">
+            <div class="text-xs text-gray">{{ i18n.t("project.info.publishDate") }}</div>
+            <div v-if="project" class="font-semibold">{{ i18n.d(project.createdAt, "date") }}</div>
+            <Skeleton v-else />
+          </div>
+        </div>
+        <div class="flex items-center gap-3 py-1.5">
+          <IconMdiLicense class="flex-shrink-0 text-lg text-gray" />
+          <div class="min-w-0">
+            <div class="text-xs text-gray">{{ i18n.t("project.info.license") }}</div>
+            <div v-if="project && (project.settings.license?.type === '(custom)' || project.settings.license?.type === 'Other')" class="truncate font-semibold">
+              <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">
                 {{ project.settings.license.name }}
               </Link>
-              <template v-else>
-                {{ project?.settings.license.name }}
-              </template>
-            </td>
-            <td v-else-if="project">
+              <template v-else>{{ project.settings.license.name }}</template>
+            </div>
+            <div v-else-if="project" class="truncate font-semibold">
               <Link v-if="project.settings.license.url" :href="project.settings.license.url" target="_blank" rel="noreferrer noopener">
                 {{ project.settings.license.type }}
               </Link>
-              <template v-else>
-                {{ project.settings.license.type }}
-              </template>
-            </td>
-            <td v-else><Skeleton /></td>
-          </tr>
-          <tr v-if="hasPerms(NamedPermission.IsSubjectMember)">
-            <th class="text-left">{{ i18n.t("project.info.views", project?.stats?.views || 0) }}</th>
-            <td v-if="project">
-              {{ project.stats.views.toLocaleString("en-US") }}
-            </td>
-            <td v-else><Skeleton /></td>
-          </tr>
-          <tr>
-            <th class="text-left">{{ i18n.t("project.info.totalDownloads", project?.stats?.downloads || 0) }}</th>
-            <td v-if="project">
-              {{ project.stats.downloads.toLocaleString("en-US") }}
-            </td>
-            <td v-else><Skeleton /></td>
-          </tr>
-          <tr>
-            <th class="text-left">
-              <Link :to="`/${namespace}/stars`">
-                {{ i18n.t("project.info.stars", 0) }}
-              </Link>
-            </th>
-            <td v-if="project">{{ project?.stats?.stars.toLocaleString("en-US") }}</td>
-            <td v-else><Skeleton /></td>
-          </tr>
-          <tr>
-            <th class="text-left">
-              <Link :to="`/${namespace}/watchers`">
-                {{ i18n.t("project.info.watchers", 0) }}
-              </Link>
-            </th>
-            <td v-if="project">{{ project?.stats?.watchers.toLocaleString("en-US") }}</td>
-            <td v-else><Skeleton /></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div v-for="tag in project?.settings?.tags" :key="tag">
-        <div class="inline-flex items-center">
-          <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-          <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-          <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-          <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+              <template v-else>{{ project.settings.license.type }}</template>
+            </div>
+            <Skeleton v-else />
+          </div>
         </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 border-t px-3 pt-3 -mb-2 dark:border-gray-800">
+        <div v-if="hasPerms(NamedPermission.IsSubjectMember)" class="rounded-lg bg-gray-100 p-2 text-center dark:bg-charcoal-500">
+          <div class="mt-1 font-semibold">{{ project?.stats?.views.toLocaleString("en-US") || 0 }}</div>
+          <div class="text-0.65rem text-gray">
+            <IconMdiEyeOutline class="mx-auto text-gray" />
+            {{ i18n.t("project.info.views", project?.stats?.views || 0) }}
+          </div>
+        </div>
+        <div class="flex h-full flex-col rounded-lg bg-gray-100 p-2 text-center dark:bg-charcoal-500">
+          <div class="flex flex-1 items-center justify-center">
+            <div class="font-semibold">
+              {{ project?.stats?.downloads?.toLocaleString("en-US") || 0 }}
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-1 text-[0.65rem] text-gray">
+            <IconMdiDownloadOutline class="text-gray" />
+            <span>
+              {{ i18n.t("project.info.totalDownloads", project?.stats?.downloads || 0) }}
+            </span>
+          </div>
+        </div>
+        <NuxtLink
+          :to="`/${namespace}/stars`"
+          class="flex h-full flex-col rounded-lg bg-gray-100 p-2 text-center transition-colors border border-charcoal-500 hover:border-gray-700 dark:bg-charcoal-500"
+        >
+          <div class="flex-1 flex items-center justify-center">
+            <div class="font-semibold">
+              {{ project?.stats?.stars?.toLocaleString("en-US") || 0 }}
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-1 text-[0.65rem] text-gray">
+            <IconMdiStarOutline class="shrink-0" />
+            <span>{{ i18n.t("project.info.stars", 0) }}</span>
+          </div>
+        </NuxtLink>
+
+        <NuxtLink
+          :to="`/${namespace}/watchers`"
+          class="flex h-full flex-col rounded-lg bg-gray-100 p-2 text-center transition-colors border border-charcoal-500 hover:border-gray-700 dark:bg-charcoal-500"
+        >
+          <div class="flex-1 flex items-center justify-center">
+            <div class="font-semibold">
+              {{ project?.stats?.watchers?.toLocaleString("en-US") || 0 }}
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-1 text-[0.65rem] text-gray">
+            <IconMdiBellOutline class="shrink-0" />
+            <span>{{ i18n.t("project.info.watchers", 0) }}</span>
+          </div>
+        </NuxtLink>
       </div>
     </template>
     <template #footer>
-      <DropdownButton v-if="project && hasPerms(NamedPermission.IsStaff)" :name="i18n.t('project.actions.adminActions')" class="mb-2">
-        <DropdownItem :to="`/${namespace}/flags`">
-          {{ i18n.t("project.actions.flagHistory", [project.info.flagCount ?? 0]) }}
-        </DropdownItem>
-        <DropdownItem :to="`/${namespace}/notes`">
-          {{ i18n.t("project.actions.staffNotes", [project.info.noteCount ?? 0]) }}
-        </DropdownItem>
-        <DropdownItem :to="`/admin/log?authorName=${project.namespace.owner}&projectSlug=${project.namespace.slug}`">
-          {{ i18n.t("project.actions.userActionLogs") }}
-        </DropdownItem>
-      </DropdownButton>
-      <VisibilityChangerModal
-        v-if="project && hasPerms(NamedPermission.SeeHidden)"
-        type="project"
-        :prop-visibility="project.visibility"
-        :post-url="`projects/visibility/${project.projectId}`"
-        class="min-h-10"
-      />
-      <DonationModal
-        v-if="project?.settings?.donation?.enable && false"
-        :donation-subject="project!.settings.donation.subject"
-        :donation-target="project!.namespace.owner + '/' + project!.name"
-      />
+      <div class="px-4 pb-3">
+        <DropdownButton v-if="project && hasPerms(NamedPermission.IsStaff)" :name="i18n.t('project.actions.adminActions')" class="mb-2">
+          <DropdownItem :to="`/${namespace}/flags`">
+            {{ i18n.t("project.actions.flagHistory", [project.info.flagCount ?? 0]) }}
+          </DropdownItem>
+          <DropdownItem :to="`/${namespace}/notes`">
+            {{ i18n.t("project.actions.staffNotes", [project.info.noteCount ?? 0]) }}
+          </DropdownItem>
+          <DropdownItem :to="`/admin/log?authorName=${project.namespace.owner}&projectSlug=${project.namespace.slug}`">
+            {{ i18n.t("project.actions.userActionLogs") }}
+          </DropdownItem>
+        </DropdownButton>
+        <VisibilityChangerModal
+          v-if="project && hasPerms(NamedPermission.SeeHidden)"
+          type="project"
+          :prop-visibility="project.visibility"
+          :post-url="`projects/visibility/${project.projectId}`"
+          class="min-h-10"
+        />
+        <DonationModal
+          v-if="project?.settings?.donation?.enable && false"
+          :donation-subject="project!.settings.donation.subject"
+          :donation-target="project!.namespace.owner + '/' + project!.name"
+        />
+      </div>
     </template>
   </Card>
 </template>
