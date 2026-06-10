@@ -3,6 +3,9 @@ import { NamedPermission, PermissionType } from "#shared/types/backend";
 import type { PermissionCheck, UserPermissions } from "#shared/types/backend";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
+  const nuxtApp = useNuxtApp();
+  const authStore = useAuthStore(nuxtApp.$pinia);
+
   if (to.fullPath.startsWith("/@vite")) {
     // really don't need to do stuff for such meta routes
     console.log("hit vite path???????????????????????", to.fullPath);
@@ -13,13 +16,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return;
   }
 
-  await useAuth.updateUser();
-  await loadRoutePerms(to);
-  await handleRoutePerms(to, from);
+  await useAuth.updateUser(false, authStore);
+  await loadRoutePerms(to, authStore);
+  await handleRoutePerms(to, from, authStore);
 });
 
-async function loadRoutePerms(to: RouteLocationNormalized) {
-  const authStore = useAuthStore();
+async function loadRoutePerms(to: RouteLocationNormalized, authStore: ReturnType<typeof useAuthStore>) {
   if ("project" in to.params && to.params.user && to.params.project) {
     if (authStore.authenticated) {
       if (to.params.user === authStore.routePermissionsUser && to.params.project === authStore.routePermissionsProject) {
@@ -56,8 +58,7 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
   authStore.setRoutePerms();
 }
 
-async function handleRoutePerms(to: RouteLocationNormalized, from: RouteLocationNormalized) {
-  const authStore = useAuthStore();
+async function handleRoutePerms(to: RouteLocationNormalized, from: RouteLocationNormalized, authStore: ReturnType<typeof useAuthStore>) {
   routePermLog("navigate to " + String(to.name) + ", meta:", to.meta, "(from: " + String(from.name) + ")");
   for (const key in handlers) {
     if (!to.meta[key]) continue;
@@ -91,7 +92,7 @@ function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: Rou
     throw new TypeError("Must have 'user' as a route param to use CurrentUser");
   }
   checkLogin(authStore, to, 404);
-  if (!hasPerms(NamedPermission.EditAllUserSettings) && to.params.user !== authStore.user?.name) {
+  if (!hasStorePerms(authStore, NamedPermission.EditAllUserSettings) && to.params.user !== authStore.user?.name) {
     return useErrorRedirect(403, undefined, { logErrorMessage: false });
   }
 }
@@ -127,7 +128,7 @@ function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: Ro
     return useErrorRedirect(404, undefined, { logErrorMessage: false });
   }
   routePermLog("check has perms", to.meta.projectPermsRequired, toNamedPermission(to.meta.projectPermsRequired as string[]));
-  if (!hasPerms(...toNamedPermission(to.meta.projectPermsRequired as string[]))) {
+  if (!hasStorePerms(authStore, ...toNamedPermission(to.meta.projectPermsRequired as string[]))) {
     return useErrorRedirect(404, undefined, { logErrorMessage: false });
   }
 }

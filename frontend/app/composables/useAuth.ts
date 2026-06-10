@@ -106,8 +106,7 @@ class Auth {
     return this.refreshPromise;
   }
 
-  async invalidate(axios: AxiosInstance) {
-    const store = useAuthStore();
+  async invalidate(axios: AxiosInstance, store: ReturnType<typeof useAuthStore>) {
     store.$patch({
       user: undefined,
       authenticated: false,
@@ -119,8 +118,7 @@ class Auth {
     store.invalidated = true;
   }
 
-  async updateUser(force = false): Promise<void> {
-    const authStore = useAuthStore();
+  async updateUser(force = false, authStore = useAuthStore()): Promise<void> {
     const axios = useAxios();
     if (authStore.invalidated) {
       authLog("no point in updating if we just invalidated");
@@ -132,7 +130,7 @@ class Auth {
     }
     const user = await useInternalApi<HangarUser>("users/@me").catch((err) => {
       authLog("no user, with err", transformAxiosError(err));
-      return this.invalidate(axios);
+      return this.invalidate(axios, authStore);
     });
     if (user) {
       authLog("patching " + user.name);
