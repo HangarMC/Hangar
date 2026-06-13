@@ -40,13 +40,22 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, value, e
     :counter="counter"
     :maxlength="maxlength"
     :loading="loading || v.$pending"
-    :label="label"
     :value="value"
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
   >
     <template #default="slotProps">
-      <textarea v-model="value" v-bind="$attrs" :maxlength="maxlength" :rows="rows" :class="slotProps.class" :disabled="disabled" @blur="v.$touch()" />
+      <textarea
+        v-model="value"
+        class="min-w-0 flex-grow bg-transparent px-3 py-0.5 outline-none"
+        v-bind="$attrs"
+        :placeholder="$attrs.placeholder?.toString() || label"
+        :maxlength="maxlength"
+        :rows="rows"
+        :class="slotProps.class"
+        :disabled="disabled"
+        @blur="v.$touch()"
+      />
     </template>
     <!-- @vue-ignore -->
     <template v-for="(_, name) in $slots" #[name]="slotData">

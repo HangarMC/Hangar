@@ -33,7 +33,6 @@ defineExpose({ validation: v });
     :counter="counter"
     :maxlength="maxlength"
     :loading="loading || v.$pending"
-    :label="label"
     :value="value"
     :disabled="disabled"
     :readonly="isReadonly"
@@ -42,9 +41,10 @@ defineExpose({ validation: v });
     <template #default="slotProps">
       <input
         v-model="value"
-        class="ml-4 focus:outline-none"
+        class="min-w-0 flex-grow bg-transparent px-3 py-0.5 outline-none"
         type="text"
         v-bind="$attrs"
+        :placeholder="$attrs.placeholder?.toString() || label"
         :maxlength="maxlength"
         :class="slotProps.class"
         :disabled

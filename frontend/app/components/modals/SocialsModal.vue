@@ -10,12 +10,14 @@ const newSocials = ref(props.socials);
 
 const router = useRouter();
 const i18n = useI18n();
+const notification = useNotificationStore();
 const loading = ref(false);
 
 async function save() {
   loading.value = true;
   try {
     await useInternalApi(props.action, "post", newSocials.value);
+    notification.success("Saved!");
     router.go(0);
   } catch (err) {
     handleRequestError(err);

@@ -86,13 +86,18 @@ function remove(t: string) {
 }
 
 function add() {
-  if (tag.value && (!props.maxlength || tags.value.length < props.maxlength)) {
-    if (props.options && !filteredOptions.value?.includes(tag.value)) {
-      return;
-    }
-    tags.value.push(tag.value);
+  const value = tag.value.trim();
+  if (!value || (props.maxlength && tags.value.length >= props.maxlength)) return;
+  if (tags.value.some((existingTag) => existingTag.toLocaleLowerCase() === value.toLocaleLowerCase())) {
     tag.value = "";
+    v.value.$touch();
+    return;
   }
+  if (props.options && !filteredOptions.value?.includes(value)) return;
+
+  tags.value.push(value);
+  tag.value = "";
+  v.value.$touch();
 }
 
 const filteredOptions = computed(() => {
@@ -104,51 +109,55 @@ const filteredOptions = computed(() => {
 </script>
 
 <template>
-  <InputWrapper
-    v-slot="slotProps"
-    :errors="errors"
-    :messages="messages"
-    :has-error="hasError"
-    :counter="counter"
-    :maxlength="maxlength"
-    :loading="loading || v.$pending"
-    :label="label"
-    :value="tags"
-    :no-error-tooltip="noErrorTooltip"
-  >
-    <div class="flex flex-wrap flex-grow gap-2 mt-2">
-      <span v-for="t in tags" :key="t" class="bg-primary-light-400 rounded-xl px-1 py-1 h-30px inline-flex items-center dark:bg-gray-600">
-        {{ t }}
-        <span class="text-gray-400 ml-1 inline-flex pointer-events-auto cursor-pointer hover:text-gray-500" @click="remove(t)">
-          <icon-mdi-close-circle />
+  <InputWrapper :errors="errors" :messages="messages" :has-error="hasError" :loading="loading || v.$pending" :value="tags" :no-error-tooltip="noErrorTooltip">
+    <template #default>
+      <div class="flex min-w-0 flex-grow flex-wrap items-center gap-1 px-1.5 py-0">
+        <span
+          v-for="t in tags"
+          :key="t"
+          class="inline-flex h-6.5 items-center rounded-md border border-primary-500/50 py-0 pl-2 pr-1 text-sm"
+          :style="{ backgroundColor: 'color-mix(in srgb, var(--primary-500) 20%, transparent)' }"
+        >
+          {{ t }}
+          <button type="button" class="ml-0.5 inline-flex h-5 w-5 flex-shrink-0 cursor-pointer items-center justify-center text-gray-400" @click="remove(t)">
+            <span class="relative block h-3 w-3" aria-hidden="true">
+              <span class="absolute top-1/2 left-0 block h-px w-3 -translate-y-1/2 rotate-45 bg-current" />
+              <span class="absolute top-1/2 left-0 block h-px w-3 -translate-y-1/2 -rotate-45 bg-current" />
+            </span>
+          </button>
         </span>
-      </span>
-      <template v-if="options">
+        <template v-if="options">
+          <input
+            v-model="tag"
+            type="text"
+            v-bind="$attrs"
+            :placeholder="$attrs.placeholder?.toString() || label"
+            :list="id"
+            class="min-w-24 flex-grow bg-transparent py-1 outline-none"
+            @blur="v.$touch()"
+            @keydown.enter="add"
+            @change="add"
+          />
+          <datalist :id="id">
+            <option v-for="val in filteredOptions" :key="val" :value="val">
+              {{ val }}
+            </option>
+          </datalist>
+        </template>
         <input
+          v-else
           v-model="tag"
           type="text"
           v-bind="$attrs"
-          :class="slotProps.class"
-          :list="id"
-          class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
+          :placeholder="$attrs.placeholder?.toString() || label"
+          class="min-w-24 flex-grow bg-transparent py-1 outline-none"
+          @keydown.enter.prevent="add"
           @blur="v.$touch()"
-          @keydown.enter="add"
-          @change="add"
         />
-        <datalist :id="id">
-          <option v-for="val in filteredOptions" :key="val" :value="val">
-            {{ val }}
-          </option>
-        </datalist>
-      </template>
-      <div
-        v-else
-        class="pointer-events-auto relative flex flex-column items-center flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
-        :class="slotProps.class"
-      >
-        <IconMdiSubdirectoryArrowLeft class="absolute right-2" />
-        <input v-model="tag" type="text" :class="slotProps.class" @keydown.enter="add" @blur="v.$touch()" />
       </div>
-    </div>
+    </template>
+    <template v-if="counter" #append>
+      <span class="pr-3 text-sm text-gray">{{ tags.length }}/{{ maxlength }}</span>
+    </template>
   </InputWrapper>
 </template>

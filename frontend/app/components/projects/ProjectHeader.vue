@@ -120,10 +120,13 @@ function requiresConfirmation(): ConfirmationType {
     <Alert v-else-if="project.visibility === Visibility.SoftDelete" type="danger">
       {{ i18n.t("visibility.notice." + project.visibility, [project.lastVisibilityChangeUserName]) }}
     </Alert>
-    <Alert v-else type="danger">
-      {{ i18n.t("visibility.notice." + project.visibility) }}
-      <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" inline />
-    </Alert>
+    <div v-else class="flex items-start gap-2 rounded-xl border border-[#ff544b] bg-[#ff544b60] px-4 py-2 text-sm">
+      <IconMdiAlertOutline class="mt-0.5 flex-shrink-0" />
+      <div>
+        <p>{{ i18n.t("visibility.notice." + project.visibility) }}</p>
+        <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" class="mt-1" inline />
+      </div>
+    </div>
   </div>
   <Card class="project-hero !p-4 sm:!p-5 overflow-visible">
     <div class="flex gap-4 lt-sm:flex-col">

@@ -13,6 +13,7 @@ const props = defineProps<{
 
 const i18n = useI18n();
 const router = useRouter();
+const notification = useNotificationStore();
 const v = useVuelidate();
 
 const projectVersion = computed(() => {
@@ -24,7 +25,7 @@ const depTable = useTemplateRef("depTable");
 const modal = useTemplateRef("modal");
 const pluginDependencies = ref<Version["pluginDependencies"]>({});
 
-async function save() {
+async function save(close: () => void) {
   if (!(await v.value.$validate())) {
     return;
   }
@@ -40,6 +41,8 @@ async function save() {
       platform: props.platform.enumName,
       pluginDependencies: depTable.value.dependencies,
     });
+    notification.success("Saved!");
+    close();
     await router.go(0);
   } catch (err) {
     handleRequestError(err);
@@ -61,12 +64,37 @@ onMounted(() =>
 </script>
 
 <template>
-  <Modal ref="modal" :title="i18n.t('version.edit.pluginDeps', [platform.name])" window-classes="w-200">
-    <DependencyTable ref="depTable" :platform="platform.enumName" :plugin-dependencies="pluginDependencies" />
+  <Modal
+    ref="modal"
+    :title="i18n.t('version.edit.pluginDeps', [platform.name])"
+    window-classes="w-full max-w-2xl !rounded-xl border border-gray-200 dark:border-gray-800 shadow-lg !bg-white dark:!bg-charcoal-900"
+    close-button-right
+  >
+    <template #default="{ on }">
+      <p class="mb-4 text-sm leading-relaxed text-gray">Add projects or external plugins that this {{ platform.name }} release depends on.</p>
 
-    <Button button-type="primary" class="mt-3" :disabled="loading || v.$error" @click="save">{{ i18n.t("general.save") }}</Button>
+      <div class="max-h-[28rem] overflow-y-auto">
+        <DependencyTable ref="depTable" :platform="platform.enumName" :plugin-dependencies="pluginDependencies" />
+      </div>
+
+      <div class="mt-4 flex justify-end gap-2 pt-4">
+        <Button button-type="secondary" size="medium" :disabled="loading" @click="on.click">Cancel</Button>
+        <Button size="medium" :loading="loading" :disabled="loading || v.$error" @click="save(on.click)">
+          <IconMdiContentSave class="mr-1" />
+          Save
+        </Button>
+      </div>
+    </template>
     <template #activator="{ on }">
-      <Button v-if="hasPerms(NamedPermission.EditVersion)" class="text-sm" v-on="on"><IconMdiPencil /></Button>
+      <Button
+        v-if="hasPerms(NamedPermission.EditVersion)"
+        button-type="secondary"
+        class="!h-9 !w-9 !p-0 text-sm"
+        aria-label="Edit plugin dependencies"
+        v-on="on"
+      >
+        <IconMdiPencil />
+      </Button>
     </template>
   </Modal>
 </template>

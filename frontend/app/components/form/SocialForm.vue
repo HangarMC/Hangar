@@ -44,7 +44,7 @@ function removeLink(type: string) {
         <IconMdiYoutube v-else-if="type === 'youtube'" />
         <IconMdiWeb v-else />
       </span>
-      <div class="relative flex h-10.5 min-w-0 flex-grow rounded-md transition-all duration-200 hover:scale-[1.002]">
+      <div class="relative flex h-10.5 min-w-0 flex-grow rounded-md transition-all duration-200">
         <input
           v-model="socials[type]"
           class="min-w-0 flex-grow truncate rounded-lg border border-transparent bg-gray-100 px-3 py-2 outline-none transition-colors hover:border-gray-300 focus:border-gray-400 dark:bg-gray-800 dark:hover:border-gray-700 dark:focus:border-gray-600"
@@ -53,7 +53,7 @@ function removeLink(type: string) {
         />
       </div>
       <button
-        class="inline-flex h-10.5 w-10.5 flex-shrink-0 items-center justify-center rounded-lg border border-transparent transition-all duration-250 hover:scale-[1.015] hover:border-red-600 hover:bg-red-900/50"
+        class="inline-flex h-10.5 w-10.5 flex-shrink-0 items-center justify-center rounded-lg border border-transparent transition-all duration-250 hover:border-red-600 hover:bg-red-900/50"
         :title="`Remove ${linkTypes.find((e) => e.value === type)?.text}`"
         @click.prevent="removeLink(type)"
       >

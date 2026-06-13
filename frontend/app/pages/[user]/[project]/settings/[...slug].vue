@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import { cloneDeep } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
-import { Cropper } from "vue-advanced-cropper";
-import type { CropperResult } from "vue-advanced-cropper";
 import type { Tab } from "#shared/types/components/design/Tabs";
 import InputText from "~/components/ui/InputText.vue";
 import { NamedPermission, Tag, Visibility } from "#shared/types/backend";
 import type { HangarProject, HangarUser, PaginatedResultUser, ProjectSettings, Category } from "#shared/types/backend";
-
-import "vue-advanced-cropper/dist/style.css";
 
 definePageMeta({
   projectPermsRequired: ["EditSubjectSettings"],
@@ -60,39 +56,11 @@ watch(
 );
 
 const hasCustomIcon = computed(() => props.project?.avatarUrl?.includes("project"));
-const projectIcon = ref<File | undefined>();
-const cropperInput = ref();
-const cropperResult = ref();
-const imgSrc = ref(props.project?.avatarUrl);
-let reader: FileReader | undefined;
-onMounted(() => {
-  reader = new FileReader();
-  reader.addEventListener(
-    "load",
-    () => {
-      cropperInput.value = reader?.result;
-    },
-    false
-  );
-});
-
-watch(projectIcon, (newValue) => {
-  if (!newValue) return;
-  cropperResult.value = newValue;
-  reader?.readAsDataURL(newValue);
-});
-
-function changeImage({ canvas }: CropperResult) {
-  canvas?.toBlob((blob) => {
-    cropperResult.value = blob;
-  });
-}
 
 const newName = ref<string | null | undefined>("");
 const newNameField = useTemplateRef("newNameField");
 const loading = reactive({
   save: false,
-  uploadIcon: false,
   resetIcon: false,
   rename: false,
   transfer: false,
@@ -100,6 +68,15 @@ const loading = reactive({
 
 const isCustomLicense = computed(() => form.settings?.license?.type === "Other");
 const isUnspecifiedLicense = computed(() => form.settings?.license?.type === "Unspecified");
+const selectedCategory = computed(() => useCategoryOptions.value.find((option) => option.value === form.category));
+
+function selectCategory(value: string) {
+  form.category = value as Category;
+}
+
+function selectLicense(value: string) {
+  if (form.settings) form.settings.license.type = value;
+}
 
 watch(route, (val) => (selectedTab.value = val.params.slug?.[0] || "general"), { deep: true });
 watch(selectedTab, (val) => router.replace("/" + route.params.user + "/" + route.params.project + "/settings/" + val));
@@ -130,6 +107,7 @@ async function save() {
     await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {
       ...form,
     });
+    notificationStore.success("Saved!");
     await router.go(0);
   } catch (err: any) {
     handleRequestError(err);
@@ -192,29 +170,6 @@ async function hardDelete(comment: string) {
   }
 }
 
-async function uploadIcon() {
-  if (!cropperResult.value) {
-    return;
-  }
-
-  const data = new FormData();
-  data.append("projectIcon", cropperResult.value);
-  loading.uploadIcon = true;
-  try {
-    const response = await useInternalApi<string | null>(`projects/project/${route.params.project}/saveIcon`, "post", data);
-    imgSrc.value = URL.createObjectURL(cropperResult.value); // set temporary source so it changes right away
-    projectIcon.value = undefined;
-    cropperInput.value = undefined;
-    cropperResult.value = undefined;
-    await (response
-      ? notificationStore.success(i18n.t("project.settings.success.changedIconWarn", [response]))
-      : notificationStore.success(i18n.t("project.settings.success.changedIcon")));
-  } catch (err: any) {
-    handleRequestError(err);
-  }
-  loading.uploadIcon = false;
-}
-
 async function resetIcon() {
   loading.resetIcon = true;
   try {
@@ -222,10 +177,6 @@ async function resetIcon() {
     await (response
       ? notificationStore.success(i18n.t("project.settings.success.resetIconWarn", [response]))
       : notificationStore.success(i18n.t("project.settings.success.resetIcon")));
-    imgSrc.value = props.user?.avatarUrl; // set temporary source so it changes right away
-    projectIcon.value = undefined;
-    cropperInput.value = undefined;
-    cropperResult.value = undefined;
   } catch (err: any) {
     handleRequestError(err);
   }
@@ -234,13 +185,22 @@ async function resetIcon() {
 
 const shieldIoStyle = ref("flat");
 const mcBannersStyle = ref("DARK_GUNMETAL");
+const mcBannerErrors = reactive({
+  author: false,
+  resource: false,
+});
 const bannerUrls = computed(() => ({
-  author: `https://api.mcbanners.com/banner/author/hangar/${props.project?.namespace?.slug}/banner.png?background__template=${mcBannersStyle.value}`,
+  author: `https://api.mcbanners.com/banner/author/hangar/${props.project?.namespace?.owner}/banner.png?background__template=${mcBannersStyle.value}`,
   resource: `https://api.mcbanners.com/banner/resource/hangar/${props.project?.namespace?.slug}/banner.png?background__template=${mcBannersStyle.value}`,
   downloads: `https://img.shields.io/hangar/dt/${props.project?.namespace?.slug}?link=https%3A%2F%2Fhangar.papermc.io%2F${props.project?.namespace?.owner}%2F${props.project?.namespace?.slug}&style=${shieldIoStyle.value}`,
   stars: `https://img.shields.io/hangar/stars/${props.project?.namespace?.slug}?link=https%3A%2F%2Fhangar.papermc.io%2F${props.project?.namespace?.owner}%2F${props.project?.namespace?.slug}&style=${shieldIoStyle.value}`,
   views: `https://img.shields.io/hangar/views/${props.project?.namespace?.slug}?link=https%3A%2F%2Fhangar.papermc.io%2F${props.project?.namespace?.owner}%2F${props.project?.namespace?.slug}&style=${shieldIoStyle.value}`,
 }));
+
+watch(mcBannersStyle, () => {
+  mcBannerErrors.author = false;
+  mcBannerErrors.resource = false;
+});
 
 function copyToClipboard(event: any, url: string, type: string = "url") {
   const clipboardData = event.clipboardData || event.originalEvent?.clipboardData || navigator.clipboard;
@@ -262,181 +222,328 @@ useSeo(
 </script>
 
 <template>
-  <div class="flex gap-4 flex-col md:flex-row">
-    <Card class="basis-full md:basis-9/12">
-      <template #header>
-        <div class="flex justify-between lt-sm:items-center">
-          {{ i18n.t("project.settings.title") }}
-          <div class="text-lg">
-            <Button :disabled="v.$error" :loading="loading.save" @click="save">
-              <IconMdiCheck />
-              {{ i18n.t("project.settings.save") }}
-            </Button>
-          </div>
-        </div>
-      </template>
-
+  <div>
+    <section class="min-w-0">
       <!-- setting icons -->
-      <Tabs v-model="selectedTab" :tabs="tabs">
+      <Tabs v-model="selectedTab" :tabs="tabs" hide-navigation>
         <template #general>
-          <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-            <InputSelect v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
-            <InputText
-              v-model="form.description"
-              counter
-              :maxlength="useBackendData.validations?.project?.desc?.max || 120"
-              :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max || 120)]"
-            />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
-            <InputTag
-              v-if="form.settings"
-              v-model="form.settings.keywords"
-              counter
-              :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
-              :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
-              :label="i18n.t('project.new.step3.keywords')"
-              :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings?.keywords)]"
-            />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">
-            <template v-if="form.settings">
-              <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
-                <template #label>
-                  <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-                  <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-                  <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                  <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
-                  <Tooltip>
-                    <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
-                    <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
-                  </Tooltip>
-                </template>
-              </InputCheckbox>
-            </template>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
-            <div class="flex md:gap-2 lt-md:flex-wrap">
-              <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-                <InputSelect
-                  v-if="form.settings"
-                  v-model="form.settings.license.type"
-                  :values="useLicenseOptions"
-                  :label="i18n.t('project.settings.licenseType')"
-                />
+          <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
+            <Card>
+              <div>
+                <h2 class="text-xl font-bold">{{ i18n.t("project.settings.category") }}</h2>
+                <p class="mt-1 text-sm text-gray">{{ i18n.t("project.settings.categorySub") }}</p>
+                <div class="mt-3">
+                  <DropdownButton button-size="medium" button-type="transparent" button-class="!h-10.5 !py-2" match-width spread-arrow>
+                    <template #button-label>
+                      <span class="w-full truncate text-left">{{ selectedCategory ? i18n.t(selectedCategory.text) : form.category }}</span>
+                    </template>
+                    <template #default="{ close }">
+                      <DropdownItem
+                        v-for="category in useCategoryOptions"
+                        :key="category.value"
+                        :style="
+                          form.category === category.value
+                            ? {
+                                backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+                                borderColor: 'var(--primary-500)',
+                              }
+                            : {}
+                        "
+                        @click="
+                          selectCategory(category.value);
+                          close();
+                        "
+                      >
+                        {{ i18n.t(category.text) }}
+                      </DropdownItem>
+                    </template>
+                  </DropdownButton>
+                </div>
               </div>
-              <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
-                <InputText
-                  v-if="form.settings"
-                  v-model.trim="form.settings.license.name"
-                  :label="i18n.t('project.settings.licenseCustom')"
-                  :rules="[
-                    requiredIf()(isCustomLicense),
-                    maxLength()(useBackendData.validations.project.license.max!),
-                    pattern()(useBackendData.validations.project.license.regex!),
-                  ]"
-                />
+
+              <div class="mt-6">
+                <div class="flex items-start justify-between gap-3">
+                  <h2 class="text-xl font-bold">{{ i18n.t("project.settings.description") }}</h2>
+                  <span class="text-xs text-gray"> {{ form.description?.length || 0 }}/{{ useBackendData.validations?.project?.desc?.max || 120 }} </span>
+                </div>
+                <p class="mt-1 text-sm text-gray">{{ i18n.t("project.settings.descriptionSub") }}</p>
+                <div class="mt-3">
+                  <InputText
+                    v-model="form.description"
+                    :maxlength="useBackendData.validations?.project?.desc?.max || 120"
+                    :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max || 120)]"
+                  />
+                </div>
               </div>
-              <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                <InputText v-if="form.settings" v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
+
+              <div class="mt-6">
+                <div class="flex items-start justify-between gap-3">
+                  <h2 class="text-xl font-bold">{{ i18n.t("project.settings.keywords") }}</h2>
+                  <span class="text-xs text-gray">
+                    {{ form.settings?.keywords.length || 0 }}/{{ useBackendData.validations?.project?.keywords?.max || 5 }}
+                  </span>
+                </div>
+                <p class="mt-1 text-sm text-gray">{{ i18n.t("project.settings.keywordsSub") }}</p>
+                <div class="mt-3">
+                  <InputTag
+                    v-if="form.settings"
+                    v-model="form.settings.keywords"
+                    :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
+                    :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
+                    :label="i18n.t('project.new.step3.keywords')"
+                    :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings?.keywords)]"
+                  />
+                </div>
               </div>
-            </div>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection>
-            <div class="grid grid-cols-3 grid-rows-[1fr,1fr,min-content] gap-2 w-full">
-              <div class="col-span-2 row-span-1">
-                <h2 class="text-lg font-semibold">{{ i18n.t("project.settings.icon") }}</h2>
-                <p>{{ i18n.t("project.settings.iconSub") }}</p>
+
+              <div class="mt-6">
+                <h2 class="text-xl font-bold">{{ i18n.t("project.settings.tags.title") }}</h2>
+                <p class="mt-1 text-sm text-gray">{{ i18n.t("project.settings.tagsSub") }}</p>
+                <div v-if="form.settings" class="mt-3 grid gap-2 sm:grid-cols-3">
+                  <button
+                    v-for="tag in Object.values(Tag)"
+                    :key="tag"
+                    type="button"
+                    class="flex h-11 items-center rounded-lg border px-3 text-sm transition-all duration-200 hover:border-gray-600 hover:bg-gray-800/60"
+                    :class="form.settings.tags.includes(tag) ? 'color-primary' : 'border-gray-200 dark:border-gray-800'"
+                    :style="
+                      form.settings.tags.includes(tag)
+                        ? {
+                            backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+                            borderColor: 'var(--primary-500)',
+                          }
+                        : {}
+                    "
+                    @click="
+                      form.settings.tags = form.settings.tags.includes(tag)
+                        ? form.settings.tags.filter((currentTag) => currentTag !== tag)
+                        : [...form.settings.tags, tag]
+                    "
+                  >
+                    <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                    <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                    <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+                    <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+                    <Tooltip>
+                      <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
+                      <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
+                    </Tooltip>
+                    <IconMdiCheck v-if="form.settings.tags.includes(tag)" class="ml-auto" />
+                  </button>
+                </div>
               </div>
-              <div class="col-span-2">
-                <InputFile v-model="projectIcon" accept="image/png, image/jpeg, image/webp" show-size />
+
+              <div class="mt-6 flex justify-end">
+                <Button :disabled="v.$error" :loading="loading.save" @click="save">
+                  <IconMdiCheck class="mr-1" />
+                  {{ i18n.t("general.save") }}
+                </Button>
               </div>
-              <Button :disabled="!cropperResult" :loading="loading.uploadIcon" @click="uploadIcon">
-                <IconMdiUpload />
-                {{ i18n.t("project.settings.iconUpload") }}
-              </Button>
-              <Button :disabled="!hasCustomIcon" :loading="loading.resetIcon" @click="resetIcon">
-                <IconMdiCached />
-                {{ i18n.t("project.settings.iconReset") }}
-              </Button>
-              <div class="col-span-1 col-start-3 row-start-1 row-span-3" :class="{ 'justify-self-center': !cropperInput }">
-                <cropper
-                  v-if="cropperInput"
-                  :src="cropperInput"
-                  class="h-150px"
-                  :min-height="150"
-                  :canvas="{
-                    imageSmoothingQuality: 'high',
-                    maxWidth: 256,
-                    maxHeight: 256,
-                  }"
-                  :stencil-props="{
-                    handlers: {},
-                    movable: false,
-                    scalable: false,
-                    aspectRatio: 1,
-                  }"
-                  :resize-image="{
-                    adjustStencil: false,
-                  }"
-                  image-restriction="stencil"
-                  @change="changeImage"
-                />
-                <img v-else id="project-icon-preview" width="150" height="150" alt="Project Icon" :src="imgSrc" />
+            </Card>
+
+            <Card>
+              <div>
+                <h2 class="text-xl font-bold">{{ i18n.t("project.settings.license") }}</h2>
+                <p class="mt-1 text-sm text-gray">{{ i18n.t("project.settings.licenseSub") }}</p>
+                <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-[minmax(10rem,1fr)_minmax(0,2fr)]">
+                  <div>
+                    <DropdownButton v-if="form.settings" button-size="medium" button-type="transparent" button-class="!h-10.5 !py-2" match-width spread-arrow>
+                      <template #button-label>
+                        <span class="w-full truncate text-left">{{ form.settings.license.type }}</span>
+                      </template>
+                      <template #default="{ close }">
+                        <DropdownItem
+                          v-for="license in useLicenseOptions"
+                          :key="license.value"
+                          :style="
+                            form.settings?.license.type === license.value
+                              ? {
+                                  backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+                                  borderColor: 'var(--primary-500)',
+                                }
+                              : {}
+                          "
+                          @click="
+                            selectLicense(license.value);
+                            close();
+                          "
+                        >
+                          {{ license.text }}
+                        </DropdownItem>
+                      </template>
+                    </DropdownButton>
+                  </div>
+                  <div v-if="isCustomLicense">
+                    <InputText
+                      v-if="form.settings"
+                      v-model.trim="form.settings.license.name"
+                      :placeholder="i18n.t('project.settings.licenseCustom')"
+                      :rules="[
+                        requiredIf()(isCustomLicense),
+                        maxLength()(useBackendData.validations.project.license.max!),
+                        pattern()(useBackendData.validations.project.license.regex!),
+                      ]"
+                    />
+                  </div>
+                  <div v-if="!isUnspecifiedLicense" :class="{ 'sm:col-start-2': isCustomLicense }">
+                    <InputText
+                      v-if="form.settings"
+                      v-model.trim="form.settings.license.url"
+                      :placeholder="i18n.t('project.settings.licenseUrl')"
+                      :rules="[validUrl()]"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </ProjectSettingsSection>
+
+              <div class="mt-6">
+                <div class="flex flex-col items-start gap-4 sm:flex-row">
+                  <img class="h-24 w-24 flex-shrink-0 self-start rounded-lg shadow-lg" :src="project?.avatarUrl" :alt="project?.name" width="96" height="96" />
+                  <div class="min-w-0 flex-grow">
+                    <h2 class="text-xl font-bold">{{ i18n.t("project.settings.icon") }}</h2>
+                    <p class="mt-1 text-sm text-gray">{{ i18n.t("project.settings.iconSub") }}</p>
+                    <div class="mt-3 flex items-center gap-2">
+                      <AvatarChangeModal
+                        :avatar="project?.avatarUrl || ''"
+                        :action="`projects/project/${route.params.project}/saveIcon`"
+                        :title="i18n.t('project.settings.icon')"
+                        field-name="projectIcon"
+                      >
+                        <template #activator="{ on }">
+                          <Button size="small" @click.prevent="on.click">{{ i18n.t("project.settings.iconUpload") }}</Button>
+                        </template>
+                      </AvatarChangeModal>
+                      <button
+                        class="inline-flex h-7.5 w-7.5 flex-shrink-0 items-center justify-center rounded-md border border-transparent transition-all duration-250 hover:border-red-600 hover:bg-red-900/50 disabled:cursor-not-allowed disabled:opacity-50"
+                        :title="i18n.t('project.settings.iconReset')"
+                        :disabled="!hasCustomIcon || loading.resetIcon"
+                        @click.prevent="resetIcon"
+                      >
+                        <IconMdiBin />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex justify-end">
+                <Button :disabled="v.$error" :loading="loading.save" @click="save">
+                  <IconMdiCheck class="mr-1" />
+                  {{ i18n.t("general.save") }}
+                </Button>
+              </div>
+            </Card>
+          </div>
         </template>
         <template #links>
-          <ProjectSettingsSection title="project.settings.links.title" description="project.settings.links.sub">
+          <Card>
             <ProjectLinksForm v-if="form.settings" v-model="form.settings.links" />
-          </ProjectSettingsSection>
+            <div v-if="form.settings?.links.length" class="mt-4 flex justify-end">
+              <Button :disabled="v.$error" :loading="loading.save" @click="save">
+                <IconMdiCheck class="mr-1" />
+                {{ i18n.t("general.save") }}
+              </Button>
+            </div>
+          </Card>
         </template>
         <template #management>
-          <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.rename" description="project.settings.renameSub">
-            <div class="flex items-center">
-              <InputText ref="newNameField" v-model.trim="newName" :label="i18n.t('project.settings.newName')" :rules="[validProjectName()()]" />
-              <Button :disabled="!newName || newNameField?.validation?.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
-                <IconMdiRenameBox class="mr-2" />
-                {{ i18n.t("project.settings.rename") }}
-              </Button>
-            </div>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.transfer" description="project.settings.transferSub">
-            <div class="flex items-center">
-              <InputAutocomplete id="membersearch" v-model="search" :values="result" :label="i18n.t('project.settings.transferTo')" @search="doSearch" />
-              <Button :disabled="search.length === 0" :loading="loading.transfer" class="ml-2" @click="transfer">
-                <IconMdiRenameBox class="mr-2" />
-                {{ i18n.t("project.settings.transfer") }}
-              </Button>
-            </div>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.DeleteProject) && project?.visibility !== Visibility.SoftDelete"
-            title="project.settings.delete"
-            description="project.settings.deleteSub"
-            class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
-          >
-            <TextAreaModal :title="i18n.t('project.settings.delete')" :label="i18n.t('general.comment')" :submit="softDelete" require-input>
-              <template #activator="{ on }">
-                <Button button-type="red" v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
+          <div class="grid gap-3 sm:grid-cols-2 items-start">
+            <Card>
+              <div v-if="hasPerms(NamedPermission.IsSubjectOwner)" class="mb-4">
+                <h3 class="text-lg font-semibold">Rename</h3>
+                <p class="mt-1 text-sm text-gray">Changing your project's name can have undesired consequences. </p>
+                <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                  <InputText ref="newNameField" v-model.trim="newName" label="New Name" :rules="[validProjectName()()]" class="w-full [&>label]:h-10.5" />
+                  <Button
+                    size="small"
+                    class="!h-10.5 h-full leading-none flex-shrink-0 !px-3 text-sm"
+                    :disabled="!newName || newNameField?.validation?.$invalid"
+                    :loading="loading.rename"
+                    @click="rename"
+                  >
+                    <IconMdiRenameBox class="mr-1" />
+                    Rename
+                  </Button>
+                </div>
+              </div>
+
+              <div v-if="hasPerms(NamedPermission.IsSubjectOwner)" class="mb-4">
+                <h3 class="text-lg font-semibold">Transfer</h3>
+                <p class="mt-1 text-sm text-gray">Transferring your project name can have undesired consequences.</p>
+                <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                  <InputAutocomplete id="membersearch" v-model="search" :values="result" label="User or organization" @search="doSearch" />
+                  <Button
+                    size="small"
+                    class="!h-10.5 h-full leading-none flex-shrink-0 !px-3 text-sm"
+                    :disabled="search.length === 0"
+                    :loading="loading.transfer"
+                    @click="transfer"
+                  >
+                    <IconMdiRenameBox class="mr-1" />
+                    Transfer
+                  </Button>
+                </div>
+              </div>
+
+              <template v-if="hasPerms(NamedPermission.DeleteProject) && project?.visibility !== Visibility.SoftDelete">
+                <h3 class="text-lg font-semibold">Delete</h3>
+                <p class="mt-1 text-sm text-gray">Once you delete a project, it cannot be recovered.</p>
+                <div class="mt-3">
+                  <TextAreaModal
+                    title="Delete project"
+                    label="Reason for deletion"
+                    description="This will delete the project and make it unavailable. "
+                    confirmation-text="Confirm"
+                    submit-label="Delete"
+                    :submit="softDelete"
+                    require-input
+                    destructive
+                  >
+                    <template #activator="{ on }">
+                      <button
+                        type="button"
+                        class="inline-flex h-10.5 items-center justify-center rounded-md border border-red-600 bg-red-900/50 px-3 text-sm font-semibold text-white transition-all duration-250"
+                        v-on="on"
+                      >
+                        Delete
+                      </button>
+                    </template>
+                  </TextAreaModal>
+                </div>
               </template>
-            </TextAreaModal>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.HardDeleteProject)"
-            title="project.settings.hardDelete"
-            description="project.settings.hardDeleteSub"
-            class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
-          >
-            <TextAreaModal :title="i18n.t('project.settings.hardDelete')" :label="i18n.t('general.comment')" :submit="hardDelete" require-input>
-              <template #activator="{ on }">
-                <Button button-type="red" v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
-              </template>
-            </TextAreaModal>
-          </ProjectSettingsSection>
+
+              <div v-if="hasPerms(NamedPermission.HardDeleteProject)" class="mb-0">
+                <h3 class="text-lg font-semibold">Hard Delete</h3>
+                <p class="mt-1 text-sm text-gray">This will permanently remove the project. This action is irreversible.</p>
+                <div class="mt-3">
+                  <TextAreaModal
+                    title="Permanently delete project"
+                    label="Reason for permanent deletion"
+                    description="This permanently removes the project and all associated data. This action is irreversible."
+                    confirmation-text="Confirm"
+                    submit-label="Delete forever"
+                    :submit="hardDelete"
+                    require-input
+                    destructive
+                  >
+                    <template #activator="{ on }">
+                      <button
+                        type="button"
+                        class="inline-flex h-10.5 items-center justify-center rounded-md border border-red-600 bg-red-900/50 px-3 text-sm font-semibold text-white transition-all duration-250"
+                        v-on="on"
+                      >
+                        Hard Delete
+                      </button>
+                    </template>
+                  </TextAreaModal>
+                </div>
+              </div>
+            </Card>
+
+            <div>
+              <MemberList :members="project?.members || []" :author="project?.namespace?.owner" :slug="project?.name" class="mb-4 h-max overflow-visible" />
+            </div>
+          </div>
         </template>
         <!--<template #donation>
           <Alert type="info" class="my-4">Coming Soon!</Alert>
@@ -453,69 +560,130 @@ useSeo(
           </ProjectSettingsSection>
         </template>-->
         <template #banners>
-          <ProjectSettingsSection title="project.settings.banners.mcbanners" description="project.settings.banners.mcbannersSub">
-            <div class="mb-2">
-              <InputSelect
-                v-model="mcBannersStyle"
-                :values="[
-                  'BLUE_RADIAL',
-                  'BURNING_ORANGE',
-                  'MANGO',
-                  'MOONLIGHT_PURPLE',
-                  'ORANGE_RADIAL',
-                  'VELVET',
-                  'YELLOW',
-                  'MALACHITE_GREEN',
-                  'DARK_GUNMETAL',
-                  'PURPLE_TAUPE',
-                  'LIGHT_MODE',
-                ]"
-                :label="i18n.t('project.settings.banners.style')"
-              />
-            </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.author") }}:</div>
-            <img :src="bannerUrls.author" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.author, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.author)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.resource") }}:</div>
-            <img :src="bannerUrls.resource" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.resource, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.resource)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.banners.shields" description="project.settings.banners.shieldsSub">
-            <div class="mb-2">
-              <InputSelect
-                v-model="shieldIoStyle"
-                :values="['flat', 'flat-square', 'plastic', 'for-the-badge', 'social']"
-                :label="i18n.t('project.settings.banners.style')"
-              />
-            </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.downloads") }}:</div>
-            <img :src="bannerUrls.downloads" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.downloads, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.downloads)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.stars") }}:</div>
-            <img :src="bannerUrls.stars" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.stars, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.stars)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.views") }}:</div>
-            <img :src="bannerUrls.views" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.views, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.views)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-          </ProjectSettingsSection>
+          <div class="grid gap-3 sm:grid-cols-2 items-start">
+            <ProjectSettingsSection title="project.settings.banners.mcbanners" description="project.settings.banners.mcbannersSub">
+              <div class="mb-2">
+                <DropdownButton button-size="medium" button-type="transparent" button-class="!h-10.5 !py-2" match-width spread-arrow>
+                  <template #button-label>
+                    <span class="w-full truncate text-left">{{ mcBannersStyle }}</span>
+                  </template>
+                  <template #default="{ close }">
+                    <DropdownItem
+                      v-for="style in [
+                        'BLUE_RADIAL',
+                        'BURNING_ORANGE',
+                        'MANGO',
+                        'MOONLIGHT_PURPLE',
+                        'ORANGE_RADIAL',
+                        'VELVET',
+                        'YELLOW',
+                        'MALACHITE_GREEN',
+                        'DARK_GUNMETAL',
+                        'PURPLE_TAUPE',
+                        'LIGHT_MODE',
+                      ]"
+                      :key="style"
+                      @click="
+                        mcBannersStyle = style;
+                        close();
+                      "
+                    >
+                      {{ style }}
+                    </DropdownItem>
+                  </template>
+                </DropdownButton>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <div class="mb-2 text-sm font-semibold">{{ i18n.t("project.settings.banners.author") }}</div>
+                  <div class="inline-block max-w-full overflow-hidden rounded-lg border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-charcoal-600">
+                    <img
+                      v-if="!mcBannerErrors.author"
+                      :src="bannerUrls.author"
+                      alt=""
+                      class="block w-auto h-auto max-w-full"
+                      @error="mcBannerErrors.author = true"
+                    />
+                    <div v-else class="flex h-20 w-full items-center justify-center px-4 text-center text-sm text-gray">MCBanners image was not found.</div>
+                  </div>
+                  <div class="mt-3 flex gap-2">
+                    <Button size="small" class="!h-9 text-sm" @click="copyToClipboard($event, bannerUrls.author, 'markdown')">
+                      {{ i18n.t("project.settings.banners.markdown") }}
+                    </Button>
+                    <Button size="small" class="!h-9 text-sm" button-type="secondary" @click="copyToClipboard($event, bannerUrls.author)">
+                      {{ i18n.t("project.settings.banners.url") }}
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <div class="mb-2 text-sm font-semibold">{{ i18n.t("project.settings.banners.resource") }}</div>
+                  <div class="inline-block max-w-full overflow-hidden rounded-lg border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-charcoal-600">
+                    <img
+                      v-if="!mcBannerErrors.resource"
+                      :src="bannerUrls.resource"
+                      alt=""
+                      class="block w-auto h-auto max-w-full"
+                      @error="mcBannerErrors.resource = true"
+                    />
+                    <div v-else class="flex h-20 w-full items-center justify-center px-4 text-center text-sm text-gray">MCBanners image was not found.</div>
+                  </div>
+                  <div class="mt-3 flex gap-2">
+                    <Button size="small" class="!h-9 text-sm" @click="copyToClipboard($event, bannerUrls.resource, 'markdown')">
+                      {{ i18n.t("project.settings.banners.markdown") }}
+                    </Button>
+                    <Button size="small" class="!h-9 text-sm" button-type="secondary" @click="copyToClipboard($event, bannerUrls.resource)">
+                      {{ i18n.t("project.settings.banners.url") }}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </ProjectSettingsSection>
+            <ProjectSettingsSection title="project.settings.banners.shields" description="project.settings.banners.shieldsSub">
+              <div class="mb-2">
+                <DropdownButton button-size="medium" button-type="transparent" button-class="!h-10.5 !py-2" match-width spread-arrow>
+                  <template #button-label>
+                    <span class="w-full truncate text-left">{{ shieldIoStyle }}</span>
+                  </template>
+                  <template #default="{ close }">
+                    <DropdownItem
+                      v-for="style in ['flat', 'flat-square', 'plastic', 'for-the-badge', 'social']"
+                      :key="style"
+                      @click="
+                        shieldIoStyle = style;
+                        close();
+                      "
+                    >
+                      {{ style }}
+                    </DropdownItem>
+                  </template>
+                </DropdownButton>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-3 items-start">
+                <div
+                  v-for="badge in [
+                    { label: i18n.t('project.settings.banners.downloads'), url: bannerUrls.downloads },
+                    { label: i18n.t('project.settings.banners.stars'), url: bannerUrls.stars },
+                    { label: i18n.t('project.settings.banners.views'), url: bannerUrls.views },
+                  ]"
+                  :key="badge.label"
+                  class="flex flex-col items-start gap-1"
+                >
+                  <div class="text-sm font-semibold">{{ badge.label }}</div>
+                  <img :src="badge.url" alt="" class="h-6 w-auto" />
+                  <div class="flex gap-2 mt-1">
+                    <Button size="small" class="!h-8 text-sm" @click="copyToClipboard($event, badge.url, 'markdown')">
+                      {{ i18n.t("project.settings.banners.markdown") }}
+                    </Button>
+                    <Button size="small" class="!h-8 text-sm" button-type="secondary" @click="copyToClipboard($event, badge.url)">
+                      {{ i18n.t("project.settings.banners.url") }}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </ProjectSettingsSection>
+          </div>
         </template>
       </Tabs>
-    </Card>
-    <MemberList :members="project?.members || []" :author="project?.namespace?.owner" :slug="project?.name" class="basis-full md:basis-3/12 h-max" />
+    </section>
   </div>
 </template>

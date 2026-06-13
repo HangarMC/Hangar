@@ -1,7 +1,7 @@
 <template>
   <Modal
     ref="modal"
-    :title="t('organization.settings.changeAvatar')"
+    :title="title || t('organization.settings.changeAvatar')"
     window-classes="w-full max-w-2xl !rounded-lg border border-gray-200 dark:border-gray-800 shadow-xl"
     close-button-right
     @open="openModal"
@@ -67,7 +67,7 @@
       </div>
     </div>
 
-    <div class="mt-4 flex items-center justify-end gap-2 border-t pt-4 dark:border-gray-800">
+    <div class="mt-4 flex items-center justify-end gap-2">
       <Button button-type="secondary" size="medium" @click="modal?.close()">Cancel</Button>
       <Button button-type="primary" size="medium" :disabled="!cropperResult || saving" :loading="saving" @click.prevent="save">
         <IconMdiContentSaveOutline class="mr-1" />
@@ -90,6 +90,8 @@ const props = defineProps<{
   avatar: string;
   action: string;
   csrfToken?: string;
+  title?: string;
+  fieldName?: string;
 }>();
 
 const selectedFile = ref<File>();
@@ -182,14 +184,14 @@ async function save() {
   if (!cropperResult.value) return;
   saving.value = true;
   const form = new FormData();
-  form.append("avatar", cropperResult.value);
+  form.append(props.fieldName || "avatar", cropperResult.value);
   if (props.csrfToken) {
     form.append("csrf_token", props.csrfToken);
   }
 
   try {
     await useInternalApi(props.action, "POST", form, { timeout: 10_000 });
-
+    notifications.success("Saved!");
     window.location.reload();
   } catch (err) {
     handleRequestError(err, "Error while saving avatar");

@@ -30,7 +30,7 @@ withDefaults(
 
 .v-popper--theme-tooltip .v-popper__inner {
   max-width: 700px;
-  @apply max-w-2xl text-center text-white bg-charcoal-500 border border-gray-700 rounded-full py-2 px-4;
+  @apply max-w-2xl rounded-lg border border-gray-700 bg-charcoal-500 px-4 py-2 text-center text-white;
 }
 
 .v-popper--theme-tooltip .v-popper__arrow-outer {

@@ -54,7 +54,7 @@ function getBorderClasses(version: Version): string {
   if (version.visibility === Visibility.SoftDelete) {
     return "!border-red-500 border-1px";
   }
-  return version.visibility === Visibility.Public ? "!border-gray-300 !dark:border-gray-700 border-1px" : "";
+  return version.visibility === Visibility.Public ? "!border-gray-200 !dark:border-gray-800 border-1px" : "";
 }
 
 function getVisibilityTitle(visibility: Visibility) {
@@ -81,8 +81,8 @@ function getVisibilityTitle(visibility: Visibility) {
             <li class="border-b p-4 dark:border-gray-800"><Skeleton class="h-[68px]" delay /></li>
             <li class="p-4"><Skeleton class="h-[68px]" delay /></li>
           </template>
-          <li v-else-if="!versions?.result?.length" class="p-4">
-            <Alert type="info">{{ i18n.t("version.page.noVersions") }}</Alert>
+          <li v-else-if="!versions?.result?.length" class="px-4 py-10 text-center text-gray">
+            {{ i18n.t("version.page.noVersions") }}
           </li>
           <Pagination
             v-else
@@ -178,7 +178,7 @@ function getVisibilityTitle(visibility: Visibility) {
             <h2 class="flex-grow">{{ i18n.t("version.channels") }}</h2>
             <Tooltip v-if="filter.channels.length">
               <button
-                class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:scale-[1.015] hover:border-red-600 hover:bg-red-900/50"
+                class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:border-red-600 hover:bg-red-900/50"
                 @click="filter.channels = []"
               >
                 <IconMdiBroom class="text-sm" />
@@ -207,7 +207,7 @@ function getVisibilityTitle(visibility: Visibility) {
             <h2 class="flex-grow">{{ i18n.t("version.platforms") }}</h2>
             <Tooltip v-if="filter.platforms.length">
               <button
-                class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:scale-[1.015] hover:border-red-600 hover:bg-red-900/50"
+                class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:border-red-600 hover:bg-red-900/50"
                 @click="filter.platforms = []"
               >
                 <IconMdiBroom class="text-sm" />

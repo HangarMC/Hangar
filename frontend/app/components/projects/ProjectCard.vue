@@ -24,7 +24,7 @@ async function togglePin() {
 </script>
 
 <template>
-  <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug" class="block transition-transform duration-200 hover:scale-[1.005]">
+  <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug" class="block transition-transform duration-200">
     <Card
       class="relative"
       :class="{

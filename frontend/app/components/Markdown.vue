@@ -46,7 +46,7 @@ watchPostEffect(async () => {
           <a
             v-for="heading in renderedMarkdown.headings"
             :key="heading.id"
-            class="rounded-lg border border-transparent px-3 py-2 font-semibold decoration-none transition-all duration-250 hover:scale-[1.005] hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800"
+            class="rounded-lg border border-transparent px-3 py-2 font-semibold decoration-none transition-all duration-250 hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800"
             :class="'toc-' + heading.level"
             :href="`#${heading.id}`"
             @click="close"

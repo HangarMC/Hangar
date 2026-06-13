@@ -10,24 +10,68 @@ const comment = ref<string>("");
 const loading = ref<boolean>(false);
 
 async function deleteOrg() {
+  if (loading.value) {
+    return;
+  }
+
   loading.value = true;
-  await useInternalApi(`organizations/org/${props.organization}/delete`, "post", {
-    content: comment.value,
-  }).catch((err) => handleRequestError(err));
-  await router.push("/");
-  loading.value = false;
+  try {
+    await useInternalApi(`organizations/org/${props.organization}/delete`, "post", {
+      content: comment.value,
+    });
+    await router.push("/");
+  } catch (err) {
+    handleRequestError(err);
+  } finally {
+    loading.value = false;
+  }
+}
+
+function resetForm() {
+  comment.value = "";
 }
 </script>
 
 <template>
-  <Modal :title="i18n.t('organization.settings.deleteModal.title', [organization])" window-classes="w-150">
-    <template #default>
-      <p class="mb-2">{{ i18n.t("organization.settings.deleteModal.description", [organization]) }}</p>
-      <InputTextarea v-model.trim="comment" rows="2" :label="i18n.t('general.comment')" />
-      <Button button-type="red" class="mt-3" :disabled="loading" @click="deleteOrg()">{{ i18n.t("general.delete") }}</Button>
+  <Modal
+    :title="i18n.t('organization.settings.deleteModal.title', [organization])"
+    window-classes="w-full max-w-xl !rounded-xl border border-gray-200 dark:border-gray-800 shadow-lg !bg-white dark:!bg-charcoal-900"
+    close-button-right
+    @close="resetForm"
+  >
+    <template #default="{ on }">
+      <p class="mb-4 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+        {{ i18n.t("organization.settings.deleteModal.description", [organization]) }}
+      </p>
+      <textarea
+        v-model.trim="comment"
+        class="min-h-24 w-full rounded-lg border border-transparent bg-gray-100 px-3 py-2 outline-none transition-all duration-250 hover:border-gray-300 focus:border-gray-400 dark:bg-gray-800 dark:hover:border-gray-700 dark:focus:border-gray-700"
+        :placeholder="i18n.t('general.comment')"
+        rows="3"
+      />
+      <div class="mt-5 flex justify-end gap-2">
+        <Button button-type="secondary" size="medium" :disabled="loading" @click="on.click">
+          {{ i18n.t("general.close") }}
+        </Button>
+        <button
+          class="inline-flex items-center justify-center rounded-md border border-red-600 bg-red-900/50 p-2 font-semibold text-white transition-all duration-250 disabled:cursor-wait disabled:opacity-60"
+          type="button"
+          :disabled="loading"
+          @click="deleteOrg()"
+        >
+          {{ i18n.t("general.delete") }}
+        </button>
+      </div>
     </template>
     <template #activator="{ on }">
-      <Button button-type="red" size="small" class="mr-1" v-on="on"><IconMdiDeleteAlert /></Button>
+      <button
+        class="inline-flex h-10.5 w-full items-center justify-center rounded-md border border-gray-800 px-3 font-semibold transition-all duration-250 hover:border-red-600 hover:bg-red-900/50"
+        type="button"
+        v-on="on"
+      >
+        <IconMdiDeleteAlert class="mr-1" />
+        {{ i18n.t("general.delete") }}
+      </button>
     </template>
   </Modal>
 </template>

@@ -40,7 +40,7 @@ const classes = computed<string>(() => {
   const isTextButton = props.buttonType === "transparent" || props.buttonType === "borderless";
   const border = props.buttonType === "borderless" ? "border-1 border-transparent" : "border-1 border-gray-800";
   const interaction =
-    props.buttonType === "borderless" ? "hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800" : "hover:scale-[1.005]";
+    props.buttonType === "borderless" ? "hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800" : "";
   const colors = isTextButton
     ? "text-black dark:text-white disabled:cursor-not-allowed disabled:text-gray-400"
     : "text-white disabled:(bg-gray-300 cursor-not-allowed) disabled:dark:(text-gray-500 bg-charcoal-600)";

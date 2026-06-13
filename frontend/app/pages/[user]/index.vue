@@ -155,7 +155,7 @@ useSeo(
 
       <section>
         <Card class="mb-4 flex items-center justify-between gap-4">
-          <div class="relative flex h-10.5 min-w-0 flex-grow rounded-md transition-all duration-200 hover:scale-[1.005]">
+          <div class="relative flex h-10.5 min-w-0 flex-grow rounded-md transition-all duration-200">
             <input
               v-model="query"
               name="query"
@@ -168,38 +168,40 @@ useSeo(
               <IconMdiClose class="absolute top-3 right-3 text-gray-500 hover:text-white" />
             </button>
           </div>
-          <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent" match-width spread-arrow>
-            <template #button-label>
-              <div class="flex w-48 items-center justify-start gap-1">
-                <IconMdiSwapVertical />
-                <div class="truncate">{{ sorters.find((s) => s.id === activeSorter)!.label }}</div>
-              </div>
-            </template>
-            <template #default="{ close }">
-              <div class="flex max-h-lg w-full max-w-lg flex-col gap-1 overflow-y-auto overflow-x-visible">
-                <DropdownItem
-                  v-for="sorter in sorters"
-                  :key="sorter.id"
-                  :style="
-                    activeSorter === sorter.id
-                      ? {
-                          backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
-                          borderColor: 'var(--primary-500)',
-                        }
-                      : {}
-                  "
-                  @click="
-                    activeSorter = sorter.id;
-                    close();
-                  "
-                >
-                  {{ sorter.label }}
-                </DropdownItem>
-              </div>
-            </template>
-          </DropdownButton>
+          <div class="w-69 flex-shrink-0 [&>*]:!w-full">
+            <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent" button-class="!w-full" match-menu-width spread-arrow>
+              <template #button-label>
+                <div class="flex min-w-0 flex-1 items-center justify-start gap-1">
+                  <IconMdiSwapVertical class="flex-shrink-0" />
+                  <div class="truncate">{{ sorters.find((s) => s.id === activeSorter)!.label }}</div>
+                </div>
+              </template>
+              <template #default="{ close }">
+                <div class="flex max-h-lg w-full max-w-lg flex-col gap-1 overflow-y-auto overflow-x-visible">
+                  <DropdownItem
+                    v-for="sorter in sorters"
+                    :key="sorter.id"
+                    :style="
+                      activeSorter === sorter.id
+                        ? {
+                            backgroundColor: 'color-mix(in srgb, var(--primary-500) 25%, transparent)',
+                            borderColor: 'var(--primary-500)',
+                          }
+                        : {}
+                    "
+                    @click="
+                      activeSorter = sorter.id;
+                      close();
+                    "
+                  >
+                    {{ sorter.label }}
+                  </DropdownItem>
+                </div>
+              </template>
+            </DropdownButton>
+          </div>
         </Card>
-        <div class="flex flex-col gap-4">
+        <div v-if="projectsStatus === 'loading' || projects?.result?.length" class="flex flex-col gap-4">
           <ProjectList
             :projects="projects"
             :loading="projectsStatus === 'loading'"
@@ -208,6 +210,33 @@ useSeo(
             @update:page="(newPage: number) => (page = newPage)"
           />
         </div>
+        <Card v-else class="!p-0 overflow-hidden">
+          <div class="flex flex-col items-center px-6 py-10 text-center">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-2xl text-gray dark:bg-charcoal-500">
+              <IconMdiPackageVariantClosed />
+            </span>
+            <h2 class="mt-3 text-xl font-bold">{{ query ? "No matching projects" : "No projects yet" }}</h2>
+            <p class="mt-1 max-w-md text-sm text-gray">
+              {{
+                query
+                  ? "Try a different search term or clear the current search."
+                  : organization
+                    ? `${user?.name} does not have any projects yet.`
+                    : `${user?.name} has not published any projects yet.`
+              }}
+            </p>
+            <Button v-if="query" class="mt-4" button-type="secondary" size="medium" @click="query = ''">
+              <IconMdiClose class="mr-1" />
+              Clear search
+            </Button>
+            <Link v-else-if="organization && hasPerms(NamedPermission.IsSubjectOwner)" to="/new" class="mt-4">
+              <Button size="medium">
+                <IconMdiPlus class="mr-1" />
+                Create project
+              </Button>
+            </Link>
+          </div>
+        </Card>
       </section>
     </main>
 
@@ -219,20 +248,22 @@ useSeo(
         <Skeleton class="m-3 h-40" />
       </Card>
 
-      <Card v-if="user && (buttons.length > 0 || (organization && hasPerms(NamedPermission.IsSubjectOwner)))" class="!p-0 overflow-hidden border-red-500/60">
+      <Card v-if="user && (buttons.length > 0 || (organization && hasPerms(NamedPermission.IsSubjectOwner)))" class="!p-0 overflow-hidden">
         <template #header>
           <div class="flex items-center gap-2 px-4 pt-3.5 pb-2">
-            <IconMdiShieldAccountOutline class="text-red-400" />
-            <h2>{{ i18n.t("author.management") }}</h2>
+            <div>
+              <h2>{{ i18n.t("author.management") }}</h2>
+              <p v-if="organization" class="text-xs font-normal text-gray">Organization ownership and deletion controls.</p>
+            </div>
           </div>
         </template>
-        <div class="flex flex-wrap gap-2 px-3 pb-3">
+        <div class="grid grid-cols-2 gap-2 px-3 pb-3">
           <template v-if="organization && hasPerms(NamedPermission.IsSubjectOwner)">
-            <Tooltip>
+            <Tooltip class="!block !w-full min-w-0">
               <template #content>{{ i18n.t("author.tooltips.transfer") }}</template>
               <OrgTransferModal :organization="user.name" />
             </Tooltip>
-            <Tooltip>
+            <Tooltip class="!block !w-full min-w-0">
               <template #content>{{ i18n.t("author.tooltips.delete") }}</template>
               <OrgDeleteModal :organization="user.name" />
             </Tooltip>
@@ -299,54 +330,60 @@ useSeo(
 
         <Card class="!p-0 overflow-hidden">
           <template #header>
-            <div class="flex items-center gap-2 px-4 pt-3.5 pb-2">
-              <IconMdiStarOutline class="color-primary" />
+            <div class="flex items-center gap-2 px-3 py-2.5">
               <h2 class="flex-grow">{{ i18n.t("author.stars") }}</h2>
-              <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray dark:bg-charcoal-500">{{ starred?.result?.length || 0 }}</span>
+              <span class="rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs text-gray dark:border-gray-700 dark:bg-charcoal-500">
+                {{ starred?.result?.length || 0 }}
+              </span>
             </div>
           </template>
 
           <Skeleton v-if="!starred" class="m-3 h-20" />
 
-          <ul v-else-if="starred?.result?.length" class="space-y-1 px-3 pb-3">
-            <li v-for="star in starred?.result" :key="star.name">
+          <ul
+            v-else-if="starred?.result?.length"
+            class="max-h-[13.5rem] divide-y divide-gray-200 overflow-y-auto border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800"
+          >
+            <li v-for="star in starred.result" :key="star.name" class="min-w-0">
               <Link
                 :to="'/' + star.namespace.owner + '/' + star.namespace.slug"
-                class="block truncate rounded-md border px-3 py-2 transition-colors hover:background-card dark:border-gray-800"
+                class="block h-9 min-w-0 truncate px-3 py-2 text-sm transition-colors hover:background-card"
               >
                 <span class="text-gray">{{ star.namespace.owner }}/</span><strong>{{ star.name }}</strong>
               </Link>
             </li>
           </ul>
 
-          <span v-else class="block px-4 pb-4 text-sm text-gray">
-            {{ i18n.t("author.noStarred", [user.name]) }}
-          </span>
+          <span v-else class="block px-4 pb-4 text-sm text-gray">No starred projects</span>
         </Card>
 
         <Card class="!p-0 overflow-hidden">
           <template #header>
-            <div class="flex items-center gap-2 px-4 pt-3.5 pb-2">
-              <IconMdiBellOutline class="color-primary" />
+            <div class="flex items-center gap-2 px-3 py-2.5">
               <h2 class="flex-grow">{{ i18n.t("author.watching") }}</h2>
-              <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray dark:bg-charcoal-500">{{ watching?.result?.length || 0 }}</span>
+              <span class="rounded-md border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs text-gray dark:border-gray-700 dark:bg-charcoal-500">
+                {{ watching?.result?.length || 0 }}
+              </span>
             </div>
           </template>
 
           <Skeleton v-if="!watching" class="m-3 h-20" />
 
-          <ul v-else-if="watching?.result?.length" class="space-y-1 px-3 pb-3">
-            <li v-for="watched in watching?.result" :key="watched.name">
+          <ul
+            v-else-if="watching?.result?.length"
+            class="max-h-[13.5rem] divide-y divide-gray-200 overflow-y-auto border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800"
+          >
+            <li v-for="watched in watching.result" :key="watched.name" class="min-w-0">
               <Link
                 :to="'/' + watched.namespace.owner + '/' + watched.namespace.slug"
-                class="block truncate rounded-md border px-3 py-2 transition-colors hover:background-card dark:border-gray-800"
+                class="block h-9 min-w-0 truncate px-3 py-2 text-sm transition-colors hover:background-card"
               >
                 <span class="text-gray">{{ watched.namespace.owner }}/</span><strong>{{ watched.name }}</strong>
               </Link>
             </li>
           </ul>
 
-          <span v-else class="block px-4 pb-4 text-sm text-gray">
+          <span v-else class="block border-t border-gray-200 px-3 py-3 text-sm text-gray dark:border-gray-800">
             {{ i18n.t("author.noWatching", [user?.name]) }}
           </span>
         </Card>

@@ -290,11 +290,6 @@ function closeUnlinkModal() {
 
 <template>
   <div v-if="auth.user" class="min-w-0">
-    <div class="mb-4">
-      <PageTitle>{{ t("auth.settings.security.header") }}</PageTitle>
-      <p class="text-sm text-gray">Manage your account details, password, authentication methods, and connected accounts.</p>
-    </div>
-
     <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
       <div class="space-y-4">
         <Card>
@@ -305,7 +300,7 @@ function closeUnlinkModal() {
           <form class="space-y-3">
             <div>
               <label class="mb-1.5 block text-sm font-semibold" for="security-email">Email</label>
-              <div class="relative flex h-10.5 rounded-md transition-all duration-200 hover:scale-[1.002]">
+              <div class="relative flex h-10.5 rounded-md transition-all duration-200">
                 <input
                   id="security-email"
                   v-model="accountForm.email"
@@ -330,7 +325,7 @@ function closeUnlinkModal() {
                 <label class="mb-1.5 block text-sm font-semibold" for="current-password">
                   {{ t("auth.settings.account.currentPassword") }}
                 </label>
-                <div class="relative flex h-10.5 rounded-md transition-all duration-200 hover:scale-[1.002]">
+                <div class="relative flex h-10.5 rounded-md transition-all duration-200">
                   <input
                     id="current-password"
                     v-model="accountForm.currentPassword"
@@ -344,7 +339,7 @@ function closeUnlinkModal() {
                 <label class="mb-1.5 block text-sm font-semibold" for="new-password">
                   {{ t("auth.settings.account.newPassword") }}
                 </label>
-                <div class="relative flex h-10.5 rounded-md transition-all duration-200 hover:scale-[1.002]">
+                <div class="relative flex h-10.5 rounded-md transition-all duration-200">
                   <input
                     id="new-password"
                     v-model="accountForm.newPassword"
@@ -442,7 +437,7 @@ function closeUnlinkModal() {
           <div class="mt-4 border-t pt-4 dark:border-gray-800">
             <h3 class="font-semibold">{{ t("auth.settings.security.securityKeys.registerTitle") }}</h3>
             <div class="mt-2 flex flex-col gap-2 sm:flex-row">
-              <div class="relative flex h-10.5 min-w-0 flex-grow rounded-md transition-all duration-200 hover:scale-[1.002]">
+              <div class="relative flex h-10.5 min-w-0 flex-grow rounded-md transition-all duration-200">
                 <input
                   v-model="authenticatorName"
                   class="min-w-0 flex-grow truncate rounded-lg border border-transparent bg-gray-100 px-3 py-2 outline-none transition-colors hover:border-gray-300 focus:border-gray-400 dark:bg-gray-800 dark:hover:border-gray-700 dark:focus:border-gray-600"

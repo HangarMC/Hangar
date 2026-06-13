@@ -134,29 +134,28 @@ function stopEditing() {
 </script>
 
 <template>
-  <div class="relative">
+  <div class="markdown-editor relative">
     <slot name="title" />
-    <div class="flex h-[1px]">
-      <div class="absolute top-2 right-0 space-x-1">
-        <Button v-if="!internalEditing" @click="startEditing()">
-          <IconMdiPencil />
-        </Button>
-        <DeletePageModal @delete="deletePage">
-          <template #activator="{ on }">
-            <Button v-if="internalEditing && deletable" button-type="red" :disabled="loading.delete" v-on="on">
-              <IconMdiDelete />
-            </Button>
-          </template>
-        </DeletePageModal>
-        <Button v-if="internalEditing && saveable" :disabled="loading.save || v.$invalid" @click="savePage">
-          <IconMdiContentSave />
-        </Button>
-        <Button v-if="internalEditing && cancellable" @click="stopEditing()">
-          <IconMdiClose />
-        </Button>
-      </div>
+    <div v-if="internalEditing" class="flex items-center justify-end gap-2" :class="hasSlotContent($slots.title) ? 'absolute top-2 right-2 z-2' : 'px-2 py-2'">
+      <DeletePageModal @delete="deletePage">
+        <template #activator="{ on }">
+          <Button v-if="deletable" button-type="red" class="!h-9 !w-9 !p-0" :disabled="loading.delete" aria-label="Delete content" v-on="on">
+            <IconMdiDelete />
+          </Button>
+        </template>
+      </DeletePageModal>
+      <Button v-if="saveable" class="!h-9 !w-9 !p-0" :disabled="loading.save || v.$invalid" aria-label="Save content" @click="savePage">
+        <IconMdiContentSave />
+      </Button>
+      <Button v-if="cancellable" button-type="secondary" class="!h-9 !w-9 !p-0" aria-label="Cancel editing" @click="stopEditing()">
+        <IconMdiClose />
+      </Button>
     </div>
-    <div v-if="internalEditing && !noPaddingTop" class="mt-11" :class="{ 'mt-2': hasSlotContent($slots.title) }" />
+    <div v-else class="absolute top-2 right-2 z-2">
+      <Button button-type="secondary" class="!h-9 !w-9 !p-0" aria-label="Edit content" @click="startEditing()">
+        <IconMdiPencil />
+      </Button>
+    </div>
     <div v-if="internalEditing">
       <textarea ref="editor" v-model="rawEdited" class="text-left" :maxlength="maxlength" />
     </div>
@@ -167,10 +166,44 @@ function stopEditing() {
   </div>
 </template>
 
+<style scoped>
+.markdown-editor :deep(.markdown) {
+  margin-top: 0;
+  padding: 1rem;
+}
+
+.markdown-editor :deep(.markdown > div > :first-child) {
+  margin-top: 0;
+}
+
+.markdown-editor :deep(.markdown > div > :last-child) {
+  margin-bottom: 0;
+}
+</style>
+
 <style lang="scss">
 @use "easymde/dist/easymde.min.css";
 
 .EasyMDEContainer {
+  margin-inline: 0.5rem;
+
+  .editor-toolbar {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .CodeMirror {
+    padding: 0;
+  }
+
+  .CodeMirror-lines {
+    padding: 0.75rem 0;
+  }
+
+  .CodeMirror pre.CodeMirror-line,
+  .CodeMirror pre.CodeMirror-line-like {
+    padding: 0 1rem;
+  }
+
   .editor-toolbar,
   .CodeMirror {
     clip-path: none !important;
@@ -178,10 +211,12 @@ function stopEditing() {
 
     .dark & {
       background: rgba(39, 39, 42, 1);
+      border-color: rgb(63, 63, 70);
     }
 
     .light & {
       background: rgba(250, 250, 250, 1);
+      border-color: rgb(212, 212, 216);
     }
 
     .CodeMirror-selected {
@@ -201,6 +236,14 @@ function stopEditing() {
 
   .editor-preview {
     background: unset;
+
+    .dark & {
+      border-color: rgb(63, 63, 70);
+    }
+
+    .light & {
+      border-color: rgb(212, 212, 216);
+    }
   }
 
   .markdown {

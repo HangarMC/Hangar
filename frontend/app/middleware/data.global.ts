@@ -77,7 +77,18 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     try {
       await Promise.all(promises);
     } catch (err) {
-      if (isAxiosError(err) && err.response?.status === 404) {
+      let status: unknown;
+      if (isAxiosError(err)) {
+        status = err.response?.status;
+      } else if (typeof err === "object" && err) {
+        if ("statusCode" in err) {
+          status = err.statusCode;
+        } else if ("status" in err) {
+          status = err.status;
+        }
+      }
+
+      if (status === 404) {
         throw createError({ statusCode: 404, statusMessage: "Not found" });
       } else {
         console.error("Failed to load data for route " + to.fullPath, err);

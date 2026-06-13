@@ -44,33 +44,35 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, internal
 </script>
 
 <template>
-  <InputWrapper
-    :errors="errors"
-    :messages="messages"
-    :has-error="hasError"
-    :loading="loading || v.$pending"
-    :label="label"
-    :value="internalVal"
-    :disabled="disabled"
-    :no-error-tooltip="noErrorTooltip"
-  >
-    <template #default="slotProps">
-      <select v-model="internalVal" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
-        <option
-          v-for="val in values"
-          :key="val[itemValue] || val"
-          :value="val[itemValue] || val"
-          class="dark:bg-[#191e28]"
-          :selected="internalVal === val[itemValue] || internalVal === val"
-        >
-          {{ i18nTextValues ? i18n.t(val[itemText] || val) : val[itemText] || val }}
-        </option>
-      </select>
-      <IconMdiMenuDown class="absolute flex right-2 self-center -z-index-1" />
-    </template>
-    <!-- @vue-ignore -->
-    <template v-for="(_, name) in $slots" #[name]="slotData">
-      <slot :name="name" v-bind="slotData || {}" />
-    </template>
-  </InputWrapper>
+  <div>
+    <label v-if="label" class="mb-1 block text-sm font-semibold">{{ label }}</label>
+    <InputWrapper
+      :errors="errors"
+      :messages="messages"
+      :has-error="hasError"
+      :loading="loading || v.$pending"
+      :value="internalVal"
+      :disabled="disabled"
+      :no-error-tooltip="noErrorTooltip"
+    >
+      <template #default="slotProps">
+        <select v-model="internalVal" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" class="appearance-none" @blur="v.$touch()">
+          <option
+            v-for="val in values"
+            :key="val[itemValue] || val"
+            :value="val[itemValue] || val"
+            class="dark:bg-[#191e28]"
+            :selected="internalVal === val[itemValue] || internalVal === val"
+          >
+            {{ i18nTextValues ? i18n.t(val[itemText] || val) : val[itemText] || val }}
+          </option>
+        </select>
+        <IconMdiMenuDown class="absolute flex right-2 self-center -z-index-1" />
+      </template>
+      <!-- @vue-ignore -->
+      <template v-for="(_, name) in $slots" #[name]="slotData">
+        <slot :name="name" v-bind="slotData || {}" />
+      </template>
+    </InputWrapper>
+  </div>
 </template>

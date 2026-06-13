@@ -39,23 +39,24 @@ watch(file, (newVal) => {
 </script>
 
 <template>
-  <InputWrapper
-    :errors="errors"
-    :messages="messages"
-    :has-error="hasError"
-    :loading="loading || v.$pending"
-    :label="label"
-    :value="file"
-    :disabled="disabled"
-    :no-error-tooltip="noErrorTooltip"
-  >
-    <template #default="slotProps">
-      <!-- todo make button fancy -->
-      <input ref="input" type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
-    </template>
-    <!-- @vue-ignore -->
-    <template v-for="(_, name) in $slots" #[name]="slotData">
-      <slot :name="name" v-bind="slotData || {}" />
-    </template>
-  </InputWrapper>
+  <div>
+    <label v-if="label" class="mb-1 block text-sm font-semibold">{{ label }}</label>
+    <InputWrapper
+      :errors="errors"
+      :messages="messages"
+      :has-error="hasError"
+      :loading="loading || v.$pending"
+      :value="file"
+      :disabled="disabled"
+      :no-error-tooltip="noErrorTooltip"
+    >
+      <template #default="slotProps">
+        <input ref="input" type="file" v-bind="$attrs" :disabled="disabled" :class="slotProps.class" @change="onFileChange" />
+      </template>
+      <!-- @vue-ignore -->
+      <template v-for="(_, name) in $slots" #[name]="slotData">
+        <slot :name="name" v-bind="slotData || {}" />
+      </template>
+    </InputWrapper>
+  </div>
 </template>

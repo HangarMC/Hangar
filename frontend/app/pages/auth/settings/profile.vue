@@ -51,11 +51,6 @@ async function clearAvatar() {
 
 <template>
   <div v-if="auth.user" class="min-w-0">
-    <div class="mb-4">
-      <PageTitle>{{ t("auth.settings.profile.header") }}</PageTitle>
-      <p class="text-sm text-gray">Manage how your profile appears to other Hangar users.</p>
-    </div>
-
     <div class="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
       <div class="space-y-4">
         <Card class="!p-0 overflow-hidden">
@@ -71,7 +66,7 @@ async function clearAvatar() {
                   </template>
                 </AvatarChangeModal>
                 <button
-                  class="inline-flex h-7.5 w-7.5 flex-shrink-0 items-center justify-center rounded-md border border-transparent transition-all duration-250 hover:scale-[1.015] hover:border-red-600 hover:bg-red-900/50"
+                  class="inline-flex h-7.5 w-7.5 flex-shrink-0 items-center justify-center rounded-md border border-transparent transition-all duration-250 hover:border-red-600 hover:bg-red-900/50"
                   title="Clear avatar"
                   :disabled="clearingAvatar"
                   @click.prevent="clearAvatar"
@@ -102,7 +97,7 @@ async function clearAvatar() {
             </div>
           </div>
 
-          <div class="mt-5 border-t pt-4 dark:border-gray-800">
+          <div class="mt-5">
             <div class="flex items-start justify-between gap-3">
               <div>
                 <h2 class="text-xl font-bold">{{ t("auth.settings.profile.tagline") }}</h2>
@@ -110,7 +105,7 @@ async function clearAvatar() {
               </div>
               <span class="text-xs text-gray"> {{ profileForm.tagline?.length || 0 }}/{{ useBackendData.validations.userTagline.max }} </span>
             </div>
-            <div class="relative mt-3 flex h-10.5 rounded-md transition-all duration-200 hover:scale-[1.002]">
+            <div class="relative mt-3 flex h-10.5 rounded-md transition-all duration-200">
               <input
                 v-model="profileForm.tagline"
                 class="min-w-0 flex-grow truncate rounded-lg border border-transparent bg-gray-100 px-3 py-2 outline-none transition-colors hover:border-gray-300 focus:border-primary dark:bg-gray-800 dark:hover:border-gray-700"
@@ -121,7 +116,7 @@ async function clearAvatar() {
             </div>
           </div>
 
-          <div class="mt-4 flex justify-end border-t pt-4 dark:border-gray-800">
+          <div class="mt-4 flex justify-end">
             <Button type="submit" size="medium" :disabled="loading" :loading="loading" @click.prevent="saveProfile">
               <IconMdiContentSaveOutline class="mr-1" />
               {{ t("general.save") }}

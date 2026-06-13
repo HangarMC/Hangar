@@ -135,7 +135,7 @@ async function doSearch(val?: string) {
 </script>
 
 <template>
-  <Card v-if="sortedMembers.length > 0 || canEdit" :class="'!p-0 overflow-hidden ' + props.class">
+  <Card v-if="sortedMembers.length > 0 || canEdit" :class="'p-0! overflow-hidden ' + props.class">
     <template #header>
       <div class="flex w-full items-center gap-2 px-4 pt-3.5 pb-1">
         <h2>{{ i18n.t("project.members") }}</h2>
@@ -145,12 +145,8 @@ async function doSearch(val?: string) {
           </template>
           <IconMdiHelpCircleOutline class="text-gray-400" />
         </Tooltip>
-        <div class="flex-grow" />
+        <div class="grow" />
         <MemberLeaveModal v-if="canLeave && author" :author="author" :organization="organization" :slug="slug" />
-        <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-normal text-gray dark:bg-charcoal-500">
-          <IconMdiAccount class="text-xs" />
-          {{ sortedMembers.length }}
-        </span>
       </div>
     </template>
 
@@ -162,10 +158,10 @@ async function doSearch(val?: string) {
       >
         <NuxtLink
           :to="'/' + member.user.name"
-          class="group flex min-w-0 flex-grow items-center gap-3 rounded-lg p-3 decoration-none focus-visible:outline-2 focus-visible:outline-primary"
+          class="group flex min-w-0 grow items-center gap-3 rounded-lg p-3 decoration-none focus-visible:outline-2 focus-visible:outline-primary"
         >
-          <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" disable-link class="flex-shrink-0" />
-          <div class="min-w-0 flex-grow">
+          <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" disable-link class="shrink-0" />
+          <div class="min-w-0 grow">
             <Tooltip v-if="!member.role.accepted" class="mb-1 text-xs">
               <template #content>
                 {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId)?.title]) }}
@@ -189,14 +185,20 @@ async function doSearch(val?: string) {
           </div>
         </NuxtLink>
         <!-- todo confirmation modal -->
-        <DropdownButton v-if="canEdit && getRole(member.role.roleId)?.assignable" :name="i18n.t('general.edit')" class="mr-2.5">
+        <DropdownButton
+          v-if="canEdit && getRole(member.role.roleId)?.assignable"
+          :name="i18n.t('general.edit')"
+          class="mr-2.5"
+          :button-arrow="false"
+          button-class="!w-10.5 !h-10.5 !p-0"
+        >
           <template #button-label>
             <IconMdiPencil />
           </template>
           <DropdownItem v-for="role of filteredRoles(member.role.roleId)" :key="role.title" :disabled="saving" @click="setRole(member, role)">
             {{ role.title }}
           </DropdownItem>
-          <hr />
+          <hr class="my-1 border-t border-gray-700/40 dark:border-gray-700/40" />
           <DropdownItem @click="removeMember(member)">{{ i18n.t("form.memberList.remove") }}</DropdownItem>
         </DropdownButton>
         <DropdownButton v-if="canEdit && !getRole(member.role.roleId)?.assignable && !member.role.accepted" :name="i18n.t('general.edit')" class="mr-2.5">
@@ -207,18 +209,21 @@ async function doSearch(val?: string) {
         </DropdownButton>
       </div>
     </div>
-    <div v-if="canEdit" class="inline-flex w-full items-center border-t border-gray-200 bg-gray-50/50 p-3 dark:border-gray-800 dark:bg-charcoal-500/30">
-      <InputAutocomplete
-        id="membersearch"
-        v-model="search"
-        :values="result"
-        :label="i18n.t('form.memberList.addUser')"
-        :error-messages="addErrors"
-        @search="doSearch"
-      />
-      <DropdownButton :name="i18n.t('general.add')" class="ml-2">
+    <div v-if="canEdit" class="flex w-full items-start bg-transparent px-3 pb-3">
+      <div class="min-w-0 grow">
+        <InputAutocomplete
+          id="membersearch"
+          v-model="search"
+          :values="result"
+          :label="i18n.t('form.memberList.addUser')"
+          :error-messages="addErrors"
+          no-error-tooltip
+          @search="doSearch"
+        />
+      </div>
+      <DropdownButton :name="i18n.t('general.add')" class="ml-2" :button-arrow="false" button-class="!h-10.5 !w-10.5 !p-0">
         <template #button-label>
-          <IconMdiAccountPlus class="ml-1" />
+          <IconMdiAccountPlus />
         </template>
         <DropdownItem v-for="role of roles" :key="role.value" :disabled="saving" @click="invite(search, role)">
           {{ role.title }}

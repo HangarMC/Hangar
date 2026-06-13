@@ -43,13 +43,15 @@ const formattedError = computed<string | Ref<string> | undefined>(() => {
 
 .v-popper--theme-error-tooltip .v-popper__inner {
   max-width: 700px;
-  background-color: #d62e22;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  color: #fff;
+  @apply max-w-2xl rounded-lg border border-red-600/70 bg-charcoal-500 px-4 py-2 text-center text-red-100 shadow-lg shadow-black/30;
+  background-image: linear-gradient(rgb(127 29 29 / 25%), rgb(127 29 29 / 25%));
 }
 
 .v-popper--theme-error-tooltip .v-popper__arrow-outer {
-  border-color: #d62e22;
+  @apply border-red-600/70;
+}
+
+.v-popper--theme-error-tooltip .v-popper__arrow-inner {
+  border-color: color-mix(in srgb, #7f1d1d 25%, var(--charcoal-500));
 }
 </style>

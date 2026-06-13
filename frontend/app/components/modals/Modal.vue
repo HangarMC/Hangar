@@ -24,6 +24,12 @@ function close() {
   dialog.value?.close();
 }
 
+function closeFromBackdrop(event: MouseEvent) {
+  if (event.target === dialog.value) {
+    close();
+  }
+}
+
 const emit = defineEmits<{
   (e: "open"): void;
   (e: "close"): void;
@@ -53,17 +59,25 @@ defineExpose({
 <template>
   <dialog
     ref="dialog"
-    class="background-default rounded max-w-10/12 >md:max-w-250 py-6 px-5 text-[#262626] dark:text-[#E0E6f0]"
+    class="background-default rounded max-w-10/12 >md:max-w-250 overflow-visible py-6 px-5 text-[#262626] dark:text-[#E0E6f0]"
     :class="windowClasses"
     :data-title="title"
     @cancel="close"
+    @click="closeFromBackdrop"
     @close="close"
   >
     <div class="flex items-center w-full pb-4 text-xl">
       <div class="font-bold">{{ props.title }}</div>
-      <button data-close :class="closeButtonRight ? 'ml-auto' : 'order-first mr-1'" aria-label="Close modal" @click="close">
-        <IconMdiClose class="cursor-pointer" />
-      </button>
+      <Button
+        data-close
+        button-type="borderless"
+        class="!h-8 !w-8 !p-0"
+        :class="closeButtonRight ? 'ml-auto' : 'order-first mr-1'"
+        aria-label="Close modal"
+        @click="close"
+      >
+        <IconMdiClose />
+      </Button>
     </div>
     <slot :on="{ click: close }" />
   </dialog>

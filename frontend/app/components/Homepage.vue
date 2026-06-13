@@ -149,7 +149,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <Container class="flex flex-col items-center gap-4 mb-6">
+    <div class="mb-6 flex flex-col items-center gap-4">
       <div ref="headerRef">
         <template v-if="index">
           <h1 ref="pageChangeScrollAnchor" class="text-3xl font-bold uppercase text-center mt-4 flex flex-col w-full" data-allow-mismatch>
@@ -179,8 +179,8 @@ onMounted(() => {
           <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
         </template>
       </div>
-    </Container>
-    <Container lg="flex items-start gap-4">
+    </div>
+    <div class="lg:flex lg:items-start lg:gap-4">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-4 lg:mb-0">
         <!-- Search, Size and Sorter Bar -->
@@ -188,7 +188,7 @@ onMounted(() => {
           class="flex justify-between gap-4 sticky w-full top-4 self-start border shadow-charcoal-900 shadow-xl border-transparent transition-all duration-300 z-12"
         >
           <!-- Search Bar -->
-          <div class="relative transition-all duration-200 hover:scale-[1.005] rounded-md flex xl:w-full h-10.5 w-80 w-full">
+          <div class="relative transition-all duration-200 rounded-md flex xl:w-full h-10.5 w-80 w-full">
             <!-- Text Input -->
             <input
               v-model="query"
@@ -205,7 +205,7 @@ onMounted(() => {
           </div>
 
           <!-- Limit Button -->
-          <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent" match-width spread-arrow>
+          <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent" match-menu-width spread-arrow>
             <template #button-label>
               <div class="w-14 flex justify-start gap-1 items-center">
                 <IconMdiFormatListNumbered />
@@ -240,7 +240,7 @@ onMounted(() => {
           </DropdownButton>
 
           <!-- Sort by Button -->
-          <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent" match-width spread-arrow>
+          <DropdownButton :button-arrow="true" button-size="medium" button-type="transparent" match-menu-width spread-arrow>
             <template #button-label>
               <div class="w-48 flex justify-start gap-1 items-center">
                 <IconMdiSwapVertical class="" />
@@ -298,7 +298,7 @@ onMounted(() => {
                 <span />
                 <Tooltip>
                   <button
-                    class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
+                    class="flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600"
                     cursor="pointer"
                     @click="
                       () => {
@@ -343,7 +343,7 @@ onMounted(() => {
                   <Tooltip>
                     <button
                       v-if="filters.versions"
-                      class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
+                      class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600"
                       cursor="pointer"
                       @click="
                         () => {
@@ -362,7 +362,7 @@ onMounted(() => {
               </Transition>
             </template>
             <!-- Version Search -->
-            <div class="relative hover:scale-[1.005] transition-all duration-250">
+            <div class="relative transition-all duration-250">
               <input
                 v-model="versionSearch"
                 name="versionSearch"
@@ -410,7 +410,7 @@ onMounted(() => {
                 <Tooltip>
                   <button
                     v-if="filters.tags"
-                    class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
+                    class="flex items-center rounded-full border border-transparent py-1 px-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600"
                     cursor="pointer"
                     @click="filters.tags = []"
                   >
@@ -445,7 +445,7 @@ onMounted(() => {
                 <Tooltip>
                   <button
                     v-if="filters.tags"
-                    class="text-sm flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600 hover:scale-[1.015]"
+                    class="text-sm flex items-center rounded-full border border-transparent p-1 transition-all duration-250 hover:bg-red-900/50 hover:border-red-600"
                     cursor="pointer"
                     @click="filters.categories = []"
                   >
@@ -459,7 +459,7 @@ onMounted(() => {
             </Transition>
           </template>
           <!-- Category Search -->
-          <div class="relative hover:scale-[1.005] transition-all duration-250">
+          <div class="relative transition-all duration-250">
             <input
               v-model="categorySearch"
               name="categorySearch"
@@ -491,7 +491,7 @@ onMounted(() => {
           </div>
         </CollapsibleCard>
       </div>
-    </Container>
+    </div>
     <h2 class="text-2xl text-center font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>
     <div class="md:(ml-15 mr-15)">
       <Card class="mt-4" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">

@@ -15,12 +15,14 @@ const props = withDefaults(
     vertical?: boolean;
     compact?: boolean;
     router?: boolean;
+    hideNavigation?: boolean;
   }>(),
   {
     modelValue: undefined,
     vertical: true,
     compact: false,
     router: false,
+    hideNavigation: false,
   }
 );
 
@@ -56,7 +58,7 @@ defineSlots<
 
 <template>
   <div :class="{ 'flex flex-col lt-md:space-y-2 md:flex-row': vertical, 'md:space-x-2': !compact && vertical, 'flex flex-row flex-wrap': !vertical }">
-    <div :class="{ 'min-w-13ch': vertical, 'basis-full': !vertical }">
+    <div v-if="!hideNavigation" :class="{ 'min-w-13ch': vertical, 'basis-full': !vertical }">
       <ul :class="{ 'flex flex-row flex-wrap lt-md:gap-1 md:flex-col': vertical, 'md:space-y-1': !compact && vertical, 'flex flex-row gap-1': !vertical }">
         <li v-for="tab in tabs" :key="tab.value">
           <Link

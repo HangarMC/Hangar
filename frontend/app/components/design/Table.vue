@@ -1,36 +1,7 @@
 <template>
-  <table class="simple-table">
+  <table
+    class="w-full table-fixed border-collapse break-words [&_tbody_tr]:border-t [&_tbody_tr]:border-gray-200 [&_td]:px-4 [&_td]:py-3 [&_th]:px-4 [&_th]:py-3 [&_th]:text-left [&_thead]:bg-gray-100/50 [&_thead]:text-gray [&_tbody_tr]:dark:border-gray-800 [&_thead]:dark:bg-charcoal-500/40 md:table-auto"
+  >
     <slot />
   </table>
 </template>
-
-<style lang="scss">
-.simple-table {
-  table-layout: fixed;
-  overflow-wrap: break-word;
-
-  @media (min-width: 768px) {
-    table-layout: auto;
-  }
-
-  td,
-  th {
-    padding: 0.5rem;
-  }
-
-  th {
-    text-align: left;
-  }
-
-  tbody {
-    tr {
-      border-top-width: thin;
-      border-top-style: solid;
-      border-top-color: #e1e1e1;
-      .dark & {
-        border-top-color: #656565;
-      }
-    }
-  }
-}
-</style>

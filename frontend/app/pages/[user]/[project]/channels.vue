@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ChannelFlag } from "#shared/types/backend";
 import type { HangarChannel, HangarProject, ProjectChannel, User } from "#shared/types/backend";
+import type { Header } from "#shared/types/components/SortableTable";
 
 definePageMeta({
   projectPermsRequired: ["EditChannels"],
@@ -15,6 +16,12 @@ const route = useRoute("user-project-channels");
 const { channels, refreshChannels } = useProjectChannels(() => route.params.project);
 const validations = useBackendData.validations;
 const notifications = useNotificationStore();
+const headers = [
+  { name: "name", title: "Name", sortable: false },
+  { name: "description", title: "Description", sortable: false },
+  { name: "versionCount", title: "Versions", sortable: false },
+  { name: "actions", title: "", sortable: false },
+] as const satisfies Header<string>[];
 
 useSeo(computed(() => ({ title: "Channels | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
 
@@ -59,61 +66,63 @@ async function editChannel(channel: HangarChannel | ProjectChannel) {
 </script>
 
 <template>
-  <Card>
-    <template #header>{{ i18n.t("channel.manage.title") }}</template>
-    <p class="mb-2">{{ i18n.t("channel.manage.subtitle") }}</p>
+  <div class="flex flex-col gap-4">
+    <Card class="!p-0 overflow-hidden">
+      <div class="flex justify-end px-3 pt-3">
+        <ChannelModal v-if="project" :project-id="project.id" @create="addChannel">
+          <template #activator="{ on }">
+            <Button
+              v-if="channels && channels.length < validations.project.maxChannelCount"
+              size="small"
+              class="!h-8 !px-2 !py-1 text-sm"
+              :disabled="channels.length >= validations.project.maxChannelCount"
+              v-on="on"
+            >
+              <IconMdiPlus class="mr-1 text-base" />
+              {{ i18n.t("channel.manage.add") }}
+            </Button>
+          </template>
+        </ChannelModal>
+      </div>
 
-    <Table v-if="channels" class="w-full">
-      <thead>
-        <tr>
-          <th>
-            <span class="inline-flex items-center gap-1"><IconMdiTag />{{ i18n.t("channel.manage.channelName") }}</span>
-          </th>
-          <th>
-            <span class="inline-flex items-center gap-1">{{ i18n.t("channel.manage.channelDescription") }}</span>
-          </th>
-          <th>
-            <span class="inline-flex items-center gap-1"><IconMdiFormatListNumbered />{{ i18n.t("channel.manage.versionCount") }}</span>
-          </th>
-          <th />
-          <th v-if="channels.length !== 1" />
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="channel in channels" :key="channel.name">
-          <td><Tag :name="channel.name" :color="{ background: channel.color }" :tooltip="channel.description" /></td>
-          <td>{{ channel.description }}</td>
-          <td>{{ channel.versionCount }}</td>
-          <td>
-            <ChannelModal v-if="project" :project-id="project.id" edit :channel="channel" @create="editChannel">
+      <SortableTable v-if="channels" :headers="headers" :items="channels">
+        <template #name="{ item }">
+          <span class="inline-flex items-center gap-2 font-semibold">
+            <span class="h-3 w-3 flex-shrink-0 rounded-sm" :style="{ backgroundColor: item.color }" />
+            {{ item.name }}
+          </span>
+        </template>
+        <template #description="{ item }">
+          <span class="text-gray">{{ item.description }}</span>
+        </template>
+        <template #versionCount="{ item }">
+          <span>{{ item.versionCount }}</span>
+        </template>
+        <template #actions="{ item }">
+          <div class="flex justify-end gap-1">
+            <ChannelModal v-if="project" :project-id="project.id" edit :channel="item" @create="editChannel">
               <template #activator="{ on }">
-                <Button v-on="on">
-                  {{ i18n.t("channel.manage.editButton") }}
+                <Button button-type="borderless" class="!h-9 !w-9 !p-0" aria-label="Edit channel" v-on="on">
+                  <IconMdiPencil />
                 </Button>
               </template>
             </ChannelModal>
-          </td>
-          <td v-if="channels.length !== 1">
-            <Button v-if="channel.versionCount === 0" :disabled="channel.flags.includes(ChannelFlag.FROZEN)" @click="deleteChannel(channel)">
-              {{ i18n.t("channel.manage.deleteButton") }}
-            </Button>
-          </td>
-        </tr>
-      </tbody>
-    </Table>
-
-    <ChannelModal v-if="project" :project-id="project.id" @create="addChannel">
-      <template #activator="{ on }">
-        <Button
-          v-if="channels && channels.length < validations.project.maxChannelCount"
-          :disabled="channels.length >= validations.project.maxChannelCount"
-          class="mt-2"
-          v-on="on"
-        >
-          <IconMdiPlus />
-          {{ i18n.t("channel.manage.add") }}
-        </Button>
-      </template>
-    </ChannelModal>
-  </Card>
+            <button
+              v-if="channels.length !== 1 && item.versionCount === 0"
+              type="button"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-transparent transition-all duration-250 hover:border-red-600 hover:bg-red-900/50 disabled:cursor-not-allowed disabled:opacity-50"
+              :disabled="item.flags.includes(ChannelFlag.FROZEN)"
+              aria-label="Delete channel"
+              @click="deleteChannel(item)"
+            >
+              <IconMdiDeleteOutline />
+            </button>
+          </div>
+        </template>
+        <template #empty>
+          <div class="py-10 text-center text-gray">No channels found.</div>
+        </template>
+      </SortableTable>
+    </Card>
+  </div>
 </template>

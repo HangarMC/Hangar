@@ -5,18 +5,20 @@ const props = defineProps<{
   icon?: string;
   title?: string;
   compact?: boolean;
+  active?: boolean;
 }>();
 
 const route = useRoute();
 
 const selected = computed(() => {
+  if (props.active !== undefined) return props.active;
   const routerPath = route.path.endsWith("/") ? route.path.slice(0, Math.max(0, route.path.length - 1)) : route.path;
   return routerPath === props.to;
 });
 
 const clazz = computed(() => {
   return (
-    "h-9 inline-flex items-center justify-center rounded-lg border leading-none font-semibold transition-all duration-250 hover:scale-[1.005] hover:bg-gray-200 hover:border-gray-300 dark:hover:bg-gray-800 dark:hover:border-gray-700 " +
+    "h-9 inline-flex items-center justify-center rounded-lg border leading-normal font-semibold transition-all duration-250 hover:bg-gray-200 hover:border-gray-300 dark:hover:bg-gray-800 dark:hover:border-gray-700 " +
     (props.compact ? "px-3 " : "px-4 ") +
     (selected.value ? "border-primary-500 " : "border-transparent ")
   );

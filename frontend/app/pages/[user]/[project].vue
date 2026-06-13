@@ -18,7 +18,7 @@ provide("updateProjectPages", function (pages: HangarProjectPage[]) {
 </script>
 
 <template>
-  <div class="px-4">
+  <div>
     <ProjectHeader :project="project" />
     <ProjectNav :project="project" />
     <router-view v-slot="{ Component }">

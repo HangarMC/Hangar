@@ -82,6 +82,47 @@ textarea {
   padding: 0;
 }
 
+input,
+select,
+textarea {
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+input:-moz-focusring,
+select:-moz-focusring,
+textarea:-moz-focusring {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+input:focus,
+input:focus-visible,
+input:active,
+input:invalid,
+select:focus,
+select:focus-visible,
+select:active,
+select:invalid,
+textarea:focus,
+textarea:focus-visible,
+textarea:active,
+textarea:invalid {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+input::-moz-focus-inner,
+select::-moz-focus-inner,
+textarea::-moz-focus-inner {
+  border: 0 !important;
+  outline: 0 !important;
+}
+
 button,
 select {
   text-transform: none;

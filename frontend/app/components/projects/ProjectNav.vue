@@ -6,9 +6,27 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 const i18n = useI18n();
+const route = useRoute();
+const inSettings = computed(() => route.path.includes("/settings"));
+const activeProjectTab = computed(() => route.path.split("/")[3] || "overview");
+const activeSettingsTab = computed(() => {
+  const settingsIndex = route.path.split("/").indexOf("settings");
+  return route.path.split("/")[settingsIndex + 1] || "general";
+});
+const settingsTabs = computed(() => {
+  const tabs = [
+    { value: "general", title: i18n.t("project.settings.tabs.general") },
+    { value: "links", title: i18n.t("project.settings.tabs.links") },
+    { value: "banners", title: i18n.t("project.settings.tabs.banners") },
+  ];
+  if (hasPerms(NamedPermission.IsSubjectOwner) || hasPerms(NamedPermission.DeleteProject) || hasPerms(NamedPermission.HardDeleteProject)) {
+    tabs.push({ value: "management", title: i18n.t("project.settings.tabs.management") });
+  }
+  return tabs;
+});
 
 const slug = computed(() => {
-  if (props.project) return props.project.namespace.owner + "/" + props.project.name;
+  if (props.project) return props.project.namespace.owner + "/" + props.project.namespace.slug;
   return "unknown/unknown";
 });
 
@@ -61,36 +79,38 @@ watch([projectPages, externalLinks], () => nextTick(updateFades));
 
 <template>
   <nav class="my-4 flex min-w-0 items-center gap-2 overflow-hidden">
-    <DropdownButton
-      v-if="tableOfContents.length > 0"
-      :button-arrow="false"
-      button-size="medium"
-      button-type="transparent"
-      button-class="!h-11 !w-11 !min-w-11 !p-0"
-      placement="bottom-start"
-    >
-      <template #button-label>
-        <IconMdiFormatListBulleted class="text-lg" />
-      </template>
-      <template #default="{ close }">
-        <div class="flex max-h-lg min-w-56 max-w-sm flex-col gap-1 overflow-y-auto px-2 py-1.5">
-          <a
-            v-for="heading in tableOfContents"
-            :key="heading.id"
-            class="flex min-w-0 items-center rounded-lg border border-transparent px-3 py-2 font-semibold decoration-none transition-all duration-250 hover:scale-[1.005] hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800"
-            :class="'toc-' + heading.level"
-            :href="`#${heading.id}`"
-            :title="heading.text"
-            @click="close"
-          >
-            <span class="truncate">{{ heading.text }}</span>
-          </a>
-        </div>
-      </template>
-    </DropdownButton>
+    <Transition name="fade">
+      <DropdownButton
+        v-if="tableOfContents.length > 0"
+        :button-arrow="false"
+        button-size="medium"
+        button-type="transparent"
+        button-class="!h-11 !w-11 !min-w-11 !p-0"
+        placement="bottom-start"
+      >
+        <template #button-label>
+          <IconMdiFormatListBulleted class="text-lg" />
+        </template>
+        <template #default="{ close }">
+          <div class="flex max-h-lg min-w-56 max-w-sm flex-col gap-1 overflow-y-auto px-2 py-1.5">
+            <a
+              v-for="heading in tableOfContents"
+              :key="heading.id"
+              class="flex min-w-0 items-center rounded-lg border border-transparent px-3 py-2 font-semibold decoration-none transition-all duration-250 hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800"
+              :class="'toc-' + heading.level"
+              :href="`#${heading.id}`"
+              :title="heading.text"
+              @click="close"
+            >
+              <span class="truncate">{{ heading.text }}</span>
+            </a>
+          </div>
+        </template>
+      </DropdownButton>
+    </Transition>
 
     <div
-      class="nav-group background-default relative min-w-0 max-w-3/5 flex-[0_0_auto] overflow-hidden rounded-xl border dark:border-gray-800"
+      class="nav-group background-default relative min-w-0 max-w-3/5 flex-[0_0_auto] overflow-hidden rounded-lg border dark:border-gray-800"
       :class="internalFade"
     >
       <div
@@ -98,25 +118,62 @@ watch([projectPages, externalLinks], () => nextTick(updateFades));
         class="flex max-w-full items-center gap-1 overflow-x-auto whitespace-nowrap p-1"
         @scroll="updateFade(internalGroup, internalFade)"
       >
-        <ProjectNavItem :to="childRoute()" title="Overview" compact> Overview </ProjectNavItem>
-        <ProjectNavItem :to="childRoute('/versions')" :title="i18n.t('project.tabs.versions')" compact>
+        <ProjectNavItem :to="childRoute()" title="Overview" :active="activeProjectTab === 'overview'" compact> Overview </ProjectNavItem>
+        <ProjectNavItem :to="childRoute('/versions')" :title="i18n.t('project.tabs.versions')" :active="activeProjectTab === 'versions'" compact>
           {{ i18n.t("project.tabs.versions") }}
         </ProjectNavItem>
-        <ProjectNavItem v-for="page in projectPages" :key="page.id" :to="childRoute(`/pages/${page.slug}`)" :title="page.name" compact>
+        <ProjectNavItem
+          v-for="page in projectPages"
+          :key="page.id"
+          :to="childRoute(`/pages/${page.slug}`)"
+          :title="page.name"
+          :active="activeProjectTab === 'pages' && route.path.split('/')[4] === page.slug"
+          compact
+        >
           {{ page.name }}
         </ProjectNavItem>
-        <ProjectNavItem v-if="hasPerms(NamedPermission.EditChannels)" :to="childRoute('/channels')" :title="i18n.t('project.tabs.channels')" compact>
+        <ProjectNavItem
+          v-if="hasPerms(NamedPermission.EditChannels)"
+          :to="childRoute('/channels')"
+          :title="i18n.t('project.tabs.channels')"
+          :active="activeProjectTab === 'channels'"
+          compact
+        >
           {{ i18n.t("project.tabs.channels") }}
         </ProjectNavItem>
-        <ProjectNavItem v-if="hasPerms(NamedPermission.EditSubjectSettings)" :to="childRoute('/settings')" :title="i18n.t('project.tabs.settings')" compact>
+        <ProjectNavItem
+          v-if="hasPerms(NamedPermission.EditSubjectSettings)"
+          :to="childRoute('/settings')"
+          :title="i18n.t('project.tabs.settings')"
+          :active="inSettings"
+          compact
+        >
           {{ i18n.t("project.tabs.settings") }}
         </ProjectNavItem>
       </div>
     </div>
 
     <div
-      v-if="externalLinks.length > 0"
-      class="nav-group background-default relative min-w-0 max-w-full flex-[0_1_auto] overflow-hidden rounded-xl border dark:border-gray-800"
+      v-if="inSettings"
+      class="nav-group background-default relative min-w-0 max-w-full flex-[0_1_auto] overflow-hidden rounded-lg border dark:border-gray-800"
+    >
+      <div class="flex max-w-full items-center gap-1 overflow-x-auto whitespace-nowrap p-1">
+        <ProjectNavItem
+          v-for="tab in settingsTabs"
+          :key="tab.value"
+          :to="childRoute(`/settings/${tab.value}`)"
+          :title="tab.title"
+          :active="activeSettingsTab === tab.value"
+          compact
+        >
+          {{ tab.title }}
+        </ProjectNavItem>
+      </div>
+    </div>
+
+    <div
+      v-if="!inSettings && externalLinks.length > 0"
+      class="nav-group background-default relative min-w-0 max-w-full flex-[0_1_auto] overflow-hidden rounded-lg border dark:border-gray-800"
       :class="externalFade"
     >
       <div
@@ -133,6 +190,16 @@ watch([projectPages, externalLinks], () => nextTick(updateFades));
 </template>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .nav-group::before,
 .nav-group::after {
   position: absolute;

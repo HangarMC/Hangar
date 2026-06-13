@@ -39,6 +39,12 @@ const editProfileRoute = computed(() => {
       <div class="min-w-0 flex-grow self-start">
         <div v-if="viewingUser" class="flex flex-wrap items-center gap-2">
           <h1 class="truncate text-3xl font-bold">{{ viewingUser.name }}</h1>
+          <Tag
+            v-for="roleId in viewingUser.isOrganization ? viewingUser.roles : []"
+            :key="roleId"
+            :color="{ background: getRole(roleId)?.color }"
+            :name="getRole(roleId)?.title"
+          />
           <IconMdiLockOutline v-if="viewingUser.locked" class="text-gray" />
           <Popper v-if="viewingUser.nameHistory?.length > 0" placement="bottom">
             <button class="inline-flex rounded-md p-1 text-gray transition-colors hover:background-card"><IconMdiChevronDown /></button>
@@ -104,7 +110,11 @@ const editProfileRoute = computed(() => {
         </div>
       </div>
 
-      <div v-if="viewingUser" class="flex flex-shrink-0 flex-col items-start gap-3 sm:min-h-24 sm:items-end sm:justify-between">
+      <div
+        v-if="viewingUser"
+        class="flex flex-shrink-0 flex-col items-start gap-3 sm:min-h-24 sm:items-end"
+        :class="editProfileRoute ? 'sm:justify-between' : 'sm:justify-end'"
+      >
         <Link v-if="editProfileRoute" :to="editProfileRoute">
           <Button size="medium">
             <IconMdiPencil class="mr-1" />
@@ -123,7 +133,7 @@ const editProfileRoute = computed(() => {
         </div>
       </div>
     </div>
-    <div v-if="viewingUser?.roles?.length" class="flex flex-wrap gap-1.5 border-t px-5 py-3 dark:border-gray-800">
+    <div v-if="viewingUser?.roles?.length && !viewingUser.isOrganization" class="flex flex-wrap gap-1.5 border-t px-5 py-3 dark:border-gray-800">
       <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
     </div>
   </Card>

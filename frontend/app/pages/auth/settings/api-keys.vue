@@ -68,11 +68,6 @@ function copy(event: any) {
 
 <template>
   <div v-if="auth.user" class="min-w-0">
-    <div class="mb-4">
-      <PageTitle>{{ i18n.t("auth.settings.apiKeys.header") }}</PageTitle>
-      <p class="text-sm text-gray">Create and manage tokens for scripts, integrations, and API clients.</p>
-    </div>
-
     <Card v-if="createdKey" class="mb-4 !p-0 overflow-hidden border-primary-500/60">
       <div class="flex items-start gap-3 border-b px-4 py-3 dark:border-gray-800">
         <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-primary-500/15 color-primary">
@@ -124,7 +119,7 @@ function copy(event: any) {
 
         <div class="mt-4">
           <label class="mb-1.5 block text-sm font-semibold" for="api-key-name">{{ i18n.t("apiKeys.name") }}</label>
-          <div class="relative flex h-10.5 rounded-md transition-all duration-200 hover:scale-[1.002]">
+          <div class="relative flex h-10.5 rounded-md transition-all duration-200">
             <input
               id="api-key-name"
               v-model="name"

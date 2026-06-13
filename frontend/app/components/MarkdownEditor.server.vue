@@ -28,15 +28,28 @@ withDefaults(
 </script>
 
 <template>
-  <div class="relative">
+  <div class="markdown-editor relative">
     <slot name="title" />
-    <div class="flex">
-      <div class="absolute top-2 right-0 space-x-1">
-        <Button>
-          <IconMdiPencil />
-        </Button>
-      </div>
+    <div class="absolute top-2 right-2 z-2">
+      <Button button-type="secondary" class="!h-9 !w-9 !p-0" aria-label="Edit content">
+        <IconMdiPencil />
+      </Button>
     </div>
-    <Markdown :raw="raw" />>
+    <Markdown :raw="raw" />
   </div>
 </template>
+
+<style scoped>
+.markdown-editor :deep(.markdown) {
+  margin-top: 0;
+  padding: 1rem;
+}
+
+.markdown-editor :deep(.markdown > div > :first-child) {
+  margin-top: 0;
+}
+
+.markdown-editor :deep(.markdown > div > :last-child) {
+  margin-bottom: 0;
+}
+</style>

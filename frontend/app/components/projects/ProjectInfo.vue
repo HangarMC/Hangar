@@ -47,15 +47,17 @@ const namespace = computed(() => props.project?.namespace?.owner + "/" + props.p
         </div>
       </div>
 
-      <div class="grid grid-cols-3 gap-2 border-t px-3 pt-3 -mb-2 dark:border-gray-800">
-        <div v-if="hasPerms(NamedPermission.IsSubjectMember)" class="rounded-lg bg-gray-100 p-2 text-center dark:bg-charcoal-500">
-          <div class="mt-1 font-semibold">{{ project?.stats?.views.toLocaleString("en-US") || 0 }}</div>
-          <div class="text-0.65rem text-gray">
-            <IconMdiEyeOutline class="mx-auto text-gray" />
-            {{ i18n.t("project.info.views", project?.stats?.views || 0) }}
+      <div class="grid gap-2 border-t px-3 pt-3 -mb-2 dark:border-gray-800" :class="hasPerms(NamedPermission.IsSubjectMember) ? 'grid-cols-2' : 'grid-cols-3'">
+        <div v-if="hasPerms(NamedPermission.IsSubjectMember)" class="flex min-h-17 flex-col rounded-lg bg-gray-100 p-1.5 text-center dark:bg-charcoal-500">
+          <div class="flex flex-1 items-center justify-center font-semibold">
+            {{ project?.stats?.views.toLocaleString("en-US") || 0 }}
+          </div>
+          <div class="flex items-center justify-center gap-1 text-0.65rem text-gray">
+            <IconMdiEyeOutline class="flex-shrink-0" />
+            <span>{{ i18n.t("project.info.views", project?.stats?.views || 0) }}</span>
           </div>
         </div>
-        <div class="flex h-full flex-col rounded-lg bg-gray-100 p-2 text-center dark:bg-charcoal-500">
+        <div class="flex min-h-17 flex-col rounded-lg bg-gray-100 p-1.5 text-center dark:bg-charcoal-500">
           <div class="flex flex-1 items-center justify-center">
             <div class="font-semibold">
               {{ project?.stats?.downloads?.toLocaleString("en-US") || 0 }}
@@ -71,7 +73,7 @@ const namespace = computed(() => props.project?.namespace?.owner + "/" + props.p
         </div>
         <NuxtLink
           :to="`/${namespace}/stars`"
-          class="flex h-full flex-col rounded-lg bg-gray-100 p-2 text-center transition-colors border border-charcoal-500 hover:border-gray-700 dark:bg-charcoal-500"
+          class="flex min-h-17 flex-col rounded-lg border border-charcoal-500 bg-gray-100 p-1.5 text-center transition-colors hover:border-gray-700 dark:bg-charcoal-500"
         >
           <div class="flex-1 flex items-center justify-center">
             <div class="font-semibold">
@@ -87,7 +89,7 @@ const namespace = computed(() => props.project?.namespace?.owner + "/" + props.p
 
         <NuxtLink
           :to="`/${namespace}/watchers`"
-          class="flex h-full flex-col rounded-lg bg-gray-100 p-2 text-center transition-colors border border-charcoal-500 hover:border-gray-700 dark:bg-charcoal-500"
+          class="flex min-h-17 flex-col rounded-lg border border-charcoal-500 bg-gray-100 p-1.5 text-center transition-colors hover:border-gray-700 dark:bg-charcoal-500"
         >
           <div class="flex-1 flex items-center justify-center">
             <div class="font-semibold">

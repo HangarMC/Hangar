@@ -10,6 +10,7 @@ const props = defineProps<{
 
 const config = useRuntimeConfig();
 const i18n = useI18n();
+const notification = useNotificationStore();
 const route = useRoute("user-project-pages-page");
 
 const sponsors = ref(props.project?.settings?.sponsors);
@@ -22,6 +23,7 @@ function saveSponsors(content: string) {
     .then(() => {
       sponsors.value = content;
       editingSponsors.value = false;
+      notification.success("Saved!");
     })
     .catch((err) => handleRequestError(err, "page.new.error.save"));
 }
@@ -88,7 +90,7 @@ useSeo(
           <Markdown v-else :raw="project?.mainPage.contents" />
         </Card>
       </ProjectPageMarkdown>
-      <Card v-if="sponsors || hasPerms(NamedPermission.EditSubjectSettings)" class="mt-4 pb-0 overflow-clip overflow-visible">
+      <Card v-if="sponsors || hasPerms(NamedPermission.EditSubjectSettings)" class="mt-4 !p-0 overflow-visible">
         <ClientOnly v-if="hasPerms(NamedPermission.EditSubjectSettings)">
           <MarkdownEditor
             v-model:editing="editingSponsors"
@@ -101,33 +103,47 @@ useSeo(
             @save="saveSponsors"
           >
             <template #title>
-              <div class="inline-flex items-center mt-2 gap-1.5">
-                <h2 class="ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h2>
+              <div class="flex min-h-13 items-center gap-1.5 px-4 py-3 pr-24">
+                <h2 class="text-xl font-bold">{{ i18n.t("project.sponsors") }}</h2>
                 <Tooltip class="overflow-visible">
                   <template #content> {{ i18n.t("project.sponsorsTooltip") }}</template>
-                  <IconMdiInformation class="mt-1 text-xl" />
+                  <IconMdiInformation class="text-gray" />
                 </Tooltip>
               </div>
             </template>
           </MarkdownEditor>
           <template #fallback>
-            <h2 class="mt-3 ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h2>
+            <h2 class="px-4 py-3 pr-16 text-xl font-bold">{{ i18n.t("project.sponsors") }}</h2>
             <Markdown :raw="sponsors" />
           </template>
         </ClientOnly>
         <template v-else>
-          <h2 class="mt-3 ml-4 text-2xl">{{ i18n.t("project.sponsors") }}</h2>
+          <h2 class="px-4 py-3 text-xl font-bold">{{ i18n.t("project.sponsors") }}</h2>
           <Markdown :raw="sponsors" class="pt-0" />
         </template>
-      </Card>
-      <Alert v-if="hasPerms(NamedPermission.EditSubjectSettings)" type="neutral" class="mt-4">
-        <div>
-          {{ i18n.t("project.bannersInfo") }}&nbsp;
-          <Link :to="'/' + project?.namespace?.owner + '/' + project?.namespace?.slug + '/settings/banners'">
-            {{ i18n.t("project.bannersInfoSettings") }}
-          </Link>
+        <div v-if="!sponsors && !editingSponsors" class="px-4 py-8 text-center text-sm text-gray">
+          Add sponsor information, funding links, or acknowledgements for your project.
         </div>
-      </Alert>
+      </Card>
+      <Card v-if="hasPerms(NamedPermission.EditSubjectSettings)" class="mt-4 flex flex-col gap-4 border-primary-500/30 sm:flex-row sm:items-center">
+        <div
+          class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-gray-100 text-gray dark:border-gray-800 dark:bg-charcoal-500"
+        >
+          <IconMdiImageMultipleOutline class="text-xl" />
+        </div>
+        <div class="min-w-0 flex-grow">
+          <h2 class="font-semibold">Promote your project</h2>
+          <p class="mt-0.5 text-sm leading-relaxed text-gray">Create community banners and badges that link back to this project.</p>
+        </div>
+        <Button
+          button-type="secondary"
+          size="medium"
+          class="flex-shrink-0 hover:border-gray-300 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800"
+          :to="'/' + project?.namespace?.owner + '/' + project?.namespace?.slug + '/settings/banners'"
+        >
+          Open Settings
+        </Button>
+      </Card>
     </section>
     <aside class="space-y-4 self-start lg:sticky lg:top-4">
       <ProjectInfo :project="project" />

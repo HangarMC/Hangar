@@ -8,6 +8,7 @@ const newTagline = ref(props.tagline);
 
 const router = useRouter();
 const i18n = useI18n();
+const notification = useNotificationStore();
 const loading = ref(false);
 
 async function save() {
@@ -16,6 +17,7 @@ async function save() {
     await useInternalApi(props.action, "post", {
       content: newTagline.value,
     });
+    notification.success("Saved!");
     router.go(0);
   } catch (err) {
     handleRequestError(err);

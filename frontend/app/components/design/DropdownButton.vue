@@ -12,6 +12,7 @@ const props = withDefaults(
     placement?: "bottom" | "top" | "left" | "right" | "bottom-end" | "bottom-start";
     isSortBy?: boolean;
     matchWidth?: boolean;
+    matchMenuWidth?: boolean;
     buttonClass?: string;
     spreadArrow?: boolean;
   }>(),
@@ -23,6 +24,7 @@ const props = withDefaults(
     placement: "bottom-end",
     isSortBy: false,
     matchWidth: false,
+    matchMenuWidth: false,
     buttonClass: "",
     spreadArrow: false,
   }
@@ -30,11 +32,11 @@ const props = withDefaults(
 </script>
 
 <template>
-  <Popper :placement="placement" :auto-size="props.matchWidth">
+  <Popper :placement="placement" :auto-size="props.matchWidth || props.matchMenuWidth" :class="{ '!w-full': props.matchWidth }">
     <template #default="{ shown }">
       <Button
         class="h-10.5"
-        :class="[props.buttonClass, { 'min-w-50': props.isSortBy }]"
+        :class="[props.buttonClass, { 'min-w-50': props.isSortBy, '!w-full !justify-between': props.matchWidth }]"
         :button-type="props.buttonType"
         :size="props.buttonSize"
         @click="$emit('click', $event)"
@@ -51,7 +53,7 @@ const props = withDefaults(
       </Button>
     </template>
     <template #content="{ close }">
-      <div class="background-default z-10 flex flex-col gap-1 rounded-lg border-1 border-gray-800 p-1 shadow-lg shadow-charcoal-900">
+      <div class="background-default z-10 flex max-h-72 flex-col gap-1 overflow-y-auto rounded-lg border-1 border-gray-800 p-1 shadow-lg shadow-charcoal-900">
         <slot :close="close" />
       </div>
     </template>

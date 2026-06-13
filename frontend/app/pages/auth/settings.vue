@@ -22,6 +22,7 @@ const tabs = [
   { value: "other", header: "Preferences" },
   { value: "api-keys", header: t("auth.settings.apiKeys.header") },
 ] as const;
+const activeTab = computed(() => route.path.split("/").filter(Boolean)[2] || "profile");
 
 const emailConfirmModal = useTemplateRef("emailConfirmModal");
 const hasPendingMail = ref(authSettings.value?.emailPending);
@@ -80,7 +81,7 @@ useSeo(computed(() => ({ title: "Settings", route })));
 
     <nav class="background-default w-fit max-w-full overflow-hidden rounded-xl border dark:border-gray-800">
       <div class="flex max-w-full items-center gap-1 overflow-x-auto whitespace-nowrap p-1">
-        <ProjectNavItem v-for="tab in tabs" :key="tab.value" :to="`/auth/settings/${tab.value}`" :title="tab.header" compact>
+        <ProjectNavItem v-for="tab in tabs" :key="tab.value" :to="`/auth/settings/${tab.value}`" :title="tab.header" :active="activeTab === tab.value" compact>
           {{ tab.header }}
         </ProjectNavItem>
       </div>

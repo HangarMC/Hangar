@@ -8,6 +8,7 @@ export function useProjectPage(
   page: MaybeRefOrGetter<ProjectPageTable | undefined>
 ) {
   const editingPage = ref<boolean>(false);
+  const notification = useNotificationStore();
 
   // Helper setter function, v-model cannot directly edit from inside a slot.
   function changeEditingPage(newValue: boolean) {
@@ -17,13 +18,18 @@ export function useProjectPage(
   async function savePage(content: string) {
     const pageVal = toValue(page);
     if (!pageVal) return;
-    await useInternalApi(`pages/save/${toValue(project)?.id}/${pageVal?.id}`, "post", {
-      content,
-    }).catch((err) => handleRequestError(err, "page.new.error.save"));
-    if (pageVal && "contents" in pageVal) {
-      pageVal.contents = content;
+    try {
+      await useInternalApi(`pages/save/${toValue(project)?.id}/${pageVal?.id}`, "post", {
+        content,
+      });
+      if ("contents" in pageVal) {
+        pageVal.contents = content;
+      }
+      editingPage.value = false;
+      notification.success("Saved!");
+    } catch (err) {
+      handleRequestError(err, "page.new.error.save");
     }
-    editingPage.value = false;
   }
 
   async function deletePage() {

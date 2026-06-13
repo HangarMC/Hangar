@@ -51,7 +51,7 @@ const { v } = useValidation(props.label, undefined, internalVal);
         borderColor: 'var(--primary-500)'
       } : {}"
       class="flex items-center rounded-xl border w-full border-transparent py-1.5 transition-all duration-250
-              peer-hover:bg-gray-800 peer-hover:border-gray-700 peer-hover:scale-[1.015] z-0"
+              peer-hover:bg-gray-800 peer-hover:border-gray-700 peer- z-0"
     >
       <slot />
       <slot name="label">

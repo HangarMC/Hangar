@@ -112,7 +112,7 @@ const hasResults = computed(() => {
   <div>
     <!-- Search Button -->
     <button
-      class="flex items-center gap-2 min-w-96 rounded-lg px-4 py-2 dark:bg-gray-800 border border-transparent hover:border-gray-700 transition-all duration-200 hover:scale-[1.005] hover:text-white cursor-text"
+      class="flex items-center gap-2 min-w-96 rounded-lg px-4 py-2 dark:bg-gray-800 border border-transparent hover:border-gray-700 transition-all duration-200 hover:text-white cursor-text"
       @click="openModal"
     >
       <IconMdiMagnify class="text-gray-500" />
@@ -176,7 +176,7 @@ const hasResults = computed(() => {
                     <button
                       v-for="project in displayedProjects.result"
                       :key="project.namespace.slug"
-                      class="w-full px-3 py-1 mb-1 hover:scale-[1.005] hover:bg-gray-800 border border-transparent hover:border-gray-700 rounded-xl transition-all duration-200 flex items-center gap-3 text-left"
+                      class="w-full px-3 py-1 mb-1 hover:bg-gray-800 border border-transparent hover:border-gray-700 rounded-xl transition-all duration-200 flex items-center gap-3 text-left"
                       @click="navigateToProject(project.namespace.slug)"
                     >
                       <img :src="`${project.avatarUrl}?size=32`" :alt="project.name" class="w-8 h-8 rounded flex-shrink-0" />
@@ -199,7 +199,7 @@ const hasResults = computed(() => {
                     <button
                       v-for="user in displayedUsers.result"
                       :key="user.name"
-                      class="w-full px-3 py-1 mb-1 hover:scale-[1.005] hover:bg-gray-800 border border-transparent hover:border-gray-700 rounded-xl transition-all duration-200 flex items-center gap-3 text-left"
+                      class="w-full px-3 py-1 mb-1 hover:bg-gray-800 border border-transparent hover:border-gray-700 rounded-xl transition-all duration-200 flex items-center gap-3 text-left"
                       @click="navigateToUser(user.name)"
                     >
                       <UserAvatar :username="user.name" :avatar-url="user.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0" />

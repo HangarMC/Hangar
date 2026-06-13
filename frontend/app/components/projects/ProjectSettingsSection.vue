@@ -16,15 +16,15 @@ const i18n = useI18n();
 </script>
 
 <template>
-  <section class="not-last:mb-3">
-    <div v-if="props.title || hasSlotContent(slots.header)" class="mb-2">
+  <Card class="not-last:mb-4">
+    <div v-if="props.title || hasSlotContent(slots.header)" class="mb-3">
       <slot name="header">
-        <h2 class="text-lg font-semibold">
+        <h2 class="text-xl font-bold">
           {{ i18n.t(props.title) }} <small v-if="props.optional">{{ i18n.t("project.settings.optional") }}</small>
         </h2>
-        <p v-if="props.description">{{ i18n.t(props.description) }}</p>
+        <p v-if="props.description" class="mt-1 text-sm text-gray">{{ i18n.t(props.description) }}</p>
       </slot>
     </div>
     <slot />
-  </section>
+  </Card>
 </template>

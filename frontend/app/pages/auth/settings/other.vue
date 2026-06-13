@@ -44,11 +44,6 @@ watch(locale, async (newLocale) => {
 
 <template>
   <div class="min-w-0">
-    <div class="mb-4">
-      <PageTitle>Preferences</PageTitle>
-      <p class="text-sm text-gray">Customize how Hangar looks and which language it uses.</p>
-    </div>
-
     <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
       <Card>
         <div class="flex items-start gap-3">
@@ -70,7 +65,7 @@ watch(locale, async (newLocale) => {
           <button
             v-for="color in accentColors"
             :key="color.value"
-            class="relative inline-flex h-9 w-9 items-center justify-center rounded-md border-2 transition-transform hover:scale-110"
+            class="relative inline-flex h-9 w-9 items-center justify-center rounded-md border-2 transition-transform"
             :class="accentColor === color.value ? 'border-white shadow-md dark:border-white' : 'border-transparent'"
             :style="{ backgroundColor: color.color }"
             :title="color.text"
