@@ -126,6 +126,7 @@ frontend:
     umamiWebsiteId: "todo"
 
 backend:
+  enabled: true
   replicaCount: 1
 
   image:

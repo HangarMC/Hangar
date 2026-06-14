@@ -1,0 +1,13 @@
+{{- if not .Values.backend.enabled -}}
+kind: Service
+apiVersion: v1
+metadata:
+    name: {{ include "hangar.fullname" . }}-backend
+    labels:
+    {{- include "hangar.labels" . | nindent 4 }}
+spec:
+    type: ExternalName
+    externalName: hangar-backend.hangar-staging.svc.cluster.local
+    ports:
+        - port: 8080
+{{- end }}

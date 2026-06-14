@@ -1,3 +1,4 @@
+{{- if .Values.backend.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -21,3 +22,5 @@ spec:
   selector:
     {{- include "hangar.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: "backend"
+
+{{- end }}

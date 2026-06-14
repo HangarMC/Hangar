@@ -1,3 +1,4 @@
+{{- if .Values.backend.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -13,3 +14,4 @@ spec:
       app.kubernetes.io/name: {{ include "hangar.name" . }}
       app.kubernetes.io/component: backend
       app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
