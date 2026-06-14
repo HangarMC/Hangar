@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-    name: {{ include "hangar.fullname" . }}-backend-proxy
+    name: {{ include "hangar.fullname" . }}-backend
     labels:
     {{- include "hangar.labels" . | nindent 4 }}
 spec:
