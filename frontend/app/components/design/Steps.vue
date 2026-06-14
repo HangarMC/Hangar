@@ -79,76 +79,80 @@ async function next() {
 
 async function goto(step: Step) {
   const idx = props.steps.indexOf(step);
-  if (idx >= activeStepIndex.value) {
+  const currentIdx = activeStepIndex.value - 1;
+  if (idx === currentIdx) {
+    return;
+  }
+  if (idx > currentIdx) {
     await next();
-  } else if (idx < activeStepIndex.value) {
-    await back();
+  } else {
+    internalValue.value = step.value;
   }
 }
 </script>
 
 <template>
-  <div>
-    <div class="w-full">
-      <ul class="flex flex-row justify-around items-center">
-        <template v-for="(step, count) in steps" :key="step.value">
-          <div>
-            <div class="lt-sm:hidden bg-primary-500 text-white rounded-full w-[24px] h-[24px] inline-flex justify-center align-center" m="r-2">
-              {{ count + 1 }}
-            </div>
-            <Link
-              :class="internalValue === step.value ? 'underline' : '!font-semibold'"
-              :href="'#' + step.value"
-              display="hidden ml-0 md:inline"
-              @click.prevent="goto(step)"
+  <div class="space-y-4">
+    <nav class="background-default overflow-x-auto rounded-xl border border-gray-200 p-1 dark:border-gray-800">
+      <div class="flex min-w-max items-center gap-1">
+        <div v-for="(step, index) in steps" :key="step.value">
+          <button
+            type="button"
+            class="inline-flex h-10 items-center gap-2 rounded-lg border px-3 text-sm font-semibold transition-colors"
+            :class="internalValue === step.value ? 'border-primary-500 color-primary' : 'border-transparent text-gray hover:bg-gray-100 dark:hover:bg-gray-800'"
+            :style="
+              internalValue === step.value
+                ? {
+                    backgroundColor: 'color-mix(in srgb, var(--primary-500) 15%, transparent)',
+                  }
+                : {}
+            "
+            @click="goto(step)"
+          >
+            <span
+              class="inline-flex h-6 w-6 items-center justify-center rounded-md text-xs"
+              :class="index + 1 < activeStepIndex ? 'bg-primary-500 text-white' : 'bg-gray-200 dark:bg-gray-800'"
             >
-              {{ step.header }}
-            </Link>
-          </div>
-          <hr class="flex-grow flex-shrink mx-2" />
-        </template>
-      </ul>
-    </div>
-    <div class="mt-4">
-      <Card accent>
-        <template #header>
-          <span class="hidden md:block">{{ activeStep?.header }}</span>
-        </template>
+              <IconMdiCheck v-if="index + 1 < activeStepIndex" />
+              <span v-else>{{ index + 1 }}</span>
+            </span>
+            {{ step.header }}
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <Card class="!p-0 overflow-hidden">
+      <div class="border-b border-gray-200 px-5 py-4 dark:border-gray-800">
+        <p class="text-xs font-semibold uppercase tracking-wide color-primary">Step {{ activeStepIndex }} of {{ steps.length }}</p>
+        <h1 class="mt-1 text-2xl font-bold">{{ activeStep?.header }}</h1>
+      </div>
+
+      <div class="p-5">
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
+      </div>
+
+      <div v-if="showBack || showNext" class="flex items-center justify-between gap-3 px-5 pb-5">
         <Button
-          v-if="showBack && activeStepIndex === 1"
-          button-type="red"
+          v-if="showBack"
+          :button-type="activeStepIndex === 1 ? 'red' : 'secondary'"
           :disabled="disableBack"
           size="medium"
-          class="mt-3 mr-2"
           @click="back"
           v-on="useTracking(trackingName + '-back', { step: internalValue })"
         >
+          <IconMdiArrowLeft class="mr-1" />
           {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
         </Button>
-        <Button
-          v-else-if="showBack"
-          :disabled="disableBack"
-          size="medium"
-          class="mt-3 mr-2"
-          @click="back"
-          v-on="useTracking(trackingName + '-back', { step: internalValue })"
-        >
-          {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
-        </Button>
-        <Button
-          v-if="showNext"
-          :disabled="disableNext"
-          size="medium"
-          class="mt-3"
-          @click="next"
-          v-on="useTracking(trackingName + '-next', { step: internalValue })"
-        >
+        <span v-else />
+
+        <Button v-if="showNext" :disabled="disableNext" size="medium" @click="next" v-on="useTracking(trackingName + '-next', { step: internalValue })">
           {{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}
+          <IconMdiArrowRight class="ml-1" />
         </Button>
-      </Card>
-    </div>
+      </div>
+    </Card>
   </div>
 </template>

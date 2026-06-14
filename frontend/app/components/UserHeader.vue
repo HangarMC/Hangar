@@ -24,13 +24,15 @@ const editProfileRoute = computed(() => {
   if (hasPerms(NamedPermission.EditAllUserSettings)) return `/admin/user/${props.viewingUser.name}`;
   return undefined;
 });
+
+const hasOrganizationRole = computed(() => props.viewingUser?.roles?.some((roleId) => getRole(roleId)?.title?.toLowerCase() === "organization"));
 </script>
 
 <template>
   <Card class="profile-hero mb-4 overflow-visible !p-0">
     <div class="relative z-1 flex flex-col gap-4 p-5 sm:flex-row sm:items-stretch">
       <UserAvatar
-        class="h-24 w-24 flex-shrink-0 self-start shadow-lg"
+        class="!h-24 !w-24 flex-shrink-0 self-start shadow-lg sm:!h-auto sm:!w-auto sm:max-h-28 sm:self-stretch sm:aspect-square"
         :username="viewingUser?.name"
         :avatar-url="viewingUser?.avatarUrl"
         :loading="!viewingUser"
@@ -39,12 +41,6 @@ const editProfileRoute = computed(() => {
       <div class="min-w-0 flex-grow self-start">
         <div v-if="viewingUser" class="flex flex-wrap items-center gap-2">
           <h1 class="truncate text-3xl font-bold">{{ viewingUser.name }}</h1>
-          <Tag
-            v-for="roleId in viewingUser.isOrganization ? viewingUser.roles : []"
-            :key="roleId"
-            :color="{ background: getRole(roleId)?.color }"
-            :name="getRole(roleId)?.title"
-          />
           <IconMdiLockOutline v-if="viewingUser.locked" class="text-gray" />
           <Popper v-if="viewingUser.nameHistory?.length > 0" placement="bottom">
             <button class="inline-flex rounded-md p-1 text-gray transition-colors hover:background-card"><IconMdiChevronDown /></button>
@@ -64,48 +60,50 @@ const editProfileRoute = computed(() => {
         </div>
         <Skeleton v-else class="mt-1 w-100" />
 
-        <div v-if="viewingUser" class="mt-3 flex flex-wrap items-center gap-3 text-xl text-gray-300">
-          <a
+        <div v-if="viewingUser" class="mt-3 flex flex-wrap items-center gap-1 text-xl text-gray-300">
+          <Button
             v-if="viewingUser.socials?.github"
+            button-type="borderless"
+            class="!h-8 !w-8 !p-0"
             :href="`https://github.com/${viewingUser.socials.github}`"
-            class="transition-colors hover:text-white"
-            rel="external nofollow"
             title="GitHub"
           >
             <IconMdiGithub />
-          </a>
-          <a
+          </Button>
+          <Button
             v-if="viewingUser.socials?.twitter"
+            button-type="borderless"
+            class="!h-8 !w-8 !p-0"
             :href="`https://twitter.com/${viewingUser.socials.twitter}`"
-            class="transition-colors hover:text-white"
-            rel="external nofollow"
             title="Twitter"
           >
             <IconMdiTwitter />
-          </a>
-          <a
+          </Button>
+          <Button
             v-if="viewingUser.socials?.youtube"
+            button-type="borderless"
+            class="!h-8 !w-8 !p-0"
             :href="`https://youtube.com/${viewingUser.socials.youtube}`"
-            class="transition-colors hover:text-white"
-            rel="external nofollow"
             title="YouTube"
           >
             <IconMdiYoutube />
-          </a>
-          <a
+          </Button>
+          <Button
             v-if="viewingUser.socials?.website"
+            button-type="borderless"
+            class="!h-8 !w-8 !p-0"
             :href="linkout(viewingUser.socials.website)"
-            class="transition-colors hover:text-white"
-            rel="external nofollow"
             title="Website"
           >
             <IconMdiWeb />
-          </a>
-          <Tooltip v-if="viewingUser.socials?.discord">
+          </Button>
+          <Tooltip v-if="viewingUser.socials?.discord" class="inline-flex h-8 w-8 flex-none">
             <template #content
               ><span class="text-base">{{ viewingUser.socials.discord }}</span></template
             >
-            <span class="inline-flex"><IconMdiDiscord /></span>
+            <Button button-type="borderless" class="!h-8 !w-8 !p-0" title="Discord">
+              <IconMdiDiscord />
+            </Button>
           </Tooltip>
         </div>
       </div>
@@ -133,7 +131,8 @@ const editProfileRoute = computed(() => {
         </div>
       </div>
     </div>
-    <div v-if="viewingUser?.roles?.length && !viewingUser.isOrganization" class="flex flex-wrap gap-1.5 border-t px-5 py-3 dark:border-gray-800">
+    <div v-if="viewingUser?.isOrganization || viewingUser?.roles?.length" class="flex flex-wrap gap-1.5 border-t px-5 py-3 dark:border-gray-800">
+      <Tag v-if="viewingUser.isOrganization && !hasOrganizationRole" :color="{ background: '#5865f2' }" name="Organization" />
       <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
     </div>
   </Card>

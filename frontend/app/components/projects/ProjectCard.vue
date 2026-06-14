@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Tag, Visibility } from "#shared/types/backend";
+import { NamedPermission, Tag, Visibility } from "#shared/types/backend";
 import type { Project, ProjectCompact } from "#shared/types/backend";
 
 const i18n = useI18n();
@@ -16,10 +16,20 @@ const formatName = (name: String) => {
 };
 
 const supportedPlatforms = computed(() => ("supportedPlatforms" in props.project ? Object.keys(props.project.supportedPlatforms) : []));
+const projectPath = computed(() => `/${props.project.namespace.owner}/${props.project.namespace.slug}`);
+const showActions = computed(() => props.canEdit || hasPerms(NamedPermission.EditSubjectSettings) || hasPerms(NamedPermission.IsStaff));
 
 async function togglePin() {
-  await useInternalApi(`/projects/project/${props.project.namespace.slug}/pin/${!props.pinned}`, "POST").catch(handleRequestError);
-  router.go(0); // I am lazy
+  try {
+    await useInternalApi(`projects/project/${props.project.namespace.slug}/pin/${!props.pinned}`, "POST");
+    router.go(0); // I am lazy
+  } catch (err) {
+    handleRequestError(err);
+  }
+}
+
+function openAction(path: string) {
+  router.push(path);
 }
 </script>
 
@@ -37,18 +47,52 @@ async function togglePin() {
       <div class="flex space-x-4">
         <div class="relative flex-shrink-0 overflow-hidden rounded-lg">
           <UserAvatar class="lt-xl:w-100px lt-xl:h-100px h-125px w-125px" :username="project.namespace.owner" :img-src="project.avatarUrl" disable-link />
-          <button
-            v-if="canEdit"
-            class="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/65 text-white opacity-0 backdrop-blur-[1px] transition-opacity duration-200 group-hover:opacity-100 focus-visible:opacity-100"
-            :title="`${pinned ? 'Unpin' : 'Pin'} ${project.name}`"
-            @click.prevent="togglePin"
+          <div
+            v-if="showActions"
+            class="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-1 bg-black/55 p-2 opacity-0 backdrop-blur-[1px] transition-opacity duration-200 group-hover:opacity-100 focus-within:opacity-100"
           >
-            <span class="inline-flex flex-col items-center gap-1 font-semibold">
-              <IconMdiPinOff v-if="pinned" class="text-3xl" />
-              <IconMdiPin v-else class="text-3xl" />
-              {{ pinned ? "Unpin" : "Pin" }}
-            </span>
-          </button>
+            <Button
+              v-if="canEdit"
+              button-type="borderless"
+              class="!h-full !w-full !p-0 !text-xl !text-white"
+              :title="`${pinned ? 'Unpin' : 'Pin'} ${project.name}`"
+              :aria-label="`${pinned ? 'Unpin' : 'Pin'} ${project.name}`"
+              @click.prevent.stop="togglePin"
+            >
+              <IconMdiPinOff v-if="pinned" />
+              <IconMdiPin v-else />
+            </Button>
+            <Button
+              v-if="hasPerms(NamedPermission.EditSubjectSettings)"
+              button-type="borderless"
+              class="!h-full !w-full !p-0 !text-xl !text-white"
+              title="Project settings"
+              aria-label="Project settings"
+              @click.prevent.stop="openAction(`${projectPath}/settings`)"
+            >
+              <IconMdiCogOutline />
+            </Button>
+            <Button
+              v-if="hasPerms(NamedPermission.IsStaff)"
+              button-type="borderless"
+              class="!h-full !w-full !p-0 !text-xl !text-white"
+              title="Staff notes"
+              aria-label="Staff notes"
+              @click.prevent.stop="openAction(`${projectPath}/notes`)"
+            >
+              <IconMdiNoteTextOutline />
+            </Button>
+            <Button
+              v-if="hasPerms(NamedPermission.IsStaff)"
+              button-type="borderless"
+              class="!h-full !w-full !p-0 !text-xl !text-white"
+              title="Project logs"
+              aria-label="Project logs"
+              @click.prevent.stop="openAction(`/admin/log?authorName=${project.namespace.owner}&projectSlug=${project.namespace.slug}`)"
+            >
+              <IconMdiHistory />
+            </Button>
+          </div>
           <span v-else-if="pinned" class="absolute top-2 left-2 inline-flex rounded-md bg-black/65 p-1.5 color-primary" title="Pinned">
             <IconMdiPin />
           </span>

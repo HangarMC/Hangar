@@ -56,17 +56,37 @@ async function save(close: () => void) {
     @close="resetForm"
   >
     <template #default="{ on }">
-      <p class="mb-4 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+      <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
         {{ i18n.t("author.orgVisibilityModal") }}
       </p>
 
-      <ul class="flex flex-col gap-2">
-        <li v-for="org in orgs" :key="org">
-          <InputCheckbox v-model="draftVisibility[org]" :label="org" :disabled="loading" />
-        </li>
-      </ul>
+      <div class="mt-4 max-h-72 overflow-y-auto">
+        <table class="w-full table-fixed border-collapse">
+          <thead class="text-left text-xs font-semibold text-gray">
+            <tr class="border-b border-gray-200 dark:border-gray-800">
+              <th class="px-3 py-2.5">Organization</th>
+              <th class="w-20 px-3 py-2.5 text-center">Hidden</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="org in orgs" :key="org" class="border-b border-gray-200 last:border-b-0 dark:border-gray-800">
+              <td class="truncate px-3 py-2.5 font-semibold">{{ org }}</td>
+              <td class="px-3 py-2.5 text-center">
+                <label class="inline-flex cursor-pointer items-center justify-center">
+                  <input v-model="draftVisibility[org]" type="checkbox" class="peer sr-only" :disabled="loading" />
+                  <span
+                    class="inline-flex h-5 w-5 items-center justify-center rounded border border-gray-400 bg-gray-200 text-white transition-colors peer-checked:border-primary-500 peer-checked:bg-primary-500 peer-focus-visible:ring-2 peer-focus-visible:ring-primary-500/50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700"
+                  >
+                    <IconMdiCheck v-if="draftVisibility[org]" class="text-sm" />
+                  </span>
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <div class="mt-2.5 flex justify-end gap-2 pt-2">
+      <div class="mt-5 flex items-center justify-end gap-2">
         <Button button-type="secondary" size="small" :disabled="loading" @click="on.click">
           {{ i18n.t("general.close") }}
         </Button>
