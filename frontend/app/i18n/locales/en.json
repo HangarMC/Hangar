@@ -523,6 +523,7 @@
         "invalidVersionString": "Invalid version string found",
         "duplicateNameAndPlatform": "A version with this name and compatible platform already exists",
         "invalidNumOfPlatforms": "Invalid number of platforms",
+        "invalidNumberOfFiles": "Invalid number of files - a version must include at least one jar or external url",
         "duplicate": "A version with this file already exists",
         "noFile": "Could not find uploaded file",
         "mismatchedFileSize": "File sizes do not match",

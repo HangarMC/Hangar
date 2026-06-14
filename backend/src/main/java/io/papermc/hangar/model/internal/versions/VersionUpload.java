@@ -16,22 +16,23 @@ public class VersionUpload {
 
     // @el(root: String)
     @NotBlank(message = "version.new.error.invalidVersionString")
-    @Schema(description = "Version string of the version to be published", example = "1.0.0-SNAPSHOT+1")
+    @Schema(description = "Version string of the version to be published", example = "1.0.0-SNAPSHOT+1", requiredMode = Schema.RequiredMode.REQUIRED)
     private final @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.versionNameRegex)", message = "version.new.error.invalidVersionString") String version;
     @Schema(description = "Map of each platform's plugin dependencies")
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
-    @Schema(description = "Map of platforms and their versions this version runs on", example = "{PAPER: [\"1.12\", \"1.16-1.18.2\", \"1.20.x\"]}")
+    @Schema(description = "Map of platforms and their versions this version runs on", example = "{PAPER: [\"1.12\", \"1.16-1.18.2\", \"1.20.x\"]}", requiredMode = Schema.RequiredMode.REQUIRED)
     private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
 
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.pages.maxLen)", message = "page.new.error.maxLength") String description;
-    @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
+    @Size(min = 1, max = 3, message = "version.new.error.invalidNumberOfFiles")
+    @Schema(description = "List of jars/external links that make up this version", requiredMode = Schema.RequiredMode.REQUIRED)
     private final List<@Valid MultipartFileOrUrl> files;
 
     // @el(root: String)
     @NotBlank(message = "version.new.error.channel.noName")
-    @Schema(description = "Channel of the version to be published under", example = "Release")
+    @Schema(description = "Channel of the version to be published under", example = "Release", requiredMode = Schema.RequiredMode.REQUIRED)
     private final @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.channels.nameRegex)", message = "channel.modal.error.invalidName") String channel;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
