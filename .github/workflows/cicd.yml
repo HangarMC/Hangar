@@ -171,7 +171,7 @@ jobs:
       # <editor-fold desc="Deploy">
       - name: Set up Docker Buildx
         if: ${{ steps.vars.outputs.deploy == 'true' }}
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to registry
         if: ${{ steps.vars.outputs.deploy == 'true' }}
