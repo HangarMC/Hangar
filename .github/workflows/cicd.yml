@@ -184,7 +184,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker (frontend)
         if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.deploy == 'true' }}
         id: frontend-meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
           tags: |
@@ -206,7 +206,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker (backend)
         if: ${{ steps.vars.outputs.build_backend == 'true' && steps.vars.outputs.deploy == 'true' }}
         id: backend-meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/backend
           tags: |
