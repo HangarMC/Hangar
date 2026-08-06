@@ -73,14 +73,21 @@ export function useProjects(
     refresh: refreshProjects,
   } = useData(
     params,
-    (p) => "projects:" + (p.member || p.owner || "main") + ":" + p.offset,
+    (p) => "projects:" + JSON.stringify(p),
     (p) => useApi<PaginatedResultProject>("projects", "get", { ...p }),
     true,
     () => false,
     ({ offset, limit, member, ...paramsWithoutLimit }) => {
       if (router) {
         const oldQuery = router.currentRoute.value.query;
-        router.replace({ query: { ...oldQuery, page: offset && limit ? Math.floor(offset / limit) : undefined, ...paramsWithoutLimit } });
+        router.replace({
+          query: {
+            ...oldQuery,
+            page: offset && limit ? Math.floor(offset / limit) : undefined,
+            ...paramsWithoutLimit,
+            query: paramsWithoutLimit.query || undefined,
+          },
+        });
       }
     }
   );

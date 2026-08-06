@@ -92,7 +92,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
 
   function setState(newState?: T) {
     state.value[key(params())] = newState;
-    data.value = newState;
+      data.value = newState;
   }
 
   if (import.meta.server && !server) {
@@ -106,7 +106,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
 
     if (skip(params)) {
       console.log("skip", key(params));
-      status.value = "idle";
+        status.value = "idle";
       return;
     }
 
@@ -120,11 +120,11 @@ export function useData<T, P extends Record<string, unknown> | string>(
             // await new Promise((resolve) => setTimeout(resolve, 5000));
             console.log("loaded", key(params));
             setState(result);
-            status.value = "success";
+              status.value = "success";
             callback(params);
             resolve();
           } catch (err) {
-            status.value = "error";
+              status.value = "error";
             callback(params);
             reject(err);
           }
