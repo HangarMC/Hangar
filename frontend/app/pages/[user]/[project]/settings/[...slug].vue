@@ -59,33 +59,54 @@ watch(
   { immediate: true }
 );
 
-const hasCustomIcon = computed(() => props.project?.avatarUrl?.includes("project"));
 const projectIcon = ref<File | undefined>();
-const cropperInput = ref();
-const cropperResult = ref();
+const cropperInput = ref<string>();
+const cropperResult = ref<Blob>();
 const imgSrc = ref(props.project?.avatarUrl);
-let reader: FileReader | undefined;
-onMounted(() => {
-  reader = new FileReader();
-  reader.addEventListener(
-    "load",
-    () => {
-      cropperInput.value = reader?.result;
-    },
-    false
-  );
-});
+const hasCustomIcon = computed(() => imgSrc.value?.includes("/project/"));
+let fileReadId = 0;
+let cropChangeId = 0;
+
+watch(
+  () => props.project?.avatarUrl,
+  (avatarUrl) => {
+    if (avatarUrl) imgSrc.value = avatarUrl;
+  },
+  { immediate: true }
+);
 
 watch(projectIcon, (newValue) => {
+  const currentFileReadId = ++fileReadId;
+  cropChangeId++;
+  cropperInput.value = undefined;
+  cropperResult.value = undefined;
   if (!newValue) return;
-  cropperResult.value = newValue;
-  reader?.readAsDataURL(newValue);
+
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    if (currentFileReadId === fileReadId && typeof reader.result === "string") {
+      cropperInput.value = reader.result;
+    }
+  });
+  reader.readAsDataURL(newValue);
 });
 
 function changeImage({ canvas }: CropperResult) {
+  const currentCropChangeId = ++cropChangeId;
+  cropperResult.value = undefined;
   canvas?.toBlob((blob) => {
-    cropperResult.value = blob;
+    if (blob && currentCropChangeId === cropChangeId) {
+      cropperResult.value = blob;
+    }
   });
+}
+
+function clearIconEditor() {
+  fileReadId++;
+  cropChangeId++;
+  projectIcon.value = undefined;
+  cropperInput.value = undefined;
+  cropperResult.value = undefined;
 }
 
 const newName = ref<string | null | undefined>("");
@@ -201,35 +222,27 @@ async function uploadIcon() {
   data.append("projectIcon", cropperResult.value);
   loading.uploadIcon = true;
   try {
-    const response = await useInternalApi<string | null>(`projects/project/${route.params.project}/saveIcon`, "post", data);
-    imgSrc.value = URL.createObjectURL(cropperResult.value); // set temporary source so it changes right away
-    projectIcon.value = undefined;
-    cropperInput.value = undefined;
-    cropperResult.value = undefined;
-    await (response
-      ? notificationStore.success(i18n.t("project.settings.success.changedIconWarn", [response]))
-      : notificationStore.success(i18n.t("project.settings.success.changedIcon")));
+    imgSrc.value = await useInternalApi<string>(`projects/project/${route.params.project}/saveIcon`, "post", data);
+    clearIconEditor();
+    notificationStore.success(i18n.t("project.settings.success.changedIcon"));
   } catch (err: any) {
     handleRequestError(err);
+  } finally {
+    loading.uploadIcon = false;
   }
-  loading.uploadIcon = false;
 }
 
 async function resetIcon() {
   loading.resetIcon = true;
   try {
-    const response = await useInternalApi<string | null>(`projects/project/${route.params.project}/resetIcon`, "post");
-    await (response
-      ? notificationStore.success(i18n.t("project.settings.success.resetIconWarn", [response]))
-      : notificationStore.success(i18n.t("project.settings.success.resetIcon")));
-    imgSrc.value = props.user?.avatarUrl; // set temporary source so it changes right away
-    projectIcon.value = undefined;
-    cropperInput.value = undefined;
-    cropperResult.value = undefined;
+    imgSrc.value = await useInternalApi<string>(`projects/project/${route.params.project}/resetIcon`, "post");
+    notificationStore.success(i18n.t("project.settings.success.resetIcon"));
+    clearIconEditor();
   } catch (err: any) {
     handleRequestError(err);
+  } finally {
+    loading.resetIcon = false;
   }
-  loading.resetIcon = false;
 }
 
 const shieldIoStyle = ref("flat");
@@ -268,7 +281,7 @@ useSeo(
         <div class="flex justify-between lt-sm:items-center">
           {{ i18n.t("project.settings.title") }}
           <div class="text-lg">
-            <Button :disabled="v.$error" :loading="loading.save" @click="save">
+            <Button :disabled="v.$error || loading.uploadIcon || loading.resetIcon" :loading="loading.save" @click="save">
               <IconMdiCheck />
               {{ i18n.t("project.settings.save") }}
             </Button>
@@ -351,13 +364,13 @@ useSeo(
                 <p>{{ i18n.t("project.settings.iconSub") }}</p>
               </div>
               <div class="col-span-2">
-                <InputFile v-model="projectIcon" accept="image/png, image/jpeg, image/webp" show-size />
+                <InputFile v-model="projectIcon" :disabled="loading.uploadIcon || loading.resetIcon" accept="image/png, image/jpeg, image/webp" show-size />
               </div>
-              <Button :disabled="!cropperResult" :loading="loading.uploadIcon" @click="uploadIcon">
+              <Button :disabled="!cropperResult || loading.resetIcon" :loading="loading.uploadIcon" @click="uploadIcon">
                 <IconMdiUpload />
                 {{ i18n.t("project.settings.iconUpload") }}
               </Button>
-              <Button :disabled="!hasCustomIcon" :loading="loading.resetIcon" @click="resetIcon">
+              <Button :disabled="!hasCustomIcon || loading.uploadIcon" :loading="loading.resetIcon" @click="resetIcon">
                 <IconMdiCached />
                 {{ i18n.t("project.settings.iconReset") }}
               </Button>

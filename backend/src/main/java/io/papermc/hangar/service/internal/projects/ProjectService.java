@@ -2,6 +2,7 @@ package io.papermc.hangar.service.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.components.index.IndexService;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.projects.HangarProjectsDAO;
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
@@ -67,10 +68,11 @@ public class ProjectService extends HangarComponent {
     private final PinnedVersionService pinnedVersionService;
     private final VersionsApiDAO versionsApiDAO;
     private final AvatarService avatarService;
+    private final IndexService indexService;
     private final TaskExecutor taskExecutor;
 
     @Autowired
-    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService, @Lazy final TaskExecutor taskScheduler) {
+    public ProjectService(final ProjectsDAO projectDAO, final HangarProjectsDAO hangarProjectsDAO, final ProjectVisibilityService projectVisibilityService, final OrganizationService organizationService, final ProjectPageService projectPageService, final PermissionService permissionService, final PinnedVersionService pinnedVersionService, final VersionsApiDAO versionsApiDAO, @Lazy final AvatarService avatarService, @Lazy final IndexService indexService, @Lazy final TaskExecutor taskScheduler) {
         this.projectsDAO = projectDAO;
         this.hangarProjectsDAO = hangarProjectsDAO;
         this.projectVisibilityService = projectVisibilityService;
@@ -80,6 +82,7 @@ public class ProjectService extends HangarComponent {
         this.pinnedVersionService = pinnedVersionService;
         this.versionsApiDAO = versionsApiDAO;
         this.avatarService = avatarService;
+        this.indexService = indexService;
         this.taskExecutor = taskScheduler;
     }
 
@@ -142,7 +145,7 @@ public class ProjectService extends HangarComponent {
                     if (version != null) {
                         mainChannelVersions.put(platform, version);
                     }
-                }, taskExecutor))
+                }, this.taskExecutor))
                 .toArray(CompletableFuture[]::new)
         );
 
@@ -265,14 +268,18 @@ public class ProjectService extends HangarComponent {
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
 
-    public void changeAvatar(final ProjectTable table, final byte[] avatar) throws IOException {
-        this.avatarService.changeProjectAvatar(table.getProjectId(), avatar);
+    public String changeAvatar(final ProjectTable table, final byte[] avatar) throws IOException {
+        final String avatarUrl = this.avatarService.changeProjectAvatar(table.getProjectId(), avatar);
         this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()), Base64.getEncoder().encodeToString(avatar), "#unknown"));
+        this.indexService.updateProject(table.getId());
+        return avatarUrl;
     }
 
-    public void deleteAvatar(final ProjectTable table) {
+    public String deleteAvatar(final ProjectTable table) {
         this.avatarService.deleteProjectAvatar(table.getProjectId());
         this.actionLogger.project(LogAction.PROJECT_ICON_CHANGED.create(ProjectContext.of(table.getId()), "#empty", "#unknown"));
+        this.indexService.updateProject(table.getId());
+        return this.avatarService.getProjectAvatarUrl(table.getProjectId(), table.getOwnerName());
     }
 
     public List<UserTable> getProjectWatchers(final long projectId) {

@@ -23,6 +23,7 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -138,8 +139,9 @@ public class AvatarService extends HangarComponent {
         this.userService.updateUser(user);
     }
 
-    public void changeProjectAvatar(final long projectId, final byte[] avatar) throws IOException {
-        this.changeAvatar(PROJECT, String.valueOf(projectId), avatar);
+    @Transactional
+    public String changeProjectAvatar(final long projectId, final byte[] avatar) throws IOException {
+        return this.changeAvatar(PROJECT, String.valueOf(projectId), avatar);
     }
 
     private String changeAvatar(final String type, final String subject, byte[] avatar) throws IOException {
@@ -160,12 +162,13 @@ public class AvatarService extends HangarComponent {
             this.avatarDAO.updateAvatar(table);
         }
         this.fileService.write(new ByteArrayInputStream(avatar), this.getPath(type, subject), AvatarController.WEBP.toString());
-        return fileService.getAvatarUrl(type, subject, String.valueOf(table.getVersion()));
+        return this.fileService.getAvatarUrl(type, subject, String.valueOf(table.getVersion()));
     }
 
     /*
      * Delete methods
      */
+    @Transactional
     public void deleteProjectAvatar(final long projectId) {
         this.deleteAvatar(PROJECT, String.valueOf(projectId));
     }

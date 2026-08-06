@@ -137,8 +137,8 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
     @PostMapping(path = "/project/{slugOrId}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void saveProjectIcon(@PathVariable("slugOrId") final ProjectTable project, @RequestParam final MultipartFile projectIcon) throws IOException {
-        this.projectService.changeAvatar(project, projectIcon.getBytes());
+    public String saveProjectIcon(@PathVariable("slugOrId") final ProjectTable project, @RequestParam final MultipartFile projectIcon) throws IOException {
+        return this.projectService.changeAvatar(project, projectIcon.getBytes());
     }
 
     @Unlocked
@@ -146,8 +146,8 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
     @PostMapping("/project/{slugOrId}/resetIcon")
-    public void resetProjectIcon(@PathVariable("slugOrId") final ProjectTable project) {
-        this.projectService.deleteAvatar(project);
+    public String resetProjectIcon(@PathVariable("slugOrId") final ProjectTable project) {
+        return this.projectService.deleteAvatar(project);
     }
 
     @Unlocked

@@ -17,12 +17,9 @@
     <cropper
       v-if="cropperInput"
       :src="cropperInput"
-      class="h-200px"
+      class="h-200px overflow-hidden"
       :min-height="150"
-      :default-size="{
-        width: 256,
-        height: 256,
-      }"
+      :default-size="defaultCropSize"
       :canvas="{
         imageSmoothingQuality: 'high',
       }"
@@ -131,6 +128,11 @@ function changeImage({ canvas }: CropperResult) {
   canvas?.toBlob((blob) => {
     cropperResult.value = blob;
   }, mimeType.value);
+}
+
+function defaultCropSize({ imageSize }: { imageSize: { width: number; height: number } }) {
+  const size = Math.min(imageSize.width, imageSize.height);
+  return { width: size, height: size };
 }
 
 async function save() {
