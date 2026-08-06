@@ -45,8 +45,9 @@ public class VersionDependencyService extends HangarComponent {
 
     @Transactional
     public void updateVersionPlatformVersions(final long projectId, final long versionId, final UpdatePlatformVersions form) {
-        if (form.versions().size() > this.platformService.getFullVersionsForPlatform(form.platform()).size()) {
-            throw new HangarApiException("Too many platform versions");
+        final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(form.platform()));
+        if (!versionsForPlatform.containsAll(form.versions())) {
+            throw new HangarApiException("version.new.error.invalidPlatformVersionList", form.versions());
         }
 
         final ProjectVersionTable version = this.projectVersionsDAO.getProjectVersionTable(versionId);

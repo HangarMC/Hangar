@@ -469,14 +469,14 @@ public class VersionFactory extends HangarComponent {
                     this.logger.error("Could not publish version for {}", this.getHangarPrincipal().getName(), e);
                 }
             }
+        }
 
-            // Check if the platform versions are valid
-            for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
-                final Platform platform = entry.getKey();
-                final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(platform));
-                if (!versionsForPlatform.containsAll(entry.getValue())) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersionList", entry.getValue());
-                }
+        // Check if the platform versions are valid
+        for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
+            final Platform platform = entry.getKey();
+            final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(platform));
+            if (!versionsForPlatform.containsAll(entry.getValue())) {
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersionList", entry.getValue());
             }
         }
     }
