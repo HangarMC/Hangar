@@ -139,21 +139,22 @@ public class TokenService extends HangarComponent {
             .sign(this.algo);
     }
 
-    public String otp(final long user) {
+    public String otp(final long user, final String context) {
         return JWT.create()
             .withIssuer(this.config.security().tokenIssuer())
             .withExpiresAt(Instant.now().plus(10, ChronoUnit.MINUTES))
             .withSubject(String.valueOf(user))
+            .withClaim("context", context)
             .sign(this.algo);
     }
 
-    public boolean verifyOtp(final long user, final String header) {
+    public boolean verifyOtp(final long user, final String header, final String context) {
         if (header == null) {
-            return true;
+            return false;
         }
         try {
             final DecodedJWT decoded = this.verify(header.split(":")[1]);
-            return decoded.getSubject().equals(String.valueOf(user));
+            return decoded.getSubject().equals(String.valueOf(user)) && context.equals(decoded.getClaim("context").asString());
         } catch (final Exception ex) {
             return false;
         }
