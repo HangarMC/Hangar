@@ -4,17 +4,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.model.db.Table;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class AnnouncementTable extends Table {
 
     private String text;
     private String color;
-    private long createdBy;
+    private @Nullable Long createdBy;
 
     @JsonCreator
     @JdbiConstructor
-    public AnnouncementTable(final long id, final OffsetDateTime createdAt, final String text, final String color, final long createdBy) {
+    public AnnouncementTable(final long id, final OffsetDateTime createdAt, final String text, final String color, final @Nullable Long createdBy) {
         super(createdAt, id);
         this.text = text;
         this.color = color;
@@ -43,11 +44,11 @@ public class AnnouncementTable extends Table {
         this.color = color;
     }
 
-    public long getCreatedBy() {
+    public @Nullable Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(final long createdBy) {
+    public void setCreatedBy(final @Nullable Long createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -56,7 +57,7 @@ public class AnnouncementTable extends Table {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         AnnouncementTable that = (AnnouncementTable) o;
-        return createdBy == that.createdBy && Objects.equals(text, that.text) && Objects.equals(color, that.color);
+        return Objects.equals(createdBy, that.createdBy) && Objects.equals(text, that.text) && Objects.equals(color, that.color);
     }
 
     @Override

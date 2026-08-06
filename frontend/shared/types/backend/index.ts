@@ -269,12 +269,18 @@ export interface ResetForm {
 
 export interface SettingsResponse {
   authenticators: Authenticator[];
+  /** @format date-time */
+  deletionScheduledFor?: string;
   emailConfirmed: boolean;
   emailPending: boolean;
   hasBackupCodes: boolean;
   hasPassword: boolean;
   hasTotp: boolean;
   oauthConnections: OAuthConnection[];
+  /** @format int64 */
+  ownedOrganizationCount: number;
+  /** @format int64 */
+  ownedProjectCount: number;
 }
 
 export interface Authenticator {
@@ -361,7 +367,7 @@ export interface AnnouncementTable {
   /** @format date-time */
   createdAt: string;
   /** @format int64 */
-  createdBy: number;
+  createdBy?: number;
   /** @format int64 */
   id: number;
   text: string;
@@ -377,7 +383,7 @@ export interface GlobalNotificationTable {
   /** @format date-time */
   createdAt: string;
   /** @format int64 */
-  createdBy: number;
+  createdBy?: number;
   /** @format int64 */
   id: number;
   key: string;

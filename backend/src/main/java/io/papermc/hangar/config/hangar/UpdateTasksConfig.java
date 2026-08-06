@@ -12,6 +12,7 @@ public record UpdateTasksConfig(
     @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration versionDownloads,
     @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration projectViews,
     @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration projectIndex,
-    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration versionIndex
+    @DurationUnit(ChronoUnit.MINUTES) @DefaultValue("10") Duration versionIndex,
+    @DurationUnit(ChronoUnit.HOURS) @DefaultValue("1") Duration accountDeletion
 ) {
 }

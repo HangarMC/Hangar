@@ -997,7 +997,24 @@
         "username": "Username",
         "verifyEmail": "Verify email",
         "currentPassword": "Current Password",
-        "newPassword": "New Password (Optional)"
+        "newPassword": "New Password (Optional)",
+        "deletion": {
+          "title": "Delete account",
+          "description": "Schedule your account for permanent deletion. You have seven days to cancel before your account and all {count} projects you own are deleted.",
+          "organizationWarning": "You own {count} organizations. Transfer or delete them before deleting your account.",
+          "button": "Delete account",
+          "modalTitle": "Schedule account deletion",
+          "modalWarning": "This will permanently delete your account and all projects you own after seven days. Type your username to confirm.",
+          "confirmation": "Type {username} to confirm",
+          "scheduled": "Your account is scheduled for permanent deletion on {date}. All projects you own will be deleted.",
+          "cancel": "Cancel account deletion",
+          "requested": "Account deletion scheduled. We sent you a confirmation email.",
+          "cancelled": "Account deletion cancelled.",
+          "confirmationMismatch": "The username confirmation does not match.",
+          "ownsOrganizations": "Transfer or delete the organizations you own first.",
+          "alreadyRequested": "Account deletion has already been requested.",
+          "notRequested": "No account deletion is pending."
+        }
       },
       "security": {
         "header": "Security",

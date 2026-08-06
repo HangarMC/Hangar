@@ -95,6 +95,7 @@ hangar:
     project-views: 10m
     project-index: 10m
     version-index: 10m
+    account-deletion: 1h
 
   channels:
     max-name-len: 15

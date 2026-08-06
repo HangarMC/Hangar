@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,6 +172,11 @@ public class AvatarService extends HangarComponent {
     @Transactional
     public void deleteProjectAvatar(final long projectId) {
         this.deleteAvatar(PROJECT, String.valueOf(projectId));
+    }
+
+    @Transactional
+    public void deleteUserAvatar(final UUID uuid) {
+        this.deleteAvatar(USER, uuid.toString());
     }
 
     private void deleteAvatar(final String type, final String subject) {
