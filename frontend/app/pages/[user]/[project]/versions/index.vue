@@ -155,9 +155,10 @@ function getVisibilityTitle(visibility: Visibility) {
     <section class="basis-full md:basis-4/15 flex-grow">
       <div class="flex flex-col flex-wrap space-y-4">
         <div v-if="hasPerms(NamedPermission.CreateVersion)" class="basis-full flex-grow">
-          <NuxtLink :to="route.path + '/new'">
-            <Button size="large" class="w-full">{{ i18n.t("version.new.uploadNew") }}</Button>
-          </NuxtLink>
+          <Button :to="route.path + '/new'" class="w-full">
+            <IconMdiPlus />
+            {{ i18n.t("version.new.uploadNew") }}
+          </Button>
         </div>
 
         <Card class="basis-6/12 md:basis-full flex-grow">
@@ -165,9 +166,19 @@ function getVisibilityTitle(visibility: Visibility) {
             <div class="inline-flex w-full flex-cols space-between">
               <InputCheckbox v-model="filter.allChecked.channels" @change="checkAllChannels" />
               <h2 class="flex-grow">{{ i18n.t("version.channels") }}</h2>
-              <Link v-if="project && hasPerms(NamedPermission.EditChannels)" :to="`/${project.namespace.owner}/${project.name}/channels`">
-                <Button size="small" class="ml-2 text-sm"><IconMdiPencil /></Button>
-              </Link>
+              <Button
+                v-if="project && hasPerms(NamedPermission.EditChannels)"
+                :to="`/${project.namespace.owner}/${project.name}/channels`"
+                variant="ghost"
+                tone="neutral"
+                size="sm"
+                icon-only
+                class="ml-2"
+                :title="i18n.t('general.edit')"
+                :aria-label="i18n.t('general.edit')"
+              >
+                <IconMdiPencil />
+              </Button>
             </div>
           </template>
 

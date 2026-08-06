@@ -105,12 +105,10 @@ function getCount(entry: HangarReviewQueueEntry, ..._actions: ReviewAction[]) {
           </Link>
         </template>
         <template #startBtn="{ item }">
-          <Link :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}/reviews`">
-            <Button>
-              <IconMdiPlay />
-              {{ i18n.t("version.page.reviewStart") }}
-            </Button>
-          </Link>
+          <Button :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}/reviews`">
+            <IconMdiPlay />
+            {{ i18n.t("version.page.reviewStart") }}
+          </Button>
         </template>
       </SortableTable>
     </Card>

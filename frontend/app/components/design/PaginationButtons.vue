@@ -46,49 +46,67 @@ function visibleCss(value: boolean) {
 </script>
 
 <template>
-  <div class="flex gap-1.5 rounded-md justify-center">
-    <Button class="bg-slate-400 dark:bg-slate-700 px-3" :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">
-      <span class="nav-btn">«</span>
+  <div class="flex gap-1.5 justify-center">
+    <Button
+      variant="outline"
+      tone="neutral"
+      size="sm"
+      icon-only
+      :style="visibleCss(page > 0)"
+      :disabled="page <= 0"
+      aria-label="First page"
+      @click="gotoPage(0)"
+    >
+      <IconMdiChevronDoubleLeft />
     </Button>
-    <Button class="bg-slate-400 dark:bg-slate-700 px-3" :style="visibleCss(page > 0)" :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">
-      <span class="nav-btn">‹</span>
+    <Button
+      variant="outline"
+      tone="neutral"
+      size="sm"
+      icon-only
+      :style="visibleCss(page > 0)"
+      :disabled="page <= 0"
+      aria-label="Prev page"
+      @click="gotoPage(page - 1)"
+    >
+      <IconMdiChevronLeft />
     </Button>
     <Button
       v-for="index in options"
       :key="index"
-      :disabled="page === index - 1"
+      :variant="page === index - 1 ? 'solid' : 'outline'"
+      :tone="page === index - 1 ? 'primary' : 'neutral'"
+      size="sm"
       :aria-label="'Page ' + index"
-      class="bg-slate-400 dark:bg-slate-700 px-3"
-      :class="{ 'disabled:bg-slate-500 disabled:dark:bg-slate-500': page === index - 1 }"
+      :aria-current="page === index - 1 ? 'page' : undefined"
+      class="min-w-8 !px-2 tabular-nums"
       @click="gotoPage(index - 1)"
     >
-      <span class="text-white">
-        {{ index }}
-      </span>
+      {{ index }}
     </Button>
     <Button
-      class="bg-slate-400 dark:bg-slate-700 px-3"
+      variant="outline"
+      tone="neutral"
+      size="sm"
+      icon-only
       :style="visibleCss(page < pages - 1)"
       :disabled="page >= pages - 1"
       aria-label="Next page"
       @click="gotoPage(page + 1)"
     >
-      <span class="nav-btn">›</span>
+      <IconMdiChevronRight />
     </Button>
     <Button
-      class="bg-slate-400 dark:bg-slate-700 px-3"
+      variant="outline"
+      tone="neutral"
+      size="sm"
+      icon-only
       :style="visibleCss(page < pages - 1)"
       :disabled="page >= pages - 1"
       aria-label="Last page"
       @click="gotoPage(pages - 1)"
     >
-      <span class="nav-btn">»</span>
+      <IconMdiChevronDoubleRight />
     </Button>
   </div>
 </template>
-<style scoped>
-.nav-btn {
-  position: relative;
-  top: -2px;
-}
-</style>

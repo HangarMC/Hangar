@@ -58,5 +58,5 @@ function click() {
 
 <template>
   <div id="paypal-donate-button-container" />
-  <Button size="medium" @click="click">{{ i18n.t("general.donate") }}</Button>
+  <Button @click="click">{{ i18n.t("general.donate") }}</Button>
 </template>

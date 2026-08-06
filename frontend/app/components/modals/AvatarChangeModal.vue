@@ -2,7 +2,7 @@
   <Modal ref="modal" :title="t('organization.settings.changeAvatar')" window-classes="w-125" @open="openModal">
     <template #activator="{ on }">
       <slot name="activator" :on="on">
-        <Button button-type="primary" v-bind="$attrs" @click.prevent="on.click">{{ t("organization.settings.changeAvatar") }}</Button>
+        <Button v-bind="$attrs" @click.prevent="on.click">{{ t("organization.settings.changeAvatar") }}</Button>
       </slot>
     </template>
 
@@ -35,7 +35,10 @@
       image-restriction="stencil"
       @change="changeImage"
     />
-    <Button class="mt-2" button-type="primary" :disabled="!cropperResult" @click.prevent="save">{{ t("general.save") }}</Button>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ t("general.cancel") }}</Button>
+      <Button :disabled="!cropperResult" @click.prevent="save">{{ t("general.save") }}</Button>
+    </template>
   </Modal>
 </template>
 

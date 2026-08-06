@@ -15,12 +15,14 @@ const props = withDefaults(
     vertical?: boolean;
     compact?: boolean;
     router?: boolean;
+    highlightSelected?: boolean;
   }>(),
   {
     modelValue: undefined,
     vertical: true,
     compact: false,
     router: false,
+    highlightSelected: false,
   }
 );
 
@@ -44,6 +46,10 @@ function selectTab(event: Event, tab: Tab<T>) {
   }
 }
 
+function isSelected(tab: Tab<T>) {
+  return props.router ? route.path.substring(route.path.lastIndexOf("/") + 1) === tab.value : internalValue.value === tab.value;
+}
+
 defineSlots<
   {
     [A in T]: () => VNode;
@@ -59,25 +65,23 @@ defineSlots<
     <div :class="{ 'min-w-13ch': vertical, 'basis-full': !vertical }">
       <ul :class="{ 'flex flex-row flex-wrap lt-md:gap-1 md:flex-col': vertical, 'md:space-y-1': !compact && vertical, 'flex flex-row gap-1': !vertical }">
         <li v-for="tab in tabs" :key="tab.value">
-          <Link
+          <Button
             v-if="!tab.show || tab.show()"
+            variant="ghost"
+            :tone="isSelected(tab) ? 'primary' : 'neutral'"
             :disabled="tab.disable && tab.disable()"
             :href="router ? undefined : '#' + tab.value"
             :to="router ? tab.value : undefined"
+            :aria-current="isSelected(tab) ? 'page' : undefined"
+            :class="{
+              'background-card color-primary': isSelected(tab),
+              'md:w-full md:!justify-start': vertical && highlightSelected,
+            }"
             @click="selectTab($event, tab)"
           >
-            <Button
-              v-if="!tab.show || tab.show()"
-              :disabled="tab.disable && tab.disable()"
-              :class="
-                (router ? route.path.substring(route.path.lastIndexOf('/') + 1) == tab.value : internalValue === tab.value) ? 'underline' : '!font-semibold'
-              "
-              size="medium"
-              button-type="transparent"
-            >
-              {{ tab.header }}
-            </Button>
-          </Link>
+            <component :is="tab.icon" v-if="tab.icon" />
+            {{ tab.header }}
+          </Button>
         </li>
       </ul>
       <hr v-if="!vertical" class="mb-2" />

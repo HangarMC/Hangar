@@ -3,6 +3,9 @@ import type { ValidationRule } from "@vuelidate/core";
 import type Easymde from "easymde";
 import EasyMDE from "easymde";
 
+const i18n = useI18n();
+const headings = ref<{ id: string; text?: string; level: number }[]>([]);
+
 const props = withDefaults(
   defineProps<{
     raw?: string | null;
@@ -137,22 +140,60 @@ function stopEditing() {
   <div class="relative">
     <slot name="title" />
     <div class="flex h-[1px]">
-      <div class="absolute top-2 right-0 space-x-1">
-        <Button v-if="!internalEditing" @click="startEditing()">
+      <div class="absolute top-2 right-0 z-10 flex gap-1">
+        <MarkdownToc v-if="!internalEditing && headings.length > 0" :headings="headings" />
+        <Button
+          v-if="!internalEditing"
+          variant="outline"
+          tone="neutral"
+          size="sm"
+          icon-only
+          :title="i18n.t('general.edit')"
+          :aria-label="i18n.t('general.edit')"
+          @click="startEditing()"
+        >
           <IconMdiPencil />
         </Button>
         <DeletePageModal @delete="deletePage">
           <template #activator="{ on }">
-            <Button v-if="internalEditing && deletable" button-type="red" :disabled="loading.delete" v-on="on">
+            <Button
+              v-if="internalEditing && deletable"
+              variant="ghost"
+              tone="danger"
+              size="sm"
+              icon-only
+              :disabled="loading.delete"
+              :title="i18n.t('general.delete')"
+              :aria-label="i18n.t('general.delete')"
+              v-on="on"
+            >
               <IconMdiDelete />
             </Button>
           </template>
         </DeletePageModal>
-        <Button v-if="internalEditing && saveable" :disabled="loading.save || v.$invalid" @click="savePage">
-          <IconMdiContentSave />
-        </Button>
-        <Button v-if="internalEditing && cancellable" @click="stopEditing()">
+        <Button
+          v-if="internalEditing && cancellable"
+          variant="ghost"
+          tone="neutral"
+          size="sm"
+          icon-only
+          :title="i18n.t('general.close')"
+          :aria-label="i18n.t('general.close')"
+          @click="stopEditing()"
+        >
           <IconMdiClose />
+        </Button>
+        <Button
+          v-if="internalEditing && saveable"
+          size="sm"
+          icon-only
+          :disabled="loading.save || v.$invalid"
+          :loading="loading.save"
+          :title="i18n.t('general.save')"
+          :aria-label="i18n.t('general.save')"
+          @click="savePage"
+        >
+          <IconMdiContentSave />
         </Button>
       </div>
     </div>
@@ -160,7 +201,7 @@ function stopEditing() {
     <div v-if="internalEditing">
       <textarea ref="editor" v-model="rawEdited" class="text-left" :maxlength="maxlength" />
     </div>
-    <Markdown v-if="!internalEditing" :raw="raw" />
+    <Markdown v-if="!internalEditing" :raw="raw" :show-toc="false" @headings="(h) => (headings = h)" />
     <ErrorTooltip :error-messages="errors" class="w-full absolute">
       <span />
     </ErrorTooltip>

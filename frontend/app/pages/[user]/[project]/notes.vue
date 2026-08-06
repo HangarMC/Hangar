@@ -50,7 +50,7 @@ async function addNote() {
 
     <div class="flex">
       <div class="flex-grow"><InputText v-model="text" :placeholder="i18n.t('notes.placeholder')" /></div>
-      <Button :disabled="!text || loading" size="medium" class="ml-4 w-max" @click="addNote">{{ i18n.t("notes.addNote") }}</Button>
+      <Button :disabled="!text || loading" class="ml-4 w-max" @click="addNote">{{ i18n.t("notes.addNote") }}</Button>
     </div>
 
     <h2 class="text-lg font-bold mb-1 mt-2">

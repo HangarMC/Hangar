@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute("linkout");
-const remoteUrl = Array.isArray(route.query.remoteUrl) ? route.query.remoteUrl[0] : route.query.remoteUrl;
+const remoteUrl = (Array.isArray(route.query.remoteUrl) ? route.query.remoteUrl[0] : route.query.remoteUrl) ?? undefined;
 const i18n = useI18n();
 const router = useRouter();
 
@@ -49,13 +49,11 @@ useSeo(computed(() => ({ title: i18n.t("linkout.title"), route })));
     </template>
     {{ i18n.t("linkout.text", [remoteUrl]) }}
     <template #footer>
-      <Link @click="trust">
-        <Button size="medium">{{ i18n.t("linkout.trust") }}</Button>
-      </Link>
-      <Link class="ml-2" :href="remoteUrl" target="_self" rel="noopener noreferrer">
-        <Button size="medium">{{ i18n.t("linkout.continue") }}</Button>
-      </Link>
-      <Button button-type="secondary" size="medium" class="ml-2" @click="back">{{ i18n.t("linkout.abort") }}</Button>
+      <div class="flex flex-wrap justify-end gap-2">
+        <Button variant="ghost" tone="neutral" @click="back">{{ i18n.t("linkout.abort") }}</Button>
+        <Button variant="outline" tone="neutral" @click="trust">{{ i18n.t("linkout.trust") }}</Button>
+        <Button :href="remoteUrl" target="_self" rel="noopener noreferrer">{{ i18n.t("linkout.continue") }}</Button>
+      </div>
     </template>
   </Card>
 </template>

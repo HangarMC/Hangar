@@ -24,7 +24,7 @@ async function convertBBCode() {
     <InputTextarea v-model="input" class="rounded-lg w-full min-h-50" :loading="loading" />
 
     <div class="text-center mt-4">
-      <Button class="w-min mb-4 text-lg font-medium" size="large" :loading="loading" @click="convertBBCode"> Convert </Button>
+      <Button class="w-min mb-4" size="lg" :loading="loading" @click="convertBBCode">Convert</Button>
     </div>
 
     <h2 class="text-lg mb-2">Markdown output</h2>

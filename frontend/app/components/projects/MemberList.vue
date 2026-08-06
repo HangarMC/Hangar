@@ -186,7 +186,7 @@ async function doSearch(val?: string) {
         <DropdownItem @click="cancelTransfer()">{{ i18n.t("form.memberList.cancelTransfer") }}</DropdownItem>
       </DropdownButton>
     </div>
-    <div v-if="canEdit" class="items-center inline-flex mt-3 w-full">
+    <div v-if="canEdit" class="items-center inline-flex mt-3 w-full border-t border-gray-300 pt-3 dark:border-gray-700">
       <InputAutocomplete
         id="membersearch"
         v-model="search"

@@ -81,13 +81,25 @@ async function createPage() {
       />
       <InputSelect v-model="body.parentId" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
     </div>
-    <div>
-      <Button class="mt-3" :disabled="loading" @click="createPage">{{ i18n.t("general.create") }}</Button>
-    </div>
+    <div></div>
     <template #activator="{ on }">
-      <Button v-bind="$attrs" class="mr-1 h-[32px]" size="small" v-on="on">
+      <Button
+        v-bind="$attrs"
+        variant="ghost"
+        tone="neutral"
+        size="sm"
+        icon-only
+        class="mr-1"
+        :title="i18n.t('general.add')"
+        :aria-label="i18n.t('general.add')"
+        v-on="on"
+      >
         <IconMdiPlus />
       </Button>
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button :disabled="loading" @click="createPage">{{ i18n.t("general.create") }}</Button>
     </template>
   </Modal>
 </template>

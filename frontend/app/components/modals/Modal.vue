@@ -63,6 +63,9 @@ defineExpose({
       <div class="font-bold">{{ props.title }}</div>
     </div>
     <slot :on="{ click: close }" />
+    <div v-if="hasSlotContent($slots.footer)" class="mt-6 flex flex-wrap justify-end gap-2">
+      <slot name="footer" :on="{ click: close }" :close="close" />
+    </div>
   </dialog>
   <slot name="activator" :on="{ click: open }" />
 </template>

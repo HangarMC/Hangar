@@ -1,6 +1,7 @@
 package io.papermc.hangar.model.internal.user.notifications;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.time.OffsetDateTime;
 import java.util.Locale;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -10,12 +11,14 @@ public abstract class HangarInvite {
     private final String role;
     private final String name;
     private final String url;
+    private final OffsetDateTime createdAt;
 
-    protected HangarInvite(final long roleId, final String role, final String name, final String url) {
+    protected HangarInvite(final long roleId, final String role, final String name, final String url, final OffsetDateTime createdAt) {
         this.roleId = roleId;
         this.role = role;
         this.name = name;
         this.url = url;
+        this.createdAt = createdAt;
     }
 
     public long getRoleId() {
@@ -36,12 +39,16 @@ public abstract class HangarInvite {
         return this.url;
     }
 
+    public OffsetDateTime getCreatedAt() {
+        return this.createdAt;
+    }
+
     public static class HangarProjectInvite extends HangarInvite {
 
         private final @Nullable String representingOrg;
 
-        public HangarProjectInvite(final long roleId, final String role, final String name, final String url, final @Nullable String representingOrg) {
-            super(roleId, role, name, url);
+        public HangarProjectInvite(final long roleId, final String role, final String name, final String url, final OffsetDateTime createdAt, final @Nullable String representingOrg) {
+            super(roleId, role, name, url, createdAt);
             this.representingOrg = representingOrg;
         }
 
@@ -57,8 +64,8 @@ public abstract class HangarInvite {
 
     public static class HangarOrganizationInvite extends HangarInvite {
 
-        public HangarOrganizationInvite(final long roleId, final String role, final String name, final String url) {
-            super(roleId, role, name, url);
+        public HangarOrganizationInvite(final long roleId, final String role, final String name, final String url, final OffsetDateTime createdAt) {
+            super(roleId, role, name, url, createdAt);
         }
 
         @Override

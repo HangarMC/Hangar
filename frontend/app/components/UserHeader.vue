@@ -22,17 +22,15 @@ const canEditCurrentUser = computed<boolean>(() => {
 <template>
   <Card accent class="overflow-y-hidden">
     <div class="flex mb-4 md:mb-0">
-      <div class="relative mr-3">
-        <UserAvatar :username="viewingUser?.name" :avatar-url="viewingUser?.avatarUrl" :loading="!viewingUser" />
-        <AvatarChangeModal
+      <div class="mr-3">
+        <EditableAvatar
           v-if="viewingUser && hasPerms(NamedPermission.EditSubjectSettings)"
-          :avatar="viewingUser.avatarUrl"
+          :username="viewingUser.name"
+          :avatar-url="viewingUser.avatarUrl"
           :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/avatar`"
-        >
-          <template #activator="{ on }">
-            <Button class="absolute -bottom-3 -right-3" v-on="on"><IconMdiPencil /></Button>
-          </template>
-        </AvatarChangeModal>
+          compact
+        />
+        <UserAvatar v-else :username="viewingUser?.name" :avatar-url="viewingUser?.avatarUrl" :loading="!viewingUser" />
       </div>
 
       <div class="overflow-clip overflow-hidden">
@@ -95,13 +93,24 @@ const canEditCurrentUser = computed<boolean>(() => {
         <Skeleton v-else class="text-2xl px-1 w-50" />
 
         <div v-if="viewingUser" class="ml-1">
-          <span v-if="viewingUser.tagline">{{ viewingUser.tagline }}</span>
-          <span v-else-if="canEditCurrentUser">{{ i18n.t("author.addTagline") }}</span>
           <TaglineModal
             v-if="canEditCurrentUser"
             :tagline="viewingUser.tagline"
             :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/tagline`"
-          />
+          >
+            <template #activator="{ on }">
+              <button
+                type="button"
+                class="-ml-1 inline-flex max-w-full items-center gap-1 rounded px-1 py-0.5 text-left hover:background-card focus-visible:(outline-2 outline-primary-500)"
+                :aria-label="i18n.t('author.editTagline')"
+                v-on="on"
+              >
+                <span class="truncate">{{ viewingUser.tagline || i18n.t("author.addTagline") }}</span>
+                <IconMdiPencil class="shrink-0 text-gray-secondary" />
+              </button>
+            </template>
+          </TaglineModal>
+          <span v-else-if="viewingUser.tagline">{{ viewingUser.tagline }}</span>
         </div>
         <Skeleton v-else class="mt-1 w-100" />
       </div>

@@ -82,7 +82,9 @@ async function onSearch(val: string | undefined) {
       <InputCheckbox v-model="dep.required" :disabled="noEditing" />
     </td>
     <td v-if="!noEditing">
-      <Button button-type="red" @click="emit('delete')"><IconMdiDelete /></Button>
+      <Button variant="ghost" tone="danger" size="sm" icon-only :title="t('general.delete')" :aria-label="t('general.delete')" @click="emit('delete')"
+        ><IconMdiDelete
+      /></Button>
     </td>
   </tr>
 </template>

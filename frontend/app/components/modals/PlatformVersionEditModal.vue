@@ -43,10 +43,14 @@ async function save() {
       open
       :rules="[required('Select at least one platform version!'), minLength()(1)]"
     />
-
-    <Button class="mt-3" :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">
-      <Button class="text-sm" v-bind="$attrs" v-on="on"><IconMdiPencil /></Button>
+      <Button variant="ghost" tone="neutral" size="sm" icon-only v-bind="$attrs" :title="i18n.t('general.edit')" :aria-label="i18n.t('general.edit')" v-on="on"
+        ><IconMdiPencil
+      /></Button>
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
     </template>
   </Modal>
 </template>

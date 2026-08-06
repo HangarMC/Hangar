@@ -2136,6 +2136,8 @@ export interface JoinableMemberProjectRoleTable {
 }
 
 export interface HangarOrganizationInvite {
+  /** @format date-time */
+  createdAt: string;
   name: string;
   role: string;
   /** @format int64 */
@@ -2145,6 +2147,8 @@ export interface HangarOrganizationInvite {
 }
 
 export interface HangarProjectInvite {
+  /** @format date-time */
+  createdAt: string;
   name: string;
   representingOrg: string;
   role: string;

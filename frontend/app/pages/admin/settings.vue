@@ -199,14 +199,14 @@ async function updateNotifications() {
       <PageTitle>Rescan versions for safe links</PageTitle>
       Approves all versions with only external links that are safe as per config
       <br />
-      <Button button-type="red" class="mt-2" :disabled="loading" @click="rescanSafeLinks">Run</Button>
+      <Button tone="danger" class="mt-2" :disabled="loading" @click="rescanSafeLinks">Run</Button>
     </Card>
     <Card class="mt-5">
       <PageTitle>Fix broken (user) avatars </PageTitle>
       Goes thru all users with avatar_url = null and tries to fix it
       <br />
       <InputCheckbox v-model="forceFixAvatars" label="Force" />
-      <Button button-type="red" class="mt-2" :disabled="loading" @click="fixAvatars">Run</Button>
+      <Button tone="danger" class="mt-2" :disabled="loading" @click="fixAvatars">Run</Button>
     </Card>
     <Card class="mt-5">
       <PageTitle>Announcements</PageTitle>

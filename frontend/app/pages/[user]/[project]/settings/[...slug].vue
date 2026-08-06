@@ -412,7 +412,7 @@ useSeo(
             <div class="flex items-center">
               <InputText ref="newNameField" v-model.trim="newName" :label="i18n.t('project.settings.newName')" :rules="[validProjectName()()]" />
               <Button :disabled="!newName || newNameField?.validation?.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
-                <IconMdiRenameBox class="mr-2" />
+                <IconMdiRenameBox />
                 {{ i18n.t("project.settings.rename") }}
               </Button>
             </div>
@@ -421,7 +421,7 @@ useSeo(
             <div class="flex items-center">
               <InputAutocomplete id="membersearch" v-model="search" :values="result" :label="i18n.t('project.settings.transferTo')" @search="doSearch" />
               <Button :disabled="search.length === 0" :loading="loading.transfer" class="ml-2" @click="transfer">
-                <IconMdiRenameBox class="mr-2" />
+                <IconMdiRenameBox />
                 {{ i18n.t("project.settings.transfer") }}
               </Button>
             </div>
@@ -432,9 +432,16 @@ useSeo(
             description="project.settings.deleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
           >
-            <TextAreaModal :title="i18n.t('project.settings.delete')" :label="i18n.t('general.comment')" :submit="softDelete" require-input>
+            <TextAreaModal
+              :title="i18n.t('project.settings.delete')"
+              :label="i18n.t('general.comment')"
+              :submit="softDelete"
+              :submit-label="i18n.t('project.settings.delete')"
+              submit-tone="danger"
+              require-input
+            >
               <template #activator="{ on }">
-                <Button button-type="red" v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
+                <Button tone="danger" v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
               </template>
             </TextAreaModal>
           </ProjectSettingsSection>
@@ -444,9 +451,16 @@ useSeo(
             description="project.settings.hardDeleteSub"
             class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
           >
-            <TextAreaModal :title="i18n.t('project.settings.hardDelete')" :label="i18n.t('general.comment')" :submit="hardDelete" require-input>
+            <TextAreaModal
+              :title="i18n.t('project.settings.hardDelete')"
+              :label="i18n.t('general.comment')"
+              :submit="hardDelete"
+              :submit-label="i18n.t('project.settings.hardDelete')"
+              submit-tone="danger"
+              require-input
+            >
               <template #activator="{ on }">
-                <Button button-type="red" v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
+                <Button tone="danger" v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
               </template>
             </TextAreaModal>
           </ProjectSettingsSection>

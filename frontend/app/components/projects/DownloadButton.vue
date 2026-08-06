@@ -76,10 +76,10 @@ function formatVersionRange(versions?: string[]): string {
   <div class="flex items-center">
     <div v-if="pinnedVersion">
       <div v-if="pinnedVersion && Object.keys(pinnedVersion.downloads).length === 1">
-        <a
+        <Button
           v-for="(_, p) in pinnedVersion.platformDependenciesFormatted"
           :key="p"
-          class="flex items-center"
+          :size="small ? 'sm' : 'lg'"
           :href="downloadLink(p, pinnedVersion)"
           target="_blank"
           rel="noopener noreferrer"
@@ -87,19 +87,17 @@ function formatVersionRange(versions?: string[]): string {
           @click.middle="trackDownload(p, pinnedVersion)"
           v-on="useTracking('download-link', { pinned: true, dropdown: false, mainchannel: false, platform: p, project: project.name })"
         >
-          <Button :size="small ? 'medium' : 'large'">
-            <IconMdiDownloadOutline />
-            <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
-            <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" :class="{ 'text-lg pb-1.75': !small }" />
-          </Button>
-        </a>
+          <IconMdiDownloadOutline />
+          <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
+          <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" />
+        </Button>
       </div>
 
-      <DropdownButton v-else :button-size="small ? 'medium' : 'large'">
+      <DropdownButton v-else :button-size="small ? 'sm' : 'lg'">
         <template #button-label>
           <span class="items-center inline-flex">
             <IconMdiDownloadOutline />
-            <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+            <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
           </span>
         </template>
         <DropdownItem
@@ -121,8 +119,10 @@ function formatVersionRange(versions?: string[]): string {
       </DropdownButton>
     </div>
 
-    <a
+    <Button
       v-else-if="singlePlatform && singleVersion"
+      :size="small ? 'sm' : 'lg'"
+      :class="{ '!h-auto py-1.5': showSinglePlatform }"
       :href="platformDownloadLink"
       target="_blank"
       rel="noopener noreferrer"
@@ -130,29 +130,27 @@ function formatVersionRange(versions?: string[]): string {
       @click.middle="trackDownload(singlePlatform, singleVersion)"
       v-on="useTracking('download-link', { pinned: false, dropdown: false, mainchannel: false, platform: singlePlatform, project: project.name })"
     >
-      <Button :size="small ? 'medium' : 'large'">
-        <div class="flex flex-col" :class="{ '-mb-0.5': showSinglePlatform }">
-          <div class="inline-flex items-center">
-            <IconMdiDownloadOutline />
-            <span v-if="!small" class="ml-1">
-              {{ !!singleVersion.downloads[singlePlatform]?.externalUrl ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
-            </span>
-          </div>
-          <div v-if="showSinglePlatform" class="inline-flex justify-center items-center font-normal text-0.75rem">
-            <PlatformLogo :platform="singlePlatform" :size="15" class="mr-1 flex-shrink-0" />
-            <span v-if="singleVersion?.platformDependencies && showVersions">
-              {{ formatVersionRange(singleVersion?.platformDependenciesFormatted[singlePlatform]) }}
-            </span>
-          </div>
+      <div class="flex flex-col" :class="{ '-mb-0.5': showSinglePlatform }">
+        <div class="inline-flex items-center">
+          <IconMdiDownloadOutline />
+          <span v-if="!small">
+            {{ !!singleVersion.downloads[singlePlatform]?.externalUrl ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
+          </span>
         </div>
-      </Button>
-    </a>
+        <div v-if="showSinglePlatform" class="inline-flex justify-center items-center font-normal text-0.75rem">
+          <PlatformLogo :platform="singlePlatform" :size="15" class="mr-1 flex-shrink-0" />
+          <span v-if="singleVersion?.platformDependencies && showVersions">
+            {{ formatVersionRange(singleVersion?.platformDependenciesFormatted[singlePlatform]) }}
+          </span>
+        </div>
+      </div>
+    </Button>
 
-    <DropdownButton v-else-if="version" :button-size="small ? 'medium' : 'large'">
+    <DropdownButton v-else-if="version" :button-size="small ? 'sm' : 'lg'">
       <template #button-label>
         <span class="items-center inline-flex">
           <IconMdiDownloadOutline />
-          <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+          <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
         </span>
       </template>
       <DropdownItem
@@ -174,11 +172,11 @@ function formatVersionRange(versions?: string[]): string {
       </DropdownItem>
     </DropdownButton>
 
-    <DropdownButton v-else-if="project.mainChannelVersions && Object.keys(project.mainChannelVersions).length > 0" :button-size="small ? 'medium' : 'large'">
+    <DropdownButton v-else-if="project.mainChannelVersions && Object.keys(project.mainChannelVersions).length > 0" :button-size="small ? 'sm' : 'lg'">
       <template #button-label>
         <span class="items-center inline-flex">
           <IconMdiDownloadOutline />
-          <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+          <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
         </span>
       </template>
       <DropdownItem

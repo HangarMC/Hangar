@@ -97,11 +97,7 @@ useHead({
     <NuxtLayout>
       <div class="flex min-h-50vh flex-col items-center justify-center">
         <template v-if="statusCode === 404">
-          <Lottie
-            v-if="!animationFailed"
-            src="https://assets9.lottiefiles.com/temp/lf20_dzWAyu.json"
-            @error="animationFailed = true"
-          />
+          <Lottie v-if="!animationFailed" src="https://assets9.lottiefiles.com/temp/lf20_dzWAyu.json" @error="animationFailed = true" />
           <template v-else>
             <h1 class="text-4xl font-bold">{{ title }}</h1>
             <h2 class="text-xl font-bold">{{ text }}</h2>

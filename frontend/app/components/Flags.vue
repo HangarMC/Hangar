@@ -70,7 +70,7 @@ async function getNotifications(flag: HangarProjectFlag) {
             <template v-if="resolved">
               <Button v-if="currentId !== item.id" @click="getNotifications(item)">Load notifications</Button>
               <Button :disabled="loading[item.id]" @click="resolve(item)">
-                <IconMdiCheck class="mr-1" />
+                <IconMdiCheck />
                 {{ i18n.t("flagReview.markUnresolved") }}
               </Button>
             </template>
@@ -78,7 +78,7 @@ async function getNotifications(flag: HangarProjectFlag) {
               <span class="pr-1">Currently {{ item.projectVisibility }}</span>
               <VisibilityChangerModal :prop-visibility="item.projectVisibility" type="project" :post-url="`projects/visibility/${item.projectId}`" />
               <Button :disabled="loading[item.id]" @click="resolve(item)">
-                <IconMdiCheck class="mr-1" />
+                <IconMdiCheck />
                 {{ i18n.t("flagReview.markResolved") }}
               </Button>
             </template>

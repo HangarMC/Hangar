@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Tag, Visibility } from "#shared/types/backend";
-import type { Project, ProjectCompact } from "#shared/types/backend";
+import type { Platform, Project, ProjectCompact } from "#shared/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();
@@ -11,6 +11,11 @@ const props = defineProps<{
   pinned?: boolean;
 }>();
 
+const supportedPlatforms = computed<[Platform, string[]][]>(() =>
+  "supportedPlatforms" in props.project ? (Object.entries(props.project.supportedPlatforms || {}) as [Platform, string[]][]) : []
+);
+const tags = computed<Tag[]>(() => ("settings" in props.project ? props.project.settings?.tags || [] : []));
+
 async function togglePin() {
   await useInternalApi(`projects/project/${props.project.namespace.slug}/pin/${!props.pinned}`, "POST").catch(handleRequestError);
   router.go(0); // I am lazy
@@ -18,79 +23,88 @@ async function togglePin() {
 </script>
 
 <template>
-  <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
-    <Card
-      :class="{
-        '!border-red-500 border-1px': project.visibility === Visibility.SoftDelete,
-        '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.Public,
-        'hover:background-card group': true,
-      }"
-    >
-      <div class="flex space-x-4">
-        <div>
-          <UserAvatar :username="project.namespace.owner" :img-src="project.avatarUrl" size="md" disable-link />
-        </div>
-        <div class="overflow-clip overflow-hidden min-w-0">
-          <div class="inline-flex items-center gap-x-1">
-            <h3>
-              <span class="text-xl font-bold">{{ project.name }}&nbsp;</span>
-              <span class="text-sm"> {{ i18n.t("general.by") }}&nbsp;</span>
-              <span class="text-sm">
-                <object type="html/sucks">
-                  <Link v-slot="{ classes }" custom>
-                    <RouterLink :to="'/' + project.namespace.owner" :class="classes"> {{ project.namespace.owner }} </RouterLink>
-                  </Link>
-                </object>
-              </span>
-            </h3>
-            <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" />
-            <IconMdiEyeOff v-if="project.visibility !== Visibility.Public" />
-            <button v-if="canEdit" :title="'Toggle pinned status for project ' + project.namespace.slug" @click.prevent="togglePin">
-              <IconMdiPinOff v-if="pinned" class="hidden group-hover:block" />
-              <IconMdiPin v-else class="hidden group-hover:block" />
-            </button>
-          </div>
+  <Card
+    :class="{
+      '!border-red-500 border-1px': project.visibility === Visibility.SoftDelete,
+      '!border-gray-300 !dark:border-gray-700 border-1px': project.visibility === Visibility.Public,
+      'relative group hover:background-card !overflow-hidden': true,
+    }"
+  >
+    <div class="flex items-stretch gap-3">
+      <!-- Fixed square, vertically centred: sized to the two-line content height, and any leftover
+           space is split evenly instead of all landing under the avatar. -->
+      <div class="h-88px w-88px flex-shrink-0 self-center">
+        <UserAvatar :username="project.namespace.owner" :monogram-name="project.name" :img-src="project.avatarUrl" size="fill" disable-link />
+      </div>
 
-          <div v-if="'description' in project && project.description" class="mb-1">{{ project.description }}</div>
-          <div v-else />
-          <div class="inline-flex items-center text-gray-500 dark:text-gray-400 lt-sm:hidden">
-            <CategoryLogo :category="project.category" :size="16" class="mr-1" />
+      <div class="flex min-w-0 flex-1 flex-col">
+        <div class="flex min-w-0 items-center gap-x-1.5">
+          <h3 class="min-w-0 truncate text-xl font-bold leading-tight">
+            <!-- Stretched so the whole card is clickable without nesting the author link inside an anchor. -->
+            <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug" class="after:(absolute inset-0 content-empty)">
+              {{ project.name }}
+            </NuxtLink>
+          </h3>
+          <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" class="flex-shrink-0 text-gray-secondary" />
+          <IconMdiEyeOff v-else-if="project.visibility !== Visibility.Public" class="flex-shrink-0 text-gray-secondary" />
+          <span class="flex-shrink-0 text-sm text-gray-secondary">{{ i18n.t("general.by") }}</span>
+          <NuxtLink :to="'/' + project.namespace.owner" class="relative z-1 min-w-0 truncate text-sm font-bold color-primary hover:underline">
+            {{ project.namespace.owner }}
+          </NuxtLink>
+          <button
+            v-if="canEdit"
+            class="relative z-1 ml-auto flex-shrink-0"
+            :title="'Toggle pinned status for project ' + project.namespace.slug"
+            @click.prevent="togglePin"
+          >
+            <IconMdiPinOff v-if="pinned" class="hidden group-hover:block" />
+            <IconMdiPin v-else class="hidden group-hover:block" />
+          </button>
+        </div>
+
+        <!-- Always two lines tall so every card in the list is the same height. -->
+        <p class="mt-1 line-clamp-2 min-h-2.75rem text-base leading-snug">{{ project.description }}</p>
+
+        <div class="mt-auto flex flex-wrap items-center gap-x-2.5 gap-y-1 pt-1 text-sm text-gray-secondary">
+          <span v-for="[platform, versions] in supportedPlatforms" :key="platform" class="inline-flex items-center gap-1">
+            <PlatformLogo :platform="platform" :size="16" class="flex-shrink-0" />
+            <span class="tabular-nums">{{ versionRange(versions) }}</span>
+          </span>
+
+          <span class="inline-flex items-center gap-1">
+            <CategoryLogo :category="project.category" :size="16" class="flex-shrink-0" />
             {{ i18n.t("project.category." + project.category) }}
-            <div v-if="'settings' in project && project.settings" class="inline-flex ml-2 space-x-1">
-              <span class="border-l-1 border-gray-500 dark:border-gray-400" />
-              <span v-for="tag in project.settings.tags" :key="tag" class="inline-flex items-center">
-                <Tooltip>
-                  <template #content>
-                    {{ i18n.t("project.settings.tags." + tag + ".tooltip") }}
-                  </template>
-                  <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-                  <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-                  <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                </Tooltip>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="flex-grow" />
-        <div class="lt-sm:hidden flex flex-col flex-shrink-0 min-w-40">
-          <span class="inline-flex items-center">
-            <IconMdiStar class="mx-1" /> {{ project.stats.stars.toLocaleString("en-US") }} {{ i18n.t("project.info.stars", project.stats.stars) }}
           </span>
-          <span class="inline-flex items-center">
-            <IconMdiDownload class="mx-1" />
-            {{ project.stats.downloads.toLocaleString("en-US") }} {{ i18n.t("project.info.totalDownloads", project.stats.downloads) }}
+
+          <span v-for="tag in tags" :key="tag" class="inline-flex items-center gap-1 rounded background-card px-1.5 py-0.5 text-xs font-semibold">
+            <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+            <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+            <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+            {{ i18n.t("project.settings.tags." + tag + ".title") }}
           </span>
-          <Tooltip>
-            <template #content> {{ i18n.t("project.info.lastUpdatedTooltip") }}<PrettyTime :time="project.lastUpdated" long /> </template>
-            <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" /><PrettyTime :time="project.lastUpdated" short-relative /></span>
-          </Tooltip>
         </div>
       </div>
-      <div class="sm:hidden space-x-1 text-center mt-2">
-        <span class="inline-flex items-center"><IconMdiCalendar class="mx-1" />{{ lastUpdated(project.lastUpdated) }}</span>
-        <span class="inline-flex items-center"><IconMdiStar class="mx-1" /> {{ project.stats.stars }}</span>
-        <span class="inline-flex items-center"><IconMdiDownload class="mx-1" />{{ project.stats.downloads }}</span>
+
+      <div class="ml-auto hidden flex-shrink-0 flex-col items-end gap-0.5 self-center sm:flex">
+        <span class="inline-flex items-center gap-1.5 font-semibold tabular-nums">
+          <IconMdiDownload class="h-4 w-4 flex-shrink-0" />
+          {{ project.stats.downloads.toLocaleString("en-US") }}
+        </span>
+        <span class="inline-flex items-center gap-1.5 font-semibold tabular-nums">
+          <IconMdiStar class="h-4 w-4 flex-shrink-0" />
+          {{ project.stats.stars.toLocaleString("en-US") }}
+        </span>
+        <Tooltip class="relative z-1">
+          <template #content> {{ i18n.t("project.info.lastUpdatedTooltip") }}<PrettyTime :time="project.lastUpdated" long /> </template>
+          <span class="whitespace-nowrap text-xs text-gray-secondary"><PrettyTime :time="project.lastUpdated" short-relative /></span>
+        </Tooltip>
       </div>
-    </Card>
-  </NuxtLink>
+    </div>
+
+    <div class="mt-2 flex items-center justify-center gap-4 text-sm text-gray-secondary sm:hidden">
+      <span class="inline-flex items-center gap-1 tabular-nums"><IconMdiDownload />{{ project.stats.downloads.toLocaleString("en-US") }}</span>
+      <span class="inline-flex items-center gap-1 tabular-nums"><IconMdiStar />{{ project.stats.stars.toLocaleString("en-US") }}</span>
+      <span class="inline-flex items-center gap-1"><IconMdiCalendar /><PrettyTime :time="project.lastUpdated" short-relative /></span>
+    </div>
+  </Card>
 </template>

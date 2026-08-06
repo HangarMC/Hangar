@@ -2,15 +2,17 @@
 const props = withDefaults(
   defineProps<{
     name?: string;
-    buttonSize?: "small" | "medium" | "large";
-    buttonType?: "primary" | "red" | "transparent";
+    buttonSize?: "sm" | "md" | "lg";
+    buttonVariant?: "solid" | "outline" | "ghost";
+    buttonTone?: "primary" | "neutral" | "danger";
     buttonArrow?: boolean;
     placement?: "bottom" | "top" | "left" | "right" | "bottom-end" | "bottom-start";
   }>(),
   {
     name: "Dropdown",
-    buttonSize: "medium",
-    buttonType: "primary",
+    buttonSize: "md",
+    buttonVariant: "solid",
+    buttonTone: "primary",
     buttonArrow: true,
     placement: "bottom-end",
   }
@@ -20,13 +22,13 @@ const props = withDefaults(
 <template>
   <Popper :placement="placement">
     <template #default="{ shown }">
-      <Button :button-type="props.buttonType" :size="props.buttonSize">
+      <Button :variant="props.buttonVariant" :tone="props.buttonTone" :size="props.buttonSize">
         <slot name="button-label">
-          <span class="mx-1">{{ props.name }}</span>
+          {{ props.name }}
         </slot>
         <template v-if="props.buttonArrow">
-          <IconMdiMenu v-if="shown" class="text-lg" />
-          <IconMdiMenuDown v-else class="text-lg" />
+          <IconMdiMenu v-if="shown" />
+          <IconMdiMenuDown v-else />
         </template>
       </Button>
     </template>

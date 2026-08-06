@@ -7,6 +7,7 @@
   },
   "general": {
     "by": "by",
+    "cancel": "Cancel",
     "close": "Close",
     "submit": "Submit",
     "save": "Save",
@@ -52,6 +53,11 @@
     },
     "projectSearch": {
       "clear": "(clear)",
+      "filters": "Filters",
+      "clearPlatform": "Clear platform filter",
+      "searchVersions": "Search versions...",
+      "searchCategories": "Search categories...",
+      "noFilterResults": "No matching filters.",
       "query": "Search in {0} projects...",
       "sortBy": "Sort by",
       "noProjects": "There are no projects. 😢",
@@ -302,6 +308,7 @@
     "pinnedVersions": "Pinned Versions",
     "sponsors": "Sponsors",
     "sponsorsTooltip": "This field is meant for donators and software license sponsors. It is only shown to users if filled.",
+    "sponsorsEmpty": "No sponsors yet. Add some to thank the people funding this project.",
     "license": {
       "link": "Licensed under "
     },
@@ -435,6 +442,7 @@
   },
   "page": {
     "plural": "Pages",
+    "overview": "Overview",
     "new": {
       "title": "Create a new page",
       "error": {
@@ -716,6 +724,7 @@
   },
   "notifications": {
     "title": "Notifications",
+    "subtitle": "Project updates, review results, replies, and invites.",
     "recentNotifications": "Recent notifications",
     "invites": "Invites",
     "invitesPending": "Pending invites: {0}",
@@ -734,6 +743,12 @@
       "all": "All",
       "projects": "Projects",
       "organizations": "Organizations",
+      "invitedYouAs": "invited you as",
+      "invitedOrganizationAs": "invited {0} as",
+      "types": {
+        "project": "Project invite",
+        "organization": "Organization invite"
+      },
       "btns": {
         "accept": "Accept",
         "decline": "Decline",
@@ -751,6 +766,20 @@
       "read": "You have no read notifications.",
       "all": "You have no notifications.",
       "invites": "You have no pending invites."
+    },
+    "emptyState": {
+      "unread": {
+        "title": "No unread notifications",
+        "description": "You're caught up... for now."
+      },
+      "all": {
+        "title": "No notifications yet",
+        "description": "Updates will show up here."
+      },
+      "invites": {
+        "title": "No pending invites",
+        "description": "No project or organization invites right now."
+      }
     },
     "project": {
       "visibilityChanged": "The visibility of {0} has been changed to {1}",
@@ -990,7 +1019,18 @@
         "header": "Profile",
         "avatar": "Avatar",
         "tagline": "Tagline",
-        "social": "Social"
+        "social": "Social",
+        "socialLinks": {
+          "title": "Links",
+          "description": "Shown as icons on your profile.",
+          "add": "Add link",
+          "noValue": "No value entered",
+          "empty": "You haven't added any links yet.",
+          "selectType": "Select a link type first.",
+          "alreadyAdded": "You already have a link of that type.",
+          "edit": "Edit {0}",
+          "remove": "Remove {0}"
+        }
       },
       "account": {
         "header": "Account",
@@ -1059,6 +1099,35 @@
             "backupCode": "Enter a backup code"
           }
         },
+        "twoFactor": {
+          "title": "Two-factor authentication",
+          "description": "Protect your account with an additional sign-in method.",
+          "enabled": "Enabled",
+          "available": "Available",
+          "off": "Off",
+          "configured": "Configured",
+          "notConfigured": "Not configured",
+          "securityKeyCount": "No keys registered | {0} key registered | {0} keys registered",
+          "backupCodesReady": "Recovery codes are ready.",
+          "backupCodesUnavailable": "Available after setting up two-factor authentication.",
+          "setUp": "Set up",
+          "remove": "Remove",
+          "manage": "Manage",
+          "view": "View",
+          "hide": "Hide",
+          "added": "Added",
+          "addKey": "Add security key"
+        },
+        "connectedAccounts": {
+          "title": "Connected accounts",
+          "description": "Sign in to Hangar with an external provider.",
+          "connected": "Connected",
+          "off": "Off",
+          "notConnected": "Not connected",
+          "connect": "Connect",
+          "connectAnother": "Connect another {0} account",
+          "disconnect": "Disconnect"
+        },
         "unlinkOAuth": {
           "cantUnlink": "You can't unlink your last oauth credential if you don't have a password set",
           "modal": {
@@ -1072,9 +1141,16 @@
         "header": "API keys"
       },
       "misc": {
-        "header": "Other",
-        "accentColor": "Accent Color",
+        "header": "Appearance",
+        "description": "Customize how Hangar looks and reads.",
+        "theme": "Theme",
+        "systemTheme": "System",
+        "lightTheme": "Light",
+        "darkTheme": "Dark",
+        "accentColor": "Accent color",
+        "accentDescription": "Used for buttons, links, and highlights.",
         "language": "Language",
+        "languageDescription": "Changing the language reloads the page.",
         "alert": {
           "colorAlert": "The accent colors are mostly untested and full of contrast issues, proceed with caution!",
           "languageAlert": "Translations are experimental!"

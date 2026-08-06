@@ -18,7 +18,11 @@ export function wrap(name: string, wrap: string): VariantFunction {
 export default defineConfig({
   presets: [presetWind(), presetAttributify(), presetTypography()],
   transformers: [transformerVariantGroup(), transformerDirectives()],
-  safelist: "order-last button-primary button-secondary button-red button-transparent".split(" "),
+  safelist: [
+    "order-last",
+    // composed at runtime by Button.vue
+    ...["solid", "outline", "ghost"].flatMap((variant) => ["primary", "neutral", "danger"].map((tone) => `btn-${variant}-${tone}`)),
+  ],
   shortcuts: {
     "background-body": "bg-gray-100 dark:bg-gray-900",
     "background-default": "bg-gray-50 dark:bg-gray-800",
@@ -26,10 +30,15 @@ export default defineConfig({
     "shadow-default": "shadow-lg shadow-gray-300 dark:shadow-gray-900",
     "color-primary": "text-primary-500 dark:text-primary-300",
     "border-top-primary": "border-solid border-t-4 border-t-primary-500",
-    "button-primary": "bg-primary-500 enabled:hover:bg-primary-400",
-    "button-secondary": "bg-secondary-500 enabled:hover:(bg-secondary-400 dark:bg-secondary-600)",
-    "button-transparent": "bg-transparent enabled:hover:(bg-primary-500/15 text-primary-500 dark:text-primary-200)",
-    "button-red": "bg-red-500 dark:bg-red-600 enabled:hover:(bg-red-400 dark:bg-red-500)",
+    "btn-solid-primary": "bg-primary-500 text-white hover:bg-primary-400",
+    "btn-solid-neutral": "bg-secondary-500 text-white hover:(bg-secondary-400 dark:bg-secondary-600)",
+    "btn-solid-danger": "bg-red-500 text-white dark:bg-red-600 hover:(bg-red-400 dark:bg-red-500)",
+    "btn-outline-primary": "border border-primary-500 color-primary hover:bg-primary-500/10",
+    "btn-outline-neutral": "border border-gray-300 dark:border-gray-600 hover:background-card",
+    "btn-outline-danger": "border border-red-500 text-red-600 dark:(border-red-500 text-red-400) hover:bg-red-500/10",
+    "btn-ghost-primary": "color-primary hover:bg-primary-500/15",
+    "btn-ghost-neutral": "hover:background-card",
+    "btn-ghost-danger": "text-red-600 dark:text-red-400 hover:bg-red-500/10",
     "text-gray": "text-gray-600 dark:text-gray-300",
     "text-gray-secondary": "text-gray-500 dark:text-gray-400",
   },

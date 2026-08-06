@@ -31,25 +31,28 @@ async function confirm(close: () => void) {
 
 <template>
   <Modal :title="i18n.t(`author.lock.confirm${user.locked ? 'Unlock' : 'Lock'}${user.isOrganization ? 'Org' : ''}`, [user.name])">
-    <template #default="{ on }">
+    <template #default>
       <InputTextarea v-model="comment" :rules="[required()]" :label="i18n.t(`author.lock.reason${user.locked ? 'Unlock' : 'Lock'}`)" />
       <InputCheckbox
         v-if="hasPerms(NamedPermission.DeleteProject)"
         v-model="toggleProjectDeletion"
         :label="i18n.t(`author.lock.${user.locked ? 'reinstateProjects' : 'deleteProjects'}${user.isOrganization ? 'Org' : ''}`)"
       />
-      <Button button-type="primary" class="mt-3" :disabled="v.$invalid" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
     </template>
     <template #activator="{ on }">
       <Tooltip>
         <template #content>
           {{ i18n.t(`author.tooltips.${user.locked ? "unlock" : "lock"}${user.isOrganization ? "Org" : ""}`) }}
         </template>
-        <Button size="small" class="mr-1 inline-flex" v-on="on">
+        <Button variant="outline" tone="neutral" size="sm" class="mr-1" v-on="on">
           <IconMdiLockOpenOutline v-if="user.locked" />
           <IconMdiLockOutline v-else />
         </Button>
       </Tooltip>
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button :disabled="v.$invalid" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
     </template>
   </Modal>
 </template>

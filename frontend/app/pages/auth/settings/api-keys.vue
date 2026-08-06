@@ -77,9 +77,9 @@ function copy(event: any) {
         <template #content>
           {{ i18n.t("apiKeys.copied") }}
         </template>
-        <Button button-type="secondary" size="large" @click="copy">
+        <Button variant="solid" tone="neutral" @click="copy">
           {{ i18n.t("apiKeys.copy") }}
-          <IconMdiContentCopy class="ml-1" />
+          <IconMdiContentCopy />
         </Button>
       </Tooltip>
     </Alert>
@@ -90,7 +90,7 @@ function copy(event: any) {
         <div class="flex-grow mr-2">
           <InputText v-model="name" :label="i18n.t('apiKeys.name')" :rules="[required(), minLength()(5), maxLength()(36), validApiKeyName()(auth.user.name)]" />
         </div>
-        <Button size="medium" class="w-max" :disabled="v.$invalid || loadingCreate || v.$pending || selectedPerms.length === 0" @click="create">
+        <Button class="w-max" :disabled="v.$invalid || loadingCreate || v.$pending || selectedPerms.length === 0" @click="create">
           {{ i18n.t("apiKeys.createKey") }}
         </Button>
       </div>
@@ -128,7 +128,17 @@ function copy(event: any) {
             <td>{{ key.permissions.join(", ") }}</td>
             <td><PrettyTime v-if="key.lastUsed" :time="key.lastUsed" long /></td>
             <td>
-              <Button button-type="red" :loading="loadingDelete[key.name]" @click="deleteKey(key)"><IconMdiDelete /></Button>
+              <Button
+                variant="ghost"
+                tone="danger"
+                size="sm"
+                icon-only
+                :loading="loadingDelete[key.name]"
+                :title="i18n.t('general.delete')"
+                :aria-label="i18n.t('general.delete')"
+                @click="deleteKey(key)"
+                ><IconMdiDelete
+              /></Button>
             </td>
           </tr>
           <tr v-if="apiKeys?.length === 0">

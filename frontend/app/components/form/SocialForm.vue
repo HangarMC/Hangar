@@ -2,9 +2,15 @@
 const { t } = useI18n();
 const notification = useNotificationStore();
 
+const props = withDefaults(defineProps<{ compact?: boolean }>(), {
+  compact: false,
+});
+
 const socials = defineModel<Record<string, string>>({ required: true });
 
 const linkType = ref<string>();
+const addingLink = ref(false);
+const editingType = ref<string>();
 const linkTypes = [
   { value: "discord", text: "Discord" },
   { value: "github", text: "GitHub" },
@@ -13,36 +19,99 @@ const linkTypes = [
   { value: "website", text: "Website" },
 ];
 
+const availableLinkTypes = computed(() => linkTypes.filter((type) => !Object.hasOwn(socials.value, type.value)));
+
 function addLink() {
   if (!linkType.value) {
-    return notification.error("You have to select a type");
+    return notification.error(t("auth.settings.profile.socialLinks.selectType"));
   }
-  if (Object.keys(socials.value).includes(linkType.value)) {
-    return notification.error("You already have a link of that type added");
+  if (Object.hasOwn(socials.value, linkType.value)) {
+    return notification.error(t("auth.settings.profile.socialLinks.alreadyAdded"));
   }
   socials.value[linkType.value] = "";
+  editingType.value = linkType.value;
+  linkType.value = undefined;
+  addingLink.value = false;
 }
 
 function removeLink(type: string) {
   delete socials.value[type];
+  if (editingType.value === type) {
+    editingType.value = undefined;
+  }
+}
+
+function toggleEditing(type: string) {
+  editingType.value = editingType.value === type ? undefined : type;
+}
+
+function linkName(type: string) {
+  return linkTypes.find((linkType) => linkType.value === type)?.text ?? type;
 }
 </script>
 
 <template>
-  <div v-for="(_, type) in socials" :key="type" class="flex items-center mt-2">
-    <span class="w-25">{{ linkTypes.find((e) => e.value === type)?.text }}</span>
-    <div class="w-75">
-      <InputText v-if="type === 'website'" v-model="socials[type]" label="URL" :rules="[required(), validUrl()]" />
-      <InputText v-else v-model="socials[type]" :label="t('auth.settings.account.username')" :rules="[required()]" />
+  <section :class="{ 'mt-6': !props.compact }">
+    <div class="flex items-start gap-3">
+      <div>
+        <h3 class="text-lg font-bold">{{ t("auth.settings.profile.socialLinks.title") }}</h3>
+        <p class="mt-1 text-sm text-gray-secondary">{{ t("auth.settings.profile.socialLinks.description") }}</p>
+      </div>
+      <Button variant="outline" tone="neutral" class="ml-auto shrink-0" :disabled="availableLinkTypes.length === 0" @click.prevent="addingLink = !addingLink">
+        <IconMdiPlus v-if="!addingLink" />
+        {{ addingLink ? t("general.close") : t("auth.settings.profile.socialLinks.add") }}
+      </Button>
     </div>
-    <IconMdiBin class="ml-2 w-6 h-6 cursor-pointer hover:color-red" @click="removeLink(type)" />
-  </div>
-  <div class="flex items-center mt-2">
-    <div class="w-25">
-      <Button button-type="secondary" @click.prevent="addLink">Add link</Button>
+
+    <div v-if="addingLink" class="mt-3 flex items-start gap-2 rounded-lg background-card p-3 lt-sm:flex-col">
+      <InputSelect v-model="linkType" class="flex-grow lt-sm:w-full" :values="availableLinkTypes" :label="t('project.settings.links.typeField')" />
+      <Button class="mt-1" :disabled="!linkType" @click.prevent="addLink">{{ t("general.add") }}</Button>
     </div>
-    <div class="w-75">
-      <InputSelect v-model="linkType" :values="linkTypes" :label="t('project.settings.links.typeField')" />
+
+    <div class="mt-2">
+      <div v-for="(_, type) in socials" :key="type" class="flex items-center gap-3 border-t border-gray-300 py-4 first:border-t-0 dark:border-gray-600">
+        <IconMdiDiscord v-if="type === 'discord'" class="shrink-0 text-xl" />
+        <IconMdiGithub v-else-if="type === 'github'" class="shrink-0 text-xl" />
+        <IconMdiTwitter v-else-if="type === 'twitter'" class="shrink-0 text-xl" />
+        <IconMdiYoutube v-else-if="type === 'youtube'" class="shrink-0 text-xl" />
+        <IconMdiWeb v-else class="shrink-0 text-xl" />
+
+        <div class="min-w-0 flex-grow">
+          <div class="font-semibold">{{ linkName(type) }}</div>
+          <div v-show="editingType !== type" class="truncate text-sm text-gray-secondary">
+            {{ socials[type] || t("auth.settings.profile.socialLinks.noValue") }}
+          </div>
+          <div v-show="editingType === type" class="mt-2">
+            <InputText v-if="type === 'website'" v-model="socials[type]" label="URL" :rules="[required(), validUrl()]" />
+            <InputText v-else v-model="socials[type]" :label="t('auth.settings.account.username')" :rules="[required()]" />
+          </div>
+        </div>
+
+        <div class="flex shrink-0 gap-1 self-start">
+          <Button
+            variant="ghost"
+            :class="{ '!bg-primary-500/15 color-primary': editingType === type }"
+            :title="t('auth.settings.profile.socialLinks.edit', [linkName(type)])"
+            :aria-label="t('auth.settings.profile.socialLinks.edit', [linkName(type)])"
+            @click.prevent="toggleEditing(type)"
+          >
+            <IconMdiPencil />
+          </Button>
+          <Button
+            variant="ghost"
+            class="hover:!text-red-500"
+            :title="t('auth.settings.profile.socialLinks.remove', [linkName(type)])"
+            :aria-label="t('auth.settings.profile.socialLinks.remove', [linkName(type)])"
+            @click.prevent="removeLink(type)"
+          >
+            <IconMdiDelete />
+          </Button>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <p v-if="Object.keys(socials).length === 0 && !addingLink" class="mt-4 text-sm text-gray-secondary">
+      {{ t("auth.settings.profile.socialLinks.empty") }}
+    </p>
+  </section>
 </template>

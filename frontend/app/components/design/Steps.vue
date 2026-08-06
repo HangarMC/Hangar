@@ -117,37 +117,21 @@ async function goto(step: Step) {
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <Button
-          v-if="showBack && activeStepIndex === 1"
-          button-type="red"
-          :disabled="disableBack"
-          size="medium"
-          class="mt-3 mr-2"
-          @click="back"
-          v-on="useTracking(trackingName + '-back', { step: internalValue })"
-        >
-          {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
-        </Button>
-        <Button
-          v-else-if="showBack"
-          :disabled="disableBack"
-          size="medium"
-          class="mt-3 mr-2"
-          @click="back"
-          v-on="useTracking(trackingName + '-back', { step: internalValue })"
-        >
-          {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
-        </Button>
-        <Button
-          v-if="showNext"
-          :disabled="disableNext"
-          size="medium"
-          class="mt-3"
-          @click="next"
-          v-on="useTracking(trackingName + '-next', { step: internalValue })"
-        >
-          {{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}
-        </Button>
+        <div class="mt-5 flex justify-end gap-2">
+          <Button
+            v-if="showBack"
+            variant="ghost"
+            tone="neutral"
+            :disabled="disableBack"
+            @click="back"
+            v-on="useTracking(trackingName + '-back', { step: internalValue })"
+          >
+            {{ i18n.t(buttonLangKey + activeStepIndex + ".back") }}
+          </Button>
+          <Button v-if="showNext" :disabled="disableNext" :loading="loading" @click="next" v-on="useTracking(trackingName + '-next', { step: internalValue })">
+            {{ i18n.t(buttonLangKey + activeStepIndex + ".continue") }}
+          </Button>
+        </div>
       </Card>
     </div>
   </div>

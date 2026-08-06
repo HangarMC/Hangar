@@ -128,6 +128,7 @@ function requiresConfirmation(): ConfirmationType {
         class="flex-shrink-0 mr-3 lt-sm:hidden"
         :loading="!project"
         :username="project?.namespace?.owner"
+        :monogram-name="project?.name"
         :to="'/' + project?.namespace?.owner + '/' + project?.name"
         :img-src="project?.avatarUrl"
       />
@@ -137,6 +138,7 @@ function requiresConfirmation(): ConfirmationType {
             class="!w-8 !h-8 sm:hidden"
             :loading="!project"
             :username="project?.namespace?.owner"
+            :monogram-name="project?.name"
             :to="'/' + project?.namespace?.owner + '/' + project?.name"
             :img-src="project?.avatarUrl"
           />
@@ -167,34 +169,31 @@ function requiresConfirmation(): ConfirmationType {
           </Tooltip>
           <DownloadButton :project="project" />
         </span>
-        <div class="flex">
+        <div class="flex gap-1.5">
           <Tooltip>
             <template #content>
               <span v-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
               <span v-else-if="hasStarred()">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button button-type="secondary" size="small" @click="toggleStar">
+            <Button variant="outline" tone="neutral" size="sm" class="!px-2" @click="toggleStar">
               <IconMdiStar v-if="hasStarred()" />
               <IconMdiStarOutline v-else />
-              <span class="ml-2">{{ getStarredCount()?.toLocaleString("en-US") }}</span>
+              <span class="tabular-nums">{{ getStarredCount()?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
-          <!-- Tooltips mess with normal margins so this is a workaround -->
-          <div class="px-1" />
           <Tooltip>
             <template #content>
               <span v-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
               <span v-else-if="isWatching()">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button button-type="secondary" size="small" @click="toggleWatch">
+            <Button variant="outline" tone="neutral" size="sm" class="!px-2" @click="toggleWatch">
               <IconMdiBell v-if="isWatching()" />
               <IconMdiBellOutline v-else />
-              <span class="ml-2">{{ getWatchingCount()?.toLocaleString("en-US") }}</span>
+              <span class="tabular-nums">{{ getWatchingCount()?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
-          <div class="px-1" />
           <FlagModal v-if="project" :project="project" :disabled="isOwn" :open-report="reported" @reported="reported = true" />
         </div>
       </div>

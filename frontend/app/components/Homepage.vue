@@ -38,6 +38,36 @@ if (props.platform) {
 const activeSorter = ref<string>((route.query.sort as string) || "-stars");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.query as string) || "");
+const versionQuery = ref("");
+const categoryQuery = ref("");
+const openFilterSections = reactive({
+  platforms: true,
+  tags: true,
+  categories: true,
+});
+// Mobile only: the sidebar sits above the results, so it starts collapsed behind a "Filters" toggle.
+const mobileFiltersOpen = ref(false);
+const activeFilterCount = computed(
+  () => (filters.value.platform ? 1 : 0) + filters.value.versions.length + filters.value.tags.length + filters.value.categories.length
+);
+
+const filteredPlatformVersions = computed(() => {
+  if (!filters.value.platform) return [];
+  const versions = usePlatformVersions(filters.value.platform);
+  const search = versionQuery.value.trim().toLowerCase();
+  if (!search) return versions;
+  return versions.flatMap((version) => {
+    if (version.version.toLowerCase().includes(search)) return [version];
+    const subVersions = version.subVersions.filter((subVersion) => subVersion.toLowerCase().includes(search));
+    return subVersions.length > 0 ? [{ ...version, subVersions }] : [];
+  });
+});
+
+const filteredCategories = computed(() => {
+  const search = categoryQuery.value.trim().toLowerCase();
+  if (!search) return useVisibleCategories.value;
+  return useVisibleCategories.value.filter((category) => i18n.t(category.title).toLowerCase().includes(search));
+});
 
 const requestParams = computed(() => {
   const limit = 10;
@@ -73,13 +103,28 @@ watch(
   { deep: true }
 );
 
-function updatePlatform(platform: any) {
-  filters.value.platform = platform;
+function togglePlatform(platform: Platform) {
+  updatePlatform(filters.value.platform === platform ? undefined : platform);
+}
 
-  const allowedVersion = usePlatformVersions(platform);
-  filters.value.versions = filters.value.versions.filter((existingVersion) => {
-    return allowedVersion.find((allowedNewVersion) => allowedNewVersion.version === existingVersion);
-  });
+// Reassign, don't mutate: `requestParams` only reads `filters.value.<key>`, so an in-place
+// push/splice leaves that property unchanged and the (non-deep) params watcher never refetches.
+function toggleFilter(key: "tags" | "categories", value: string) {
+  const list = filters.value[key];
+  filters.value[key] = list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
+}
+
+function updatePlatform(platform?: Platform) {
+  filters.value.platform = platform;
+  versionQuery.value = platform ? versionQuery.value : "";
+
+  // Only reassign when the selection really changes -- the deep watcher below triggers an
+  // undebounced refresh, which would race the debounced params watcher into a second request.
+  const allowed = platform ? usePlatformVersions(platform) : [];
+  const kept = platform ? filters.value.versions.filter((v) => allowed.some((a) => a.version === v)) : [];
+  if (kept.length !== filters.value.versions.length) {
+    filters.value.versions = kept;
+  }
 }
 
 const config = useRuntimeConfig();
@@ -216,76 +261,139 @@ useSeo(
         </div>
       </div>
     </Container>
-    <Container lg="flex items-start gap-6">
+    <Container class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start lg:gap-6">
       <!-- Projects -->
-      <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
-        <h2 class="font-bold text-2xl lg:(absolute -mt-11)">Projects</h2>
+      <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0 lg:order-first">
         <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
-      <Card accent class="min-w-300px flex flex-col gap-4">
-        <h2 class="font-bold text-xl -mb-2">Filters</h2>
-        <div v-if="!platform" class="platforms">
-          <h3 class="font-bold mb-1">
-            {{ i18n.t("hangar.projectSearch.platforms") }}
-            <span
-              v-if="filters.platform"
-              class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400"
-              cursor="pointer"
-              @click="filters.platform = undefined"
+      <aside class="order-first flex flex-col gap-3 lg:order-last lg:min-w-300px lg:max-w-300px">
+        <Button variant="outline" tone="neutral" class="lg:hidden" @click="mobileFiltersOpen = !mobileFiltersOpen">
+          <IconMdiFilterVariant />
+          {{ i18n.t("hangar.projectSearch.filters") }}
+          <span v-if="activeFilterCount" class="rounded-full bg-primary-500 px-1.5 text-xs text-white">{{ activeFilterCount }}</span>
+        </Button>
+
+        <div :class="['flex flex-col gap-3', mobileFiltersOpen ? '' : 'lt-lg:hidden']">
+          <Card class="!p-3">
+            <button
+              type="button"
+              class="mb-1 flex w-full items-center gap-2 text-left font-bold text-lg"
+              :aria-expanded="openFilterSections.platforms"
+              @click="openFilterSections.platforms = !openFilterSections.platforms"
             >
-              {{ i18n.t("hangar.projectSearch.clear") }}
-            </span>
-          </h3>
-          <div class="flex flex-col gap-1">
-            <ul>
-              <li v-for="visiblePlatform in useVisiblePlatforms" :key="visiblePlatform.enumName" class="inline-flex w-full">
-                <InputRadio
+              {{ platform ? i18n.t("hangar.projectSearch.versions." + filters.platform) : i18n.t("hangar.projectSearch.platforms") }}
+              <IconMdiChevronDown
+                class="ml-auto flex-shrink-0 text-gray-secondary transition-transform"
+                :class="{ '-rotate-90': !openFilterSections.platforms }"
+              />
+            </button>
+
+            <div v-show="openFilterSections.platforms">
+              <div v-if="!platform" class="flex flex-col gap-0.5">
+                <FilterOption
+                  v-for="visiblePlatform in useVisiblePlatforms"
+                  :key="visiblePlatform.enumName"
                   :label="visiblePlatform.name"
-                  :model-value="filters.platform"
-                  :value="visiblePlatform.enumName"
-                  @update:model-value="updatePlatform"
+                  :selected="filters.platform === visiblePlatform.enumName"
+                  @toggle="togglePlatform(visiblePlatform.enumName)"
                 >
-                  <PlatformLogo :platform="visiblePlatform.enumName" :size="24" class="mr-1" />
-                </InputRadio>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-if="filters.platform" class="versions">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h3>
-          <div class="max-h-40 overflow-auto">
-            <VersionSelector v-model="filters.versions" :versions="usePlatformVersions(filters.platform)" :open="false" col />
-          </div>
-        </div>
-        <div class="tags">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.tags") }}</h3>
-          <div class="flex flex-col gap-1">
-            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
-              <template #label>
-                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
-              </template>
-            </InputCheckbox>
-          </div>
-        </div>
-        <div class="categories">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h3>
-          <div class="flex flex-col gap-1">
-            <InputCheckbox
-              v-for="category in useVisibleCategories"
-              :key="category.apiName"
-              v-model="filters.categories"
-              :value="category.apiName"
-              :label="i18n.t(category.title)"
+                  <PlatformLogo :platform="visiblePlatform.enumName" :size="18" class="flex-shrink-0" />
+                </FilterOption>
+              </div>
+
+              <div v-if="filters.platform" :class="{ 'mt-4 border-t border-gray-300 pt-4 dark:border-gray-700': !platform }">
+                <h4 v-if="!platform" class="mb-2 font-semibold">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h4>
+                <div class="relative mb-2">
+                  <IconMdiMagnify class="pointer-events-none absolute left-2.5 top-2.5 text-gray-secondary" />
+                  <input
+                    v-model="versionQuery"
+                    type="search"
+                    class="w-full rounded-md background-card py-2 pl-8 pr-3 text-sm outline-none focus:(ring-2 ring-primary-500)"
+                    :placeholder="i18n.t('hangar.projectSearch.searchVersions')"
+                  />
+                </div>
+                <div class="max-h-52 overflow-auto pr-1">
+                  <VersionSelector
+                    v-if="filteredPlatformVersions.length"
+                    v-model="filters.versions"
+                    :versions="filteredPlatformVersions"
+                    :open="false"
+                    col
+                    compact
+                  />
+                  <p v-else class="py-2 text-sm text-gray-secondary">{{ i18n.t("hangar.projectSearch.noFilterResults") }}</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card class="!p-3">
+            <button
+              type="button"
+              class="mb-1 flex w-full items-center gap-2 text-left font-bold text-lg"
+              :aria-expanded="openFilterSections.tags"
+              @click="openFilterSections.tags = !openFilterSections.tags"
             >
-              <CategoryLogo :category="category.apiName as Category" :size="22" class="mr-1" />
-            </InputCheckbox>
-          </div>
+              {{ i18n.t("hangar.projectSearch.tags") }}
+              <IconMdiChevronDown class="ml-auto flex-shrink-0 text-gray-secondary transition-transform" :class="{ '-rotate-90': !openFilterSections.tags }" />
+            </button>
+            <div v-show="openFilterSections.tags" class="flex flex-col gap-0.5">
+              <FilterOption
+                v-for="tag in Object.values(Tag)"
+                :key="tag"
+                :label="i18n.t('project.settings.tags.' + tag + '.title')"
+                :selected="filters.tags.includes(tag)"
+                @toggle="toggleFilter('tags', tag)"
+              >
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" class="flex-shrink-0" />
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" class="flex-shrink-0" />
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" class="flex-shrink-0" />
+              </FilterOption>
+            </div>
+          </Card>
+
+          <Card class="!p-3">
+            <button
+              type="button"
+              class="mb-1 flex w-full items-center gap-2 text-left font-bold text-lg"
+              :aria-expanded="openFilterSections.categories"
+              @click="openFilterSections.categories = !openFilterSections.categories"
+            >
+              {{ i18n.t("hangar.projectSearch.categories") }}
+              <IconMdiChevronDown
+                class="ml-auto flex-shrink-0 text-gray-secondary transition-transform"
+                :class="{ '-rotate-90': !openFilterSections.categories }"
+              />
+            </button>
+            <div v-show="openFilterSections.categories">
+              <div class="relative mb-2">
+                <IconMdiMagnify class="pointer-events-none absolute left-2.5 top-2.5 text-gray-secondary" />
+                <input
+                  v-model="categoryQuery"
+                  type="search"
+                  class="w-full rounded-md background-card py-2 pl-8 pr-3 text-sm outline-none focus:(ring-2 ring-primary-500)"
+                  :placeholder="i18n.t('hangar.projectSearch.searchCategories')"
+                />
+              </div>
+              <div class="max-h-72 overflow-auto pr-1">
+                <div class="flex flex-col gap-0.5">
+                  <FilterOption
+                    v-for="category in filteredCategories"
+                    :key="category.apiName"
+                    :label="i18n.t(category.title)"
+                    :selected="filters.categories.includes(category.apiName)"
+                    @toggle="toggleFilter('categories', category.apiName)"
+                  >
+                    <CategoryLogo :category="category.apiName as Category" :size="18" class="flex-shrink-0" />
+                  </FilterOption>
+                </div>
+                <p v-if="filteredCategories.length === 0" class="py-2 text-sm text-gray-secondary">{{ i18n.t("hangar.projectSearch.noFilterResults") }}</p>
+              </div>
+            </div>
+          </Card>
         </div>
-      </Card>
+      </aside>
     </Container>
     <h2 class="text-2xl text-center font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>
     <div class="md:(ml-15 mr-15)">

@@ -172,7 +172,7 @@ useSeo(computed(() => ({ title: i18n.t("userActionLog.title"), route })));
           <template v-if="(item.contextType === 'PAGE' || item.action.pgLoggedAction === 'version_description_changed') && item.oldState">
             <MarkdownModal :markdown-input="item.oldState" :title="i18n.t('userActionLog.markdownView')">
               <template #activator="{ on }">
-                <Button size="small" v-on="on">
+                <Button size="sm" v-on="on">
                   {{ i18n.t("userActionLog.markdownView") }}
                 </Button>
               </template>
@@ -191,14 +191,14 @@ useSeo(computed(() => ({ title: i18n.t("userActionLog.title"), route })));
             <div class="flex gap-2">
               <MarkdownModal :markdown-input="item.newState" :title="i18n.t('userActionLog.markdownView')">
                 <template #activator="{ on }">
-                  <Button size="small" v-on="on">
+                  <Button size="sm" v-on="on">
                     {{ i18n.t("userActionLog.markdownView") }}
                   </Button>
                 </template>
               </MarkdownModal>
               <DiffModal :left="item.oldState" :right="item.newState" :title="i18n.t('userActionLog.diffView')">
                 <template #activator="{ on }">
-                  <Button size="small" v-on="on">
+                  <Button size="sm" v-on="on">
                     {{ i18n.t("userActionLog.diffView") }}
                   </Button>
                 </template>

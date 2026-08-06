@@ -238,9 +238,9 @@ async function restoreVersion() {
               <span v-if="version?.pinnedStatus === PinnedStatus.CHANNEL">{{ i18n.t("version.page.pinned.tooltip.channel") }}</span>
               <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${version?.pinnedStatus?.toLowerCase()}`) }}</span>
             </template>
-            <Button size="small" :disabled="version?.pinnedStatus === PinnedStatus.CHANNEL" @click="setPinned(version?.pinnedStatus === PinnedStatus.NONE)">
-              <IconMdiPinOff v-if="version?.pinnedStatus !== PinnedStatus.NONE" class="mr-1" />
-              <IconMdiPin v-else class="mr-1" />
+            <Button size="sm" :disabled="version?.pinnedStatus === PinnedStatus.CHANNEL" @click="setPinned(version?.pinnedStatus === PinnedStatus.NONE)">
+              <IconMdiPinOff v-if="version?.pinnedStatus !== PinnedStatus.NONE" />
+              <IconMdiPin v-else />
               {{ i18n.t(`version.page.pinned.button.${version?.pinnedStatus?.toLowerCase()}`) }}
             </Button>
           </Tooltip>
@@ -278,10 +278,11 @@ async function restoreVersion() {
             :title="i18n.t('version.page.delete')"
             :label="i18n.t('general.comment')"
             :submit="deleteVersion"
+            submit-tone="danger"
             require-input
           >
             <template #activator="{ on }">
-              <Button button-type="red" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
+              <Button variant="outline" tone="danger" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
             </template>
           </TextAreaModal>
           <TextAreaModal
@@ -289,10 +290,11 @@ async function restoreVersion() {
             :title="i18n.t('version.page.hardDelete')"
             :label="i18n.t('general.comment')"
             :submit="hardDeleteVersion"
+            submit-tone="danger"
             require-input
           >
             <template #activator="{ on }">
-              <Button button-type="red" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
+              <Button variant="outline" tone="danger" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
             </template>
           </TextAreaModal>
         </div>

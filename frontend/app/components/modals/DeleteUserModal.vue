@@ -24,17 +24,29 @@ async function confirm(close: () => void) {
 
 <template>
   <Modal title="Delete user">
-    <template #default="{ on }">
+    <template #default>
       <InputTextarea v-model="comment" :rules="[required()]" label="Reason" />
-      <Button button-type="red" class="mt-3" :disabled="v.$invalid" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
     </template>
     <template #activator="{ on }">
       <Tooltip>
         <template #content> Delete user </template>
-        <Button button-type="red" size="small" class="mr-1 inline-flex" v-on="on">
+        <Button
+          variant="ghost"
+          tone="danger"
+          size="sm"
+          icon-only
+          class="mr-1"
+          :title="i18n.t('general.delete')"
+          :aria-label="i18n.t('general.delete')"
+          v-on="on"
+        >
           <IconMdiDelete />
         </Button>
       </Tooltip>
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button tone="danger" :disabled="v.$invalid" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
     </template>
   </Modal>
 </template>

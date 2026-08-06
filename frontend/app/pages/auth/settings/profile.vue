@@ -37,21 +37,15 @@ async function saveProfile() {
     <PageTitle>{{ t("auth.settings.profile.header") }}</PageTitle>
 
     <h3 class="text-lg font-bold mb-2">{{ t("auth.settings.profile.avatar") }}</h3>
-    <div class="relative">
-      <UserAvatar :username="auth.user.name" :avatar-url="auth.user.avatarUrl" />
-      <AvatarChangeModal :avatar="auth.user.avatarUrl" :action="`users/${auth.user.name}/settings/avatar`">
-        <template #activator="{ on }">
-          <Button class="absolute bottom-0" @click.prevent="on.click"><IconMdiPencil /></Button>
-        </template>
-      </AvatarChangeModal>
-    </div>
+    <EditableAvatar :username="auth.user.name" :avatar-url="auth.user.avatarUrl" :action="`users/${auth.user.name}/settings/avatar`" size="xl" />
 
     <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.profile.tagline") }}</h3>
     <InputText v-model="profileForm.tagline" :label="t('auth.settings.profile.tagline')" counter :maxlength="useBackendData.validations.userTagline.max" />
 
-    <h3 class="text-lg font-bold mt-4">{{ t("auth.settings.profile.social") }}</h3>
     <SocialForm v-model="profileForm.socials!" />
 
-    <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">{{ t("general.save") }}</Button>
+    <div class="mt-6 flex justify-end">
+      <Button type="submit" :loading="loading" @click.prevent="saveProfile">{{ t("general.save") }}</Button>
+    </div>
   </div>
 </template>

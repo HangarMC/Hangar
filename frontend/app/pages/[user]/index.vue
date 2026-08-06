@@ -188,11 +188,9 @@ useSeo(
           <template #content>
             {{ i18n.t(`author.tooltips.${btn.name}`) }}
           </template>
-          <Link v-bind="btn.attr">
-            <Button size="small" class="mr-1 inline-flex">
-              <component :is="btn.icon" />
-            </Button>
-          </Link>
+          <Button v-bind="btn.attr" variant="outline" tone="neutral" size="sm" icon-only class="mr-1" :aria-label="i18n.t(`author.tooltips.${btn.name}`)">
+            <component :is="btn.icon" />
+          </Button>
         </Tooltip>
 
         <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IsStaff)" :user="user" />

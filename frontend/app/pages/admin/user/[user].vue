@@ -76,20 +76,10 @@ useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.u
               item-value="value"
             />
           </div>
-          <Button
-            size="medium"
-            :disabled="!selectedRole || user?.roles.some((r) => getRole(r)?.value === selectedRole)"
-            class="ml-1"
-            @click="processRole(true)"
-          >
+          <Button :disabled="!selectedRole || user?.roles.some((r) => getRole(r)?.value === selectedRole)" class="ml-1" @click="processRole(true)">
             {{ i18n.t("general.add") }}
           </Button>
-          <Button
-            size="medium"
-            :disabled="!selectedRole || !user?.roles.some((r) => getRole(r)?.value === selectedRole)"
-            class="ml-1"
-            @click="processRole(false)"
-          >
+          <Button :disabled="!selectedRole || !user?.roles.some((r) => getRole(r)?.value === selectedRole)" class="ml-1" @click="processRole(false)">
             {{ i18n.t("general.delete") }}
           </Button>
         </div>

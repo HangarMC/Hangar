@@ -294,12 +294,12 @@ useSeo(computed(() => ({ title: "Reviews | " + props.project?.name, route, descr
   <div v-if="version" class="mt-4">
     <div class="float-right inline-flex">
       <template v-if="!isReviewStateChecked">
-        <Button size="large" :to="{ name: 'user-project', params: route.params }" exact>
+        <Button size="lg" :to="{ name: 'user-project', params: route.params }" exact>
           <IconMdiHome />
           {{ t("reviews.projectPage") }}
         </Button>
-        <Button class="ml-1" size="large" :to="route.path.replace('/reviews', '/scan')">
-          <IconMdiAlertDecagram class="mr-1" />
+        <Button class="ml-1" size="lg" :to="route.path.replace('/reviews', '/scan')">
+          <IconMdiAlertDecagram />
           {{ i18n.t("version.page.scans") }}
         </Button>
         <DownloadButton v-if="project" :project="project" :version="version" class="ml-1" />
@@ -348,30 +348,30 @@ useSeo(computed(() => ({ title: "Reviews | " + props.project?.name, route, descr
         <div v-if="isCurrentReviewOpen && currentUserReview === review" class="space-x-1">
           <TextAreaModal :title="t('reviews.stopReview')" :label="t('general.message')" :submit="stopReview">
             <template #activator="slotProps">
-              <Button size="small" color="error" v-on="slotProps.on">
+              <Button size="sm" color="error" v-on="slotProps.on">
                 <IconMdiStop />
                 {{ t("reviews.stopReview") }}
               </Button>
             </template>
           </TextAreaModal>
 
-          <Button size="small" :loading="loadingValues.approvePartial" @click="approvePartial">
+          <Button size="sm" :loading="loadingValues.approvePartial" @click="approvePartial">
             <IconMdiCheckDecagramOutline />
             {{ t("reviews.approvePartial") }}
           </Button>
-          <Button size="small" :loading="loadingValues.approve" @click="approve">
+          <Button size="sm" :loading="loadingValues.approve" @click="approve">
             <IconMdiCheckDecagram />
             {{ t("reviews.approve") }}
           </Button>
         </div>
         <div v-else-if="currentUserReview === review" class="text-right">
-          <Button v-if="currentReviewLastAction === 'STOP'" size="small" button-type="secondary" :loading="loadingValues.reopen" @click="reopenReview">
+          <Button v-if="currentReviewLastAction === 'STOP'" size="sm" variant="solid" tone="neutral" :loading="loadingValues.reopen" @click="reopenReview">
             <IconMdiRefresh />
             {{ t("reviews.reopenReview") }}
           </Button>
           <Button
             v-else-if="currentReviewLastAction === 'APPROVE' || currentReviewLastAction === 'PARTIALLY_APPROVE'"
-            size="small"
+            size="sm"
             color="error"
             :loading="loadingValues.undoApproval"
             @click="undoApproval"

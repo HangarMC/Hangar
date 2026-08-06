@@ -41,7 +41,9 @@ async function changeOrgVisibility(org: string) {
       </li>
     </ul>
     <template #activator="{ on }">
-      <Button class="text-sm" v-on="on"><IconMdiPencil /></Button>
+      <Button variant="ghost" tone="neutral" size="sm" icon-only :title="i18n.t('general.edit')" :aria-label="i18n.t('general.edit')" v-on="on"
+        ><IconMdiPencil
+      /></Button>
     </template>
   </Modal>
 </template>

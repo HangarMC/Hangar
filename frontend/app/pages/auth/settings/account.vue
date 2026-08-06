@@ -93,7 +93,7 @@ async function cancelDeletion() {
       <InputText v-model="accountForm.username" :label="t('auth.settings.account.username')" :rules="[required()]" />
       <span class="text-sm opacity-85 -mt-1.5">Note that you can only change your username once every 30 days.</span>
       <InputText v-model="accountForm.email" label="Email" autofill="username" autocomplete="username" :rules="[required(), email()]" />
-      <Button v-if="!settings?.emailConfirmed" class="w-max" size="small" :disabled="loading" @click.prevent="$emit('openEmailConfirmModal')">
+      <Button v-if="!settings?.emailConfirmed" class="w-max" size="sm" :disabled="loading" @click.prevent="$emit('openEmailConfirmModal')">
         {{ t("auth.settings.account.verifyEmail") }}
       </Button>
       <template v-if="settings?.hasPassword">
@@ -114,7 +114,9 @@ async function cancelDeletion() {
         />
       </template>
       <div v-if="error" class="text-red">{{ error }}</div>
-      <Button type="submit" class="w-max" :disabled="loading" @click.prevent="saveAccount">{{ t("general.save") }}</Button>
+      <div class="mt-4 flex justify-end">
+        <Button type="submit" :loading="loading" @click.prevent="saveAccount">{{ t("general.save") }}</Button>
+      </div>
     </form>
 
     <section class="mt-8 rounded-lg border-2 border-red-600 p-5">
@@ -122,7 +124,7 @@ async function cancelDeletion() {
 
       <template v-if="settings?.deletionScheduledFor">
         <p class="mt-2 text-lg">{{ t("auth.settings.account.deletion.scheduled", { date: deletionDate }) }}</p>
-        <Button button-type="secondary" class="mt-4" :loading="deletionLoading" @click="cancelDeletion">
+        <Button variant="solid" tone="neutral" class="mt-4" :loading="deletionLoading" @click="cancelDeletion">
           {{ t("auth.settings.account.deletion.cancel") }}
         </Button>
       </template>
@@ -135,7 +137,7 @@ async function cancelDeletion() {
           {{ t("auth.settings.account.deletion.organizationWarning", { count: settings.ownedOrganizationCount }) }}
         </p>
         <Button
-          button-type="red"
+          tone="danger"
           class="mt-4"
           :disabled="!settings || !!settings.ownedOrganizationCount"
           :loading="deletionLoading"
@@ -148,18 +150,8 @@ async function cancelDeletion() {
 
     <Modal ref="deletionModal" :title="t('auth.settings.account.deletion.modalTitle')">
       <p class="mb-3">{{ t("auth.settings.account.deletion.modalWarning") }}</p>
-      <InputText
-        v-model="deletionConfirmation"
-        :label="t('auth.settings.account.deletion.confirmation', { username: auth.user.name })"
-        autocomplete="off"
-      />
-      <Button
-        button-type="red"
-        class="mt-3"
-        :disabled="deletionConfirmation !== auth.user.name"
-        :loading="deletionLoading"
-        @click="requestDeletion"
-      >
+      <InputText v-model="deletionConfirmation" :label="t('auth.settings.account.deletion.confirmation', { username: auth.user.name })" autocomplete="off" />
+      <Button tone="danger" class="mt-3" :disabled="deletionConfirmation !== auth.user.name" :loading="deletionLoading" @click="requestDeletion">
         {{ t("general.confirm") }}
       </Button>
     </Modal>

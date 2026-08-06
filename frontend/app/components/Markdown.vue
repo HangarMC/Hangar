@@ -3,12 +3,19 @@ const props = withDefaults(
   defineProps<{
     raw?: string | null;
     inline?: boolean;
+    /** Off when a wrapper (MarkdownEditor) renders the overview in its own control cluster. */
+    showToc?: boolean;
   }>(),
   {
     raw: undefined,
     inline: false,
+    showToc: true,
   }
 );
+
+const emit = defineEmits<{
+  headings: [headings: { id: string; text?: string; level: number }[]];
+}>();
 
 const renderedMarkdown = computed(() => {
   const { html, headings } = parseMarkdown(props.raw);
@@ -23,6 +30,8 @@ const renderedMarkdown = computed(() => {
   };
 });
 
+watchEffect(() => emit("headings", renderedMarkdown.value.headings || []));
+
 watchPostEffect(async () => {
   if (!import.meta.env.SSR && typeof renderedMarkdown.value?.html.includes === "function" && renderedMarkdown.value?.html.includes("<code")) {
     await usePrismStore().handlePrism();
@@ -31,31 +40,17 @@ watchPostEffect(async () => {
 </script>
 
 <template>
-  <div v-if="(renderedMarkdown.headings?.length || 0) > 0" class="mb-4 relative">
-    <DropdownButton :button-arrow="false" button-size="small" class="absolute top-2 left-0">
-      <template #button-label>
-        <IconMdiFormatListBulleted />
-      </template>
-      <template #default="{ close }">
-        <div class="w-max flex flex-col max-h-lg max-w-lg overflow-x-auto">
-          <!-- eslint-disable vue/no-v-html -->
-          <a
-            v-for="heading in renderedMarkdown.headings"
-            :key="heading.id"
-            class="px-4 py-2 font-semibold hover:bg-gray-100 hover:dark:bg-gray-700 cursor-pointer decoration-none"
-            :class="'toc-' + heading.level"
-            :href="`#${heading.id}`"
-            @click="close"
-            v-html="heading.text"
-          />
-          <!-- eslint-enable vue/no-v-html -->
-        </div>
-      </template>
-    </DropdownButton>
-  </div>
-  <div class="iframe-container prose dark:prose-invert max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
-    <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-html="renderedMarkdown.html" />
+  <div class="relative">
+    <!-- Sits in the prose padding rather than above it, so the card no longer opens with an empty band. -->
+    <MarkdownToc
+      v-if="showToc && (renderedMarkdown.headings?.length || 0) > 0"
+      :headings="renderedMarkdown.headings || []"
+      class="absolute right-2 top-2 z-1"
+    />
+    <div class="iframe-container prose dark:prose-invert max-w-full rounded markdown break-words" :class="{ 'p-4': !inline, inline: inline }">
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div v-html="renderedMarkdown.html" />
+    </div>
   </div>
 </template>
 
@@ -65,20 +60,5 @@ watchPostEffect(async () => {
 .iframe-container iframe {
   max-width: 100%;
   max-height: 100%;
-}
-</style>
-
-<style lang="scss" scoped>
-.toc-1 {
-  font-weight: 700;
-}
-.toc-2 {
-  padding-left: 2rem;
-}
-.toc-3 {
-  padding-left: 3rem;
-}
-.toc-4 {
-  padding-left: 4rem;
 }
 </style>

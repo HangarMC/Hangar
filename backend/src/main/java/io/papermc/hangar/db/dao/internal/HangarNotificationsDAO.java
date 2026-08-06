@@ -42,6 +42,7 @@ public interface HangarNotificationsDAO {
         "   upr.role_type AS role," +
         "   p.name," +
         "   o.name as representingOrg," +
+        "   upr.created_at AS createdAt," +
         "   '/' || p.owner_name || '/' || p.slug url" +
         "   FROM user_project_roles upr" +
         "   JOIN projects p ON p.id = upr.project_id" +
@@ -55,6 +56,7 @@ public interface HangarNotificationsDAO {
     @SqlQuery("SELECT uor.id AS roleId," +
         "   uor.role_type AS role," +
         "   o.name," +
+        "   uor.created_at AS createdAt," +
         "   '/' || o.name url" +
         "   FROM user_organization_roles uor" +
         "   JOIN organizations o ON o.id = uor.organization_id" +

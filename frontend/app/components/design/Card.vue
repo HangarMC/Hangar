@@ -3,10 +3,14 @@ const props = withDefaults(
   defineProps<{
     accent?: boolean;
     alternateBackground?: boolean;
+    flat?: boolean;
+    padding?: "none" | "sm" | "md";
   }>(),
   {
     accent: false,
     alternateBackground: false,
+    flat: false,
+    padding: "md",
   }
 );
 
@@ -17,9 +21,10 @@ const clazz = computed(() => {
     border: true,
     "dark:border-gray-800": true,
     "!border-top-primary": props.accent,
-    "shadow-md": true,
+    "shadow-md": !props.flat,
     "rounded-md": true,
-    "p-4": true,
+    "p-4": props.padding === "md",
+    "p-3": props.padding === "sm",
     "overflow-auto": true,
   };
 });

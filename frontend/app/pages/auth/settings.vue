@@ -1,5 +1,10 @@
 <script lang="ts" setup>
 import type { Tab } from "#shared/types/components/design/Tabs";
+import IconMdiAccount from "~icons/mdi/account";
+import IconMdiCog from "~icons/mdi/cog";
+import IconMdiKey from "~icons/mdi/key";
+import IconMdiLock from "~icons/mdi/lock";
+import IconMdiPalette from "~icons/mdi/palette";
 
 definePageMeta({
   loginRequired: true,
@@ -19,11 +24,11 @@ if (import.meta.client && route.path.endsWith("settings")) {
 }
 
 const tabs = [
-  { value: "profile", header: t("auth.settings.profile.header") },
-  { value: "account", header: t("auth.settings.account.header") },
-  { value: "security", header: t("auth.settings.security.header") },
-  { value: "api-keys", header: t("auth.settings.apiKeys.header") },
-  { value: "other", header: t("auth.settings.misc.header") },
+  { value: "profile", header: t("auth.settings.profile.header"), icon: IconMdiAccount },
+  { value: "account", header: t("auth.settings.account.header"), icon: IconMdiCog },
+  { value: "security", header: t("auth.settings.security.header"), icon: IconMdiLock },
+  { value: "api-keys", header: t("auth.settings.apiKeys.header"), icon: IconMdiKey },
+  { value: "other", header: t("auth.settings.misc.header"), icon: IconMdiPalette },
 ] as const satisfies Tab<string>[];
 
 const emailConfirmModal = useTemplateRef("emailConfirmModal");
@@ -73,16 +78,16 @@ useSeo(computed(() => ({ title: "Settings", route })));
   <div v-if="auth.user" class="space-y-3">
     <Alert v-if="authSettings?.emailPending" class="col-span-1 md:col-span-2">
       Enter the email verification code
-      <Button size="small" :disabled="loading" @click="emailConfirmModal!.isOpen = true">here</Button>
+      <Button size="sm" :disabled="loading" @click="emailConfirmModal!.isOpen = true">here</Button>
     </Alert>
     <Alert v-else-if="!authSettings?.emailConfirmed" class="col-span-1 md:col-span-2">
       You haven't verified your email yet, click
-      <Button size="small" :disabled="loading" @click="emailConfirmModal!.isOpen = true">here</Button>
+      <Button size="sm" :disabled="loading" @click="emailConfirmModal!.isOpen = true">here</Button>
       to change that
     </Alert>
 
     <Card>
-      <Tabs :tabs="tabs" router>
+      <Tabs :tabs="tabs" router highlight-selected>
         <router-view v-slot="{ Component }">
           <Suspense>
             <div>

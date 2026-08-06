@@ -282,7 +282,7 @@ useSeo(
           <div class="basis-full md:(basis-4/12) ml-2">
             <ChannelModal v-if="project" :project-id="project.id" @create="addChannel as unknown as HangarChannel">
               <template #activator="{ on }">
-                <Button class="basis-4/12" size="medium" v-on="on">
+                <Button class="basis-4/12" v-on="on">
                   <IconMdiPlus />
                   {{ t("version.new.form.addChannel") }}
                 </Button>
@@ -294,7 +294,17 @@ useSeo(
         <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-6">
           <div class="space-x-2 inline-flex items-center">
             <span class="text-xl">{{ t("version.new.form.artifactNumber", [idx + 1]) }}</span>
-            <Button v-if="platformFiles.length !== 1" button-type="red" @click="removePlatformFile(idx)"><IconMdiDelete /></Button>
+            <Button
+              v-if="platformFiles.length !== 1"
+              variant="ghost"
+              tone="danger"
+              size="sm"
+              icon-only
+              :title="t('general.delete')"
+              :aria-label="t('general.delete')"
+              @click="removePlatformFile(idx)"
+              ><IconMdiDelete
+            /></Button>
           </div>
           <div class="items-center">
             <Tabs v-model="platformFile.selectedTab" :tabs="selectedUploadTabs" :vertical="false" class="max-w-150">

@@ -63,10 +63,22 @@ onMounted(() =>
 <template>
   <Modal ref="modal" :title="i18n.t('version.edit.pluginDeps', [platform.name])" window-classes="w-200">
     <DependencyTable ref="depTable" :platform="platform.enumName" :plugin-dependencies="pluginDependencies" />
-
-    <Button button-type="primary" class="mt-3" :disabled="loading || v.$error" @click="save">{{ i18n.t("general.save") }}</Button>
     <template #activator="{ on }">
-      <Button v-if="hasPerms(NamedPermission.EditVersion)" class="text-sm" v-on="on"><IconMdiPencil /></Button>
+      <Button
+        v-if="hasPerms(NamedPermission.EditVersion)"
+        variant="ghost"
+        tone="neutral"
+        size="sm"
+        icon-only
+        :title="i18n.t('general.edit')"
+        :aria-label="i18n.t('general.edit')"
+        v-on="on"
+        ><IconMdiPencil
+      /></Button>
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button :disabled="loading || v.$error" @click="save">{{ i18n.t("general.save") }}</Button>
     </template>
   </Modal>
 </template>

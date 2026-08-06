@@ -89,7 +89,9 @@ export function useProjects(
           },
         });
       }
-    }
+    },
+    undefined,
+    true // keep results on screen while re-filtering
   );
   return { projects, projectsStatus, refreshProjects };
 }
@@ -139,11 +141,16 @@ export function useVersionInfo() {
   return { version, versionStatus };
 }
 
-export function useUnreadNotifications() {
+export function useUnreadNotifications(params: () => { limit: number; offset: number } = () => ({ limit: 25, offset: 0 })) {
   const { data: unreadNotifications, status: unreadNotificationsStatus } = useData(
-    () => ({}),
-    () => "unreadNotifications",
-    () => useInternalApi<PaginatedResultHangarNotification>("unreadnotifications")
+    params,
+    (p) => "unreadNotifications:" + JSON.stringify(p),
+    (p) => useInternalApi<PaginatedResultHangarNotification>("unreadnotifications", "get", { ...p }),
+    true,
+    () => false,
+    () => {},
+    undefined,
+    true
   );
   return { unreadNotifications, unreadNotificationsStatus };
 }
@@ -176,11 +183,16 @@ export function useUnreadCount() {
   return { unreadCount: unreadCount as Ref<{ notifications: number; invites: number }> | undefined, unreadCountStatus, refreshUnreadCount };
 }
 
-export function useNotifications() {
+export function useNotifications(params: () => { limit: number; offset: number } = () => ({ limit: 25, offset: 0 })) {
   const { data: notifications, status: notificationsStatus } = useData(
-    () => ({}),
-    () => "notifications",
-    () => useInternalApi<PaginatedResultHangarNotification>("notifications")
+    params,
+    (p) => "notifications:" + JSON.stringify(p),
+    (p) => useInternalApi<PaginatedResultHangarNotification>("notifications", "get", { ...p }),
+    true,
+    () => false,
+    () => {},
+    undefined,
+    true
   );
   return { notifications, notificationsStatus };
 }

@@ -79,7 +79,9 @@ export function useData<T, P extends Record<string, unknown> | string>(
   server = true,
   skip: (params: P) => boolean = () => false,
   callback: (params: P) => void = () => {},
-  defaultValue?: T | undefined
+  defaultValue?: T | undefined,
+  /** Keep the previous result on screen while revalidating instead of blanking it. */
+  keepPreviousData = false
 ) {
   // state tracking is twofold.
   // `state` is used store data in the nuxt payload, so it will be shared between server and client side and on client side navigation
@@ -98,7 +100,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
 
   function setState(newState?: T) {
     state.value[key(params())] = newState;
-      data.value = newState;
+    data.value = newState;
   }
 
   if (import.meta.server && !server) {
@@ -108,11 +110,14 @@ export function useData<T, P extends Record<string, unknown> | string>(
 
   function load(params: P) {
     status.value = "loading";
-    setState(defaultValue ?? undefined);
+    if (!keepPreviousData) {
+      setState(defaultValue ?? undefined);
+    }
 
     if (skip(params)) {
       console.log("skip", key(params));
-        status.value = "idle";
+      setState(defaultValue ?? undefined);
+      status.value = "idle";
       return;
     }
 
@@ -126,11 +131,11 @@ export function useData<T, P extends Record<string, unknown> | string>(
             // await new Promise((resolve) => setTimeout(resolve, 5000));
             console.log("loaded", key(params));
             setState(result);
-              status.value = "success";
+            status.value = "success";
             callback(params);
             resolve();
           } catch (err) {
-              status.value = "error";
+            status.value = "error";
             callback(params);
             reject(err);
           }
