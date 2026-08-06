@@ -15,20 +15,21 @@ type DataLoaderTypes = {
 // TODO check every handling of the reject stuff (for both composables)
 export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
   const data = useState<DataLoaderTypes[K] | undefined>(key);
+  const loadedParam = useState<string | undefined>(`dataLoader:${key}:param`);
+  const requestId = useState<number>(`dataLoader:${key}:request`, () => 0);
 
   function loader(
     param: routeParams | undefined,
     to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
+    _from: RouteLocationNormalized,
     loader: (param: string) => Promise<DataLoaderTypes[K]>,
     promises: Promise<any>[],
     lenient = false
   ) {
     const meta = to.meta["dataLoader_" + key];
     if (meta || key === "globalData") {
-      const oldParam = param && param in from.params ? (from.params[param as never] as string) : undefined;
       const newParam = param && param in to.params ? (to.params[param as never] as string) : undefined;
-      if (data.value && oldParam === newParam) {
+      if (data.value && loadedParam.value === newParam) {
         console.log("skip loading", key); // TODO test this
         return newParam;
       } else if (!param || newParam) {
@@ -38,6 +39,9 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
           throw createError({ statusCode: 404, statusMessage: "Not found" });
         }
 
+        loadedParam.value = newParam;
+        data.value = undefined;
+        const currentRequestId = ++requestId.value;
         promises.push(
           new Promise<void>(async (resolve, reject) => {
             console.log("load loading", key, newParam);
@@ -46,11 +50,11 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
               else reject(err);
             });
             // await new Promise((resolve) => setTimeout(resolve, 5000));
-            if (result) {
+            if (result && requestId.value === currentRequestId && loadedParam.value === newParam) {
               data.value = result;
               console.log("load loaded", key, newParam);
-              resolve();
             }
+            resolve();
           })
         );
         return newParam;
@@ -58,6 +62,8 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
       console.warn("dataLoader " + key + " is miss configured for " + to.path + "! (no param " + param + ")");
       return;
     } else {
+      requestId.value++;
+      loadedParam.value = undefined;
       data.value = undefined;
       return;
     }
