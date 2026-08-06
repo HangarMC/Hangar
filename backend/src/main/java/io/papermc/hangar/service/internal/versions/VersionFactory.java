@@ -318,11 +318,11 @@ public class VersionFactory extends HangarComponent {
             final ProjectVersionTable finalProjectVersionTable = projectVersionTable;
             CompletableFuture.runAsync(() -> {
                 try {
-                    postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish);
+                    this.postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish);
                 } catch (Throwable ex) {
-                    logger.warn("Error in post publish for version {} of project {}", pendingVersion.getVersionString(), projectTable.getName(), ex);
+                    this.logger.warn("Error in post publish for version {} of project {}", pendingVersion.getVersionString(), projectTable.getName(), ex);
                 }
-            }, taskExecutor);
+            }, this.taskExecutor);
 
             return projectVersionTable;
         } catch (final HangarApiException e) {
