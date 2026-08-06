@@ -13,13 +13,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return;
   }
 
+  const authStore = useAuthStore();
   await useAuth.updateUser();
-  await loadRoutePerms(to);
-  await handleRoutePerms(to, from);
+  await loadRoutePerms(authStore, to);
+  await handleRoutePerms(authStore, to, from);
 });
 
-async function loadRoutePerms(to: RouteLocationNormalized) {
-  const authStore = useAuthStore();
+async function loadRoutePerms(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized) {
   if ("project" in to.params && to.params.user && to.params.project) {
     if (authStore.authenticated) {
       if (to.params.user === authStore.routePermissionsUser && to.params.project === authStore.routePermissionsProject) {
@@ -56,8 +56,7 @@ async function loadRoutePerms(to: RouteLocationNormalized) {
   authStore.setRoutePerms();
 }
 
-async function handleRoutePerms(to: RouteLocationNormalized, from: RouteLocationNormalized) {
-  const authStore = useAuthStore();
+async function handleRoutePerms(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized, from: RouteLocationNormalized) {
   routePermLog("navigate to " + String(to.name) + ", meta:", to.meta, "(from: " + String(from.name) + ")");
   for (const key in handlers) {
     if (!to.meta[key]) continue;
@@ -91,7 +90,7 @@ function currentUserRequired(authStore: ReturnType<typeof useAuthStore>, to: Rou
     throw new TypeError("Must have 'user' as a route param to use CurrentUser");
   }
   checkLogin(authStore, to, 404);
-  if (!hasPerms(NamedPermission.EditAllUserSettings) && to.params.user !== authStore.user?.name) {
+  if (!hasPermsFor(authStore.routePermissions, NamedPermission.EditAllUserSettings) && to.params.user !== authStore.user?.name) {
     return useErrorRedirect(403, undefined, { logErrorMessage: false });
   }
 }
@@ -127,7 +126,7 @@ function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: Ro
     return useErrorRedirect(404, undefined, { logErrorMessage: false });
   }
   routePermLog("check has perms", to.meta.projectPermsRequired, toNamedPermission(to.meta.projectPermsRequired as string[]));
-  if (!hasPerms(...toNamedPermission(to.meta.projectPermsRequired as string[]))) {
+  if (!hasPermsFor(authStore.routePermissions, ...toNamedPermission(to.meta.projectPermsRequired as string[]))) {
     return useErrorRedirect(404, undefined, { logErrorMessage: false });
   }
 }

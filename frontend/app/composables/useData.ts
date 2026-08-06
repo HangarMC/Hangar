@@ -29,23 +29,25 @@ import type {
 } from "#shared/types/backend";
 
 export function useOrganizationVisibility(user: () => string) {
+  const authStore = useAuthStore();
   const { data: organizationVisibility, status: organizationVisibilityStatus } = useData(
     user,
     (u) => "organizationVisibility:" + u,
     (u) => useInternalApi<{ [key: string]: boolean }>(`organizations/${u}/userOrganizationsVisibility`),
     false,
-    (u) => u !== useAuthStore().user?.name
+    (u) => u !== authStore.user?.name
   );
   return { organizationVisibility, organizationVisibilityStatus };
 }
 
 export function usePossibleAlts(user: () => string) {
+  const authStore = useAuthStore();
   const { data: possibleAlts, status: possibleAltsStatus } = useData(
     user,
     (u) => "possibleAlts:" + u,
     (u) => useInternalApi<string[]>(`users/${u}/alts`),
     false,
-    () => !hasPerms(NamedPermission.IsStaff)
+    () => !hasPermsFor(authStore.routePermissions, NamedPermission.IsStaff)
   );
   return { possibleAlts, possibleAltsStatus };
 }

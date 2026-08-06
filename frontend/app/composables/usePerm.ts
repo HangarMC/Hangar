@@ -15,7 +15,10 @@ export function toNamedPermission(perms: string[]): NamedPermission[] {
 }
 
 export function hasPerms(...namedPermission: NamedPermission[]): boolean {
-  const perms = useAuthStore().routePermissions;
+  return hasPermsFor(useAuthStore().routePermissions, ...namedPermission);
+}
+
+export function hasPermsFor(perms: string | undefined, ...namedPermission: NamedPermission[]): boolean {
   if (!perms) return false;
   const _perms = BigInt("0b" + perms);
   let result = true;

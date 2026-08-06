@@ -106,8 +106,7 @@ class Auth {
     return this.refreshPromise;
   }
 
-  async invalidate(axios: AxiosInstance) {
-    const store = useAuthStore();
+  async invalidate(axios: AxiosInstance, store: ReturnType<typeof useAuthStore>) {
     store.$patch({
       user: undefined,
       authenticated: false,
@@ -132,7 +131,7 @@ class Auth {
     }
     const user = await useInternalApi<HangarUser>("users/@me").catch((err) => {
       authLog("no user, with err", transformAxiosError(err));
-      return this.invalidate(axios);
+      return this.invalidate(axios, authStore);
     });
     if (user) {
       authLog("patching " + user.name);

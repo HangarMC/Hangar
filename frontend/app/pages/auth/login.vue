@@ -20,7 +20,7 @@ const password = ref("");
 
 const privileged = (route.query.privileged as unknown as boolean) || false;
 if (privileged) {
-  username.value = useAuthStore().user?.name || "";
+  username.value = authStore.user?.name || "";
   loading.value = true;
   const response = await useInternalApi<LoginResponse>("auth/login/sudo", "POST");
   if (response.types?.length) {

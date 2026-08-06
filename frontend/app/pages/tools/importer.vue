@@ -154,7 +154,7 @@ function createProject(project: ImportedProject) {
     });
 }
 
-const loggedIn = useAuthStore().user !== null;
+const loggedIn = auth.user !== null;
 
 useSeo(computed(() => ({ title: t("importer.title"), route })));
 </script>
