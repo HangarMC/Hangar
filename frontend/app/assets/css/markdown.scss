@@ -20,6 +20,8 @@
   img {
     max-width: 100%;
     display: inline-block;
+    margin-block: 0;
+    vertical-align: middle;
   }
 
   table tr > td,
@@ -90,17 +92,46 @@
 
   ul,
   ol {
-    padding-inline-start: 1rem;
+    margin-block: 0.5em;
+    padding-inline-start: 1.5em;
   }
 
   p + ul,
   p + ol {
-    margin-top: -10px;
+    margin-top: 0.5em;
+  }
+
+  li {
+    margin-block: 0.25em;
+    padding-inline-start: 0;
+
+    > p {
+      margin-block: 0;
+    }
   }
 
   li > ul,
   li > ol {
     margin: 0;
+  }
+
+  th,
+  td {
+    &[align="left"] {
+      text-align: left;
+    }
+
+    &[align="center"] {
+      text-align: center;
+    }
+
+    &[align="right"] {
+      text-align: right;
+    }
+
+    &[align="justify"] {
+      text-align: justify;
+    }
   }
 
   .markdown-alert {
