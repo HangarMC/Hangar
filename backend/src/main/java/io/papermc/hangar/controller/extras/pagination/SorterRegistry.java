@@ -18,7 +18,7 @@ public enum SorterRegistry implements Sorter {
     VIEWS("views", simpleSorter("hp.views"), simpleSorter("stats.views")),
     STARS("stars", simpleSorter("hp.stars"), simpleSorter("stats.stars")),
     DOWNLOADS("downloads", simpleSorter("hp.downloads"), simpleSorter("stats.downloads")),
-    NEWEST("newest", simpleSorter("hp.created_at"), simpleSorter("createdAt")),
+    NEWEST("newest", simpleSorter("hp.published_at"), simpleSorter("publishedAt")),
     UPDATED("updated", simpleSorter("last_updated_double"), simpleSorter("lastUpdated")),
     RECENT_VIEWS("recent_views", simpleSorter("hp.recent_views"), simpleSorter("status.recentViews")),
     RECENT_DOWNLOADS("recent_downloads", simpleSorter("hp.recent_downloads"), simpleSorter("stats.recentDownloads")),

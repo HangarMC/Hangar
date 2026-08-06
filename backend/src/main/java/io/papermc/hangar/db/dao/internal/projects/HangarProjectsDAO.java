@@ -23,6 +23,7 @@ public interface HangarProjectsDAO {
     @SqlQuery("""
         SELECT p.id,
                p.created_at,
+               p.published_at,
                p.name,
                p.owner_name AS owner,
                p.slug,

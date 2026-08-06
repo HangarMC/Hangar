@@ -3,7 +3,8 @@ CREATE OR REPLACE VIEW projects_extra AS
            array_agg(DISTINCT pm.user_id)           AS project_members,
            max(lv.created_at)                       AS last_updated,
            coalesce(ps.stars::bigint, 0::bigint)    AS stars,
-           coalesce(pw.watchers::bigint, 0::bigint) AS watchers
+           coalesce(pw.watchers::bigint, 0::bigint) AS watchers,
+           min(lv.created_at)                       AS published_at
     FROM projects p
         JOIN project_members_all pm ON p.id = pm.id
         LEFT JOIN project_versions lv ON p.id = lv.project_id
@@ -33,6 +34,7 @@ CREATE MATERIALIZED VIEW home_projects AS
            coalesce(ps.stars::bigint, 0::bigint)                                      AS stars,
            coalesce(pw.watchers::bigint, 0::bigint)                                   AS watchers,
            coalesce(max(lv.created_at), p.created_at)                                 AS last_updated,
+           min(lv.created_at)                                                         AS published_at,
         /* avatar stuff */
            (SELECT '/project/' || p.id || '.webp?v=' || a.version
             FROM avatars a

@@ -1298,6 +1298,11 @@ export interface Project {
   name: string;
   /** The namespace of the project */
   namespace: ProjectNamespace;
+  /**
+   * The time the project's first version was published
+   * @format date-time
+   */
+  publishedAt?: string;
   /** The settings of the project */
   settings: ProjectSettings;
   /** Stats of the project */

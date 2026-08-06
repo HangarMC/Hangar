@@ -28,6 +28,7 @@ public interface ProjectsApiDAO {
     @SqlQuery("""
         SELECT p.id,
                p.created_at,
+               hp.published_at,
                p.name,
                p.owner_name "owner",
                p.slug,

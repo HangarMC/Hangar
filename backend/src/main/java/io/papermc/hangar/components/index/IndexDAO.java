@@ -18,6 +18,7 @@ public interface IndexDAO {
     @SqlQuery("""
         SELECT p.id,
                p.created_at,
+               first_version.published_at,
                p.name,
                p.owner_name                                                               AS owner,
                p.slug,
@@ -69,6 +70,11 @@ public interface IndexDAO {
                 WHERE pma.id = p.id)                                                      AS member_names
         FROM projects p
             LEFT JOIN project_stats_view ps ON ps.id = p.id
+            LEFT JOIN LATERAL (
+                SELECT min(pv.created_at) AS published_at
+                FROM project_versions pv
+                WHERE pv.project_id = p.id
+            ) first_version ON TRUE
         <where>
         """)
     List<Project> getAllProjects(@Define String where);

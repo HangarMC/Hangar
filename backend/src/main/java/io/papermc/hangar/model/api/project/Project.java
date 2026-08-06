@@ -17,6 +17,8 @@ import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class Project extends ProjectCompact {
 
+    @Schema(description = "The time the project's first version was published")
+    private final @Nullable OffsetDateTime publishedAt;
     @Schema(description = "Information about your interactions with the project")
     private final UserActions userActions;
     @Schema(description = "The settings of the project")
@@ -30,8 +32,9 @@ public class Project extends ProjectCompact {
 
     @JsonCreator
     @JdbiConstructor
-    public Project(final OffsetDateTime createdAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested @Nullable final UserActions userActions, @Nested final ProjectSettings settings, final String avatar, final String avatarFallback, final Map<Platform, SortedSet<String>> supportedPlatforms, @Nullable final String mainPageContent, @Nullable final List<String> memberNames) {
+    public Project(final OffsetDateTime createdAt, @Nullable final OffsetDateTime publishedAt, final long id, final String name, @Nested final ProjectNamespace namespace, @Nested final ProjectStats stats, @EnumByOrdinal final Category category, final String description, final OffsetDateTime lastUpdated, @EnumByOrdinal final Visibility visibility, @Nested @Nullable final UserActions userActions, @Nested final ProjectSettings settings, final String avatar, final String avatarFallback, final Map<Platform, SortedSet<String>> supportedPlatforms, @Nullable final String mainPageContent, @Nullable final List<String> memberNames) {
         super(createdAt, id, name, namespace, description, stats, category, lastUpdated, visibility, avatar, avatarFallback);
+        this.publishedAt = publishedAt;
         this.userActions = userActions;
         this.settings = settings;
         this.supportedPlatforms = supportedPlatforms;
@@ -41,6 +44,7 @@ public class Project extends ProjectCompact {
 
     public Project(final Project other) {
         super(other.createdAt, other.id, other.name, other.namespace, other.description, other.stats, other.category, other.lastUpdated, other.visibility, null, null);
+        this.publishedAt = other.publishedAt;
         this.userActions = other.userActions;
         this.settings = other.settings;
         this.mainPageContent = other.mainPageContent;
@@ -51,6 +55,10 @@ public class Project extends ProjectCompact {
 
     public UserActions getUserActions() {
         return this.userActions;
+    }
+
+    public @Nullable OffsetDateTime getPublishedAt() {
+        return this.publishedAt;
     }
 
     public ProjectSettings getSettings() {
@@ -72,6 +80,7 @@ public class Project extends ProjectCompact {
     @Override
     public String toString() {
         return "Project{" +
+            "publishedAt=" + this.publishedAt +
             ", lastUpdated=" + this.lastUpdated +
             ", userActions=" + this.userActions +
             ", settings=" + this.settings +

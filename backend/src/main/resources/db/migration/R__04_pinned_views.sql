@@ -55,6 +55,7 @@ CREATE OR REPLACE VIEW pinned_projects AS
                                     license_type,
                                     description,
                                     last_updated,
+                                    published_at,
                                     avatar,
                                     avatar_fallback
     FROM (SELECT pp.id,
@@ -77,6 +78,7 @@ CREATE OR REPLACE VIEW pinned_projects AS
                  p.license_type,
                  p.description,
                  hp.last_updated,
+                 hp.published_at,
                  hp.avatar,
                  hp.avatar_fallback
           FROM pinned_user_projects pp
