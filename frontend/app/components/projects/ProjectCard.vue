@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 async function togglePin() {
-  await useInternalApi(`/projects/project/${props.project.namespace.slug}/pin/${!props.pinned}`, "POST").catch(handleRequestError);
+  await useInternalApi(`projects/project/${props.project.namespace.slug}/pin/${!props.pinned}`, "POST").catch(handleRequestError);
   router.go(0); // I am lazy
 }
 </script>
