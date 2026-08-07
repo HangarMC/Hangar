@@ -101,10 +101,10 @@ async function togglePin() {
       </div>
     </div>
 
-    <div class="mt-2 flex items-center justify-center gap-4 text-sm text-gray-secondary sm:hidden">
-      <span class="inline-flex items-center gap-1 tabular-nums"><IconMdiDownload />{{ project.stats.downloads.toLocaleString("en-US") }}</span>
-      <span class="inline-flex items-center gap-1 tabular-nums"><IconMdiStar />{{ project.stats.stars.toLocaleString("en-US") }}</span>
-      <span class="inline-flex items-center gap-1"><IconMdiCalendar /><PrettyTime :time="project.lastUpdated" short-relative /></span>
+    <div class="mt-2 flex items-center justify-center gap-4 text-sm sm:hidden">
+      <span class="inline-flex items-center gap-1 font-semibold tabular-nums"><IconMdiDownload />{{ project.stats.downloads.toLocaleString("en-US") }}</span>
+      <span class="inline-flex items-center gap-1 font-semibold tabular-nums"><IconMdiStar />{{ project.stats.stars.toLocaleString("en-US") }}</span>
+      <span class="inline-flex items-center gap-1 text-gray-secondary"><IconMdiCalendar /><PrettyTime :time="project.lastUpdated" short-relative /></span>
     </div>
   </Card>
 </template>

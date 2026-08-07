@@ -296,7 +296,7 @@
     "sendForApproval": "Send for approval",
     "info": {
       "title": "Information",
-      "publishDate": "Published on",
+      "publishDate": "Published",
       "license": "License",
       "views": "Views | View | Views",
       "totalDownloads": "Downloads | Download | Downloads",
@@ -561,7 +561,9 @@
     },
     "page": {
       "subheader": "{0} released {2} version {3} on {1}",
+      "author": "Author",
       "dependencies": "Dependencies",
+      "noDependencies": "No dependencies",
       "platforms": "Platforms",
       "required": "(required)",
       "reviewLogs": "Review logs",

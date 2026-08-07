@@ -19,6 +19,5 @@ defineEmits<{
   >
     <slot />
     <span class="min-w-0 truncate">{{ label }}</span>
-    <IconMdiCheck v-if="selected" class="ml-auto flex-shrink-0 color-primary" />
   </button>
 </template>

@@ -10,41 +10,10 @@ const props = defineProps<{
   tooltip?: string;
 }>();
 
-const ccColor = computed(() => {
-  if (props.color?.foreground) {
-    return props.color;
-  } else {
-    // https://stackoverflow.com/a/3943023
-    const background = props.color?.background;
-    let colors: number[] = [];
-    if (background?.startsWith("rgb")) {
-      colors = background
-        ?.replace("rgb(", "")
-        .replace(")", "")
-        .split(",")
-        .map((c) => Number.parseInt(c));
-    } else if (background?.startsWith("#")) {
-      const bg = background?.slice(1, 7);
-      colors = [Number.parseInt(bg?.slice(0, 2), 16), Number.parseInt(bg?.slice(2, 4), 16), Number.parseInt(bg?.slice(4, 6), 16)];
-    } else {
-      console.error("Can't figure out color value for", background);
-      return props.color;
-    }
-    colors = colors
-      .map((col) => col / 255)
-      .map((col) => {
-        if (col <= 0.039_28) {
-          return col / 12.92;
-        }
-        return Math.pow((col + 0.055) / 1.055, 2.4);
-      });
-    const L = 0.2126 * colors[0]! + 0.7152 * colors[1]! + 0.0722 * colors[2]!;
-    return {
-      foreground: L > 0.179 ? "black" : "white",
-      background: props.color?.background,
-    } as Color;
-  }
-});
+const ccColor = computed<Color>(() => ({
+  foreground: props.color?.foreground ?? contrastForeground(props.color?.background),
+  background: props.color?.background,
+}));
 </script>
 
 <template>

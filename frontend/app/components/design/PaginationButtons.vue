@@ -39,36 +39,14 @@ const options = computed<number[]>(() => {
 function gotoPage(pageNo: number) {
   page.value = pageNo;
 }
-
-function visibleCss(value: boolean) {
-  return `visibility: ${value ? "visible" : "hidden"}`;
-}
 </script>
 
 <template>
   <div class="flex gap-1.5 justify-center">
-    <Button
-      variant="outline"
-      tone="neutral"
-      size="sm"
-      icon-only
-      :style="visibleCss(page > 0)"
-      :disabled="page <= 0"
-      aria-label="First page"
-      @click="gotoPage(0)"
-    >
+    <Button variant="outline" tone="neutral" size="sm" icon-only :disabled="page <= 0" aria-label="First page" @click="gotoPage(0)">
       <IconMdiChevronDoubleLeft />
     </Button>
-    <Button
-      variant="outline"
-      tone="neutral"
-      size="sm"
-      icon-only
-      :style="visibleCss(page > 0)"
-      :disabled="page <= 0"
-      aria-label="Prev page"
-      @click="gotoPage(page - 1)"
-    >
+    <Button variant="outline" tone="neutral" size="sm" icon-only :disabled="page <= 0" aria-label="Prev page" @click="gotoPage(page - 1)">
       <IconMdiChevronLeft />
     </Button>
     <Button
@@ -84,28 +62,10 @@ function visibleCss(value: boolean) {
     >
       {{ index }}
     </Button>
-    <Button
-      variant="outline"
-      tone="neutral"
-      size="sm"
-      icon-only
-      :style="visibleCss(page < pages - 1)"
-      :disabled="page >= pages - 1"
-      aria-label="Next page"
-      @click="gotoPage(page + 1)"
-    >
+    <Button variant="outline" tone="neutral" size="sm" icon-only :disabled="page >= pages - 1" aria-label="Next page" @click="gotoPage(page + 1)">
       <IconMdiChevronRight />
     </Button>
-    <Button
-      variant="outline"
-      tone="neutral"
-      size="sm"
-      icon-only
-      :style="visibleCss(page < pages - 1)"
-      :disabled="page >= pages - 1"
-      aria-label="Last page"
-      @click="gotoPage(pages - 1)"
-    >
+    <Button variant="outline" tone="neutral" size="sm" icon-only :disabled="page >= pages - 1" aria-label="Last page" @click="gotoPage(pages - 1)">
       <IconMdiChevronDoubleRight />
     </Button>
   </div>

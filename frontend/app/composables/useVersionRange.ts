@@ -14,6 +14,14 @@ function compareVersions(a: string, b: string): number {
   return 0;
 }
 
+/** Already-formatted ranges ("1.8.8-1.9", "1.9.2", …) -> a single "1.8.8–26.1.2" span. */
+export function collapseRanges(entries?: string[] | readonly string[]): string {
+  if (!entries?.length) return "";
+  const first = entries[0]!.split("-")[0]!;
+  const last = entries.at(-1)!.split("-").at(-1)!;
+  return first === last ? first : `${first}–${last}`;
+}
+
 /** "1.19", "1.19.1", … "1.21.4"  ->  "1.19–1.21.4". Sorts itself; don't trust incoming order. */
 export function versionRange(versions?: string[] | readonly string[]): string {
   if (!versions?.length) return "";

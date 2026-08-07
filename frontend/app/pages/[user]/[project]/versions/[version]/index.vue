@@ -168,28 +168,14 @@ async function restoreVersion() {
 </script>
 
 <template>
-  <div v-if="version" class="flex lt-md:flex-col flex-wrap lg:flex-nowrap gap-4 firefox-hack">
-    <section class="max-w-full basis-full lg:basis-11/15 overflow-clip">
-      <div class="flex gap-2 justify-between">
-        <div>
-          <h2 class="text-3xl sm:inline-flex items-center gap-x-1">
-            <Tag
-              class="mr-1"
-              :name="version.channel.name"
-              :color="{ background: version.channel.color }"
-              :short-form="true"
-              :tooltip="version.channel.description"
-            />
-            {{ version.name }}
-          </h2>
-          <h3>
-            <span class="inline-flex lt-md:flex-wrap">
-              {{ i18n.t("version.page.subheader", [version.author, lastUpdated(new Date(version.createdAt)), project?.name, version.name]) }}
-            </span>
-          </h3>
-        </div>
-        <div class="inline-flex items-center flex-grow space-x-2">
-          <div class="flex-grow" />
+  <div v-if="version" class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_344px] lg:items-start">
+    <section class="min-w-0">
+      <div class="flex flex-wrap items-center gap-3">
+        <ChannelTile :channel="version.channel" size="md" />
+
+        <h1 class="min-w-0 flex-1 truncate text-2xl font-bold">{{ version.name }}</h1>
+
+        <div class="flex flex-shrink-0 items-center gap-2">
           <Tooltip v-if="confirmationWarningKey">
             <template #content>
               {{ i18n.t(confirmationWarningKey) }}
@@ -221,56 +207,67 @@ async function restoreVersion() {
         <Markdown v-else :raw="version.description" />
       </Card>
     </section>
-    <section class="basis-full lg:basis-4/15 flex-grow space-y-4">
+
+    <section class="min-w-0 flex flex-col gap-4">
       <Card v-if="hasPerms(NamedPermission.DeleteVersion) || hasPerms(NamedPermission.ViewLogs) || hasPerms(NamedPermission.Reviewer)">
         <template #header>
           <h2>{{ i18n.t("version.page.manage") }}</h2>
         </template>
 
-        <span class="inline-flex items-center">
-          <IconMdiInformation class="mr-1" />
+        <p class="inline-flex items-center gap-1.5 text-sm">
+          <IconMdiInformation class="flex-shrink-0 text-gray-secondary" />
           {{ i18n.t("version.page.visibility", [i18n.t(currentVisibility?.title || "")]) }}
-        </span>
+        </p>
 
-        <div class="flex gap-2 flex-wrap mt-2">
+        <div class="mt-3 flex flex-wrap gap-2">
           <Tooltip>
             <template #content>
               <span v-if="version?.pinnedStatus === PinnedStatus.CHANNEL">{{ i18n.t("version.page.pinned.tooltip.channel") }}</span>
               <span v-else>{{ i18n.t(`version.page.pinned.tooltip.${version?.pinnedStatus?.toLowerCase()}`) }}</span>
             </template>
-            <Button size="sm" :disabled="version?.pinnedStatus === PinnedStatus.CHANNEL" @click="setPinned(version?.pinnedStatus === PinnedStatus.NONE)">
+            <Button
+              variant="outline"
+              tone="neutral"
+              size="sm"
+              :disabled="version?.pinnedStatus === PinnedStatus.CHANNEL"
+              @click="setPinned(version?.pinnedStatus === PinnedStatus.NONE)"
+            >
               <IconMdiPinOff v-if="version?.pinnedStatus !== PinnedStatus.NONE" />
               <IconMdiPin v-else />
               {{ i18n.t(`version.page.pinned.button.${version?.pinnedStatus?.toLowerCase()}`) }}
             </Button>
           </Tooltip>
 
-          <!--todo route for user action log, with filtering-->
-          <Button v-if="hasPerms(NamedPermission.ViewLogs)" @click="router.push('/admin/log')">
+          <Button v-if="hasPerms(NamedPermission.ViewLogs)" variant="outline" tone="neutral" size="sm" @click="router.push('/admin/log')">
             <IconMdiFileDocument />
             {{ i18n.t("version.page.userAdminLogs") }}
           </Button>
 
           <template v-if="hasPerms(NamedPermission.Reviewer)">
-            <Button v-if="isReviewStateChecked" :to="route.path + '/reviews'">
-              <IconMdiListStatus />
-              {{ i18n.t("version.page.reviewLogs") }}
+            <Button variant="outline" tone="neutral" size="sm" :to="route.path + '/reviews'">
+              <IconMdiListStatus v-if="isReviewStateChecked || isUnderReview" />
+              <IconMdiPlay v-else />
+              {{ isReviewStateChecked || isUnderReview ? i18n.t("version.page.reviewLogs") : i18n.t("version.page.reviewStart") }}
             </Button>
-            <Button v-else-if="isUnderReview" :to="route.path + '/reviews'">
-              <IconMdiListStatus />
-              {{ i18n.t("version.page.reviewLogs") }}
-            </Button>
-            <Button v-else :to="route.path + '/reviews'">
-              <IconMdiPlay />
-              {{ i18n.t("version.page.reviewStart") }}
-            </Button>
-            <Button :to="route.path + '/scan'">
+            <Button variant="outline" tone="neutral" size="sm" :to="route.path + '/scan'">
               <IconMdiAlertDecagram />
               {{ i18n.t("version.page.scans") }}
             </Button>
           </template>
+        </div>
 
-          <Button v-if="hasPerms(NamedPermission.Reviewer) && version.visibility === Visibility.SoftDelete" @click="restoreVersion">
+        <div
+          v-if="hasPerms(NamedPermission.DeleteVersion) || hasPerms(NamedPermission.HardDeleteVersion) || hasPerms(NamedPermission.Reviewer)"
+          class="mt-3 flex flex-wrap gap-2 border-t border-gray-300 pt-3 dark:border-gray-700"
+        >
+          <Button
+            v-if="hasPerms(NamedPermission.Reviewer) && version.visibility === Visibility.SoftDelete"
+            variant="outline"
+            tone="neutral"
+            size="sm"
+            @click="restoreVersion"
+          >
+            <IconMdiRestore />
             {{ i18n.t("version.page.restore") }}
           </Button>
           <TextAreaModal
@@ -278,11 +275,12 @@ async function restoreVersion() {
             :title="i18n.t('version.page.delete')"
             :label="i18n.t('general.comment')"
             :submit="deleteVersion"
+            :submit-label="i18n.t('version.page.delete')"
             submit-tone="danger"
             require-input
           >
             <template #activator="{ on }">
-              <Button variant="outline" tone="danger" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
+              <Button variant="outline" tone="danger" size="sm" v-on="on">{{ i18n.t("version.page.delete") }}</Button>
             </template>
           </TextAreaModal>
           <TextAreaModal
@@ -290,11 +288,12 @@ async function restoreVersion() {
             :title="i18n.t('version.page.hardDelete')"
             :label="i18n.t('general.comment')"
             :submit="hardDeleteVersion"
+            :submit-label="i18n.t('version.page.hardDelete')"
             submit-tone="danger"
             require-input
           >
             <template #activator="{ on }">
-              <Button variant="outline" tone="danger" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
+              <Button variant="outline" tone="danger" size="sm" v-on="on">{{ i18n.t("version.page.hardDelete") }}</Button>
             </template>
           </TextAreaModal>
         </div>
@@ -302,52 +301,65 @@ async function restoreVersion() {
 
       <Card>
         <template #header>
-          <div class="inline-flex w-full">
-            <h2 class="flex-grow">{{ i18n.t("project.info.title") }}</h2>
-          </div>
+          <h2>{{ i18n.t("project.info.title") }}</h2>
         </template>
 
-        <table class="w-full">
-          <tbody>
-            <tr>
-              <th class="text-left">{{ i18n.t("project.info.publishDate") }}</th>
-              <td v-if="version" class="text-right">{{ i18n.d(version.createdAt, "date") }}</td>
-              <td v-else><Skeleton /></td>
-            </tr>
-            <tr>
-              <th class="text-left">
-                {{ i18n.t(hasPerms(NamedPermission.IsSubjectMember) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
-              </th>
-              <td class="text-right">
-                {{ version.stats.totalDownloads.toLocaleString("en-US") }}
-              </td>
-            </tr>
-            <!-- Only show per platform downloads to project members, otherwise not too relevant and only adding to height -->
-            <tr v-for="platform in version && hasPerms(NamedPermission.IsSubjectMember) ? Object.keys(version.stats.platformDownloads) : []" :key="platform">
-              <th class="text-left inline-flex">
-                <PlatformLogo :platform="platform as Platform" :size="24" class="mr-1" />
-                {{ i18n.t("project.info.totalDownloads", 0) }}
-              </th>
-              <td class="text-right">
+        <dl class="flex flex-col gap-1.5">
+          <div class="flex items-baseline justify-between gap-3">
+            <dt class="inline-flex min-w-0 items-center gap-1.5 truncate text-gray-secondary">
+              <IconMdiAccount class="flex-shrink-0" />
+              {{ i18n.t("version.page.author") }}
+            </dt>
+            <dd class="min-w-0 truncate text-right font-semibold">
+              <Link :to="'/' + version.author">{{ version.author }}</Link>
+            </dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-3">
+            <dt class="inline-flex min-w-0 items-center gap-1.5 truncate text-gray-secondary">
+              <IconMdiCalendar class="flex-shrink-0" />
+              {{ i18n.t("project.info.publishDate") }}
+            </dt>
+            <dd class="flex-shrink-0 whitespace-nowrap text-right font-semibold tabular-nums">{{ i18n.d(version.createdAt, "date") }}</dd>
+          </div>
+          <div class="flex items-baseline justify-between gap-3">
+            <dt class="inline-flex min-w-0 items-center gap-1.5 truncate text-gray-secondary">
+              <IconMdiDownload class="flex-shrink-0" />
+              {{ i18n.t(hasPerms(NamedPermission.IsSubjectMember) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
+            </dt>
+            <dd class="flex-shrink-0 whitespace-nowrap text-right font-semibold tabular-nums">{{ version.stats.totalDownloads.toLocaleString("en-US") }}</dd>
+          </div>
+
+          <template v-if="hasPerms(NamedPermission.IsSubjectMember)">
+            <div
+              v-for="platform in Object.keys(version.stats.platformDownloads)"
+              :key="platform"
+              class="flex items-baseline justify-between gap-3 border-t border-gray-300 pt-1.5 first:border-t-0 first:pt-0 dark:border-gray-700"
+            >
+              <dt class="inline-flex min-w-0 flex-shrink items-center gap-1.5 text-gray-secondary">
+                <PlatformLogo :platform="platform as Platform" :size="16" class="flex-shrink-0" />
+                <span class="truncate">{{ usePlatformName(platform as Platform) }}</span>
+              </dt>
+              <dd class="flex-shrink-0 whitespace-nowrap text-right font-semibold tabular-nums">
                 {{ version.stats.platformDownloads[platform]?.toLocaleString("en-US") }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </dd>
+            </div>
+          </template>
+        </dl>
       </Card>
 
       <Card>
         <template #header>
-          <div class="inline-flex w-full">
-            <h2 class="flex-grow">{{ i18n.t("version.page.platforms") }}</h2>
-          </div>
+          <h2>{{ i18n.t("version.page.platforms") }}</h2>
         </template>
 
-        <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center mb-1">
-          <PlatformLogo :platform="platform" :size="24" class="mr-1 flex-shrink-0" />
-          {{ usePlatformName(platform) }}
-          ({{ version?.platformDependenciesFormatted[platform]?.join(", ") }})
-          <span class="flex-grow" />
+        <div v-for="platform in versionPlatforms" :key="platform" class="flex items-center gap-2 py-1">
+          <PlatformLogo :platform="platform" :size="20" class="flex-shrink-0" />
+          <div class="min-w-0 flex-1">
+            <div class="truncate font-semibold">{{ usePlatformName(platform) }}</div>
+            <div class="truncate text-sm text-gray-secondary tabular-nums" :title="version?.platformDependenciesFormatted[platform]?.join(', ')">
+              {{ collapseRanges(version?.platformDependenciesFormatted[platform]) }}
+            </div>
+          </div>
           <PlatformVersionEditModal
             v-if="project && version && hasPerms(NamedPermission.EditVersion)"
             :project="project"
@@ -359,57 +371,37 @@ async function restoreVersion() {
 
       <Card v-if="hasPerms(NamedPermission.EditVersion) || platformsWithDependencies.length > 0">
         <template #header>
-          <div class="inline-flex w-full">
-            <h2 class="flex-grow">{{ i18n.t("version.page.dependencies") }}</h2>
-          </div>
+          <h2>{{ i18n.t("version.page.dependencies") }}</h2>
         </template>
 
-        <div v-for="platform in platformsWithDependencies" :key="platform" class="py-1">
-          <Spoiler :with-line="version?.pluginDependencies[platform] !== undefined" always-open>
-            <template #title>
-              <div class="flex gap-1 w-full">
-                <PlatformLogo :platform="platform" :size="24" class="flex-shrink-0" />
-                {{ usePlatformName(platform) }}
-                <span class="flex-grow" />
-                <DependencyEditModal v-if="project && version" :project="project" :version="version" :platform="usePlatformData(platform)!" />
-              </div>
-            </template>
-            <template #content>
-              <div>
-                <ul>
-                  <li v-for="dep in sortedDependencies(platform)" :key="dep.name">
-                    <Link
-                      :href="dep.externalUrl || '/api/internal/projects/project-redirect/' + dep.name"
-                      :target="dep.externalUrl ? '_blank' : undefined"
-                      class="font-normal ml-1"
-                    >
-                      {{ dep.name }}
-                      <small v-if="!dep.required">({{ i18n.t("general.optional") }})</small>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </template>
-          </Spoiler>
+        <div
+          v-for="platform in platformsWithDependencies"
+          :key="platform"
+          class="border-t border-gray-300 py-2 first:border-t-0 first:pt-0 dark:border-gray-700"
+        >
+          <div class="flex items-center gap-2">
+            <PlatformLogo :platform="platform" :size="20" class="flex-shrink-0" />
+            <span class="min-w-0 flex-1 truncate font-semibold">{{ usePlatformName(platform) }}</span>
+            <DependencyEditModal v-if="project && version" :project="project" :version="version" :platform="usePlatformData(platform)!" />
+          </div>
+          <ul v-if="sortedDependencies(platform).length > 0" class="mt-1.5 flex flex-col gap-1">
+            <li v-for="dep in sortedDependencies(platform)" :key="dep.name" class="flex items-center gap-2 text-sm">
+              <Link
+                :href="dep.externalUrl || '/api/internal/projects/project-redirect/' + (dep.projectId ?? dep.name)"
+                :target="dep.externalUrl ? '_blank' : undefined"
+                class="min-w-0 inline-flex items-center gap-1 truncate font-normal"
+              >
+                {{ dep.name }}
+                <IconMdiOpenInNew v-if="dep.externalUrl" class="flex-shrink-0 text-xs" />
+              </Link>
+              <span v-if="!dep.required" class="ml-auto flex-shrink-0 rounded background-card px-1.5 py-0.5 text-xs font-semibold text-gray-secondary">
+                {{ i18n.t("general.optional") }}
+              </span>
+            </li>
+          </ul>
+          <p v-else class="mt-1 text-sm text-gray-secondary">{{ i18n.t("version.page.noDependencies") }}</p>
         </div>
       </Card>
     </section>
   </div>
 </template>
-
-<style lang="scss" scoped>
-/* firefox doesn't seem to respect flex-basis properly, so we add a max width, but we need to subtract the gap... */
-@media (min-width: 1024px) {
-  .firefox-hack {
-    > :first-child {
-      flex-basis: 73.3333333333%;
-      max-width: calc(73.3333333333% - 0.5rem);
-    }
-
-    > :last-child {
-      flex-basis: 26.6666666667%;
-      max-width: calc(26.6666666667% - 0.5rem);
-    }
-  }
-}
-</style>

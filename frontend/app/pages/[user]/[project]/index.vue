@@ -137,21 +137,21 @@ useSeo(
         <template #header>
           <h2>{{ i18n.t("project.pinnedVersions") }}</h2>
         </template>
-        <ul class="divide-y divide-blue-500/50">
-          <li v-for="(version, index) in project?.pinnedVersions" :key="`${index}-${version.name}`" class="flex items-center gap-2 py-2">
-            <NuxtLink :to="createPinnedVersionUrl(version)" class="min-w-0 flex-grow">
-              <div class="flex min-w-0 items-center gap-2">
-                <span class="truncate font-semibold">{{ version.name }}</span>
-                <Tag :name="version.channel.name" :color="{ background: version.channel.color }" :tooltip="version.channel.description" />
+        <ul class="divide-y divide-gray-300 dark:divide-gray-700">
+          <li v-for="(version, index) in project?.pinnedVersions" :key="`${index}-${version.name}`" class="relative flex items-center gap-2.5 py-2">
+            <ChannelTile :channel="version.channel" />
+            <div class="min-w-0 flex-1">
+              <div class="truncate font-semibold">
+                <NuxtLink :to="createPinnedVersionUrl(version)" class="after:(absolute inset-0 content-empty)">{{ version.name }}</NuxtLink>
               </div>
               <div class="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-sm text-gray-secondary">
-                <span v-for="(v, p) in version.platformDependenciesFormatted" :key="p" class="inline-flex items-center gap-1">
+                <span v-for="(v, p) in version.platformDependenciesFormatted" :key="p" class="inline-flex items-center gap-1" :title="v.join(', ')">
                   <PlatformLogo :platform="p as Platform" :size="16" class="flex-shrink-0" />
-                  <span class="tabular-nums">{{ v.join(", ") }}</span>
+                  <span class="tabular-nums">{{ collapseRanges(v) }}</span>
                 </span>
               </div>
-            </NuxtLink>
-            <DownloadButton v-if="project" :project="project" :pinned-version="version" small :show-versions="false" class="flex-shrink-0" />
+            </div>
+            <DownloadButton v-if="project" :project="project" :pinned-version="version" small :show-versions="false" class="relative z-1 flex-shrink-0" />
           </li>
         </ul>
         <Skeleton v-if="!project" />

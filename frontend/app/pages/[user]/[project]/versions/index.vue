@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { HangarProject, Platform, Version } from "#shared/types/backend";
-import { ChannelFlag, NamedPermission, Visibility } from "#shared/types/backend";
+import { NamedPermission, Visibility } from "#shared/types/backend";
 
 const i18n = useI18n();
 const router = useRouter();
@@ -11,10 +11,6 @@ const toArray = <T,>(input: unknown): T => (Array.isArray(input) ? input : input
 const filter = reactive({
   channels: toArray<string[]>(route.query.channel),
   platforms: toArray<Platform[]>(route.query.platform),
-  allChecked: {
-    channels: true,
-    platforms: true,
-  },
 });
 
 const props = defineProps<{
@@ -33,14 +29,7 @@ const requestParams = computed(() => {
   };
 });
 
-const { channels, channelPromise } = useProjectChannels(() => route.params.project);
-if (!route.query.channel) {
-  await channelPromise;
-  filter.channels.push(...channels.value!.filter((c) => !c.flags.includes(ChannelFlag.HIDE_BY_DEFAULT)).map((c) => c.name));
-}
-if (!route.query.platform && globalData.value) {
-  filter.platforms.push(...globalData.value.platforms.map((p) => p.enumName));
-}
+const { channels } = useProjectChannels(() => route.params.project);
 const { versions, versionsStatus } = useProjectVersions(
   () => ({
     project: route.params.project,
@@ -58,27 +47,19 @@ useSeo(
   }))
 );
 
-function checkAllChannels() {
-  filter.channels = filter.allChecked.channels ? channels.value?.map((c) => c.name) || [] : [];
+const openFilterSections = reactive({ channels: true, platforms: true });
+
+function toggleChannel(name: string) {
+  filter.channels = filter.channels.includes(name) ? filter.channels.filter((c) => c !== name) : [...filter.channels, name];
 }
 
-function checkAllPlatforms() {
-  filter.platforms = filter.allChecked.platforms ? globalData.value!.platforms.map((c) => c.enumName) : [];
+function togglePlatformFilter(platform: Platform) {
+  filter.platforms = filter.platforms.includes(platform) ? filter.platforms.filter((p) => p !== platform) : [...filter.platforms, platform];
 }
 
-function updateChannelCheckAll() {
-  filter.allChecked.channels = filter.channels.length === (channels.value?.length || 0);
-}
-
-function updatePlatformCheckAll() {
-  filter.allChecked.platforms = filter.platforms.length === globalData.value!.platforms.length;
-}
-
-function getBorderClasses(version: Version): string {
-  if (version.visibility === Visibility.SoftDelete) {
-    return "!border-red-500 border-1px";
-  }
-  return version.visibility === Visibility.Public ? "!border-gray-300 !dark:border-gray-700 border-1px" : "";
+function getRowClasses(version: Version): string {
+  if (version.visibility === Visibility.SoftDelete) return "bg-red-500/5";
+  return version.visibility === Visibility.Public ? "" : "bg-amber-500/5";
 }
 
 function getVisibilityTitle(visibility: Visibility) {
@@ -90,124 +71,159 @@ function getVisibilityTitle(visibility: Visibility) {
 <template>
   <div ref="pageChangeScrollAnchor" class="flex flex-wrap md:flex-nowrap gap-4">
     <section class="basis-full md:basis-11/15 flex-grow">
-      <ul>
-        <template v-if="versionsStatus === 'loading'">
-          <Skeleton class="mb-2 h-[90px]" delay />
-          <Skeleton class="mb-2 h-[90px]" delay />
-        </template>
-        <Alert v-else-if="!versions?.result?.length" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
-        <Pagination
-          v-else
-          :items="versions.result"
-          :server-pagination="versions.pagination"
-          :reset-anchor="pageChangeScrollAnchor"
-          @update:page="(p) => (page = p)"
-        >
-          <template #default="{ item }">
-            <li class="mb-2">
-              <Card :class="getBorderClasses(item)" class="pb-1">
-                <NuxtLink :to="`/${project?.namespace?.owner}/${project?.namespace?.slug}/versions/${item.name}`">
-                  <div class="flex lt-lg:flex-wrap">
-                    <div class="basis-full lg:(basis-6/15 pb-4) truncate">
-                      <div class="flex flex-wrap items-center">
-                        <h3 class="lg:basis-full lt-lg:mr-1 text-1.15rem leading-relaxed">{{ item.name }}</h3>
-                        <span class="lg:hidden flex-grow" />
-                        <Tag :name="item.channel.name" :color="{ background: item.channel.color }" :tooltip="item.channel.description" />
-                        <IconMdiCancel v-if="item.visibility === Visibility.SoftDelete" class="ml-1" />
-                        <span v-else-if="item.visibility !== Visibility.Public" class="ml-1 inline-flex items-center">
-                          <span class="text-gray-600 dark:text-gray-300 text-sm">
-                            {{ getVisibilityTitle(item.visibility) }}
-                          </span>
-                          <IconMdiEyeOff class="ml-1" />
-                        </span>
-                      </div>
-                    </div>
-                    <hr class="lg:hidden basis-full mt-1 border-gray-400 dark:border-gray-500" />
-                    <div class="basis-6/15 lt-lg:(mt-2 basis-6/12)">
-                      <div v-for="(v, p) in item?.platformDependenciesFormatted" :key="p" class="basis-full">
-                        <div class="inline-flex items-center">
-                          <PlatformLogo :platform="p as unknown as Platform" :size="22" class="mr-1 flex-shrink-0" />
-                          <span class="mr-3 text-0.95rem">{{ v.join(", ") }}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="basis-3/15 lt-lg:(mt-2 basis-6/12) text-0.95rem leading-normal">
-                      <div class="flex flex-wrap">
-                        <span class="basis-full inline-flex items-center">
-                          <IconMdiCalendar class="mr-1" />
-                          {{ i18n.d(item.createdAt, "date") }}
-                        </span>
-                        <span class="basis-full inline-flex items-center">
-                          <IconMdiDownload class="mr-1" />
-                          {{ item.stats.totalDownloads.toLocaleString("en-US") }}
-                        </span>
-                      </div>
-                    </div>
+      <template v-if="versionsStatus === 'loading' && !versions?.result?.length">
+        <Skeleton class="mb-2 h-[52px]" delay />
+        <Skeleton class="mb-2 h-[52px]" delay />
+      </template>
+      <Alert v-else-if="!versions?.result?.length" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
+      <Card v-else flat padding="none">
+        <ul class="divide-y divide-gray-300 dark:divide-gray-700">
+          <Pagination :items="versions.result" :server-pagination="versions.pagination" :reset-anchor="pageChangeScrollAnchor" @update:page="(p) => (page = p)">
+            <template #pagination="{ page: current, pages, updatePage }">
+              <li class="p-3">
+                <PaginationButtons :page="current" :pages="pages" @update:page="updatePage" />
+              </li>
+            </template>
+            <template #default="{ item }">
+              <li
+                class="relative flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 transition-colors hover:background-card lg:flex-nowrap"
+                :class="getRowClasses(item)"
+              >
+                <ChannelTile :channel="item.channel" />
+
+                <div class="min-w-0 flex flex-1 items-center gap-2">
+                  <h3 class="min-w-0 truncate font-semibold">
+                    <NuxtLink
+                      :to="`/${project?.namespace?.owner}/${project?.namespace?.slug}/versions/${item.name}`"
+                      class="after:(absolute inset-0 content-empty)"
+                    >
+                      {{ item.name }}
+                    </NuxtLink>
+                  </h3>
+                  <IconMdiCancel v-if="item.visibility === Visibility.SoftDelete" class="flex-shrink-0 text-red-500" />
+                  <span v-else-if="item.visibility !== Visibility.Public" class="flex-shrink-0 inline-flex items-center gap-1 text-xs text-gray-secondary">
+                    {{ getVisibilityTitle(item.visibility) }}
+                    <IconMdiEyeOff />
+                  </span>
+                </div>
+
+                <!-- below lg this drops under the title as a two-column block; on lg the wrappers
+                     dissolve (display:contents) so the parts become columns of the row itself -->
+                <div
+                  class="order-2 basis-full grid grid-cols-2 gap-x-4 gap-y-1 border-t border-gray-300 pt-2 text-sm lg:(order-none basis-auto contents) dark:border-gray-700"
+                >
+                  <div class="min-w-0 flex flex-col gap-1 lg:(flex-1 flex-row items-center gap-3 overflow-hidden)">
+                    <span v-for="(v, p) in item?.platformDependenciesFormatted" :key="p" class="inline-flex items-center gap-1" :title="v.join(', ')">
+                      <PlatformLogo :platform="p as unknown as Platform" :size="16" class="flex-shrink-0" />
+                      <span class="tabular-nums">{{ collapseRanges(v) }}</span>
+                    </span>
                   </div>
-                </NuxtLink>
-              </Card>
-            </li>
-          </template>
-        </Pagination>
-      </ul>
+
+                  <div class="flex flex-col gap-1 lg:contents">
+                    <span class="min-w-0 inline-flex items-center gap-1.5 truncate lg:flex-1">
+                      <IconMdiCalendar class="flex-shrink-0 lg:hidden" />
+                      {{ i18n.d(item.createdAt, "date") }}
+                    </span>
+                    <span class="inline-flex flex-shrink-0 items-center gap-1.5 lg:w-16">
+                      <IconMdiDownload class="flex-shrink-0" />
+                      <span class="tabular-nums">{{ item.stats.totalDownloads.toLocaleString("en-US") }}</span>
+                    </span>
+                  </div>
+                </div>
+
+                <DownloadButton
+                  v-if="project"
+                  :project="project"
+                  :version="item"
+                  small
+                  :show-versions="false"
+                  :show-single-platform="false"
+                  class="relative z-1 order-1 flex-shrink-0 lg:order-none"
+                />
+              </li>
+            </template>
+          </Pagination>
+        </ul>
+      </Card>
     </section>
 
-    <section class="basis-full md:basis-4/15 flex-grow">
-      <div class="flex flex-col flex-wrap space-y-4">
-        <div v-if="hasPerms(NamedPermission.CreateVersion)" class="basis-full flex-grow">
-          <Button :to="route.path + '/new'" class="w-full">
-            <IconMdiPlus />
-            {{ i18n.t("version.new.uploadNew") }}
+    <section class="basis-full md:basis-4/15 md:max-w-300px flex flex-col gap-3">
+      <Button v-if="hasPerms(NamedPermission.CreateVersion)" :to="route.path + '/new'" class="w-full">
+        <IconMdiPlus />
+        {{ i18n.t("version.new.uploadNew") }}
+      </Button>
+
+      <Card class="!p-3">
+        <div class="mb-1 flex items-center gap-2">
+          <button
+            type="button"
+            class="flex-1 text-left font-bold text-lg"
+            :aria-expanded="openFilterSections.channels"
+            @click="openFilterSections.channels = !openFilterSections.channels"
+          >
+            {{ i18n.t("version.channels") }}
+          </button>
+          <Button
+            v-if="project && hasPerms(NamedPermission.EditChannels)"
+            :to="`/${project.namespace.owner}/${project.name}/channels`"
+            variant="ghost"
+            tone="neutral"
+            size="sm"
+            icon-only
+            :title="i18n.t('general.edit')"
+            :aria-label="i18n.t('general.edit')"
+          >
+            <IconMdiPencil />
           </Button>
+          <button
+            type="button"
+            class="flex-shrink-0 rounded p-0.5 text-gray-secondary hover:color-primary"
+            :aria-label="i18n.t('version.channels')"
+            :aria-expanded="openFilterSections.channels"
+            @click="openFilterSections.channels = !openFilterSections.channels"
+          >
+            <IconMdiChevronDown class="transition-transform" :class="{ '-rotate-90': !openFilterSections.channels }" />
+          </button>
         </div>
+        <div v-show="openFilterSections.channels">
+          <div class="flex flex-col gap-0.5">
+            <FilterOption
+              v-for="channel in channels"
+              :key="channel.name"
+              :label="channel.name"
+              :selected="filter.channels.includes(channel.name)"
+              @toggle="toggleChannel(channel.name)"
+            >
+              <span class="h-3 w-3 flex-shrink-0 rounded-sm" :style="{ backgroundColor: channel.color }" />
+            </FilterOption>
+          </div>
+        </div>
+      </Card>
 
-        <Card class="basis-6/12 md:basis-full flex-grow">
-          <template #header>
-            <div class="inline-flex w-full flex-cols space-between">
-              <InputCheckbox v-model="filter.allChecked.channels" @change="checkAllChannels" />
-              <h2 class="flex-grow">{{ i18n.t("version.channels") }}</h2>
-              <Button
-                v-if="project && hasPerms(NamedPermission.EditChannels)"
-                :to="`/${project.namespace.owner}/${project.name}/channels`"
-                variant="ghost"
-                tone="neutral"
-                size="sm"
-                icon-only
-                class="ml-2"
-                :title="i18n.t('general.edit')"
-                :aria-label="i18n.t('general.edit')"
-              >
-                <IconMdiPencil />
-              </Button>
-            </div>
-          </template>
-
-          <ul>
-            <li v-for="channel in channels" :key="channel.name" class="inline-flex w-full">
-              <InputCheckbox v-model="filter.channels" :value="channel.name" @change="updateChannelCheckAll">
-                <Tag :name="channel.name" :color="{ background: channel.color }" :tooltip="channel.description" />
-              </InputCheckbox>
-            </li>
-          </ul>
-        </Card>
-
-        <Card class="basis-6/12 md:basis-full flex-grow">
-          <template #header>
-            <div class="inline-flex">
-              <InputCheckbox v-model="filter.allChecked.platforms" class="flex-right" @change="checkAllPlatforms" />
-              <h2>{{ i18n.t("version.platforms") }}</h2>
-            </div>
-          </template>
-
-          <ul>
-            <li v-for="platform in globalData?.platforms" :key="platform.name" class="inline-flex w-full">
-              <InputCheckbox v-model="filter.platforms" :value="platform.enumName" :label="platform.name" @change="updatePlatformCheckAll">
-                <PlatformLogo :platform="platform.enumName" :size="24" class="mr-1" />
-              </InputCheckbox>
-            </li>
-          </ul>
-        </Card>
-      </div>
+      <Card class="!p-3">
+        <button
+          type="button"
+          class="mb-1 flex w-full items-center gap-2 text-left font-bold text-lg"
+          :aria-expanded="openFilterSections.platforms"
+          @click="openFilterSections.platforms = !openFilterSections.platforms"
+        >
+          {{ i18n.t("version.platforms") }}
+          <IconMdiChevronDown class="ml-auto flex-shrink-0 text-gray-secondary transition-transform" :class="{ '-rotate-90': !openFilterSections.platforms }" />
+        </button>
+        <div v-show="openFilterSections.platforms">
+          <div class="flex flex-col gap-0.5">
+            <FilterOption
+              v-for="platform in globalData?.platforms"
+              :key="platform.name"
+              :label="platform.name"
+              :selected="filter.platforms.includes(platform.enumName)"
+              @toggle="togglePlatformFilter(platform.enumName)"
+            >
+              <PlatformLogo :platform="platform.enumName" :size="18" class="flex-shrink-0" />
+            </FilterOption>
+          </div>
+        </div>
+      </Card>
     </section>
   </div>
 </template>

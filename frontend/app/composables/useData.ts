@@ -430,7 +430,9 @@ export function useProjectVersions(
         const oldQuery = router.currentRoute.value.query;
         router.replace({ query: { ...oldQuery, page: offset && limit ? Math.floor(offset / limit) : undefined, channel, platform } });
       }
-    }
+    },
+    undefined,
+    true
   );
   return { versions, versionsStatus };
 }
