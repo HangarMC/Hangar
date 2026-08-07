@@ -19,7 +19,6 @@ const props = withDefaults(
     itemValue?: string;
     itemText?: string;
     label?: string;
-    /** Rendered muted inside the button, for filters that would otherwise need a stray label. */
     prefix?: string;
     placeholder?: string;
     errorMessages?: string[];

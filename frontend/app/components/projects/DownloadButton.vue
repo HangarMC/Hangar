@@ -79,6 +79,7 @@ function formatVersionRange(versions?: string[]): string {
         <Button
           v-for="(_, p) in pinnedVersion.platformDependenciesFormatted"
           :key="p"
+          class="download-btn"
           :size="small ? 'sm' : 'lg'"
           :href="downloadLink(p, pinnedVersion)"
           target="_blank"
@@ -87,18 +88,19 @@ function formatVersionRange(versions?: string[]): string {
           @click.middle="trackDownload(p, pinnedVersion)"
           v-on="useTracking('download-link', { pinned: true, dropdown: false, mainchannel: false, platform: p, project: project.name })"
         >
-          <IconMdiDownloadOutline />
+          <IconMdiDownloadOutline class="download-icon" />
           <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
           <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" />
         </Button>
       </div>
 
-      <DropdownButton v-else :button-size="small ? 'sm' : 'lg'">
+      <DropdownButton v-else class="download-btn" :button-size="small ? 'sm' : 'lg'">
         <template #button-label>
-          <span class="items-center inline-flex">
-            <IconMdiDownloadOutline />
+          <span class="items-center inline-flex gap-1.5">
+            <IconMdiDownloadOutline class="download-icon" />
             <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
           </span>
+          <span v-if="!small" class="download-divider" aria-hidden="true" />
         </template>
         <DropdownItem
           v-for="(v, p) in pinnedVersion.platformDependenciesFormatted"
@@ -122,6 +124,7 @@ function formatVersionRange(versions?: string[]): string {
     <Button
       v-else-if="singlePlatform && singleVersion"
       :size="small ? 'sm' : 'lg'"
+      class="download-btn"
       :class="{ '!h-auto py-1.5': showSinglePlatform }"
       :href="platformDownloadLink"
       target="_blank"
@@ -132,7 +135,7 @@ function formatVersionRange(versions?: string[]): string {
     >
       <div class="flex flex-col" :class="{ '-mb-0.5': showSinglePlatform }">
         <div class="inline-flex items-center">
-          <IconMdiDownloadOutline />
+          <IconMdiDownloadOutline class="download-icon" />
           <span v-if="!small">
             {{ !!singleVersion.downloads[singlePlatform]?.externalUrl ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
           </span>
@@ -146,12 +149,13 @@ function formatVersionRange(versions?: string[]): string {
       </div>
     </Button>
 
-    <DropdownButton v-else-if="version" :button-size="small ? 'sm' : 'lg'">
+    <DropdownButton v-else-if="version" class="download-btn" :button-size="small ? 'sm' : 'lg'">
       <template #button-label>
-        <span class="items-center inline-flex">
-          <IconMdiDownloadOutline />
+        <span class="items-center inline-flex gap-1.5">
+          <IconMdiDownloadOutline class="download-icon" />
           <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
         </span>
+        <span v-if="!small" class="download-divider" aria-hidden="true" />
       </template>
       <DropdownItem
         v-for="(v, p) in version.downloads"
@@ -172,12 +176,17 @@ function formatVersionRange(versions?: string[]): string {
       </DropdownItem>
     </DropdownButton>
 
-    <DropdownButton v-else-if="project.mainChannelVersions && Object.keys(project.mainChannelVersions).length > 0" :button-size="small ? 'sm' : 'lg'">
+    <DropdownButton
+      v-else-if="project.mainChannelVersions && Object.keys(project.mainChannelVersions).length > 0"
+      class="download-btn"
+      :button-size="small ? 'sm' : 'lg'"
+    >
       <template #button-label>
-        <span class="items-center inline-flex">
-          <IconMdiDownloadOutline />
+        <span class="items-center inline-flex gap-1.5">
+          <IconMdiDownloadOutline class="download-icon" />
           <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
         </span>
+        <span v-if="!small" class="download-divider" aria-hidden="true" />
       </template>
       <DropdownItem
         v-for="(v, p) in project.mainChannelVersions"

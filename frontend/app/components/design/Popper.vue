@@ -15,8 +15,10 @@ import { Tooltip } from "floating-vue";
 </template>
 
 <style>
-.v-popper--theme-none .v-popper__inner {
+.v-popper--theme-none .v-popper__inner,
+.v-popper--theme-none .v-popper__inner > * {
   display: flex;
+  flex-direction: column;
   min-height: 0;
   overflow: hidden;
 }

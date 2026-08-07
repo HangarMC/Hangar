@@ -46,7 +46,7 @@ function move(offset: number) {
       <span
         v-if="option.count"
         class="min-w-5 rounded-full px-1.5 text-center text-xs tabular-nums"
-        :class="modelValue === option.value ? 'bg-primary-500 text-white' : 'background-default text-gray-600 dark:text-gray-300'"
+        :class="modelValue === option.value ? 'accent-fill' : 'background-default text-gray-600 dark:text-gray-300'"
       >
         {{ option.count }}
       </span>

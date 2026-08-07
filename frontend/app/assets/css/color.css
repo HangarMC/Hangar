@@ -10,6 +10,9 @@
   --primary-700: #002f8c;
   --primary-800: #001f5d;
   --primary-900: #000817;
+  --primary-contrast: #ffffff;
+  --primary-ink: #003eba;
+  --primary-ink-dark: #6695f2;
 
   --gray-50: #fafafa;
   --gray-100: #f4f4f5;
@@ -45,6 +48,9 @@
   --primary-700: #d32f2f;
   --primary-800: #c62828;
   --primary-900: #b71c1c;
+  --primary-contrast: #ffffff;
+  --primary-ink: #d32f2f;
+  --primary-ink-dark: #e57373;
 }
 .theme-pink {
   --primary-50: #fce4ec;
@@ -57,6 +63,9 @@
   --primary-700: #c2185b;
   --primary-800: #ad1457;
   --primary-900: #880e4f;
+  --primary-contrast: #ffffff;
+  --primary-ink: #d41a5e;
+  --primary-ink-dark: #f06292;
 }
 .theme-purple {
   --primary-50: #f3e5f5;
@@ -69,6 +78,9 @@
   --primary-700: #7b1fa2;
   --primary-800: #6a1b9a;
   --primary-900: #4a148c;
+  --primary-contrast: #ffffff;
+  --primary-ink: #8e24aa;
+  --primary-ink-dark: #ce93d8;
 }
 .theme-deep-purple {
   --primary-50: #ede7f6;
@@ -81,6 +93,9 @@
   --primary-700: #512da8;
   --primary-800: #4527a0;
   --primary-900: #311b92;
+  --primary-contrast: #ffffff;
+  --primary-ink: #5e35b1;
+  --primary-ink-dark: #b39ddb;
 }
 .theme-indigo {
   --primary-50: #e8eaf6;
@@ -93,6 +108,9 @@
   --primary-700: #303f9f;
   --primary-800: #283593;
   --primary-900: #1a237e;
+  --primary-contrast: #ffffff;
+  --primary-ink: #3949ab;
+  --primary-ink-dark: #9fa8da;
 }
 .theme-light-blue {
   --primary-50: #e1f5fe;
@@ -105,6 +123,9 @@
   --primary-700: #0288d1;
   --primary-800: #0277bd;
   --primary-900: #01579b;
+  --primary-contrast: #18181b;
+  --primary-ink: #0275b9;
+  --primary-ink-dark: #4fc3f7;
 }
 .theme-cyan {
   --primary-50: #e0f7fa;
@@ -117,6 +138,9 @@
   --primary-700: #0097a7;
   --primary-800: #00838f;
   --primary-900: #006064;
+  --primary-contrast: #18181b;
+  --primary-ink: #006064;
+  --primary-ink-dark: #4dd0e1;
 }
 .theme-teal {
   --primary-50: #e0f2f1;
@@ -129,6 +153,9 @@
   --primary-700: #00796b;
   --primary-800: #00695c;
   --primary-900: #004d40;
+  --primary-contrast: #ffffff;
+  --primary-ink: #00796b;
+  --primary-ink-dark: #4db6ac;
 }
 .theme-green {
   --primary-50: #e8f5e9;
@@ -141,6 +168,9 @@
   --primary-700: #388e3c;
   --primary-800: #2e7d32;
   --primary-900: #1b5e20;
+  --primary-contrast: #18181b;
+  --primary-ink: #2e7d32;
+  --primary-ink-dark: #81c784;
 }
 .theme-light-green {
   --primary-50: #f1f8e9;
@@ -153,6 +183,9 @@
   --primary-700: #689f38;
   --primary-800: #558b2f;
   --primary-900: #33691e;
+  --primary-contrast: #18181b;
+  --primary-ink: #33691e;
+  --primary-ink-dark: #aed581;
 }
 .theme-lime {
   --primary-50: #f9fbe7;
@@ -165,6 +198,9 @@
   --primary-700: #afb42b;
   --primary-800: #9e9d24;
   --primary-900: #827717;
+  --primary-contrast: #18181b;
+  --primary-ink: #7f7517;
+  --primary-ink-dark: #dce775;
 }
 .theme-yellow {
   --primary-50: #fffde7;
@@ -177,6 +213,9 @@
   --primary-700: #fbc02d;
   --primary-800: #f9a825;
   --primary-900: #f57f17;
+  --primary-contrast: #18181b;
+  --primary-ink: #b05b11;
+  --primary-ink-dark: #fff176;
 }
 .theme-amber {
   --primary-50: #fff8e1;
@@ -189,6 +228,9 @@
   --primary-700: #ffa000;
   --primary-800: #ff8f00;
   --primary-900: #ff6f00;
+  --primary-contrast: #18181b;
+  --primary-ink: #bd5200;
+  --primary-ink-dark: #ffd54f;
 }
 .theme-orange {
   --primary-50: #fff3e0;
@@ -201,6 +243,9 @@
   --primary-700: #f57c00;
   --primary-800: #ef6c00;
   --primary-900: #e65100;
+  --primary-contrast: #18181b;
+  --primary-ink: #ca4700;
+  --primary-ink-dark: #ffb74d;
 }
 .theme-deep-orange {
   --primary-50: #fbe9e7;
@@ -213,6 +258,9 @@
   --primary-700: #e64a19;
   --primary-800: #d84315;
   --primary-900: #bf360c;
+  --primary-contrast: #18181b;
+  --primary-ink: #bf360c;
+  --primary-ink-dark: #ff8a65;
 }
 .theme-brown {
   --primary-50: #efebe9;
@@ -225,6 +273,9 @@
   --primary-700: #5d4037;
   --primary-800: #4e342e;
   --primary-900: #3e2723;
+  --primary-contrast: #ffffff;
+  --primary-ink: #6d4c41;
+  --primary-ink-dark: #bcaaa4;
 }
 .theme-gray {
   --primary-50: #fafafa;
@@ -237,4 +288,11 @@
   --primary-700: #616161;
   --primary-800: #424242;
   --primary-900: #212121;
+  --primary-contrast: #18181b;
+  --primary-ink: #616161;
+  --primary-ink-dark: #e0e0e0;
+}
+
+.dark {
+  --primary-ink: var(--primary-ink-dark);
 }

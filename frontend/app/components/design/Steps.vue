@@ -104,7 +104,7 @@ async function goto(step: Step) {
                 count + 1 < activeStepIndex
                   ? 'background-card color-primary'
                   : count + 1 === activeStepIndex
-                    ? 'bg-primary-500 text-white'
+                    ? 'accent-fill'
                     : 'background-card text-gray-secondary'
               "
             >
@@ -122,7 +122,7 @@ async function goto(step: Step) {
         <li
           v-if="count < steps.length - 1"
           class="h-0.5 min-w-4 flex-1 rounded-full transition-colors"
-          :class="count + 1 < activeStepIndex ? 'bg-primary-500' : 'bg-gray-300 dark:bg-gray-700'"
+          :class="count + 1 < activeStepIndex ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-700'"
         />
       </template>
     </ol>

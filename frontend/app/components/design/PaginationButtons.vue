@@ -52,8 +52,9 @@ function gotoPage(pageNo: number) {
     <Button
       v-for="index in options"
       :key="index"
-      :variant="page === index - 1 ? 'solid' : 'outline'"
-      :tone="page === index - 1 ? 'primary' : 'neutral'"
+      variant="outline"
+      tone="neutral"
+      :class="page === index - 1 ? 'accent-fill !border-transparent' : ''"
       size="sm"
       :aria-label="'Page ' + index"
       :aria-current="page === index - 1 ? 'page' : undefined"

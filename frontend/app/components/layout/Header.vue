@@ -37,6 +37,18 @@ const globalData = useGlobalData();
 
 const notifications = ref<HangarNotification[]>([]);
 const { unreadCount, refreshUnreadCount } = useUnreadCount();
+
+const hasStaffLinks = computed(() =>
+  [
+    NamedPermission.ModNotesAndFlags,
+    NamedPermission.Reviewer,
+    NamedPermission.ViewStats,
+    NamedPermission.ViewHealth,
+    NamedPermission.ViewLogs,
+    NamedPermission.ManualValueChanges,
+    NamedPermission.EditAllUserSettings,
+  ].some((permission) => hasPerms(permission))
+);
 const loadedUnreadNotifications = ref<number>(0);
 
 type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
@@ -338,7 +350,7 @@ function isRecent(date: string): boolean {
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
-                <hr class="my-1 border-gray-300 dark:border-gray-700" />
+                <hr v-if="hasStaffLinks" class="my-1 border-gray-300 dark:border-gray-700" />
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
                   <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>

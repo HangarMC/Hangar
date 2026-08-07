@@ -158,6 +158,10 @@ jobs:
         env:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
+      - name: Restore English source strings
+        if: ${{ steps.vars.outputs.build_frontend == 'true' }}
+        run: git checkout -- frontend/app/i18n/locales/en.json
+
       - name: Build frontend (prod)
         if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.master_branch == 'true' }}
         working-directory: frontend
