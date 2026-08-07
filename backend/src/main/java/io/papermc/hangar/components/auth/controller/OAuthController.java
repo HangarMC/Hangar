@@ -43,7 +43,8 @@ public class OAuthController extends HangarComponent {
     @ErrorRedirect
     @GetMapping("/{provider}/login")
     public String login(@PathVariable final String provider, @RequestParam final OAuthMode mode, @RequestParam(required = false) final String returnUrl) throws IOException {
-        if (!returnUrl.startsWith("/") || returnUrl.contains("..")) {
+        // must be a site-relative path, not a protocol-relative (//host) or backslash (/\host) URL
+        if (returnUrl == null || !returnUrl.startsWith("/") || returnUrl.startsWith("//") || returnUrl.startsWith("/\\") || returnUrl.contains("..")) {
             throw new HangarApiException("Invalid return url");
         }
 

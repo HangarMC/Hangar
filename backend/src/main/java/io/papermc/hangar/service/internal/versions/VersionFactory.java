@@ -167,9 +167,10 @@ public class VersionFactory extends HangarComponent {
     private String createPendingFile(final MultipartFile file, final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies,
                                      final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, String versionString,
                                      final String userTempDir, final MultipartFileOrUrl fileOrUrl, final boolean prefillDependencies) {
-        // check extension
+        // check extension and reject path separators (the name is used to build a storage path)
         final String pluginFileName = file.getOriginalFilename();
-        if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))) {
+        if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))
+            || pluginFileName.contains("/") || pluginFileName.contains("\\") || pluginFileName.contains("..")) {
             this.fileService.deleteDirectory(userTempDir);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.fileExtension");
         }
