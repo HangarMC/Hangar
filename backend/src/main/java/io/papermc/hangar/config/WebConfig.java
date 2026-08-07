@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospec
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import io.papermc.hangar.components.images.service.SsrfProtectedAddressResolverGroup;
 import io.papermc.hangar.components.index.webhook.WebhookMessageConverter;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
@@ -194,7 +195,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean
     public WebClient webClient(final WebClient.Builder builder) {
+        // Only used by the image proxy: the resolver blocks internal addresses at connect time (SSRF guard)
         final HttpClient httpClient = HttpClient.create()
+            .resolver(new SsrfProtectedAddressResolverGroup())
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) timeout.toMillis())
             .responseTimeout(timeout)
             .doOnConnected(conn ->
