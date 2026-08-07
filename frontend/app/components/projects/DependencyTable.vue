@@ -51,10 +51,11 @@ defineExpose({ dependencies, reset });
   <Table v-if="dependencies.length > 0" class="mb-2">
     <thead>
       <tr>
+        <th class="w-36" />
         <th>{{ t("version.new.form.linkOrProject") }}</th>
         <th>{{ t("general.name") }}</th>
-        <th>{{ t("general.required") }}</th>
-        <th v-if="!noEditing" />
+        <th class="!text-center w-20">{{ t("general.required") }}</th>
+        <th v-if="!noEditing" class="w-12" />
       </tr>
     </thead>
     <tbody>
@@ -68,10 +69,9 @@ defineExpose({ dependencies, reset });
       />
     </tbody>
   </Table>
-  <div v-if="!noEditing" class="m-2" :class="dependencies.length > 0 ? '-mt-2' : ''">
-    <Button block @click="addDep">
-      <IconMdiPlus />
-      {{ t("general.add") }}
-    </Button>
-  </div>
+  <p v-else-if="!noEditing" class="mb-3 text-sm text-gray-secondary">{{ t("version.page.noDependencies") }}</p>
+  <Button v-if="!noEditing" variant="outline" tone="neutral" size="sm" @click="addDep">
+    <IconMdiPlus />
+    {{ t("general.add") }}
+  </Button>
 </template>

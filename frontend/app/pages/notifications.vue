@@ -74,9 +74,9 @@ async function markAllAsRead() {
     unreadNotifications.value.result = [];
     unreadNotifications.value.pagination.count = 0;
   }
-  allNotifications.value?.result.forEach((notification) => {
+  for (const notification of allNotifications.value?.result ?? []) {
     notification.read = true;
-  });
+  }
   await refreshUnreadCount();
 }
 

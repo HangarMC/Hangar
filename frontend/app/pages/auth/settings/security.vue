@@ -1,7 +1,15 @@
 <script lang="ts" setup>
 import { isAxiosError } from "axios";
 import type { AxiosRequestConfig } from "axios";
-import type { Authenticator, SettingsResponse } from "#shared/types/backend";
+import type { Authenticator, OAuthConnection, SettingsResponse } from "#shared/types/backend";
+
+interface OAuthAccount {
+  key: string;
+  id: string;
+  name: string;
+  credential?: OAuthConnection;
+  canConnectAnother: boolean;
+}
 
 const props = defineProps<{
   settings?: SettingsResponse;
@@ -23,7 +31,7 @@ const loading = ref(false);
 
 const oauthAccounts = computed(() =>
   [...new Set([...backendData.security.oauthProviders, ...(props.settings?.oauthConnections.map((credential) => credential.provider) ?? [])])].flatMap(
-    (provider) => {
+    (provider): OAuthAccount[] => {
       const name = provider
         .split(/[-_]/)
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))

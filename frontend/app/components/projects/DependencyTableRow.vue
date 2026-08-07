@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { Tab } from "#shared/types/components/design/Tabs";
 import type { PaginatedResultProject, PluginDependency } from "#shared/types/backend";
 import { validUrl } from "~/composables/useValidationHelpers";
 
@@ -19,10 +18,10 @@ const route = useRoute("user-project");
 
 const completionResult = ref<string[]>([]);
 
-const tabs = [
-  { value: "file", header: "Hangar" },
-  { value: "url", header: "URL" },
-] as const satisfies Tab<string>[];
+const modeOptions: { value: "file" | "url"; label: string }[] = [
+  { value: "file", label: "Hangar" },
+  { value: "url", label: "URL" },
+];
 
 async function onSearch(val: string | undefined) {
   if (val) {
@@ -36,55 +35,55 @@ async function onSearch(val: string | undefined) {
 
 <template>
   <tr>
-    <td class="flex flex-wrap gap-2">
-      <Tabs v-model="dep.mode" :tabs="tabs" class="items-center -ml-2" compact>
-        <template #file>
-          <InputAutocomplete
-            :id
-            v-model="dep.name"
-            :placeholder="t('version.new.form.hangarProject')"
-            :values="completionResult"
-            :item-text="dep.name"
-            :item-value="dep.name"
-            :disabled="noEditing"
-            :rules="[required(t('version.new.form.hangarProject'))]"
-            :name="'hangarproject-' + idx"
-            @search="onSearch($event)"
-            @change="dep.externalUrl = undefined"
-          />
-        </template>
-        <template #url>
-          <InputText
-            v-model.trim="dep.externalUrl"
-            :placeholder="t('version.new.form.externalUrl')"
-            :disabled="noEditing"
-            :rules="[required(t('version.new.form.externalUrl')), validUrl()]"
-            clearable
-            :name="'externalurl-' + idx"
-          />
-        </template>
-      </Tabs>
+    <td class="align-middle">
+      <SegmentedControl v-if="!noEditing" v-model="dep.mode" :options="modeOptions" :aria-label="t('version.new.form.linkOrProject')" />
+      <span v-else class="text-sm text-gray-secondary">{{ dep.mode === "url" ? "URL" : "Hangar" }}</span>
     </td>
-    <td v-if="dep.mode === 'url'">
+    <td class="align-middle">
+      <InputAutocomplete
+        v-if="dep.mode === 'file'"
+        :id
+        v-model="dep.name"
+        :placeholder="t('version.new.form.hangarProject')"
+        :values="completionResult"
+        :item-text="dep.name"
+        :item-value="dep.name"
+        :disabled="noEditing"
+        :rules="[required(t('version.new.form.hangarProject'))]"
+        :name="'hangarproject-' + idx"
+        @search="onSearch($event)"
+        @change="dep.externalUrl = undefined"
+      />
       <InputText
+        v-else
+        v-model.trim="dep.externalUrl"
+        :placeholder="t('version.new.form.externalUrl')"
+        :disabled="noEditing"
+        :rules="[required(t('version.new.form.externalUrl')), validUrl()]"
+        clearable
+        :name="'externalurl-' + idx"
+      />
+    </td>
+    <td class="align-middle">
+      <InputText
+        v-if="dep.mode === 'url'"
         v-model.trim="dep.name"
-        dense
-        hide-details
-        flat
-        :label="t('general.name')"
+        :placeholder="t('general.name')"
         :rules="[required(t('general.name'))]"
         :disabled="noEditing"
         :name="'name-' + idx"
       />
+      <span v-else class="text-gray-secondary">&mdash;</span>
     </td>
-    <td v-else />
-    <td>
-      <InputCheckbox v-model="dep.required" :disabled="noEditing" />
+    <td class="align-middle">
+      <div class="flex justify-center">
+        <InputCheckbox v-model="dep.required" :disabled="noEditing" :aria-label="t('general.required')" />
+      </div>
     </td>
-    <td v-if="!noEditing">
-      <Button variant="ghost" tone="danger" size="sm" icon-only :title="t('general.delete')" :aria-label="t('general.delete')" @click="emit('delete')"
-        ><IconMdiDelete
-      /></Button>
+    <td v-if="!noEditing" class="align-middle">
+      <Button variant="ghost" tone="danger" size="sm" icon-only :title="t('general.delete')" :aria-label="t('general.delete')" @click="emit('delete')">
+        <IconMdiDelete />
+      </Button>
     </td>
   </tr>
 </template>

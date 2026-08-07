@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const i18n = useI18n();
+
 const props = withDefaults(
   defineProps<{
     title: string;
@@ -51,19 +53,32 @@ defineExpose({
 <template>
   <dialog
     ref="dialog"
-    class="background-default rounded max-w-10/12 >md:max-w-250 py-6 px-5 text-[#262626] dark:text-[#E0E6f0]"
+    class="max-w-[calc(100vw-2rem)] background-default rounded-md border border-gray-300 p-0 shadow-xl dark:border-gray-700 >md:max-w-250"
     :class="windowClasses"
     :data-title="title"
     @close="close"
   >
-    <div class="inline-flex items-center w-full pb-4 pr-1 text-xl">
-      <button data-close @click="close">
-        <IconMdiClose class="cursor-pointer mr-1" />
-      </button>
-      <div class="font-bold">{{ props.title }}</div>
+    <div class="flex flex-shrink-0 items-center gap-3 border-b border-gray-300 px-5 py-3 dark:border-gray-700">
+      <h2 class="min-w-0 flex-1 truncate text-lg font-bold">{{ props.title }}</h2>
+      <Button
+        data-close
+        variant="ghost"
+        tone="neutral"
+        size="sm"
+        icon-only
+        :title="i18n.t('general.close')"
+        :aria-label="i18n.t('general.close')"
+        @click="close"
+      >
+        <IconMdiClose />
+      </Button>
     </div>
-    <slot :on="{ click: close }" />
-    <div v-if="hasSlotContent($slots.footer)" class="mt-6 flex flex-wrap justify-end gap-2">
+
+    <div class="max-h-[70vh] overflow-auto px-5 py-4">
+      <slot :on="{ click: close }" />
+    </div>
+
+    <div v-if="hasSlotContent($slots.footer)" class="flex flex-shrink-0 flex-wrap justify-end gap-2 border-t border-gray-300 px-5 py-3 dark:border-gray-700">
       <slot name="footer" :on="{ click: close }" :close="close" />
     </div>
   </dialog>
@@ -71,7 +86,17 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
+dialog {
+  color: inherit;
+}
+
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
 dialog::backdrop {
-  @apply bg-black opacity-60;
+  @apply bg-black/60;
+  backdrop-filter: blur(2px);
 }
 </style>
