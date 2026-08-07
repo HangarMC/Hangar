@@ -67,7 +67,7 @@ public class VersionPlatformVersionFilter implements Filter<VersionPlatformVersi
         public void createMeili(final StringBuilder sb) {
             StringBuilder versionSb = new StringBuilder(" IN [");
             for (int i = 0; i < this.versions.length; i++) {
-                versionSb.append(versions[i]);
+                versionSb.append(Filter.escapeMeili(String.valueOf(this.versions[i])));
                 if (i + 1 != this.versions.length) {
                     versionSb.append(",");
                 }

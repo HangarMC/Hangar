@@ -17,6 +17,10 @@ springdoc:
 
 hangar:
   disable-ratelimiting: true
+  # Tests reindex synchronously via SchedulerService#runAllJobs in TestData; keep the async job
+  # poller from firing during the run, or its concurrent reindex empties the live index.
+  jobs:
+    check-interval: 24h
   storage:
     type: "local"
   security:

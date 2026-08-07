@@ -57,7 +57,7 @@ public class VersionChannelFilter implements Filter<VersionChannelFilterInstance
         public void createMeili(final StringBuilder sb) {
             sb.append("channel.name IN [");
             for (int i = 0; i < this.channels.length; i++) {
-                sb.append(this.channels[i]);
+                sb.append(Filter.escapeMeili(String.valueOf(this.channels[i])));
                 if (i + 1 != this.channels.length) {
                     sb.append(",");
                 }

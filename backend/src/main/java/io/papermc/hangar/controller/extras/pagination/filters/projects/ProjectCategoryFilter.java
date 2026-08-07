@@ -67,7 +67,7 @@ public class ProjectCategoryFilter implements Filter<ProjectCategoryFilterInstan
         public void createMeili(StringBuilder sb) {
             sb.append("category IN [");
             for (int i = 0; i < this.categories.length; i++) {
-                sb.append(categories[i]);
+                sb.append(Filter.escapeMeili(String.valueOf(this.categories[i])));
                 if (i + 1 != this.categories.length) {
                     sb.append(',');
                 }

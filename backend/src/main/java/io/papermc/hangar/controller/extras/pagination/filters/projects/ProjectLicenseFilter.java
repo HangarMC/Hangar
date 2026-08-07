@@ -65,7 +65,7 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
         public void createMeili(final StringBuilder sb) {
             sb.append("settings.license.type in [");
             for (int  i = 0; i < this.licenses.length; i++) {
-                sb.append(this.licenses[i]);
+                sb.append(Filter.escapeMeili(String.valueOf(this.licenses[i])));
                 if (i + 1 != this.licenses.length) {
                     sb.append(',');
                 }
