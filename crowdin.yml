@@ -4,6 +4,9 @@ project_id: 1
 api_token_env: CROWDIN_PERSONAL_TOKEN
 preserve_hierarchy: true
 
+excluded_target_languages:
+  - en
+
 files:
   - source: /frontend/app/i18n/locales/en.json
     translation: /frontend/app/i18n/locales/%two_letters_code%.json
