@@ -141,11 +141,11 @@ useSeo(
         <hr class="my-1 border-gray-300 dark:border-gray-700" />
       </template>
 
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <div class="min-w-60 flex-1">
           <InputText v-model="query" :label="i18n.t('hangar.projectSearch.query')" />
         </div>
-        <InputDropdown v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
+        <InputDropdown v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :prefix="i18n.t('hangar.projectSearch.sortBy')" />
       </div>
 
       <ProjectList

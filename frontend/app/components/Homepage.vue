@@ -39,7 +39,6 @@ const activeSorter = ref<string>((route.query.sort as string) || "-stars");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const query = ref<string>((route.query.query as string) || "");
 const versionQuery = ref("");
-const categoryQuery = ref("");
 const openFilterSections = reactive({
   platforms: true,
   tags: true,
@@ -61,12 +60,6 @@ const filteredPlatformVersions = computed(() => {
     const subVersions = version.subVersions.filter((subVersion) => subVersion.toLowerCase().includes(search));
     return subVersions.length > 0 ? [{ ...version, subVersions }] : [];
   });
-});
-
-const filteredCategories = computed(() => {
-  const search = categoryQuery.value.trim().toLowerCase();
-  if (!search) return useVisibleCategories.value;
-  return useVisibleCategories.value.filter((category) => i18n.t(category.title).toLowerCase().includes(search));
 });
 
 const requestParams = computed(() => {
@@ -367,28 +360,16 @@ useSeo(
               />
             </button>
             <div v-show="openFilterSections.categories">
-              <div class="relative mb-2">
-                <IconMdiMagnify class="pointer-events-none absolute left-2.5 top-2.5 text-gray-secondary" />
-                <input
-                  v-model="categoryQuery"
-                  type="search"
-                  class="w-full rounded-md background-card py-2 pl-8 pr-3 text-sm outline-none focus:(ring-2 ring-primary-500)"
-                  :placeholder="i18n.t('hangar.projectSearch.searchCategories')"
-                />
-              </div>
-              <div class="max-h-72 overflow-auto pr-1">
-                <div class="flex flex-col gap-0.5">
-                  <FilterOption
-                    v-for="category in filteredCategories"
-                    :key="category.apiName"
-                    :label="i18n.t(category.title)"
-                    :selected="filters.categories.includes(category.apiName)"
-                    @toggle="toggleFilter('categories', category.apiName)"
-                  >
-                    <CategoryLogo :category="category.apiName as Category" :size="18" class="flex-shrink-0" />
-                  </FilterOption>
-                </div>
-                <p v-if="filteredCategories.length === 0" class="py-2 text-sm text-gray-secondary">{{ i18n.t("hangar.projectSearch.noFilterResults") }}</p>
+              <div class="flex flex-col gap-0.5">
+                <FilterOption
+                  v-for="category in useVisibleCategories"
+                  :key="category.apiName"
+                  :label="i18n.t(category.title)"
+                  :selected="filters.categories.includes(category.apiName)"
+                  @toggle="toggleFilter('categories', category.apiName)"
+                >
+                  <CategoryLogo :category="category.apiName as Category" :size="18" class="flex-shrink-0" />
+                </FilterOption>
               </div>
             </div>
           </Card>

@@ -19,6 +19,8 @@ const props = withDefaults(
     itemValue?: string;
     itemText?: string;
     label?: string;
+    /** Rendered muted inside the button, for filters that would otherwise need a stray label. */
+    prefix?: string;
     placeholder?: string;
     errorMessages?: string[];
     rules?: ValidationRule<string | undefined>[];
@@ -30,6 +32,7 @@ const props = withDefaults(
     itemValue: "value",
     itemText: "text",
     label: "",
+    prefix: undefined,
     placeholder: undefined,
     errorMessages: () => [],
     rules: () => [],
@@ -69,6 +72,7 @@ function select(val: any) {
     <ErrorTooltip :error-messages="errors">
       <DropdownButton button-variant="outline" button-tone="neutral" :button-size="buttonSize">
         <template #button-label>
+          <span v-if="prefix" class="flex-shrink-0 font-normal text-gray-secondary">{{ prefix }}:</span>
           <span class="truncate" :class="{ 'text-gray-secondary': selectedText === undefined }">
             {{ selectedText ?? placeholder ?? i18n.t("general.select") }}
           </span>
