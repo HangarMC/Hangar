@@ -1,23 +1,26 @@
 <template>
-  <Modal ref="modal" :title="t('organization.settings.changeAvatar')" window-classes="w-125" @open="openModal">
+  <Modal ref="modal" :title="title" window-classes="w-125" @open="openModal">
     <template #activator="{ on }">
       <slot name="activator" :on="on">
-        <Button v-bind="$attrs" @click.prevent="on.click">{{ t("organization.settings.changeAvatar") }}</Button>
+        <Button v-bind="$attrs" @click.prevent="on.click">{{ title }}</Button>
       </slot>
     </template>
 
-    <div class="mb-2">
-      <InputFile
-        v-model="selectedFile"
-        :placeholder="t('settings.avatar.inputPlaceholder')"
-        :rules="[required(), maxFileSize()(useBackendData.validations.project.maxFileSize)]"
-        accept="image/png,image/jpeg,image/webp"
-      />
+    <div class="mb-3 flex flex-wrap items-center gap-3">
+      <Button variant="outline" tone="neutral" :disabled="loading.save || loading.reset" @click.prevent="fileInput?.click()">
+        <IconMdiFolderOpen />
+        {{ t("settings.avatar.choose") }}
+      </Button>
+      <span class="min-w-0 flex-1 truncate text-sm text-gray-secondary">
+        {{ selectedFile?.name ?? (cropperInput ? t("settings.avatar.currentImage") : "") }}
+      </span>
+      <input ref="fileInput" type="file" class="hidden" accept="image/png,image/jpeg,image/webp" @change="onFileChange" />
     </div>
+
     <cropper
       v-if="cropperInput"
       :src="cropperInput"
-      class="h-200px overflow-hidden"
+      class="h-250px overflow-hidden rounded-md"
       :min-height="150"
       :default-size="defaultCropSize"
       :canvas="{
@@ -35,9 +38,37 @@
       image-restriction="stencil"
       @change="changeImage"
     />
+    <button
+      v-else
+      type="button"
+      class="h-250px w-full flex flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed text-sm text-gray-secondary transition-colors"
+      :class="dragging ? 'border-primary-500 background-card' : 'border-gray-300 hover:background-card dark:border-gray-700'"
+      @click.prevent="fileInput?.click()"
+      @dragover.prevent="dragging = true"
+      @dragleave.prevent="dragging = false"
+      @drop.prevent="onDrop"
+    >
+      <IconMdiImagePlus class="text-3xl" />
+      {{ t("settings.avatar.dropHint") }}
+    </button>
+
+    <p v-if="cropperInput" class="mt-2 text-sm text-gray-secondary">{{ t("settings.avatar.hint") }}</p>
+
     <template #footer="{ on }">
-      <Button variant="ghost" tone="neutral" v-on="on">{{ t("general.cancel") }}</Button>
-      <Button :disabled="!cropperResult" @click.prevent="save">{{ t("general.save") }}</Button>
+      <Button
+        v-if="resetAction"
+        variant="outline"
+        tone="danger"
+        class="mr-auto"
+        :loading="loading.reset"
+        :disabled="loading.save"
+        @click.prevent="resetToDefault"
+      >
+        <IconMdiCached />
+        {{ t("settings.avatar.reset") }}
+      </Button>
+      <Button variant="ghost" tone="neutral" :disabled="loading.save || loading.reset" v-on="on">{{ t("general.cancel") }}</Button>
+      <Button :disabled="!cropperResult || loading.reset" :loading="loading.save" @click.prevent="save">{{ t("general.save") }}</Button>
     </template>
   </Modal>
 </template>
@@ -51,11 +82,24 @@ import "vue-advanced-cropper/dist/style.css";
 const { t } = useI18n();
 const notifications = useNotificationStore();
 
-const props = defineProps<{
-  avatar: string;
-  action: string;
-  csrfToken?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    avatar: string;
+    action: string;
+    csrfToken?: string;
+    field?: string;
+    resetAction?: string;
+    title?: string;
+  }>(),
+  {
+    csrfToken: undefined,
+    field: "avatar",
+    resetAction: undefined,
+    title: undefined,
+  }
+);
+
+const title = computed(() => props.title ?? t("organization.settings.changeAvatar"));
 
 const v = useVuelidate({ $stopPropagation: true });
 const selectedFile = ref<File>();
@@ -63,6 +107,9 @@ const cropperInput = ref<ArrayBuffer>();
 const mimeType = ref<string>();
 const cropperResult = ref<Blob | null>();
 const modal = useTemplateRef("modal");
+const fileInput = useTemplateRef("fileInput");
+const dragging = ref(false);
+const loading = reactive({ save: false, reset: false });
 
 let reader: FileReader | undefined;
 onMounted(() => {
@@ -102,6 +149,17 @@ onMounted(() => {
   });
 });
 
+function onFileChange(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (file) selectedFile.value = file;
+}
+
+function onDrop(e: DragEvent) {
+  dragging.value = false;
+  const file = e.dataTransfer?.files?.[0];
+  if (file) selectedFile.value = file;
+}
+
 watch(selectedFile, (newValue) => {
   if (!newValue) {
     return;
@@ -117,6 +175,7 @@ watch(selectedFile, (newValue) => {
 });
 
 async function openModal() {
+  if (isDefaultAvatar(props.avatar)) return;
   try {
     const response = await fetch(props.avatar, { cache: "no-cache" });
     const data = await response.blob();
@@ -141,11 +200,12 @@ function defaultCropSize({ imageSize }: { imageSize: { width: number; height: nu
 async function save() {
   if (!(await v.value.$validate())) return;
   const form = new FormData();
-  form.append("avatar", cropperResult.value!);
+  form.append(props.field, cropperResult.value!);
   if (props.csrfToken) {
     form.append("csrf_token", props.csrfToken);
   }
 
+  loading.save = true;
   try {
     await useInternalApi(props.action, "POST", form, { timeout: 10_000 });
 
@@ -154,6 +214,22 @@ async function save() {
     handleRequestError(err, "Error while saving avatar");
     reset();
     modal.value?.close();
+    loading.save = false;
+  }
+}
+
+async function resetToDefault() {
+  if (!props.resetAction) return;
+  loading.reset = true;
+  try {
+    await useInternalApi(props.resetAction, "POST");
+
+    window.location.reload();
+  } catch (err) {
+    handleRequestError(err, "Error while resetting avatar");
+    reset();
+    modal.value?.close();
+    loading.reset = false;
   }
 }
 
@@ -161,6 +237,7 @@ function reset() {
   cropperResult.value = undefined;
   selectedFile.value = undefined;
   cropperInput.value = undefined;
+  if (fileInput.value) fileInput.value.value = "";
   v.value.$reset();
 }
 </script>

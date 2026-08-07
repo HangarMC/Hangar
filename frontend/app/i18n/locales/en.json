@@ -221,7 +221,7 @@
       }
     },
     "tabs": {
-      "docs": "Docs",
+      "docs": "Overview",
       "versions": "Versions",
       "discuss": "Discuss",
       "channels": "Channels",
@@ -430,8 +430,14 @@
         "links": "Links",
         "management": "Management",
         "donation": "Donations",
-        "banners": "Banners"
-      }
+        "banners": "Banners",
+        "members": "Members",
+        "channels": "Channels"
+      },
+      "dangerZone": "Danger zone",
+      "membersSub": "Members can manage this project according to the role you give them.",
+      "channelsSub": "Release channels represent the state of a plugin release. A project may have up to five release channels.",
+      "changeIcon": "Change icon"
     },
     "discuss": {
       "login": "Log in",
@@ -666,7 +672,9 @@
       "trash": "Trash",
       "editButton": "Edit",
       "deleteButton": "Delete",
-      "add": "Add Channel"
+      "add": "Add Channel",
+      "empty": "No release channels yet.",
+      "frozen": "This channel is frozen and cannot be edited away or deleted."
     }
   },
   "organization": {
@@ -721,7 +729,12 @@
       "leaveModal": {
         "title": "Leave {0}",
         "description": "Are you sure you want to leave {0}? After you leave, you can only rejoin after receiving a new invitation."
-      }
+      },
+      "pending": "Pending",
+      "role": "Role",
+      "invite": "Invite",
+      "cancelInvite": "Cancel invite",
+      "selectRole": "Select a role"
     }
   },
   "notifications": {
@@ -1368,5 +1381,14 @@
     "aal2": "You need to setup 2fa first",
     "privileged": "You need to be in a privileged session to do this",
     "captcha": "Error while verifying the security challenge: {0}. Please try again."
+  },
+  "settings": {
+    "avatar": {
+      "reset": "Reset to default",
+      "hint": "Drag to reposition, scroll to zoom. The selected square is what gets saved.",
+      "choose": "Choose image...",
+      "dropHint": "Click to choose an image, or drop one here",
+      "currentImage": "Current image"
+    }
   }
 }

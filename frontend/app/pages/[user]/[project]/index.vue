@@ -171,7 +171,15 @@ useSeo(
         </Card>
       </template>
 
-      <MemberList v-if="project?.members" :members="project.members" :author="project.namespace.owner" :slug="project.name" class="overflow-visible" />
+      <MemberList
+        v-if="project?.members"
+        :members="project.members"
+        :author="project.namespace.owner"
+        :slug="project.name"
+        :manage="false"
+        :settings-link="`/${project.namespace.owner}/${project.namespace.slug}/settings/members`"
+        class="overflow-visible"
+      />
     </section>
   </div>
 </template>

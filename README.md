@@ -33,7 +33,7 @@ Fork the project and pull it in your IDE.
 ### Prerequisites
 
 * Docker is required in order to run the PostgreSQL database, the MeiliSearch engine and the dummy email server
-* Java 21 or higher
+* Java 25 or higher
 * [pnpm](https://pnpm.io/installation) and [node](https://nodejs.org) (v22 or higher)
 * mvn
 * git

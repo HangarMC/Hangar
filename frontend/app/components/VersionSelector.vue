@@ -21,7 +21,6 @@ const selected = computed({
 
 const selectedSub = ref<string[]>(selected.value ? [...new Set(selected.value)] : []);
 
-// Single source of truth
 watch(selectedSub, (value) => {
   const result = new Set(value);
   for (const version of props.versions) {

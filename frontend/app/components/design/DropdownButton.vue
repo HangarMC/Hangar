@@ -26,16 +26,13 @@ const props = withDefaults(
         <slot name="button-label">
           {{ props.name }}
         </slot>
-        <template v-if="props.buttonArrow">
-          <IconMdiMenu v-if="shown" />
-          <IconMdiMenuDown v-else />
-        </template>
+        <IconMdiChevronDown v-if="props.buttonArrow" class="transition-transform" :class="{ 'rotate-180': shown }" />
       </Button>
     </template>
     <template #content="{ close }">
-      <div class="flex flex-col z-10 py-1 rounded border-t-2 border-primary-500 background-default shadow-default">
+      <DropdownPanel>
         <slot :close="close" />
-      </div>
+      </DropdownPanel>
     </template>
   </Popper>
 </template>

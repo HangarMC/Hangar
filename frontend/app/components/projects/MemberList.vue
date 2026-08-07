@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NamedPermission } from "#shared/types/backend";
+import Card from "~/components/design/Card.vue";
 import type { JoinableMemberOrganizationRoleTable, JoinableMemberProjectRoleTable, PaginatedResultUser, RoleData } from "#shared/types/backend";
 
 interface EditableMember {
@@ -15,12 +16,18 @@ const props = withDefaults(
     organization?: boolean;
     author?: string;
     slug?: string;
+    bare?: boolean;
+    manage?: boolean;
+    settingsLink?: string;
   }>(),
   {
     organization: false,
     class: "",
     author: undefined,
     slug: undefined,
+    bare: false,
+    manage: true,
+    settingsLink: undefined,
   }
 );
 
@@ -58,8 +65,18 @@ watch(search, () => {
   addErrors.value = [];
 });
 
-function filteredRoles(currentRole: number): RoleData[] {
-  return roles.filter((r) => r.roleId !== currentRole);
+const inviteRoleId = ref<number>();
+
+function isPending(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable): boolean {
+  return !member.role.accepted;
+}
+
+function canEditRole(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable): boolean {
+  return props.manage && canEdit.value && (getRole(member.role.roleId)?.assignable ?? false);
+}
+
+function isPendingTransfer(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable): boolean {
+  return isPending(member) && !getRole(member.role.roleId)?.assignable;
 }
 
 function removeMember(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable) {
@@ -79,16 +96,16 @@ function cancelTransfer() {
     .finally(() => (saving.value = false));
 }
 
-function setRole(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable, role: RoleData) {
+function setRole(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable, roleId?: number) {
+  if (roleId === undefined || roleId === member.role.roleId) return;
   const editableMember: EditableMember = convertMember(member);
-  editableMember.roleId = role.roleId;
+  editableMember.roleId = roleId;
   post(editableMember, "edit");
 }
 
-function invite(member: string, role: RoleData) {
-  const editableMember: EditableMember = { name: member, roleId: role.roleId };
-  post(editableMember, "add");
-  return "";
+function invite() {
+  if (!search.value || inviteRoleId.value === undefined) return;
+  post({ name: search.value, roleId: inviteRoleId.value }, "add");
 }
 
 function post(member: EditableMember, action: "edit" | "add" | "remove") {
@@ -135,74 +152,144 @@ async function doSearch(val?: string) {
 </script>
 
 <template>
-  <Card v-if="sortedMembers.length > 0 || canEdit" :class="props.class">
-    <template #header>
-      <div class="inline-flex w-full flex-cols space-between items-center">
+  <component :is="bare ? 'div' : Card" v-if="sortedMembers.length > 0 || canEdit" :class="props.class">
+    <template v-if="!bare" #header>
+      <div class="flex items-center gap-1">
         <h2>{{ i18n.t("project.members") }}</h2>
         <Tooltip v-if="canEdit" class="text-base font-normal">
           <template #content>
             {{ i18n.t("form.memberList.info") }}
           </template>
-          <IconMdiHelpCircleOutline class="ml-1 text-gray-400" />
+          <IconMdiHelpCircleOutline class="text-gray-secondary" />
         </Tooltip>
         <div class="flex-grow" />
         <MemberLeaveModal v-if="canLeave && author" :author="author" :organization="organization" :slug="slug" />
+        <Button
+          v-if="settingsLink && canEdit"
+          :to="settingsLink"
+          variant="ghost"
+          tone="neutral"
+          size="sm"
+          icon-only
+          :title="i18n.t('general.edit')"
+          :aria-label="i18n.t('general.edit')"
+        >
+          <IconMdiPencil />
+        </Button>
       </div>
     </template>
 
-    <div
-      v-for="member in sortedMembers"
-      :key="member.user.name"
-      class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
-    >
-      <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" class="flex-shrink-0" />
-      <div class="flex-grow truncate">
-        <p class="font-semibold">
-          <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
-        </p>
-        <Tooltip v-if="!member.role.accepted">
-          <template #content>
-            {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId)?.title]) }}
+    <div v-if="bare && canLeave && author" class="mb-3 flex justify-end">
+      <MemberLeaveModal :author="author" :organization="organization" :slug="slug" />
+    </div>
+
+    <ul class="divide-y divide-gray-300 rounded-md border border-gray-300 dark:divide-gray-700 dark:border-gray-700">
+      <li v-for="member in sortedMembers" :key="member.user.name" class="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2">
+        <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" class="flex-shrink-0" />
+
+        <div class="min-w-30 flex-1">
+          <p class="min-w-0 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <Link :to="'/' + member.user.name" class="min-w-0 truncate font-semibold">{{ member.user.name }}</Link>
+            <Tooltip v-if="isPending(member)" class="flex-shrink-0">
+              <template #content>
+                {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId)?.title]) }}
+              </template>
+              <Chip tone="amber">
+                <IconMdiClockOutline />
+                {{ i18n.t("form.memberList.pending") }}
+              </Chip>
+            </Tooltip>
+          </p>
+          <p v-if="!canEditRole(member)" class="text-sm text-gray-secondary">{{ getRole(member.role.roleId)?.title }}</p>
+        </div>
+
+        <DropdownButton
+          v-if="canEditRole(member)"
+          class="ml-auto flex-shrink-0"
+          :name="getRole(member.role.roleId)?.title"
+          button-variant="outline"
+          button-tone="neutral"
+          button-size="sm"
+        >
+          <template #default="{ close }">
+            <DropdownItem
+              v-for="role of roles"
+              :key="role.roleId"
+              :selected="role.roleId === member.role.roleId"
+              :disabled="saving"
+              @click="
+                setRole(member, role.roleId);
+                close();
+              "
+            >
+              {{ role.title }}
+            </DropdownItem>
           </template>
-          <span class="items-center inline-flex"> {{ getRole(member.role.roleId)?.title }} <IconMdiClock class="ml-1" /> </span>
-        </Tooltip>
-        <span v-else class="items-center inline-flex"> {{ getRole(member.role.roleId)?.title }}</span>
+        </DropdownButton>
+
+        <Button
+          v-if="canEditRole(member)"
+          class="flex-shrink-0"
+          variant="ghost"
+          tone="danger"
+          size="sm"
+          icon-only
+          :disabled="saving"
+          :title="isPending(member) ? i18n.t('form.memberList.cancelInvite') : i18n.t('form.memberList.remove')"
+          :aria-label="isPending(member) ? i18n.t('form.memberList.cancelInvite') : i18n.t('form.memberList.remove')"
+          @click="removeMember(member)"
+        >
+          <IconMdiAccountRemove />
+        </Button>
+        <Button
+          v-else-if="manage && canEdit && isPendingTransfer(member)"
+          variant="outline"
+          tone="danger"
+          size="sm"
+          :disabled="saving"
+          @click="cancelTransfer()"
+        >
+          {{ i18n.t("form.memberList.cancelTransfer") }}
+        </Button>
+      </li>
+    </ul>
+
+    <div v-if="canEdit && manage" class="mt-3 flex flex-wrap items-center gap-2">
+      <div class="min-w-50 flex-1">
+        <InputAutocomplete
+          id="membersearch"
+          v-model="search"
+          :values="result"
+          :label="i18n.t('form.memberList.addUser')"
+          :error-messages="addErrors"
+          @search="doSearch"
+        />
       </div>
-      <!-- todo confirmation modal -->
-      <DropdownButton v-if="canEdit && getRole(member.role.roleId)?.assignable" :name="i18n.t('general.edit')">
-        <template #button-label>
-          <IconMdiPencil />
+      <DropdownButton
+        :name="inviteRoleId === undefined ? i18n.t('form.memberList.selectRole') : getRole(inviteRoleId)?.title"
+        button-variant="outline"
+        button-tone="neutral"
+        button-size="lg"
+      >
+        <template #default="{ close }">
+          <DropdownItem
+            v-for="role of roles"
+            :key="role.roleId"
+            :selected="role.roleId === inviteRoleId"
+            :disabled="saving"
+            @click="
+              inviteRoleId = role.roleId;
+              close();
+            "
+          >
+            {{ role.title }}
+          </DropdownItem>
         </template>
-        <DropdownItem v-for="role of filteredRoles(member.role.roleId)" :key="role.title" :disabled="saving" @click="setRole(member, role)">
-          {{ role.title }}
-        </DropdownItem>
-        <hr />
-        <DropdownItem @click="removeMember(member)">{{ i18n.t("form.memberList.remove") }}</DropdownItem>
       </DropdownButton>
-      <DropdownButton v-if="canEdit && !getRole(member.role.roleId)?.assignable && !member.role.accepted" :name="i18n.t('general.edit')">
-        <template #button-label>
-          <IconMdiPencil />
-        </template>
-        <DropdownItem @click="cancelTransfer()">{{ i18n.t("form.memberList.cancelTransfer") }}</DropdownItem>
-      </DropdownButton>
+      <Button size="lg" :disabled="!search || inviteRoleId === undefined || saving" @click="invite">
+        <IconMdiAccountPlus />
+        {{ i18n.t("form.memberList.invite") }}
+      </Button>
     </div>
-    <div v-if="canEdit" class="items-center inline-flex mt-3 w-full border-t border-gray-300 pt-3 dark:border-gray-700">
-      <InputAutocomplete
-        id="membersearch"
-        v-model="search"
-        :values="result"
-        :label="i18n.t('form.memberList.addUser')"
-        :error-messages="addErrors"
-        @search="doSearch"
-      />
-      <DropdownButton :name="i18n.t('general.add')" class="ml-2">
-        <template #button-label>
-          <IconMdiAccountPlus class="ml-1" />
-        </template>
-        <DropdownItem v-for="role of roles" :key="role.value" :disabled="saving" @click="invite(search, role)">
-          {{ role.title }}
-        </DropdownItem>
-      </DropdownButton>
-    </div>
-  </Card>
+  </component>
 </template>

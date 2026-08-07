@@ -260,7 +260,9 @@ function isRecent(date: string): boolean {
             </button>
             <template #content="{ close }">
               <ClientOnly>
-                <div class="-mt-1 flex flex-col rounded border-t-2 border-primary-500 background-default filter shadow-default overflow-auto max-w-150">
+                <div
+                  class="-mt-1 max-w-150 flex flex-col overflow-auto rounded-md border border-gray-300 background-default shadow-default dark:border-gray-700"
+                >
                   <div v-if="unreadCount?.invites">
                     <span class="flex shadow-0 p-2 pb-0 mt-2 ml-3 mr-2">
                       <Link class="font-bold" to="/notifications" @click="close()">
@@ -334,11 +336,11 @@ function isRecent(date: string): boolean {
               {{ authStore.user.name }}
             </button>
             <template #content="{ close }">
-              <div class="-mt-2 py-1 rounded border-t-2 border-primary-500 background-default filter shadow-default flex flex-col" @click="close()">
+              <DropdownPanel class="-mt-2" @click="close()">
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
-                <hr class="border-zinc-200 dark:border-zinc-700" />
+                <hr class="my-1 border-gray-300 dark:border-gray-700" />
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   {{ t("nav.user.flags") }}
                   <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>
@@ -360,9 +362,9 @@ function isRecent(date: string): boolean {
                 <DropdownItem v-if="hasPerms(NamedPermission.EditAllUserSettings)" to="/admin/user/">
                   {{ t("nav.user.userList") }}
                 </DropdownItem>
-                <hr class="border-zinc-200 dark:border-zinc-700" />
-                <DropdownItem @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
-              </div>
+                <hr class="my-1 border-gray-300 dark:border-gray-700" />
+                <DropdownItem tone="danger" @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
+              </DropdownPanel>
             </template>
           </Popper>
         </div>

@@ -16,6 +16,7 @@ const props = withDefaults(
     compact?: boolean;
     router?: boolean;
     highlightSelected?: boolean;
+    divided?: boolean;
   }>(),
   {
     modelValue: undefined,
@@ -23,6 +24,7 @@ const props = withDefaults(
     compact: false,
     router: false,
     highlightSelected: false,
+    divided: false,
   }
 );
 
@@ -62,7 +64,13 @@ defineSlots<
 
 <template>
   <div :class="{ 'flex flex-col lt-md:space-y-2 md:flex-row': vertical, 'md:space-x-2': !compact && vertical, 'flex flex-row flex-wrap': !vertical }">
-    <div :class="{ 'min-w-13ch': vertical, 'basis-full': !vertical }">
+    <div
+      :class="{
+        'min-w-13ch': vertical,
+        'basis-full': !vertical,
+        'lt-md:(border-b pb-2) md:(border-r pr-3) border-gray-300 dark:border-gray-700': divided && vertical,
+      }"
+    >
       <ul :class="{ 'flex flex-row flex-wrap lt-md:gap-1 md:flex-col': vertical, 'md:space-y-1': !compact && vertical, 'flex flex-row gap-1': !vertical }">
         <li v-for="tab in tabs" :key="tab.value">
           <Button
@@ -86,7 +94,7 @@ defineSlots<
       </ul>
       <hr v-if="!vertical" class="mb-2" />
     </div>
-    <div class="flex-grow">
+    <div class="min-w-0 flex-grow" :class="{ 'md:pl-4': divided && vertical }">
       <template v-if="router">
         <slot v-if="router" />
       </template>

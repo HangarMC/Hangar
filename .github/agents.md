@@ -14,7 +14,7 @@ Hangar is a **plugin repository platform** for Paper, Velocity, and Waterfall Mi
 
 | Component | Path | Technology | Purpose |
 |-----------|------|-----------|---------|
-| Backend | `backend/` | Java 21+ / Spring Boot 3.5 | REST API, business logic, database |
+| Backend | `backend/` | Java 25+ / Spring Boot 3.5 | REST API, business logic, database |
 | Frontend | `frontend/` | TypeScript / Vue 3 / Nuxt 4 | SSR web application |
 | Infrastructure | `docker/`, `chart/` | Docker Compose, Helm | Local dev and Kubernetes deployment |
 | E2E Tests | `e2e/` | CodeceptJS / Playwright | Cross-browser end-to-end tests |
@@ -36,7 +36,7 @@ Browser → Nuxt (SSR, port 3333) → Nitro proxy (/api/...) → Spring Boot (po
 | Concern | Technology |
 |---------|-----------|
 | Framework | Spring Boot 3.5.7 |
-| Language | Java 21+ (virtual threads enabled) |
+| Language | Java 25+ (virtual threads enabled) |
 | Build | Maven (`mvn`) |
 | Database | PostgreSQL 15 via JDBI 3 (not JPA) |
 | Migrations | Flyway (versioned + repeatable) |
@@ -241,7 +241,7 @@ pnpm run browserstack-multiple       # Full cross-browser test suite
 
 ## Development Quick Start
 
-**Prerequisites**: Java 21+, Maven, Node 22+, pnpm, Docker
+**Prerequisites**: Java 25+, Maven, Node 22+, pnpm, Docker
 
 ### Option A — Frontend only (no backend needed)
 

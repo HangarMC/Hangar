@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { cloneDeep } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
-import { Cropper } from "vue-advanced-cropper";
-import type { CropperResult } from "vue-advanced-cropper";
 import type { Tab } from "#shared/types/components/design/Tabs";
+import IconMdiTune from "~icons/mdi/tune";
+import IconMdiLinkVariant from "~icons/mdi/link-variant";
+import IconMdiImageMultiple from "~icons/mdi/image-multiple";
+import IconMdiAccountGroup from "~icons/mdi/account-group";
+import IconMdiTagMultiple from "~icons/mdi/tag-multiple";
+import IconMdiShieldAlert from "~icons/mdi/shield-alert";
 import InputText from "~/components/ui/InputText.vue";
 import { NamedPermission, Tag, Visibility } from "#shared/types/backend";
 import type { HangarProject, HangarUser, PaginatedResultUser, ProjectSettings, Category } from "#shared/types/backend";
-
-import "vue-advanced-cropper/dist/style.css";
 
 definePageMeta({
   projectPermsRequired: ["EditSubjectSettings"],
@@ -26,15 +28,20 @@ const props = defineProps<{
 
 const selectedTab = ref(route.params.slug?.[0] || "general");
 const tabs = ref([
-  { value: "general", header: i18n.t("project.settings.tabs.general") },
-  { value: "links", header: i18n.t("project.settings.tabs.links") },
-  { value: "banners", header: i18n.t("project.settings.tabs.banners") },
-  // { value: "donation", header: i18n.t("project.settings.tabs.donation") },
+  { value: "general", header: i18n.t("project.settings.tabs.general"), icon: IconMdiTune },
+  { value: "links", header: i18n.t("project.settings.tabs.links"), icon: IconMdiLinkVariant },
+  { value: "banners", header: i18n.t("project.settings.tabs.banners"), icon: IconMdiImageMultiple },
+  { value: "members", header: i18n.t("project.settings.tabs.members"), icon: IconMdiAccountGroup },
 ] satisfies Tab<string>[]);
 
-if (hasPerms(NamedPermission.IsSubjectOwner) || hasPerms(NamedPermission.DeleteProject) || hasPerms(NamedPermission.HardDeleteProject)) {
-  tabs.value.push({ value: "management", header: i18n.t("project.settings.tabs.management") });
+if (hasPerms(NamedPermission.EditChannels)) {
+  tabs.value.push({ value: "channels", header: i18n.t("project.settings.tabs.channels"), icon: IconMdiTagMultiple });
 }
+if (hasPerms(NamedPermission.IsSubjectOwner) || hasPerms(NamedPermission.DeleteProject) || hasPerms(NamedPermission.HardDeleteProject)) {
+  tabs.value.push({ value: "management", header: i18n.t("project.settings.tabs.management"), icon: IconMdiShieldAlert });
+}
+
+const isFormTab = computed(() => selectedTab.value === "general" || selectedTab.value === "links");
 
 const form = reactive({
   settings: undefined,
@@ -59,13 +66,8 @@ watch(
   { immediate: true }
 );
 
-const projectIcon = ref<File | undefined>();
-const cropperInput = ref<string>();
-const cropperResult = ref<Blob>();
 const imgSrc = ref(props.project?.avatarUrl);
 const hasCustomIcon = computed(() => imgSrc.value?.includes("/project/"));
-let fileReadId = 0;
-let cropChangeId = 0;
 
 watch(
   () => props.project?.avatarUrl,
@@ -75,46 +77,10 @@ watch(
   { immediate: true }
 );
 
-watch(projectIcon, (newValue) => {
-  const currentFileReadId = ++fileReadId;
-  cropChangeId++;
-  cropperInput.value = undefined;
-  cropperResult.value = undefined;
-  if (!newValue) return;
-
-  const reader = new FileReader();
-  reader.addEventListener("load", () => {
-    if (currentFileReadId === fileReadId && typeof reader.result === "string") {
-      cropperInput.value = reader.result;
-    }
-  });
-  reader.readAsDataURL(newValue);
-});
-
-function changeImage({ canvas }: CropperResult) {
-  const currentCropChangeId = ++cropChangeId;
-  cropperResult.value = undefined;
-  canvas?.toBlob((blob) => {
-    if (blob && currentCropChangeId === cropChangeId) {
-      cropperResult.value = blob;
-    }
-  });
-}
-
-function clearIconEditor() {
-  fileReadId++;
-  cropChangeId++;
-  projectIcon.value = undefined;
-  cropperInput.value = undefined;
-  cropperResult.value = undefined;
-}
-
 const newName = ref<string | null | undefined>("");
 const newNameField = useTemplateRef("newNameField");
 const loading = reactive({
   save: false,
-  uploadIcon: false,
-  resetIcon: false,
   rename: false,
   transfer: false,
 });
@@ -213,38 +179,6 @@ async function hardDelete(comment: string) {
   }
 }
 
-async function uploadIcon() {
-  if (!cropperResult.value) {
-    return;
-  }
-
-  const data = new FormData();
-  data.append("projectIcon", cropperResult.value);
-  loading.uploadIcon = true;
-  try {
-    imgSrc.value = await useInternalApi<string>(`projects/project/${route.params.project}/saveIcon`, "post", data);
-    clearIconEditor();
-    notificationStore.success(i18n.t("project.settings.success.changedIcon"));
-  } catch (err: any) {
-    handleRequestError(err);
-  } finally {
-    loading.uploadIcon = false;
-  }
-}
-
-async function resetIcon() {
-  loading.resetIcon = true;
-  try {
-    imgSrc.value = await useInternalApi<string>(`projects/project/${route.params.project}/resetIcon`, "post");
-    notificationStore.success(i18n.t("project.settings.success.resetIcon"));
-    clearIconEditor();
-  } catch (err: any) {
-    handleRequestError(err);
-  } finally {
-    loading.resetIcon = false;
-  }
-}
-
 const shieldIoStyle = ref("flat");
 const mcBannersStyle = ref("DARK_GUNMETAL");
 const bannerUrls = computed(() => ({
@@ -254,6 +188,16 @@ const bannerUrls = computed(() => ({
   stars: `https://img.shields.io/hangar/stars/${props.project?.namespace?.slug}?link=https%3A%2F%2Fhangar.papermc.io%2F${props.project?.namespace?.owner}%2F${props.project?.namespace?.slug}&style=${shieldIoStyle.value}`,
   views: `https://img.shields.io/hangar/views/${props.project?.namespace?.slug}?link=https%3A%2F%2Fhangar.papermc.io%2F${props.project?.namespace?.owner}%2F${props.project?.namespace?.slug}&style=${shieldIoStyle.value}`,
 }));
+
+const mcBanners = computed(() => [
+  { label: i18n.t("project.settings.banners.author"), url: bannerUrls.value.author },
+  { label: i18n.t("project.settings.banners.resource"), url: bannerUrls.value.resource },
+]);
+const shieldBanners = computed(() => [
+  { label: i18n.t("project.settings.banners.downloads"), url: bannerUrls.value.downloads },
+  { label: i18n.t("project.settings.banners.stars"), url: bannerUrls.value.stars },
+  { label: i18n.t("project.settings.banners.views"), url: bannerUrls.value.views },
+]);
 
 function copyToClipboard(event: any, url: string, type: string = "url") {
   const clipboardData = event.clipboardData || event.originalEvent?.clipboardData || navigator.clipboard;
@@ -275,163 +219,126 @@ useSeo(
 </script>
 
 <template>
-  <div class="flex gap-4 flex-col md:flex-row">
-    <Card class="basis-full md:basis-9/12">
-      <template #header>
-        <div class="flex justify-between lt-sm:items-center">
-          {{ i18n.t("project.settings.title") }}
-          <div class="text-lg">
-            <Button :disabled="v.$error || loading.uploadIcon || loading.resetIcon" :loading="loading.save" @click="save">
-              <IconMdiCheck />
-              {{ i18n.t("project.settings.save") }}
+  <Card>
+    <Tabs v-model="selectedTab" :tabs="tabs" highlight-selected divided>
+      <template #general>
+        <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
+          <InputSelect v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
+        </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
+          <InputText
+            v-model="form.description"
+            counter
+            :maxlength="useBackendData.validations?.project?.desc?.max || 120"
+            :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max || 120)]"
+          />
+        </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
+          <InputTag
+            v-if="form.settings"
+            v-model="form.settings.keywords"
+            counter
+            :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
+            :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
+            :label="i18n.t('project.new.step3.keywords')"
+            :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings?.keywords)]"
+          />
+        </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">
+          <template v-if="form.settings">
+            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
+              <template #label>
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
+                <Tooltip>
+                  <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
+                  <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
+                </Tooltip>
+              </template>
+            </InputCheckbox>
+          </template>
+        </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
+          <div class="flex md:gap-2 lt-md:flex-wrap">
+            <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
+              <InputSelect
+                v-if="form.settings"
+                v-model="form.settings.license.type"
+                :values="useLicenseOptions"
+                :label="i18n.t('project.settings.licenseType')"
+              />
+            </div>
+            <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
+              <InputText
+                v-if="form.settings"
+                v-model.trim="form.settings.license.name"
+                :label="i18n.t('project.settings.licenseCustom')"
+                :rules="[
+                  requiredIf()(isCustomLicense),
+                  maxLength()(useBackendData.validations.project.license.max!),
+                  pattern()(useBackendData.validations.project.license.regex!),
+                ]"
+              />
+            </div>
+            <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
+              <InputText v-if="form.settings" v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
+            </div>
+          </div>
+        </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.icon" description="project.settings.iconSub">
+          <EditableAvatar
+            :username="project?.namespace?.owner"
+            :monogram-name="project?.name"
+            :img-src="imgSrc"
+            :action="`projects/project/${route.params.project}/saveIcon`"
+            :reset-action="hasCustomIcon ? `projects/project/${route.params.project}/resetIcon` : undefined"
+            field="projectIcon"
+            :label="i18n.t('project.settings.changeIcon')"
+            size="xl"
+          />
+        </ProjectSettingsSection>
+      </template>
+      <template #links>
+        <ProjectSettingsSection title="project.settings.links.title" description="project.settings.links.sub">
+          <ProjectLinksForm v-if="form.settings" v-model="form.settings.links" />
+        </ProjectSettingsSection>
+      </template>
+      <template #management>
+        <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.rename" description="project.settings.renameSub">
+          <div class="flex items-center">
+            <InputText ref="newNameField" v-model.trim="newName" :label="i18n.t('project.settings.newName')" :rules="[validProjectName()()]" />
+            <Button :disabled="!newName || newNameField?.validation?.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
+              <IconMdiRenameBox />
+              {{ i18n.t("project.settings.rename") }}
             </Button>
           </div>
-        </div>
-      </template>
-
-      <!-- setting icons -->
-      <Tabs v-model="selectedTab" :tabs="tabs">
-        <template #general>
-          <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-            <InputSelect v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
-            <InputText
-              v-model="form.description"
-              counter
-              :maxlength="useBackendData.validations?.project?.desc?.max || 120"
-              :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max || 120)]"
-            />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
-            <InputTag
-              v-if="form.settings"
-              v-model="form.settings.keywords"
-              counter
-              :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
-              :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
-              :label="i18n.t('project.new.step3.keywords')"
-              :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings?.keywords)]"
-            />
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">
-            <template v-if="form.settings">
-              <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
-                <template #label>
-                  <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-                  <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-                  <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                  <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
-                  <Tooltip>
-                    <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
-                    <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
-                  </Tooltip>
-                </template>
-              </InputCheckbox>
-            </template>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
-            <div class="flex md:gap-2 lt-md:flex-wrap">
-              <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-                <InputSelect
-                  v-if="form.settings"
-                  v-model="form.settings.license.type"
-                  :values="useLicenseOptions"
-                  :label="i18n.t('project.settings.licenseType')"
-                />
-              </div>
-              <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
-                <InputText
-                  v-if="form.settings"
-                  v-model.trim="form.settings.license.name"
-                  :label="i18n.t('project.settings.licenseCustom')"
-                  :rules="[
-                    requiredIf()(isCustomLicense),
-                    maxLength()(useBackendData.validations.project.license.max!),
-                    pattern()(useBackendData.validations.project.license.regex!),
-                  ]"
-                />
-              </div>
-              <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
-                <InputText v-if="form.settings" v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
-              </div>
-            </div>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection>
-            <div class="grid grid-cols-3 grid-rows-[1fr,1fr,min-content] gap-2 w-full">
-              <div class="col-span-2 row-span-1">
-                <h2 class="text-lg font-semibold">{{ i18n.t("project.settings.icon") }}</h2>
-                <p>{{ i18n.t("project.settings.iconSub") }}</p>
-              </div>
-              <div class="col-span-2">
-                <InputFile v-model="projectIcon" :disabled="loading.uploadIcon || loading.resetIcon" accept="image/png, image/jpeg, image/webp" show-size />
-              </div>
-              <Button :disabled="!cropperResult || loading.resetIcon" :loading="loading.uploadIcon" @click="uploadIcon">
-                <IconMdiUpload />
-                {{ i18n.t("project.settings.iconUpload") }}
-              </Button>
-              <Button :disabled="!hasCustomIcon || loading.uploadIcon" :loading="loading.resetIcon" @click="resetIcon">
-                <IconMdiCached />
-                {{ i18n.t("project.settings.iconReset") }}
-              </Button>
-              <div class="col-span-1 col-start-3 row-start-1 row-span-3" :class="{ 'justify-self-center': !cropperInput }">
-                <cropper
-                  v-if="cropperInput"
-                  :src="cropperInput"
-                  class="h-150px"
-                  :min-height="150"
-                  :canvas="{
-                    imageSmoothingQuality: 'high',
-                    maxWidth: 256,
-                    maxHeight: 256,
-                  }"
-                  :stencil-props="{
-                    handlers: {},
-                    movable: false,
-                    scalable: false,
-                    aspectRatio: 1,
-                  }"
-                  :resize-image="{
-                    adjustStencil: false,
-                  }"
-                  image-restriction="stencil"
-                  @change="changeImage"
-                />
-                <img v-else id="project-icon-preview" width="150" height="150" alt="Project Icon" :src="imgSrc" />
-              </div>
-            </div>
-          </ProjectSettingsSection>
-        </template>
-        <template #links>
-          <ProjectSettingsSection title="project.settings.links.title" description="project.settings.links.sub">
-            <ProjectLinksForm v-if="form.settings" v-model="form.settings.links" />
-          </ProjectSettingsSection>
-        </template>
-        <template #management>
-          <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.rename" description="project.settings.renameSub">
-            <div class="flex items-center">
-              <InputText ref="newNameField" v-model.trim="newName" :label="i18n.t('project.settings.newName')" :rules="[validProjectName()()]" />
-              <Button :disabled="!newName || newNameField?.validation?.$invalid" :loading="loading.rename" class="ml-2" @click="rename">
-                <IconMdiRenameBox />
-                {{ i18n.t("project.settings.rename") }}
-              </Button>
-            </div>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.transfer" description="project.settings.transferSub">
-            <div class="flex items-center">
-              <InputAutocomplete id="membersearch" v-model="search" :values="result" :label="i18n.t('project.settings.transferTo')" @search="doSearch" />
-              <Button :disabled="search.length === 0" :loading="loading.transfer" class="ml-2" @click="transfer">
-                <IconMdiRenameBox />
-                {{ i18n.t("project.settings.transfer") }}
-              </Button>
-            </div>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection
+        </ProjectSettingsSection>
+        <ProjectSettingsSection v-if="hasPerms(NamedPermission.IsSubjectOwner)" title="project.settings.transfer" description="project.settings.transferSub">
+          <div class="flex items-center">
+            <InputAutocomplete id="membersearch" v-model="search" :values="result" :label="i18n.t('project.settings.transferTo')" @search="doSearch" />
+            <Button :disabled="search.length === 0" :loading="loading.transfer" class="ml-2" @click="transfer">
+              <IconMdiRenameBox />
+              {{ i18n.t("project.settings.transfer") }}
+            </Button>
+          </div>
+        </ProjectSettingsSection>
+        <div
+          v-if="(hasPerms(NamedPermission.DeleteProject) && project?.visibility !== Visibility.SoftDelete) || hasPerms(NamedPermission.HardDeleteProject)"
+          class="mt-4 overflow-hidden rounded-md border border-red-500/50"
+        >
+          <h2 class="border-b border-red-500/50 bg-red-500/10 px-4 py-2 font-semibold text-red-700 dark:text-red-300">
+            {{ i18n.t("project.settings.dangerZone") }}
+          </h2>
+          <div
             v-if="hasPerms(NamedPermission.DeleteProject) && project?.visibility !== Visibility.SoftDelete"
-            title="project.settings.delete"
-            description="project.settings.deleteSub"
-            class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
+            class="flex flex-wrap items-center gap-3 px-4 py-3"
           >
+            <div class="min-w-0 flex-1">
+              <div class="font-semibold">{{ i18n.t("project.settings.delete") }}</div>
+              <p class="text-sm text-gray-secondary">{{ i18n.t("project.settings.deleteSub") }}</p>
+            </div>
             <TextAreaModal
               :title="i18n.t('project.settings.delete')"
               :label="i18n.t('general.comment')"
@@ -441,16 +348,15 @@ useSeo(
               require-input
             >
               <template #activator="{ on }">
-                <Button tone="danger" v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
+                <Button tone="danger" class="flex-shrink-0" v-on="on">{{ i18n.t("project.settings.delete") }}</Button>
               </template>
             </TextAreaModal>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection
-            v-if="hasPerms(NamedPermission.HardDeleteProject)"
-            title="project.settings.hardDelete"
-            description="project.settings.hardDeleteSub"
-            class="bg-red-200 dark:(bg-red-900 text-white) rounded-md p-4"
-          >
+          </div>
+          <div v-if="hasPerms(NamedPermission.HardDeleteProject)" class="flex flex-wrap items-center gap-3 border-t border-red-500/50 px-4 py-3">
+            <div class="min-w-0 flex-1">
+              <div class="font-semibold">{{ i18n.t("project.settings.hardDelete") }}</div>
+              <p class="text-sm text-gray-secondary">{{ i18n.t("project.settings.hardDeleteSub") }}</p>
+            </div>
             <TextAreaModal
               :title="i18n.t('project.settings.hardDelete')"
               :label="i18n.t('general.comment')"
@@ -460,12 +366,13 @@ useSeo(
               require-input
             >
               <template #activator="{ on }">
-                <Button tone="danger" v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
+                <Button tone="danger" class="flex-shrink-0" v-on="on">{{ i18n.t("project.settings.hardDelete") }}</Button>
               </template>
             </TextAreaModal>
-          </ProjectSettingsSection>
-        </template>
-        <!--<template #donation>
+          </div>
+        </div>
+      </template>
+      <!--<template #donation>
           <Alert type="info" class="my-4">Coming Soon!</Alert>
           <ProjectSettingsSection title="project.settings.donation.enable">
             <InputCheckbox v-model="form.settings.donation.enable" :label="i18n.t('project.settings.donation.enableSub')" disabled />
@@ -479,70 +386,83 @@ useSeo(
             />
           </ProjectSettingsSection>
         </template>-->
-        <template #banners>
-          <ProjectSettingsSection title="project.settings.banners.mcbanners" description="project.settings.banners.mcbannersSub">
-            <div class="mb-2">
-              <InputSelect
-                v-model="mcBannersStyle"
-                :values="[
-                  'BLUE_RADIAL',
-                  'BURNING_ORANGE',
-                  'MANGO',
-                  'MOONLIGHT_PURPLE',
-                  'ORANGE_RADIAL',
-                  'VELVET',
-                  'YELLOW',
-                  'MALACHITE_GREEN',
-                  'DARK_GUNMETAL',
-                  'PURPLE_TAUPE',
-                  'LIGHT_MODE',
-                ]"
-                :label="i18n.t('project.settings.banners.style')"
-              />
+      <template #banners>
+        <ProjectSettingsSection title="project.settings.banners.mcbanners" description="project.settings.banners.mcbannersSub">
+          <InputSelect
+            v-model="mcBannersStyle"
+            :values="[
+              'BLUE_RADIAL',
+              'BURNING_ORANGE',
+              'MANGO',
+              'MOONLIGHT_PURPLE',
+              'ORANGE_RADIAL',
+              'VELVET',
+              'YELLOW',
+              'MALACHITE_GREEN',
+              'DARK_GUNMETAL',
+              'PURPLE_TAUPE',
+              'LIGHT_MODE',
+            ]"
+            :label="i18n.t('project.settings.banners.style')"
+          />
+          <div class="mt-3 flex flex-col gap-3">
+            <div v-for="banner in mcBanners" :key="banner.label" class="rounded-md border border-gray-300 p-3 dark:border-gray-700">
+              <div class="mb-2 font-semibold">{{ banner.label }}</div>
+              <img :src="banner.url" alt="" class="max-w-full rounded" />
+              <div class="mt-2 flex flex-wrap gap-2">
+                <Button variant="outline" tone="neutral" size="sm" @click="copyToClipboard($event, banner.url, 'markdown')">
+                  <IconMdiContentCopy />
+                  {{ i18n.t("project.settings.banners.markdown") }}
+                </Button>
+                <Button variant="outline" tone="neutral" size="sm" @click="copyToClipboard($event, banner.url)">
+                  <IconMdiContentCopy />
+                  {{ i18n.t("project.settings.banners.url") }}
+                </Button>
+              </div>
             </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.author") }}:</div>
-            <img :src="bannerUrls.author" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.author, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.author)">{{ i18n.t("project.settings.banners.url") }}</Button>
+          </div>
+        </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.banners.shields" description="project.settings.banners.shieldsSub">
+          <InputSelect
+            v-model="shieldIoStyle"
+            :values="['flat', 'flat-square', 'plastic', 'for-the-badge', 'social']"
+            :label="i18n.t('project.settings.banners.style')"
+          />
+          <div class="mt-3 flex flex-col gap-3">
+            <div v-for="banner in shieldBanners" :key="banner.label" class="rounded-md border border-gray-300 p-3 dark:border-gray-700">
+              <div class="mb-2 font-semibold">{{ banner.label }}</div>
+              <img :src="banner.url" alt="" class="max-w-full rounded" />
+              <div class="mt-2 flex flex-wrap gap-2">
+                <Button variant="outline" tone="neutral" size="sm" @click="copyToClipboard($event, banner.url, 'markdown')">
+                  <IconMdiContentCopy />
+                  {{ i18n.t("project.settings.banners.markdown") }}
+                </Button>
+                <Button variant="outline" tone="neutral" size="sm" @click="copyToClipboard($event, banner.url)">
+                  <IconMdiContentCopy />
+                  {{ i18n.t("project.settings.banners.url") }}
+                </Button>
+              </div>
             </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.resource") }}:</div>
-            <img :src="bannerUrls.resource" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.resource, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.resource)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-          </ProjectSettingsSection>
-          <ProjectSettingsSection title="project.settings.banners.shields" description="project.settings.banners.shieldsSub">
-            <div class="mb-2">
-              <InputSelect
-                v-model="shieldIoStyle"
-                :values="['flat', 'flat-square', 'plastic', 'for-the-badge', 'social']"
-                :label="i18n.t('project.settings.banners.style')"
-              />
-            </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.downloads") }}:</div>
-            <img :src="bannerUrls.downloads" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.downloads, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.downloads)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.stars") }}:</div>
-            <img :src="bannerUrls.stars" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.stars, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.stars)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-            <div class="mb-1">{{ i18n.t("project.settings.banners.views") }}:</div>
-            <img :src="bannerUrls.views" alt="" />
-            <div class="flex gap-2 my-2">
-              <Button @click="copyToClipboard($event, bannerUrls.views, 'markdown')">{{ i18n.t("project.settings.banners.markdown") }}</Button>
-              <Button @click="copyToClipboard($event, bannerUrls.views)">{{ i18n.t("project.settings.banners.url") }}</Button>
-            </div>
-          </ProjectSettingsSection>
-        </template>
-      </Tabs>
-    </Card>
-    <MemberList :members="project?.members || []" :author="project?.namespace?.owner" :slug="project?.name" class="basis-full md:basis-3/12 h-max" />
-  </div>
+          </div>
+        </ProjectSettingsSection>
+      </template>
+      <template #members>
+        <ProjectSettingsSection class="max-w-3xl" title="project.settings.tabs.members" description="project.settings.membersSub">
+          <MemberList bare :members="project?.members || []" :author="project?.namespace?.owner" :slug="project?.name" />
+        </ProjectSettingsSection>
+      </template>
+      <template #channels>
+        <ProjectSettingsSection title="channel.manage.title" description="project.settings.channelsSub">
+          <ChannelManager :project="project" />
+        </ProjectSettingsSection>
+      </template>
+    </Tabs>
+
+    <div v-if="isFormTab" class="mt-6 flex justify-end">
+      <Button :disabled="v.$error" :loading="loading.save" @click="save">
+        <IconMdiCheck />
+        {{ i18n.t("project.settings.save") }}
+      </Button>
+    </div>
+  </Card>
 </template>

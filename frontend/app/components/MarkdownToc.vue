@@ -12,7 +12,9 @@ const i18n = useI18n();
       <IconMdiFormatListBulleted />
     </Button>
     <template #content="{ close }">
-      <div class="mt-1 max-h-lg max-w-lg flex flex-col overflow-auto rounded border-t-2 border-primary-500 background-default py-1 shadow-default">
+      <div
+        class="mt-1 max-h-lg max-w-lg flex flex-col overflow-auto rounded-md border border-gray-300 background-default p-1 shadow-default dark:border-gray-700"
+      >
         <!-- eslint-disable vue/no-v-html -->
         <a
           v-for="heading in headings"

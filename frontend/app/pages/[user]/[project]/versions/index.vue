@@ -165,7 +165,7 @@ function getVisibilityTitle(visibility: Visibility) {
           </button>
           <Button
             v-if="project && hasPerms(NamedPermission.EditChannels)"
-            :to="`/${project.namespace.owner}/${project.name}/channels`"
+            :to="`/${project.namespace.owner}/${project.name}/settings/channels`"
             variant="ghost"
             tone="neutral"
             size="sm"

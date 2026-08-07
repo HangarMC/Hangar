@@ -188,7 +188,6 @@ function stopEditing() {
           size="sm"
           icon-only
           :disabled="loading.save || v.$invalid"
-          :loading="loading.save"
           :title="i18n.t('general.save')"
           :aria-label="i18n.t('general.save')"
           @click="savePage"
