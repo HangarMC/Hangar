@@ -78,7 +78,10 @@ defineExpose({
       <slot :on="{ click: close }" />
     </div>
 
-    <div v-if="hasSlotContent($slots.footer)" class="flex flex-shrink-0 flex-wrap justify-end gap-2 border-t border-gray-300 px-5 py-3 dark:border-gray-700">
+    <div
+      v-if="hasSlotContent($slots.footer, { on: { click: close }, close })"
+      class="flex flex-shrink-0 flex-wrap justify-end gap-2 border-t border-gray-300 px-5 py-3 dark:border-gray-700"
+    >
       <slot name="footer" :on="{ click: close }" :close="close" />
     </div>
   </dialog>

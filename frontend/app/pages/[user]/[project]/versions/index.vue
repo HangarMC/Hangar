@@ -138,7 +138,7 @@ function getVisibilityTitle(visibility: Visibility) {
                   small
                   :show-versions="false"
                   :show-single-platform="false"
-                  class="relative z-1 order-1 flex-shrink-0 lg:order-none"
+                  class="relative z-1 order-1 flex-shrink-0 justify-end lg:(order-none w-15)"
                 />
               </li>
             </template>
