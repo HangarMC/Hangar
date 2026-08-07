@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { Header } from "#shared/types/components/SortableTable";
 import { ReviewAction } from "#shared/types/backend";
 import type { HangarReviewQueueEntry, Review } from "#shared/types/backend";
 
@@ -17,20 +16,9 @@ const actions = {
   approved: [ReviewAction.APPROVE, ReviewAction.PARTIALLY_APPROVE],
 };
 
-const underReviewHeaders = [
-  { title: i18n.t("versionApproval.project") as string, name: "project", sortable: false },
-  { title: i18n.t("versionApproval.version") as string, name: "version", sortable: false },
-  { title: i18n.t("versionApproval.queuedBy") as string, name: "queuedBy", sortable: true },
-  { title: i18n.t("versionApproval.status") as string, name: "status", sortable: true },
-] as const satisfies Header<string>[];
-
-const notStartedHeaders = [
-  { title: i18n.t("versionApproval.project") as string, name: "project", sortable: false },
-  { title: i18n.t("versionApproval.date") as string, name: "date", sortable: true },
-  { title: i18n.t("versionApproval.version") as string, name: "version", sortable: false },
-  { title: i18n.t("versionApproval.queuedBy") as string, name: "queuedBy", sortable: true },
-  { title: "", name: "startBtn", sortable: false },
-] as const satisfies Header<string>[];
+const notStarted = computed(() => versionApprovals.value?.notStarted ?? []);
+const underReview = computed(() => versionApprovals.value?.underReview ?? []);
+const expanded = ref<Record<string, boolean>>({});
 
 useSeo(computed(() => ({ title: i18n.t("versionApproval.title"), route })));
 
@@ -77,90 +65,162 @@ function getCount(entry: HangarReviewQueueEntry, ..._actions: ReviewAction[]) {
   }
   return count;
 }
+
+function projectUrl(entry: HangarReviewQueueEntry) {
+  return `/${entry.namespace.owner}/${entry.namespace.slug}`;
+}
+
+function versionUrl(entry: HangarReviewQueueEntry) {
+  return `${projectUrl(entry)}/versions/${entry.versionString}`;
+}
+
+function reviewUrl(entry: HangarReviewQueueEntry) {
+  return `${versionUrl(entry)}/reviews`;
+}
 </script>
 
 <template>
   <div>
-    <Card>
-      <template #header>{{ i18n.t("versionApproval.approvalQueue") }}</template>
+    <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold">{{ i18n.t("versionApproval.title") }}</h1>
+        <p class="mt-1 text-gray-secondary">{{ i18n.t("versionApproval.subtitle") }}</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <Button variant="outline" tone="neutral" to="/admin/approval/projects">
+          <IconMdiFolderAlertOutline />
+          {{ i18n.t("projectApproval.title") }}
+        </Button>
+      </div>
+    </div>
 
-      <SortableTable v-if="versionApprovals" :headers="notStartedHeaders" :items="versionApprovals.notStarted">
-        <template #project="{ item }">
-          <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
-            {{ `${item.namespace.owner}/${item.namespace.slug}` }}
-          </Link>
-        </template>
-        <template #date="{ item }">
-          <span class="start-date">{{ i18n.d(item.versionCreatedAt, "time") }}</span>
-        </template>
-        <template #version="{ item }">
-          <Link :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}`">
-            <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
-            {{ item.versionString }}
-          </Link>
-        </template>
-        <template #queuedBy="{ item }">
-          <Link :to="`/${item.versionAuthor}`">
-            {{ item.versionAuthor }}
-          </Link>
-        </template>
-        <template #startBtn="{ item }">
-          <Button :to="`/${item.namespace.owner}/${item.namespace.slug}/versions/${item.versionString}/reviews`">
-            <IconMdiPlay />
-            {{ i18n.t("version.page.reviewStart") }}
-          </Button>
-        </template>
-      </SortableTable>
-    </Card>
+    <div class="flex flex-col gap-4">
+      <Card flat padding="none">
+        <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
+          <h2 class="flex-grow text-lg font-bold">{{ i18n.t("versionApproval.approvalQueue") }}</h2>
+          <span class="text-sm text-gray-secondary tabular-nums">{{ notStarted.length }}</span>
+        </div>
 
-    <Card class="mt-4">
-      <template #header>{{ i18n.t("versionApproval.inReview") }}</template>
-
-      <SortableTable v-if="versionApprovals" :headers="underReviewHeaders" :items="versionApprovals.underReview" expandable>
-        <template #project="{ item }">
-          <Link :to="`/${item.namespace.owner}/${item.namespace.slug}`">
-            {{ `${item.namespace.owner}/${item.namespace.slug}` }}
-          </Link>
-        </template>
-        <template #version="{ item }">
-          <Tag :color="{ background: item.channelColor }" :name="item.channelName" :data="item.versionString" />
-        </template>
-        <template #queuedBy="{ item }">
-          <Link :to="`/${item.versionAuthor}`">
-            {{ item.versionAuthor }}
-          </Link>
-          <br />
-          <small>{{ i18n.d(item.versionCreatedAt, "time") }}</small>
-        </template>
-        <template #status="{ item }">
-          <span class="text-yellow-400">
-            {{ i18n.t("versionApproval.statuses.ongoing", [getOngoingCount(item)]) }}
-          </span>
-          <br />
-          <span class="text-red-400">
-            {{ i18n.t("versionApproval.statuses.stopped", [getStoppedCount(item)]) }}
-          </span>
-          <br />
-          <span class="text-green-400"> {{ i18n.t("versionApproval.statuses.approved", [getApprovedCount(item)]) }}</span>
-        </template>
-        <template #expanded-item="{ item, headers }">
-          <td :colspan="headers.length">
-            <ul>
-              <li v-for="entry in item.reviews" :key="entry.reviewerName" class="ml-4">
-                <span
-                  class="font-bold mr-2"
-                  :class="{ 'text-yellow-400': isOngoing(entry), 'text-red-400': isStopped(entry), 'text-green-400': isApproved(entry) }"
-                  >{{ entry.reviewerName }}</span
-                >
-                <span>{{ i18n.t("versionApproval.started", [i18n.d(entry.reviewStarted, "time")]) }}</span>
-                <span v-if="entry.reviewEnded" class="ml-4" :class="{ 'text-red-400': isStopped(entry), 'text-green-400': isApproved(entry) }">{{
-                  i18n.t("versionApproval.ended", [i18n.d(entry.reviewEnded, "time")])
-                }}</span>
+        <ul v-if="notStarted.length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
+          <Pagination :items="notStarted" :items-per-page="15">
+            <template #default="{ item }">
+              <li class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center">
+                <div class="h-9 w-9 flex flex-shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-lg text-amber-500">
+                  <IconMdiClockOutline />
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <NuxtLink :to="projectUrl(item)" class="font-semibold">{{ item.namespace.owner }}/{{ item.namespace.slug }}</NuxtLink>
+                    <Tag :color="{ background: item.channelColor }" :name="item.channelName" />
+                  </div>
+                  <div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-secondary">
+                    <NuxtLink :to="versionUrl(item)" class="tabular-nums">{{ item.versionString }}</NuxtLink>
+                    <PlatformLogo v-for="platform in item.platforms" :key="platform" :platform="platform" :size="14" class="flex-shrink-0" />
+                    <span>&middot; {{ item.versionAuthor }}</span>
+                    <span>&middot; {{ lastUpdated(new Date(item.versionCreatedAt)) }}</span>
+                  </div>
+                </div>
+                <Button :to="reviewUrl(item)" size="sm" class="flex-shrink-0 self-end sm:self-center">
+                  <IconMdiPlay />
+                  {{ i18n.t("version.page.reviewStart") }}
+                </Button>
               </li>
-            </ul>
-          </td>
-        </template>
-      </SortableTable>
-    </Card>
+            </template>
+            <template #pagination="{ page, pages, updatePage }">
+              <li class="p-3">
+                <PaginationButtons :page="page" :pages="pages" @update:page="updatePage" />
+              </li>
+            </template>
+          </Pagination>
+        </ul>
+        <div v-else class="flex flex-col items-center px-4 py-10 text-center">
+          <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full background-card text-xl text-gray-secondary">
+            <IconMdiCheckDecagramOutline />
+          </div>
+          <p class="text-gray-secondary">{{ i18n.t("versionApproval.queueClear") }}</p>
+        </div>
+      </Card>
+
+      <Card flat padding="none">
+        <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
+          <h2 class="flex-grow text-lg font-bold">{{ i18n.t("versionApproval.inReview") }}</h2>
+          <span class="text-sm text-gray-secondary tabular-nums">{{ underReview.length }}</span>
+        </div>
+
+        <ul v-if="underReview.length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
+          <Pagination :items="underReview" :items-per-page="15">
+            <template #default="{ item }">
+              <li class="px-4 py-3">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div class="h-9 w-9 flex flex-shrink-0 items-center justify-center rounded-lg bg-sky-500/15 text-lg text-sky-500">
+                    <IconMdiEyeOutline />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <NuxtLink :to="projectUrl(item)" class="font-semibold">{{ item.namespace.owner }}/{{ item.namespace.slug }}</NuxtLink>
+                      <Tag :color="{ background: item.channelColor }" :name="item.channelName" />
+                    </div>
+                    <div class="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-secondary">
+                      <NuxtLink :to="versionUrl(item)" class="tabular-nums">{{ item.versionString }}</NuxtLink>
+                      <PlatformLogo v-for="platform in item.platforms" :key="platform" :platform="platform" :size="14" class="flex-shrink-0" />
+                      <span>&middot; {{ item.versionAuthor }}</span>
+                      <span>&middot; {{ lastUpdated(new Date(item.versionCreatedAt)) }}</span>
+                    </div>
+                    <div class="mt-1.5 flex flex-wrap gap-1.5">
+                      <Chip v-if="getOngoingCount(item)" tone="amber">{{ i18n.t("versionApproval.statuses.ongoing", [getOngoingCount(item)]) }}</Chip>
+                      <Chip v-if="getStoppedCount(item)" tone="red">{{ i18n.t("versionApproval.statuses.stopped", [getStoppedCount(item)]) }}</Chip>
+                      <Chip v-if="getApprovedCount(item)" tone="green">{{ i18n.t("versionApproval.statuses.approved", [getApprovedCount(item)]) }}</Chip>
+                    </div>
+                  </div>
+                  <div class="flex flex-shrink-0 gap-2 self-end sm:self-center">
+                    <Button :to="reviewUrl(item)" variant="outline" tone="neutral" size="sm">
+                      <IconMdiFormatListChecks />
+                      {{ i18n.t("reviews.title") }}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      tone="neutral"
+                      size="sm"
+                      icon-only
+                      :title="i18n.t('versionApproval.toggleReviewers')"
+                      :aria-label="i18n.t('versionApproval.toggleReviewers')"
+                      :aria-expanded="expanded[item.versionId] ? 'true' : 'false'"
+                      @click="expanded[item.versionId] = !expanded[item.versionId]"
+                    >
+                      <IconMdiChevronDown class="transition-transform" :class="expanded[item.versionId] ? 'rotate-180' : ''" />
+                    </Button>
+                  </div>
+                </div>
+
+                <ul v-if="expanded[item.versionId]" class="mt-3 flex flex-col gap-1 border-l-2 border-gray-300 pl-3 text-sm sm:ml-12 dark:border-gray-700">
+                  <li v-for="entry in item.reviews" :key="entry.reviewerName" class="flex flex-wrap items-center gap-x-2">
+                    <span
+                      class="font-semibold"
+                      :class="{ 'text-amber-500': isOngoing(entry), 'text-red-500': isStopped(entry), 'text-lime-500': isApproved(entry) }"
+                      >{{ entry.reviewerName }}</span
+                    >
+                    <span class="text-xs text-gray-secondary">{{ i18n.t("versionApproval.started", [i18n.d(entry.reviewStarted, "time")]) }}</span>
+                    <span v-if="entry.reviewEnded" class="text-xs text-gray-secondary">
+                      &middot; {{ i18n.t("versionApproval.ended", [i18n.d(entry.reviewEnded, "time")]) }}
+                    </span>
+                  </li>
+                </ul>
+              </li>
+            </template>
+            <template #pagination="{ page, pages, updatePage }">
+              <li class="p-3">
+                <PaginationButtons :page="page" :pages="pages" @update:page="updatePage" />
+              </li>
+            </template>
+          </Pagination>
+        </ul>
+        <div v-else class="flex flex-col items-center px-4 py-10 text-center">
+          <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full background-card text-xl text-gray-secondary">
+            <IconMdiEyeOutline />
+          </div>
+          <p class="text-gray-secondary">{{ i18n.t("versionApproval.noneInReview") }}</p>
+        </div>
+      </Card>
+    </div>
   </div>
 </template>

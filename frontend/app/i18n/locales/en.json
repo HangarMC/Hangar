@@ -1033,7 +1033,14 @@
     "error": {
       "notEnoughPerms": "Not enough permissions to create that key",
       "duplicateName": "Duplicate key name"
-    }
+    },
+    "reveal": "Reveal",
+    "hide": "Hide",
+    "selectAll": "Select all",
+    "clearAll": "Clear all",
+    "createHint": "The key is shown once after creation.",
+    "neverUsed": "Never used",
+    "createdTitle": "Key created"
   },
   "auth": {
     "login": {
@@ -1255,31 +1262,45 @@
     "markUnresolved": "Mark unresolved",
     "line1": "{0} reported {1} on {2}",
     "line2": "Reason: {0}",
-    "line3": "Comment: {0}"
+    "line3": "Comment: {0}",
+    "subtitle": "Reports submitted by users about projects.",
+    "projectVisibility": "Visibility: {0}",
+    "resolvedBy": "Resolved by {0}",
+    "loadNotifications": "Load notifications",
+    "noNotifications": "No notifications have been sent for this report."
   },
   "userActivity": {
     "title": "{0}'s Activity",
+    "subtitle": "Moderation actions carried out by this user.",
+    "viewProfile": "View profile",
     "reviews": "Reviews",
     "flags": "Reports",
     "reviewApproved": "Review Approved",
     "flagResolved": "Flag Resolved",
+    "noReviews": "No reviews carried out yet.",
+    "noFlags": "No reports resolved yet.",
     "error": {
       "isOrg": "Cannot show activity for organization users"
     }
   },
   "userAdmin": {
     "title": "Edit User",
+    "roles": "Roles",
+    "noRoles": "No roles assigned.",
+    "selectRole": "Add a role",
     "organizations": "Organizations",
     "organization": "Organization",
+    "noOrganizations": "Not a member of any organization.",
     "projects": "Projects",
     "project": "Project",
+    "noProjects": "No projects owned.",
     "owner": "Owner",
     "role": "Role",
     "accepted": "Accepted",
+    "visibility": "Visibility",
     "sidebar": "Other Administration",
     "hangarAuth": "HangarAuth Profile",
-    "forum": "Forum Profile",
-    "roles": "Roles"
+    "forum": "Forum Profile"
   },
   "userList": {
     "title": "User List"
@@ -1353,7 +1374,11 @@
       "ongoing": "{0} ongoing",
       "stopped": "{0} stopped",
       "approved": "{0} approved"
-    }
+    },
+    "subtitle": "Versions waiting on a reviewer before they go public.",
+    "queueClear": "Nothing is waiting for review.",
+    "noneInReview": "No reviews are in progress.",
+    "toggleReviewers": "Toggle reviewers"
   },
   "projectApproval": {
     "title": "Project Approvals",
@@ -1361,7 +1386,11 @@
     "noProjects": "No projects",
     "needsApproval": "Needs Approval",
     "awaitingChanges": "Awaiting Changes",
-    "description": "{0} requested changes on {1}"
+    "description": "{0} requested changes on {1}",
+    "subtitle": "Projects waiting on a moderation decision.",
+    "requestedBy": "Changes requested by {0}",
+    "queueClear": "No projects are waiting for approval.",
+    "noAwaitingChanges": "No projects are awaiting changes."
   },
   "donate": {
     "success": "Thank you for your {0} {1} donation to {2}!",

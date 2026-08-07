@@ -109,32 +109,30 @@ useSeo(computed(() => ({ title: i18n.t("userActionLog.title"), route })));
 
 <template>
   <div>
-    <PageTitle>{{ i18n.t("userActionLog.title") }}</PageTitle>
-    <Card>
-      <div class="flex mb-4 gap-2">
-        <div class="basis-3/12">
-          <InputAutocomplete
-            id="userfilter"
-            v-model="filter.user"
-            :values="userSearchResult"
-            :label="i18n.t('organization.settings.transferModal.transferTo')"
-            @search="searchUser"
-          />
-        </div>
-        <div class="basis-3/12">
-          <InputDropdown v-model="filter.logAction" :values="useBackendData.loggedActions" label="Action" />
-          <span v-if="filter.logAction" class="flex justify-center" cursor="pointer" @click="filter.logAction = undefined"> Clear selected action </span>
-        </div>
-        <div class="basis-3/12">
-          <InputAutocomplete id="authorfilter" v-model="filter.authorName" :values="authorSearchResult" label="Author Name" @search="searchAuthor" />
-        </div>
-        <div class="basis-3/12">
-          <InputAutocomplete id="projectfilter" v-model="filter.projectSlug" :values="projectSearchResult" label="Project Slug" @search="searchProject" />
-        </div>
+    <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold">{{ i18n.t("userActionLog.title") }}</h1>
+        <p v-if="actionLogs?.pagination" class="mt-1 text-gray-secondary tabular-nums">{{ actionLogs.pagination.count.toLocaleString("en-US") }} entries</p>
       </div>
+    </div>
 
+    <Card flat class="mb-4">
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <InputAutocomplete id="userfilter" v-model="filter.user" :values="userSearchResult" :label="i18n.t('userActionLog.user')" @search="searchUser" />
+        <div>
+          <InputDropdown v-model="filter.logAction" :values="useBackendData.loggedActions" :label="i18n.t('userActionLog.action')" />
+          <Button v-if="filter.logAction" variant="ghost" tone="neutral" size="sm" class="mt-1" @click="filter.logAction = undefined">
+            <IconMdiClose />
+            Clear selected action
+          </Button>
+        </div>
+        <InputAutocomplete id="authorfilter" v-model="filter.authorName" :values="authorSearchResult" label="Author Name" @search="searchAuthor" />
+        <InputAutocomplete id="projectfilter" v-model="filter.projectSlug" :values="projectSearchResult" label="Project Slug" @search="searchProject" />
+      </div>
+    </Card>
+
+    <Card flat padding="none">
       <SortableTable
-        :loading="true"
         :headers="headers"
         :items="actionLogs?.result || []"
         :server-pagination="actionLogs?.pagination"
@@ -144,11 +142,22 @@ useSeo(computed(() => ({ title: i18n.t("userActionLog.title"), route })));
         <template #userName="{ item }">
           <Link :to="'/' + item.userName">{{ item.userName }}</Link>
         </template>
+        <template #address="{ item }">
+          <span class="text-xs text-gray-secondary font-mono">{{ item.address }}</span>
+        </template>
         <template #time="{ item }">
-          {{ i18n.d(item.createdAt, "time") }}
+          <span class="whitespace-nowrap text-sm text-gray-secondary tabular-nums">{{ i18n.d(item.createdAt, "time") }}</span>
         </template>
         <template #action="{ item }">
-          {{ i18n.t(item.action.description) }}
+          <span class="text-sm font-medium">{{ i18n.t(item.action.description) }}</span>
+        </template>
+        <template #empty>
+          <div class="flex flex-col items-center px-4 py-10 text-center">
+            <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full background-card text-xl text-gray-secondary">
+              <IconMdiClipboardTextClockOutline />
+            </div>
+            <p class="text-gray-secondary">No log entries match these filters.</p>
+          </div>
         </template>
         <template #context="{ item }">
           <template v-if="item.project && item.page">
@@ -172,45 +181,69 @@ useSeo(computed(() => ({ title: i18n.t("userActionLog.title"), route })));
           <template v-if="(item.contextType === 'PAGE' || item.action.pgLoggedAction === 'version_description_changed') && item.oldState">
             <MarkdownModal :markdown-input="item.oldState" :title="i18n.t('userActionLog.markdownView')">
               <template #activator="{ on }">
-                <Button size="sm" v-on="on">
-                  {{ i18n.t("userActionLog.markdownView") }}
+                <Button
+                  variant="outline"
+                  tone="neutral"
+                  size="sm"
+                  icon-only
+                  :title="i18n.t('userActionLog.markdownView')"
+                  :aria-label="i18n.t('userActionLog.markdownView')"
+                  v-on="on"
+                >
+                  <IconMdiLanguageMarkdown />
                 </Button>
               </template>
             </MarkdownModal>
           </template>
           <template v-else-if="item.action.pgLoggedAction === 'project_icon_changed'">
-            <span v-if="item.oldState === '#empty'">default</span>
-            <img v-else class="inline-img" :src="'data:image/png;base64,' + item.oldState" alt="" />
+            <span v-if="item.oldState === '#empty'" class="text-sm text-gray-secondary">default</span>
+            <img v-else class="h-8 w-8 rounded" :src="'data:image/png;base64,' + item.oldState" alt="" />
           </template>
           <template v-else>
-            <span>{{ item.oldState && i18n.te(item.oldState) ? i18n.t(item.oldState) : item.oldState }}</span>
+            <span class="text-sm text-gray-secondary">{{ item.oldState && i18n.te(item.oldState) ? i18n.t(item.oldState) : item.oldState }}</span>
           </template>
         </template>
         <template #newState="{ item }">
           <template v-if="item.contextType === 'PAGE' || item.action.pgLoggedAction === 'version_description_changed'">
-            <div class="flex gap-2">
+            <div class="flex gap-1">
               <MarkdownModal :markdown-input="item.newState" :title="i18n.t('userActionLog.markdownView')">
                 <template #activator="{ on }">
-                  <Button size="sm" v-on="on">
-                    {{ i18n.t("userActionLog.markdownView") }}
+                  <Button
+                    variant="outline"
+                    tone="neutral"
+                    size="sm"
+                    icon-only
+                    :title="i18n.t('userActionLog.markdownView')"
+                    :aria-label="i18n.t('userActionLog.markdownView')"
+                    v-on="on"
+                  >
+                    <IconMdiLanguageMarkdown />
                   </Button>
                 </template>
               </MarkdownModal>
               <DiffModal :left="item.oldState" :right="item.newState" :title="i18n.t('userActionLog.diffView')">
                 <template #activator="{ on }">
-                  <Button size="sm" v-on="on">
-                    {{ i18n.t("userActionLog.diffView") }}
+                  <Button
+                    variant="outline"
+                    tone="neutral"
+                    size="sm"
+                    icon-only
+                    :title="i18n.t('userActionLog.diffView')"
+                    :aria-label="i18n.t('userActionLog.diffView')"
+                    v-on="on"
+                  >
+                    <IconMdiFileCompare />
                   </Button>
                 </template>
               </DiffModal>
             </div>
           </template>
           <template v-else-if="item.action.pgLoggedAction === 'project_icon_changed'">
-            <span v-if="item.newState === '#empty'">default</span>
-            <img v-else class="inline-img" :src="'data:image/png;base64,' + item.newState" alt="" />
+            <span v-if="item.newState === '#empty'" class="text-sm text-gray-secondary">default</span>
+            <img v-else class="h-8 w-8 rounded" :src="'data:image/png;base64,' + item.newState" alt="" />
           </template>
           <template v-else>
-            <span>{{ i18n.te(item.newState) ? i18n.t(item.newState) : item.newState }}</span>
+            <span class="text-sm text-gray-secondary">{{ i18n.te(item.newState) ? i18n.t(item.newState) : item.newState }}</span>
           </template>
         </template>
       </SortableTable>
@@ -221,5 +254,24 @@ useSeo(computed(() => ({ title: i18n.t("userActionLog.title"), route })));
 <style>
 main[data-page="admin-log"] .max-w-screen-xl {
   max-width: 100% !important;
+}
+
+main[data-page="admin-log"] .simple-table th {
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+main[data-page="admin-log"] .simple-table td {
+  vertical-align: top;
+}
+
+main[data-page="admin-log"] .simple-table tbody tr:hover td {
+  background-color: rgb(0 0 0 / 3%);
+}
+
+.dark main[data-page="admin-log"] .simple-table tbody tr:hover td {
+  background-color: rgb(255 255 255 / 4%);
 }
 </style>

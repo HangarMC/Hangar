@@ -110,7 +110,7 @@ function toggleSub(subVersion: string) {
             :key="subversion"
             type="button"
             class="rounded px-1.5 py-0.5 text-xs font-semibold tabular-nums transition-colors"
-            :class="selectedSub.includes(subversion) ? 'bg-primary-500 text-white' : 'background-card text-gray-600 dark:text-gray-300 hover:color-primary'"
+            :class="selectedSub.includes(subversion) ? 'vs-chip-on' : 'background-card text-gray-600 dark:text-gray-300 hover:color-primary'"
             :aria-pressed="selectedSub.includes(subversion)"
             @click.prevent="toggleSub(subversion)"
           >
@@ -129,5 +129,17 @@ function toggleSub(subVersion: string) {
 
 .vs-head-all {
   background-color: color-mix(in srgb, var(--primary-500) 12%, transparent);
+}
+
+.vs-chip-on {
+  background-color: color-mix(in srgb, var(--primary-500) 7%, #ffffff);
+  color: var(--primary-ink);
+  box-shadow: inset 0 0 0 1px var(--primary-ink);
+}
+
+.dark .vs-chip-on {
+  background-color: color-mix(in srgb, var(--primary-500) 13%, var(--gray-800));
+  color: #f4f4f5;
+  box-shadow: inset 0 0 0 1px var(--primary-300);
 }
 </style>

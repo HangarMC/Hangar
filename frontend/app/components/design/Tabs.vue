@@ -76,13 +76,13 @@ defineSlots<
           <Button
             v-if="!tab.show || tab.show()"
             variant="ghost"
-            :tone="isSelected(tab) ? 'primary' : 'neutral'"
+            tone="neutral"
             :disabled="tab.disable && tab.disable()"
             :href="router ? undefined : '#' + tab.value"
             :to="router ? tab.value : undefined"
             :aria-current="isSelected(tab) ? 'page' : undefined"
             :class="{
-              'background-card color-primary': isSelected(tab),
+              'tab-selected': isSelected(tab),
               'md:w-full md:!justify-start': vertical && highlightSelected,
             }"
             @click="selectTab($event, tab)"
@@ -94,6 +94,7 @@ defineSlots<
       </ul>
       <hr v-if="!vertical" class="mb-2" />
     </div>
+
     <div class="min-w-0 flex-grow" :class="{ 'md:pl-4': divided && vertical }">
       <template v-if="router">
         <slot v-if="router" />
@@ -107,3 +108,15 @@ defineSlots<
     </div>
   </div>
 </template>
+
+<style scoped>
+.tab-selected.tab-selected {
+  background-color: color-mix(in srgb, var(--primary-500) 7%, #ffffff);
+  color: var(--primary-ink);
+}
+
+.dark .tab-selected.tab-selected {
+  background-color: color-mix(in srgb, var(--primary-500) 13%, var(--gray-800));
+  color: #f4f4f5;
+}
+</style>

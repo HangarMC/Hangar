@@ -63,18 +63,18 @@ function linkName(type: string) {
       </Button>
     </div>
 
-    <div v-if="addingLink" class="mt-3 flex items-start gap-2 rounded-lg background-card p-3 lt-sm:flex-col">
-      <InputDropdown v-model="linkType" :values="availableLinkTypes" :label="t('project.settings.links.typeField')" />
-      <Button class="mt-1" :disabled="!linkType" @click.prevent="addLink">{{ t("general.add") }}</Button>
+    <div v-if="addingLink" class="mt-3 flex flex-wrap items-end gap-2 rounded-md border border-gray-300 p-3 dark:border-gray-700">
+      <InputDropdown v-model="linkType" :values="availableLinkTypes" :label="t('project.settings.links.typeField')" button-size="md" />
+      <Button :disabled="!linkType" @click.prevent="addLink">{{ t("general.add") }}</Button>
     </div>
 
     <div class="mt-2">
-      <div v-for="(_, type) in socials" :key="type" class="flex items-center gap-3 border-t border-gray-300 py-4 first:border-t-0 dark:border-gray-600">
-        <IconMdiDiscord v-if="type === 'discord'" class="shrink-0 text-xl" />
-        <IconMdiGithub v-else-if="type === 'github'" class="shrink-0 text-xl" />
-        <IconMdiTwitter v-else-if="type === 'twitter'" class="shrink-0 text-xl" />
-        <IconMdiYoutube v-else-if="type === 'youtube'" class="shrink-0 text-xl" />
-        <IconMdiWeb v-else class="shrink-0 text-xl" />
+      <div v-for="(_, type) in socials" :key="type" class="flex items-start gap-3 border-t border-gray-300 py-3 first:border-t-0 dark:border-gray-700">
+        <IconMdiDiscord v-if="type === 'discord'" class="mt-0.5 shrink-0 text-xl text-gray-secondary" />
+        <IconMdiGithub v-else-if="type === 'github'" class="mt-0.5 shrink-0 text-xl text-gray-secondary" />
+        <IconMdiTwitter v-else-if="type === 'twitter'" class="mt-0.5 shrink-0 text-xl text-gray-secondary" />
+        <IconMdiYoutube v-else-if="type === 'youtube'" class="mt-0.5 shrink-0 text-xl text-gray-secondary" />
+        <IconMdiWeb v-else class="mt-0.5 shrink-0 text-xl text-gray-secondary" />
 
         <div class="min-w-0 flex-grow">
           <div class="font-semibold">{{ linkName(type) }}</div>
@@ -89,17 +89,22 @@ function linkName(type: string) {
 
         <div class="flex shrink-0 gap-1 self-start">
           <Button
-            variant="ghost"
-            :class="{ '!bg-primary-500/15 color-primary': editingType === type }"
+            :variant="editingType === type ? 'outline' : 'ghost'"
+            :tone="editingType === type ? 'primary' : 'neutral'"
+            size="sm"
+            icon-only
             :title="t('auth.settings.profile.socialLinks.edit', [linkName(type)])"
             :aria-label="t('auth.settings.profile.socialLinks.edit', [linkName(type)])"
             @click.prevent="toggleEditing(type)"
           >
-            <IconMdiPencil />
+            <IconMdiCheck v-if="editingType === type" />
+            <IconMdiPencil v-else />
           </Button>
           <Button
             variant="ghost"
-            class="hover:!text-red-500"
+            tone="danger"
+            size="sm"
+            icon-only
             :title="t('auth.settings.profile.socialLinks.remove', [linkName(type)])"
             :aria-label="t('auth.settings.profile.socialLinks.remove', [linkName(type)])"
             @click.prevent="removeLink(type)"

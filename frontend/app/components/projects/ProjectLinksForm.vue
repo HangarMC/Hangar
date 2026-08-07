@@ -27,7 +27,7 @@ function removeSection(index: number) {
   <Draggable v-model="sections" tag="ul" :animation="200" group="sections" handle=".handle" item-key="id">
     <template #item="{ element: section, index }">
       <li>
-        <Card alternate-background class="mb-2">
+        <Card flat class="mb-2">
           <div class="flex items-center gap-2 mb-2">
             <IconMdiMenu class="handle flex-shrink-0 cursor-grab" />
             <InputDropdown

@@ -30,7 +30,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
     if (meta || key === "globalData") {
       const newParam = param && param in to.params ? (to.params[param as never] as string) : undefined;
       if (data.value && loadedParam.value === newParam) {
-        console.log("skip loading", key); // TODO test this
+        dataLoaderLog("skip loading", key); // TODO test this
         return newParam;
       } else if (!param || newParam) {
         // sanitize a bit to make undertow happy
@@ -44,7 +44,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
         const currentRequestId = ++requestId.value;
         promises.push(
           new Promise<void>(async (resolve, reject) => {
-            console.log("load loading", key, newParam);
+            dataLoaderLog("load loading", key, newParam);
             const result = await loader(newParam!).catch((err) => {
               if (lenient) resolve();
               else reject(err);
@@ -52,7 +52,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
             // await new Promise((resolve) => setTimeout(resolve, 5000));
             if (result && requestId.value === currentRequestId && loadedParam.value === newParam) {
               data.value = result;
-              console.log("load loaded", key, newParam);
+              dataLoaderLog("load loaded", key, newParam);
             }
             resolve();
           })
@@ -94,7 +94,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   let promise: Promise<void> | undefined;
 
   function refresh() {
-    console.log("refresh", key(params()));
+    dataLoaderLog("refresh", key(params()));
     return load(params());
   }
 
@@ -115,7 +115,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
     }
 
     if (skip(params)) {
-      console.log("skip", key(params));
+      dataLoaderLog("skip", key(params));
       setState(defaultValue ?? undefined);
       status.value = "idle";
       return;
@@ -125,11 +125,11 @@ export function useData<T, P extends Record<string, unknown> | string>(
       { op: "hangar.data", name: key(params) },
       () =>
         new Promise<void>(async (resolve, reject) => {
-          console.log("load", key(params));
+          dataLoaderLog("load", key(params));
           try {
             const result = await loader(params);
             // await new Promise((resolve) => setTimeout(resolve, 5000));
-            console.log("loaded", key(params));
+            dataLoaderLog("loaded", key(params));
             setState(result);
             status.value = "success";
             callback(params);
@@ -152,9 +152,9 @@ export function useData<T, P extends Record<string, unknown> | string>(
     // if on server (and we dont wanna skip server fetching, we need await the promise onServerPrefetch)
     if (import.meta.server && server && promise) {
       onServerPrefetch(async () => {
-        console.log("server prefetch", key(params()));
+        dataLoaderLog("server prefetch", key(params()));
         await promise;
-        console.log("server prefetch done", key(params()));
+        dataLoaderLog("server prefetch done", key(params()));
       });
     }
   }
@@ -170,7 +170,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
       state.value[newKey] = oldState;
       state.value[oldKey] = undefined;
       data.value = oldState;
-      console.log("watchKey", newKey, oldKey);
+      dataLoaderLog("watchKey", newKey, oldKey);
     }
   );
 
@@ -179,10 +179,10 @@ export function useData<T, P extends Record<string, unknown> | string>(
     params,
     (newParams, oldParams) => {
       if (checkEqual(newParams, oldParams)) {
-        console.log("equals");
+        dataLoaderLog("equals");
         return;
       }
-      console.log("watch", key(params()), newParams, oldParams, newParams === oldParams, checkEqual(newParams, oldParams));
+      dataLoaderLog("watch", key(params()), newParams, oldParams, newParams === oldParams, checkEqual(newParams, oldParams));
       load(params());
     },
     { debounce: 250 }

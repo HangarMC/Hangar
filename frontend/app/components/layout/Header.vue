@@ -271,7 +271,7 @@ function isRecent(date: string): boolean {
             <template #content="{ close }">
               <ClientOnly>
                 <div
-                  class="-mt-1 max-w-150 flex flex-col overflow-auto rounded-md border border-gray-300 background-default shadow-default dark:border-gray-700"
+                  class="min-h-0 max-w-150 flex flex-col overflow-auto rounded-md border border-gray-300 background-default shadow-default dark:border-gray-700"
                 >
                   <div v-if="unreadCount?.invites">
                     <span class="flex shadow-0 p-2 pb-0 mt-2 ml-3 mr-2">
@@ -346,7 +346,7 @@ function isRecent(date: string): boolean {
               {{ authStore.user.name }}
             </button>
             <template #content="{ close }">
-              <DropdownPanel class="-mt-2" @click="close()">
+              <DropdownPanel @click="close()">
                 <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
