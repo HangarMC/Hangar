@@ -37,7 +37,7 @@
     "@vueuse/core": "14.3.0",
     "@vueuse/nuxt": "14.3.0",
     "accept-language-parser": "1.5.0",
-    "axios": "1.16.1",
+    "axios": "1.18.0",
     "chart.js": "4.5.1",
     "debug": "4.4.3",
     "defu": "6.1.7",
