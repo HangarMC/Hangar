@@ -85,6 +85,17 @@ const loading = reactive({
   transfer: false,
 });
 
+function toggleTag(tag: Tag) {
+  const tags = form.settings?.tags;
+  if (!tags) return;
+  const index = tags.indexOf(tag);
+  if (index === -1) {
+    tags.push(tag);
+  } else {
+    tags.splice(index, 1);
+  }
+}
+
 const isCustomLicense = computed(() => form.settings?.license?.type === "Other");
 const isUnspecifiedLicense = computed(() => form.settings?.license?.type === "Unspecified");
 
@@ -223,7 +234,7 @@ useSeo(
     <Tabs v-model="selectedTab" :tabs="tabs" highlight-selected divided>
       <template #general>
         <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-          <InputSelect v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
+          <InputDropdown v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
         </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
           <InputText
@@ -245,32 +256,39 @@ useSeo(
           />
         </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">
-          <template v-if="form.settings">
-            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="form.settings.tags" :value="tag">
-              <template #label>
+          <div v-if="form.settings" class="flex flex-wrap gap-2">
+            <Tooltip v-for="tag in Object.values(Tag)" :key="tag">
+              <template #content>{{ i18n.t("project.settings.tags." + tag + ".description") }}</template>
+              <button
+                type="button"
+                class="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors"
+                :class="
+                  form.settings.tags.includes(tag)
+                    ? 'border-primary-500 background-card color-primary'
+                    : 'border-gray-300 hover:background-card dark:border-gray-700'
+                "
+                :aria-pressed="form.settings.tags.includes(tag)"
+                @click="toggleTag(tag)"
+              >
                 <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
                 <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
                 <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
-                <Tooltip>
-                  <template #content> {{ i18n.t("project.settings.tags." + tag + ".description") }} </template>
-                  <IconMdiHelpCircleOutline class="ml-1 text-gray-500 dark:text-gray-400 text-sm" />
-                </Tooltip>
-              </template>
-            </InputCheckbox>
-          </template>
+                {{ i18n.t("project.settings.tags." + tag + ".title") }}
+              </button>
+            </Tooltip>
+          </div>
         </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
-          <div class="flex md:gap-2 lt-md:flex-wrap">
-            <div class="basis-full" :md="isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-              <InputSelect
+          <div class="flex flex-wrap items-start gap-2">
+            <div class="flex-shrink-0">
+              <InputDropdown
                 v-if="form.settings"
                 v-model="form.settings.license.type"
                 :values="useLicenseOptions"
                 :label="i18n.t('project.settings.licenseType')"
               />
             </div>
-            <div v-if="isCustomLicense" class="basis-full md:basis-8/12">
+            <div v-if="isCustomLicense" class="min-w-60 flex-1">
               <InputText
                 v-if="form.settings"
                 v-model.trim="form.settings.license.name"
@@ -282,7 +300,7 @@ useSeo(
                 ]"
               />
             </div>
-            <div v-if="!isUnspecifiedLicense" class="basis-full" :md="isCustomLicense ? 'basis-full' : 'basis-6/12'">
+            <div v-if="!isUnspecifiedLicense" class="min-w-60 flex-1">
               <InputText v-if="form.settings" v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
             </div>
           </div>
@@ -388,7 +406,7 @@ useSeo(
         </template>-->
       <template #banners>
         <ProjectSettingsSection title="project.settings.banners.mcbanners" description="project.settings.banners.mcbannersSub">
-          <InputSelect
+          <InputDropdown
             v-model="mcBannersStyle"
             :values="[
               'BLUE_RADIAL',
@@ -423,7 +441,7 @@ useSeo(
           </div>
         </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.banners.shields" description="project.settings.banners.shieldsSub">
-          <InputSelect
+          <InputDropdown
             v-model="shieldIoStyle"
             :values="['flat', 'flat-square', 'plastic', 'for-the-badge', 'social']"
             :label="i18n.t('project.settings.banners.style')"

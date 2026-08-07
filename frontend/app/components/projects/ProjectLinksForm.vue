@@ -30,7 +30,7 @@ function removeSection(index: number) {
         <Card alternate-background class="mb-2">
           <div class="flex items-center gap-2 mb-2">
             <IconMdiMenu class="handle flex-shrink-0 cursor-grab" />
-            <InputSelect
+            <InputDropdown
               v-model="section.type"
               :values="[
                 { value: 'top', text: i18n.t('project.settings.links.top') },
@@ -60,7 +60,10 @@ function removeSection(index: number) {
       </li>
     </template>
     <template #footer>
-      <Button @click="addSection">{{ i18n.t("project.settings.links.addSection") }}</Button>
+      <Button variant="outline" tone="neutral" size="sm" @click="addSection">
+        <IconMdiPlus />
+        {{ i18n.t("project.settings.links.addSection") }}
+      </Button>
     </template>
   </Draggable>
 </template>

@@ -89,26 +89,44 @@ async function goto(step: Step) {
 
 <template>
   <div>
-    <div class="w-full">
-      <ul class="flex flex-row justify-around items-center">
-        <template v-for="(step, count) in steps" :key="step.value">
-          <div>
-            <div class="lt-sm:hidden bg-primary-500 text-white rounded-full w-[24px] h-[24px] inline-flex justify-center align-center" m="r-2">
-              {{ count + 1 }}
-            </div>
-            <Link
-              :class="internalValue === step.value ? 'underline' : '!font-semibold'"
-              :href="'#' + step.value"
-              display="hidden ml-0 md:inline"
-              @click.prevent="goto(step)"
+    <ol class="list-none flex items-center gap-2">
+      <template v-for="(step, count) in steps" :key="step.value">
+        <li class="min-w-0 flex-shrink-0">
+          <button
+            type="button"
+            class="flex items-center gap-2 rounded px-1 py-0.5 focus-visible:(outline-2 outline-offset-2 outline-primary-500)"
+            :aria-current="count + 1 === activeStepIndex ? 'step' : undefined"
+            @click.prevent="goto(step)"
+          >
+            <span
+              class="h-7 w-7 flex flex-shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors"
+              :class="
+                count + 1 < activeStepIndex
+                  ? 'background-card color-primary'
+                  : count + 1 === activeStepIndex
+                    ? 'bg-primary-500 text-white'
+                    : 'background-card text-gray-secondary'
+              "
+            >
+              <IconMdiCheck v-if="count + 1 < activeStepIndex" />
+              <template v-else>{{ count + 1 }}</template>
+            </span>
+            <span
+              class="truncate text-sm lt-md:hidden"
+              :class="count + 1 === activeStepIndex ? 'font-bold color-primary' : count + 1 < activeStepIndex ? 'font-semibold' : 'text-gray-secondary'"
             >
               {{ step.header }}
-            </Link>
-          </div>
-          <hr class="flex-grow flex-shrink mx-2" />
-        </template>
-      </ul>
-    </div>
+            </span>
+          </button>
+        </li>
+        <li
+          v-if="count < steps.length - 1"
+          class="h-0.5 min-w-4 flex-1 rounded-full transition-colors"
+          :class="count + 1 < activeStepIndex ? 'bg-primary-500' : 'bg-gray-300 dark:bg-gray-700'"
+        />
+      </template>
+    </ol>
+
     <div class="mt-4">
       <Card accent>
         <template #header>
@@ -117,7 +135,7 @@ async function goto(step: Step) {
         <div v-for="step in steps" :key="step.value">
           <slot v-if="internalValue === step.value" :name="step.value" />
         </div>
-        <div class="mt-5 flex justify-end gap-2">
+        <div class="mt-5 flex justify-end gap-2 border-t border-gray-300 pt-4 dark:border-gray-700">
           <Button
             v-if="showBack"
             variant="ghost"

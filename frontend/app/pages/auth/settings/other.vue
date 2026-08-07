@@ -62,9 +62,7 @@ watch(locale, (newLocale) => {
           type="button"
           class="rounded-md px-3 py-1.5 text-sm font-semibold transition-colors"
           :class="
-            settingsStore.themeMode === mode.value
-              ? 'background-default color-primary shadow-sm'
-              : 'text-gray-secondary hover:(text-black dark:text-white)'
+            settingsStore.themeMode === mode.value ? 'background-default color-primary shadow-sm' : 'text-gray-secondary hover:(text-black dark:text-white)'
           "
           :aria-pressed="settingsStore.themeMode === mode.value"
           @click="settingsStore.setThemeMode(mode.value)"
@@ -95,7 +93,7 @@ watch(locale, (newLocale) => {
 
     <section class="mt-5">
       <h3 class="font-semibold mb-2">{{ i18n.t("auth.settings.misc.language") }}</h3>
-      <InputSelect v-model="locale" class="w-full" :values="languages" :aria-label="i18n.t('auth.settings.misc.language')" />
+      <InputDropdown v-model="locale" :values="languages" :placeholder="i18n.t('auth.settings.misc.language')" />
       <p class="mt-1 text-sm text-gray-secondary">{{ i18n.t("auth.settings.misc.languageDescription") }}</p>
     </section>
   </div>

@@ -40,7 +40,10 @@ function add() {
       </li>
     </template>
     <template #footer>
-      <Button @click="add">{{ i18n.t("project.settings.links.addLink") }}</Button>
+      <Button variant="outline" tone="neutral" size="sm" @click="add">
+        <IconMdiPlus />
+        {{ i18n.t("project.settings.links.addLink") }}
+      </Button>
     </template>
   </Draggable>
 </template>

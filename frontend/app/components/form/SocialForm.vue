@@ -64,7 +64,7 @@ function linkName(type: string) {
     </div>
 
     <div v-if="addingLink" class="mt-3 flex items-start gap-2 rounded-lg background-card p-3 lt-sm:flex-col">
-      <InputSelect v-model="linkType" class="flex-grow lt-sm:w-full" :values="availableLinkTypes" :label="t('project.settings.links.typeField')" />
+      <InputDropdown v-model="linkType" :values="availableLinkTypes" :label="t('project.settings.links.typeField')" />
       <Button class="mt-1" :disabled="!linkType" @click.prevent="addLink">{{ t("general.add") }}</Button>
     </div>
 

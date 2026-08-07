@@ -69,11 +69,12 @@ useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.u
 
         <div class="flex mt-2 items-center">
           <div class="flex-grow">
-            <InputSelect
+            <InputDropdown
               v-model="selectedRole"
               :values="useBackendData.globalRoles.filter((r) => r.value !== 'Organization')"
               item-text="title"
               item-value="value"
+              :placeholder="i18n.t('general.add')"
             />
           </div>
           <Button :disabled="!selectedRole || user?.roles.some((r) => getRole(r)?.value === selectedRole)" class="ml-1" @click="processRole(true)">

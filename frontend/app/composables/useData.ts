@@ -89,9 +89,7 @@ export function useProjects(
           },
         });
       }
-    },
-    undefined,
-    true // keep results on screen while re-filtering
+    }
   );
   return { projects, projectsStatus, refreshProjects };
 }

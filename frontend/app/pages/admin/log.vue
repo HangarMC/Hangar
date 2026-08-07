@@ -122,7 +122,7 @@ useSeo(computed(() => ({ title: i18n.t("userActionLog.title"), route })));
           />
         </div>
         <div class="basis-3/12">
-          <InputSelect v-model="filter.logAction" :values="useBackendData.loggedActions" label="Action" />
+          <InputDropdown v-model="filter.logAction" :values="useBackendData.loggedActions" label="Action" />
           <span v-if="filter.logAction" class="flex justify-center" cursor="pointer" @click="filter.logAction = undefined"> Clear selected action </span>
         </div>
         <div class="basis-3/12">

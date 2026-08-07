@@ -11,12 +11,18 @@ const v = useVuelidate();
 const currentUser = useAuthStore().user;
 
 const name = ref<string>("");
+const loading = ref(false);
 
-const canCreate = computed<boolean>(() => !v.value.$invalid && !v.value.$pending);
+const maxOrgs = computed(() => useBackendData.validations.maxOrgCount);
+const orgCount = computed(() => currentUser?.headerData.organizationCount ?? 0);
+const canCreateMore = computed(() => orgCount.value < maxOrgs.value);
+const canCreate = computed<boolean>(() => !v.value.$invalid && !v.value.$pending && !loading.value);
 
 useSeo(computed(() => ({ title: i18n.t("organization.new.title"), route })));
 
 async function create() {
+  if (!canCreate.value) return;
+  loading.value = true;
   try {
     await useInternalApi("organizations/create", "post", {
       name: name.value,
@@ -24,40 +30,57 @@ async function create() {
     await router.push("/" + name.value);
   } catch (err: any) {
     handleRequestError(err);
+    loading.value = false;
   }
 }
 </script>
 
 <template>
-  <Card>
-    <template #header>{{ i18n.t("organization.new.title") }}</template>
-    <p class="mb-3">{{ i18n.t("organization.new.text") }}</p>
+  <Card class="max-w-2xl">
+    <template #header>
+      <div class="flex items-center gap-2">
+        <IconMdiAccountGroup class="flex-shrink-0 color-primary" />
+        {{ i18n.t("organization.new.title") }}
+      </div>
+    </template>
 
-    <div v-if="currentUser && currentUser.headerData.organizationCount < useBackendData.validations.maxOrgCount" class="mt-2">
-      <InputText
-        v-model="name"
-        class="max-w-100 pr-2"
-        :label="i18n.t('organization.new.name')"
-        name="name"
-        counter
-        :maxlength="useBackendData.validations.org.max"
-        :rules="[
-          required(),
-          minLength()(useBackendData.validations.org.min!),
-          maxLength()(useBackendData.validations.org.max!),
-          pattern()(useBackendData.validations.org.regex!),
-          validOrgName(),
-        ]"
-      />
+    <p class="text-gray-secondary">{{ i18n.t("organization.new.text") }}</p>
 
-      <Button class="mt-4" :disabled="!canCreate" title="Create Org" @click="create">
-        <IconMdiPlus />
-        {{ i18n.t("form.memberList.create") }}
-      </Button>
-    </div>
+    <template v-if="currentUser && canCreateMore">
+      <div class="mt-4">
+        <InputText
+          v-model.trim="name"
+          :label="i18n.t('organization.new.name')"
+          name="name"
+          counter
+          :maxlength="useBackendData.validations.org.max"
+          :rules="[
+            required(),
+            minLength()(useBackendData.validations.org.min!),
+            maxLength()(useBackendData.validations.org.max!),
+            pattern()(useBackendData.validations.org.regex!),
+            validOrgName(),
+          ]"
+          @keyup.enter="create"
+        />
+        <p class="mt-1 text-sm text-gray-secondary">
+          {{ i18n.t("organization.new.nameHint", [useBackendData.validations.org.min, useBackendData.validations.org.max]) }}
+        </p>
+      </div>
 
-    <Alert v-else type="danger">
-      {{ i18n.t("organization.new.error.tooManyOrgs", [useBackendData.validations.maxOrgCount]) }}
+      <div class="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-gray-300 pt-4 dark:border-gray-700">
+        <span class="text-sm text-gray-secondary tabular-nums">
+          {{ i18n.t("organization.new.slotsUsed", [orgCount, maxOrgs]) }}
+        </span>
+        <Button :disabled="!canCreate" :loading="loading" @click="create">
+          <IconMdiPlus />
+          {{ i18n.t("organization.new.create") }}
+        </Button>
+      </div>
+    </template>
+
+    <Alert v-else type="danger" class="mt-4">
+      {{ i18n.t("organization.new.error.tooManyOrgs", [maxOrgs]) }}
     </Alert>
   </Card>
 </template>

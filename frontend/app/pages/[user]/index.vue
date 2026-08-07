@@ -145,9 +145,7 @@ useSeo(
         <div class="min-w-60 flex-1">
           <InputText v-model="query" :label="i18n.t('hangar.projectSearch.query')" />
         </div>
-        <div class="w-56">
-          <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
-        </div>
+        <InputDropdown v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
       </div>
 
       <ProjectList

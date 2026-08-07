@@ -79,7 +79,7 @@ async function createPage() {
         :minlength="useBackendData.validations.project.pageName.min"
         :rules="rules"
       />
-      <InputSelect v-model="body.parentId" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
+      <InputDropdown v-model="body.parentId" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
     </div>
     <div></div>
     <template #activator="{ on }">
