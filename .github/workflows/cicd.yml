@@ -46,7 +46,7 @@ jobs:
     steps:
       # <editor-fold desc="Prepare">
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Assume PRs are less than 50 commits
           fetch-depth: 50
@@ -122,13 +122,13 @@ jobs:
       # <editor-fold desc="Build Frontend">
       - name: Set up pnpm
         if: ${{ steps.vars.outputs.build_frontend == 'true' }}
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10
 
       - name: Set up Node
         if: ${{ steps.vars.outputs.build_frontend == 'true' }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: "pnpm"
@@ -171,7 +171,7 @@ jobs:
       # <editor-fold desc="Deploy">
       - name: Set up Docker Buildx
         if: ${{ steps.vars.outputs.deploy == 'true' }}
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to registry
         if: ${{ steps.vars.outputs.deploy == 'true' }}
@@ -184,7 +184,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker (frontend)
         if: ${{ steps.vars.outputs.build_frontend == 'true' && steps.vars.outputs.deploy == 'true' }}
         id: frontend-meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/frontend
           tags: |
@@ -206,7 +206,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker (backend)
         if: ${{ steps.vars.outputs.build_backend == 'true' && steps.vars.outputs.deploy == 'true' }}
         id: backend-meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/backend
           tags: |
