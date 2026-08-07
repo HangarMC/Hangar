@@ -2,8 +2,11 @@ package io.papermc.hangar.components.images.service;
 
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
+import java.util.Arrays;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.InvalidMediaTypeException;
@@ -15,6 +18,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ImageProxyService {
+
+    private static final byte[] NAT64_PREFIX = {0x00, 0x64, (byte) 0xFF, (byte) 0x9B, 0, 0, 0, 0, 0, 0, 0, 0};
+    private static final byte[] IPV4_COMPATIBLE_PREFIX = new byte[12];
 
     private final WebClient webClient;
 
@@ -99,12 +105,45 @@ public class ImageProxyService {
             }
             final InetAddress inetAddress = InetAddress.getByName(parsedUrl.getHost());
             // not local ip
-            if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress() || inetAddress.isSiteLocalAddress()) {
+            if (this.isLocalAddress(inetAddress)) {
+                return null;
+            }
+            // IPv6 transition addresses embed an IPv4 target that the checks above see as global
+            final InetAddress embedded = this.extractEmbeddedIpv4(inetAddress);
+            if (embedded != null && this.isLocalAddress(embedded)) {
                 return null;
             }
             return parsedUrl;
         } catch (final Exception e) {
             return null;
         }
+    }
+
+    private boolean isLocalAddress(final InetAddress address) {
+        return address.isAnyLocalAddress()
+            || address.isLoopbackAddress()
+            || address.isSiteLocalAddress()
+            || address.isLinkLocalAddress(); // 169.254.0.0/16 (cloud metadata) and fe80::/10
+    }
+
+    /**
+     * Returns the IPv4 address embedded in a NAT64 (64:ff9b::/96), 6to4 (2002::/16) or IPv4-compatible
+     * (::a.b.c.d) address, or null if the address carries none.
+     */
+    @Nullable
+    private InetAddress extractEmbeddedIpv4(final InetAddress address) throws UnknownHostException {
+        if (!(address instanceof Inet6Address)) {
+            return null;
+        }
+        final byte[] bytes = address.getAddress();
+        // 6to4 2002:WWXX:YYZZ:: -> bytes 2-5
+        if ((bytes[0] & 0xFF) == 0x20 && (bytes[1] & 0xFF) == 0x02) {
+            return InetAddress.getByAddress(Arrays.copyOfRange(bytes, 2, 6));
+        }
+        // NAT64 and IPv4-compatible -> low 32 bits
+        if (Arrays.equals(bytes, 0, 12, NAT64_PREFIX, 0, 12) || Arrays.equals(bytes, 0, 12, IPV4_COMPATIBLE_PREFIX, 0, 12)) {
+            return InetAddress.getByAddress(Arrays.copyOfRange(bytes, 12, 16));
+        }
+        return null;
     }
 }
