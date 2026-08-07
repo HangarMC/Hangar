@@ -16,6 +16,11 @@ const supportedPlatforms = computed<[Platform, string[]][]>(() =>
 );
 const tags = computed<Tag[]>(() => ("settings" in props.project ? props.project.settings?.tags || [] : []));
 
+const visibilityTitle = computed(() => {
+  const visibility = useBackendData.visibilities.find((v) => v.name === props.project.visibility);
+  return visibility ? i18n.t(visibility.title) : undefined;
+});
+
 async function togglePin() {
   await useInternalApi(`projects/project/${props.project.namespace.slug}/pin/${!props.pinned}`, "POST").catch(handleRequestError);
   router.go(0); // I am lazy
@@ -38,28 +43,44 @@ async function togglePin() {
       </div>
 
       <div class="flex min-w-0 flex-1 flex-col">
-        <div class="flex min-w-0 items-center gap-x-1.5">
+        <div class="flex min-w-0 items-baseline gap-x-1.5">
           <h3 class="min-w-0 truncate text-xl font-bold leading-tight">
             <!-- Stretched so the whole card is clickable without nesting the author link inside an anchor. -->
             <NuxtLink :to="'/' + project.namespace.owner + '/' + project.namespace.slug" class="after:(absolute inset-0 content-empty)">
               {{ project.name }}
             </NuxtLink>
           </h3>
-          <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" class="flex-shrink-0 text-gray-secondary" />
-          <IconMdiEyeOff v-else-if="project.visibility !== Visibility.Public" class="flex-shrink-0 text-gray-secondary" />
           <span class="flex-shrink-0 text-sm text-gray-secondary">{{ i18n.t("general.by") }}</span>
           <NuxtLink :to="'/' + project.namespace.owner" class="relative z-1 min-w-0 truncate text-sm font-bold color-primary hover:underline">
             {{ project.namespace.owner }}
           </NuxtLink>
-          <button
-            v-if="canEdit"
-            class="relative z-1 ml-auto flex-shrink-0"
-            :title="'Toggle pinned status for project ' + project.namespace.slug"
-            @click.prevent="togglePin"
-          >
-            <IconMdiPinOff v-if="pinned" class="hidden group-hover:block" />
-            <IconMdiPin v-else class="hidden group-hover:block" />
-          </button>
+
+          <div class="flex flex-shrink-0 items-center gap-1.5 self-center leading-none">
+            <Tooltip v-if="project.visibility !== Visibility.Public" class="flex-shrink-0">
+              <template #content>{{ visibilityTitle }}</template>
+              <span class="flex items-center text-gray-secondary" :aria-label="visibilityTitle">
+                <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" />
+                <IconMdiEyeOff v-else />
+              </span>
+            </Tooltip>
+
+            <Tooltip v-if="canEdit" class="relative z-1 flex-shrink-0">
+              <template #content>
+                {{ i18n.t(pinned ? "project.pin.unpinTooltip" : "project.pin.pinTooltip", [project.name]) }}
+              </template>
+              <button
+                type="button"
+                class="pin-toggle flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold transition-colors"
+                :class="pinned ? 'background-card color-primary' : 'text-gray-secondary hover:(background-card color-primary)'"
+                :aria-pressed="pinned"
+                @click.prevent="togglePin"
+              >
+                <IconMdiPin v-if="pinned" />
+                <IconMdiPinOutline v-else />
+                {{ i18n.t(pinned ? "project.pin.pinned" : "project.pin.pin") }}
+              </button>
+            </Tooltip>
+          </div>
         </div>
 
         <!-- Always two lines tall so every card in the list is the same height. -->
@@ -108,3 +129,10 @@ async function togglePin() {
     </div>
   </Card>
 </template>
+
+<style scoped>
+.pin-toggle:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+</style>

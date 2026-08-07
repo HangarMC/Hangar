@@ -30,17 +30,9 @@ async function confirm(close: () => void) {
     <template #activator="{ on }">
       <Tooltip>
         <template #content> Delete user </template>
-        <Button
-          variant="ghost"
-          tone="danger"
-          size="sm"
-          icon-only
-          class="mr-1"
-          :title="i18n.t('general.delete')"
-          :aria-label="i18n.t('general.delete')"
-          v-on="on"
-        >
+        <Button variant="outline" tone="danger" size="sm" v-on="on">
           <IconMdiDelete />
+          {{ i18n.t("author.tooltips.deleteUser") }}
         </Button>
       </Tooltip>
     </template>

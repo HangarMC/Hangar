@@ -13,7 +13,7 @@ const toneClasses = {
   amber: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
   green: "bg-green-500/15 text-green-700 dark:text-green-300",
   red: "bg-red-500/15 text-red-700 dark:text-red-300",
-  primary: "bg-primary-500/15 color-primary",
+  primary: "chip-primary color-primary",
 } as const;
 </script>
 
@@ -24,6 +24,10 @@ const toneClasses = {
 </template>
 
 <style scoped>
+.chip-primary {
+  background-color: color-mix(in srgb, var(--primary-500) 15%, transparent);
+}
+
 .hangar-chip :deep(svg) {
   width: 1.1em;
   height: 1.1em;

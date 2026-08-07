@@ -17,12 +17,23 @@ const isCurrentUser = computed<boolean>(() => {
 const canEditCurrentUser = computed<boolean>(() => {
   return hasPerms(NamedPermission.EditAllUserSettings) || isCurrentUser.value || hasPerms(NamedPermission.EditSubjectSettings);
 });
+
+const socialLinks = computed(() => {
+  const socials = props.viewingUser?.socials;
+  if (!socials) return [];
+  return [
+    { key: "github", label: "GitHub", href: socials.github ? `https://github.com/${socials.github}` : undefined },
+    { key: "twitter", label: "Twitter", href: socials.twitter ? `https://twitter.com/${socials.twitter}` : undefined },
+    { key: "youtube", label: "YouTube", href: socials.youtube ? `https://youtube.com/${socials.youtube}` : undefined },
+    { key: "website", label: "Website", href: socials.website ? linkout(socials.website) : undefined },
+  ].filter((link) => link.href);
+});
 </script>
 
 <template>
-  <Card accent class="overflow-y-hidden">
-    <div class="flex mb-4 md:mb-0">
-      <div class="mr-3">
+  <Card accent class="overflow-visible">
+    <div class="flex flex-wrap items-start gap-4">
+      <div class="flex-shrink-0">
         <EditableAvatar
           v-if="viewingUser && hasPerms(NamedPermission.EditSubjectSettings)"
           :username="viewingUser.name"
@@ -33,107 +44,111 @@ const canEditCurrentUser = computed<boolean>(() => {
         <UserAvatar v-else :username="viewingUser?.name" :avatar-url="viewingUser?.avatarUrl" :loading="!viewingUser" />
       </div>
 
-      <div class="overflow-clip overflow-hidden">
-        <h1 v-if="viewingUser" class="text-2xl px-1 text-strong inline-flex items-center">
-          {{ viewingUser.name }}
-          <a
-            v-if="viewingUser.socials?.github"
-            :href="`https://github.com/${viewingUser.socials.github}`"
-            class="ml-1"
-            rel="external nofollow"
-            title="GitHub Link"
-          >
-            <IconMdiGithub class="mr-1 hover:text-slate-400" />
-          </a>
-          <a
-            v-if="viewingUser.socials?.twitter"
-            :href="`https://twitter.com/${viewingUser.socials.twitter}`"
-            class="ml-1"
-            rel="external nofollow"
-            title="Twitter Link"
-          >
-            <IconMdiTwitter class="mr-1 hover:text-slate-400" />
-          </a>
-          <a
-            v-if="viewingUser.socials?.youtube"
-            :href="`https://youtube.com/${viewingUser.socials.youtube}`"
-            class="ml-1"
-            rel="external nofollow"
-            title="YouTube Link"
-          >
-            <IconMdiYoutube class="mr-1 hover:text-slate-400" />
-          </a>
-          <a v-if="viewingUser.socials?.website" :href="linkout(viewingUser.socials.website)" class="ml-1" rel="external nofollow" title="Website Link">
-            <IconMdiWeb class="mr-1 hover:text-slate-400" />
-          </a>
-          <Tooltip v-if="viewingUser.socials?.discord">
-            <template #content>
-              <span class="text-base">{{ viewingUser.socials.discord }}</span>
-            </template>
-            <IconMdiDiscord class="ml-1 hover:text-slate-400" />
-          </Tooltip>
-          <span v-if="viewingUser.locked" class="ml-1">
-            <IconMdiLockOutline />
-          </span>
-          <Popper v-if="viewingUser.nameHistory?.length > 0" placement="bottom">
-            <IconMdiChevronDown cursor="pointer" />
-            <template #content>
-              <div class="-mt-2.5 p-2 flex flex-col rounded background-default filter shadow-default text-base">
-                <div class="font-bold">Was known as:</div>
-                <div v-for="(history, idx) of viewingUser.nameHistory" :key="idx">{{ history.oldName }} until <PrettyTime :time="history.date" long /></div>
-              </div>
-            </template>
-          </Popper>
-          <SocialsModal
-            v-if="canEditCurrentUser"
-            :socials="viewingUser.socials"
-            :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/socials`"
-          />
-        </h1>
-        <Skeleton v-else class="text-2xl px-1 w-50" />
+      <div class="min-w-0 flex-1">
+        <template v-if="viewingUser">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <h1 class="min-w-0 truncate text-2xl text-strong">{{ viewingUser.name }}</h1>
 
-        <div v-if="viewingUser" class="ml-1">
-          <TaglineModal
-            v-if="canEditCurrentUser"
-            :tagline="viewingUser.tagline"
-            :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/tagline`"
-          >
-            <template #activator="{ on }">
+            <Tooltip v-if="viewingUser.locked">
+              <template #content>{{ i18n.t("author.tooltips.lock") }}</template>
+              <IconMdiLockOutline class="flex-shrink-0 text-gray-secondary" />
+            </Tooltip>
+
+            <Popper v-if="viewingUser.nameHistory?.length > 0" placement="bottom">
               <button
                 type="button"
-                class="-ml-1 inline-flex max-w-full items-center gap-1 rounded px-1 py-0.5 text-left hover:background-card focus-visible:(outline-2 outline-primary-500)"
-                :aria-label="i18n.t('author.editTagline')"
-                v-on="on"
+                class="inline-flex flex-shrink-0 items-center rounded text-gray-secondary hover:color-primary"
+                :aria-label="i18n.t('author.nameHistory')"
+                :title="i18n.t('author.nameHistory')"
               >
-                <span class="truncate">{{ viewingUser.tagline || i18n.t("author.addTagline") }}</span>
-                <IconMdiPencil class="shrink-0 text-gray-secondary" />
+                <IconMdiHistory />
               </button>
-            </template>
-          </TaglineModal>
-          <span v-else-if="viewingUser.tagline">{{ viewingUser.tagline }}</span>
-        </div>
-        <Skeleton v-else class="mt-1 w-100" />
-      </div>
-      <div class="flex-grow" />
-      <div class="lt-md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
-        <template v-if="viewingUser">
-          <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}</span>
-          <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
-          <span class="inline-flex space-x-1">
-            <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
-          </span>
+              <template #content>
+                <DropdownPanel class="p-3 text-base">
+                  <div class="font-bold">{{ i18n.t("author.nameHistory") }}</div>
+                  <div v-for="(history, idx) of viewingUser.nameHistory" :key="idx" class="text-sm text-gray-secondary">
+                    {{ history.oldName }} until <PrettyTime :time="history.date" long />
+                  </div>
+                </DropdownPanel>
+              </template>
+            </Popper>
+          </div>
+
+          <div class="mt-0.5">
+            <TaglineModal
+              v-if="canEditCurrentUser"
+              :tagline="viewingUser.tagline"
+              :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/tagline`"
+            >
+              <template #activator="{ on }">
+                <button
+                  type="button"
+                  class="-ml-1 inline-flex max-w-full items-center gap-1 rounded px-1 py-0.5 text-left text-gray-secondary hover:background-card focus-visible:(outline-2 outline-primary-500)"
+                  :aria-label="i18n.t('author.editTagline')"
+                  v-on="on"
+                >
+                  <span class="truncate">{{ viewingUser.tagline || i18n.t("author.addTagline") }}</span>
+                  <IconMdiPencil class="shrink-0" />
+                </button>
+              </template>
+            </TaglineModal>
+            <span v-else-if="viewingUser.tagline" class="text-gray-secondary">{{ viewingUser.tagline }}</span>
+          </div>
+
+          <div v-if="socialLinks.length > 0 || viewingUser.socials?.discord || canEditCurrentUser" class="mt-2 flex flex-wrap items-center gap-1">
+            <a
+              v-for="link in socialLinks"
+              :key="link.key"
+              :href="link.href"
+              class="inline-flex items-center rounded p-1 text-lg text-gray-secondary transition-colors hover:color-primary"
+              rel="external nofollow"
+              :title="link.label"
+              :aria-label="link.label"
+            >
+              <IconMdiGithub v-if="link.key === 'github'" />
+              <IconMdiTwitter v-else-if="link.key === 'twitter'" />
+              <IconMdiYoutube v-else-if="link.key === 'youtube'" />
+              <IconMdiWeb v-else />
+            </a>
+            <Tooltip v-if="viewingUser.socials?.discord">
+              <template #content>
+                <span class="text-base">{{ viewingUser.socials.discord }}</span>
+              </template>
+              <span class="inline-flex items-center rounded p-1 text-lg text-gray-secondary"><IconMdiDiscord /></span>
+            </Tooltip>
+            <SocialsModal
+              v-if="canEditCurrentUser"
+              :socials="viewingUser.socials"
+              :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/socials`"
+            />
+          </div>
         </template>
         <template v-else>
-          <Skeleton />
-          <Skeleton />
+          <Skeleton class="w-50 text-2xl" />
+          <Skeleton class="mt-1 w-100" />
+        </template>
+      </div>
+
+      <div class="flex flex-col gap-1.5 lt-md:(mt-1 basis-full items-start) md:(ml-auto flex-shrink-0 items-end)">
+        <template v-if="viewingUser">
+          <span class="inline-flex items-center gap-1.5 text-sm text-gray-secondary">
+            <IconMdiCalendar class="flex-shrink-0" />
+            {{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-sm text-gray-secondary tabular-nums">
+            <IconMdiPackageVariantClosed class="flex-shrink-0" />
+            {{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}
+          </span>
+          <div v-if="viewingUser.roles?.length" class="flex flex-wrap gap-1 md:justify-end">
+            <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
+          </div>
+        </template>
+        <template v-else>
+          <Skeleton class="w-40" />
+          <Skeleton class="w-40" />
         </template>
       </div>
     </div>
-    <div v-if="viewingUser" class="md:hidden flex flex-col items-center space-y-1 flex-shrink-0">
-      <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}</span>
-      <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
-      <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
-    </div>
   </Card>
-  <hr class="border-gray-400 dark:border-gray-500 my-4 mb-4" />
+  <hr class="my-4 border-gray-300 dark:border-gray-700" />
 </template>

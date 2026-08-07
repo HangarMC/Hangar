@@ -48,7 +48,7 @@ const attrs = computed(() => {
 <template>
   <component
     :is="type"
-    class="dropdown-item w-full flex flex-shrink-0 items-center gap-2 rounded px-2.5 py-1.5 text-left text-sm font-medium transition-colors"
+    class="dropdown-item w-full flex flex-shrink-0 items-center gap-2 rounded px-3 py-2 text-left font-medium transition-colors"
     :class="[
       disabled ? 'cursor-not-allowed text-gray-secondary' : 'cursor-pointer hover:background-card',
       tone === 'danger' ? 'text-red-600 dark:text-red-400' : '',

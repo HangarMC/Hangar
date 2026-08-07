@@ -342,22 +342,18 @@ export function useActionLogs(
   return { actionLogs, actionLogsStatus };
 }
 
-export function useStaff(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
-  const { data: staff, status: staffStatus } = useData(
-    params,
-    (p) => "staff:" + p.offset + ":" + p.sort + ":" + p.query,
-    (p) => useApi<PaginatedResultUser>("staff", "GET", p)
+export function useUserDirectory(directory: () => "authors" | "staff", params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
+  const { data: users, status: usersStatus } = useData(
+    () => ({ directory: directory(), ...params() }),
+    (p) => p.directory + ":" + p.offset + ":" + p.sort + ":" + p.query,
+    ({ directory, ...query }) => useApi<PaginatedResultUser>(directory, "GET", query),
+    true,
+    () => false,
+    () => {},
+    undefined,
+    true
   );
-  return { staff, staffStatus };
-}
-
-export function useAuthors(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
-  const { data: authors, status: authorStatus } = useData(
-    params,
-    (p) => "authors:" + p.offset + ":" + p.sort + ":" + p.query,
-    (p) => useApi<PaginatedResultUser>("authors", "GET", p)
-  );
-  return { authors, authorStatus };
+  return { users, usersStatus };
 }
 
 export function useWatchers(project: () => string) {

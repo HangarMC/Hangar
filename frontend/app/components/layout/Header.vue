@@ -43,8 +43,7 @@ type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
 
 const navBarLinks: NavBarLinks = [
   { link: "index", label: t("nav.indexTitle") },
-  { link: "authors", label: t("nav.authorsTitle") },
-  { link: "staff", label: t("nav.staffTitle") },
+  { link: "authors", label: t("nav.usersTitle") },
 ];
 
 const navBarMenuLinksHangar: NavBarLinks = [
@@ -52,8 +51,7 @@ const navBarMenuLinksHangar: NavBarLinks = [
   { link: "guidelines", label: t("guidelines.title"), icon: IconMdiFileDocumentAlert },
   { link: "new", label: t("nav.links.createProject"), icon: IconMdiFolderPlusOutline },
   { link: "neworganization", label: t("nav.links.createOrganization"), icon: IconMdiFolderPlusOutline },
-  { link: "authors", label: t("nav.authorsTitle"), icon: IconMdiAccountGroup },
-  { link: "staff", label: t("nav.staffTitle"), icon: IconMdiAccountGroup },
+  { link: "authors", label: t("nav.usersTitle"), icon: IconMdiAccountGroup },
 ];
 if (!authStore.user) {
   navBarMenuLinksHangar.splice(2, 2);

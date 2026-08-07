@@ -44,9 +44,10 @@ async function confirm(close: () => void) {
         <template #content>
           {{ i18n.t(`author.tooltips.${user.locked ? "unlock" : "lock"}${user.isOrganization ? "Org" : ""}`) }}
         </template>
-        <Button variant="outline" tone="neutral" size="sm" class="mr-1" v-on="on">
+        <Button variant="outline" tone="neutral" size="sm" v-on="on">
           <IconMdiLockOpenOutline v-if="user.locked" />
           <IconMdiLockOutline v-else />
+          {{ i18n.t(`author.tooltips.${user.locked ? "unlock" : "lock"}${user.isOrganization ? "Org" : ""}`) }}
         </Button>
       </Tooltip>
     </template>

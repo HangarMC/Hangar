@@ -88,7 +88,10 @@
       "projects": "Projects",
       "locked": "Locked?",
       "organization": "Org?"
-    }
+    },
+    "noAuthors": "No authors found.",
+    "noStaff": "No staff found.",
+    "userCount": "Users | User | Users"
   },
   "nav": {
     "indexTitle": "Home",
@@ -148,7 +151,8 @@
     "links": {
       "createProject": "Create Project",
       "createOrganization": "Create Organization"
-    }
+    },
+    "usersTitle": "Users"
   },
   "guidelines": {
     "title": "Resource Guidelines"
@@ -444,6 +448,12 @@
       "toReply": "to reply to this discussion",
       "noTopic": "There is no discussion for this project",
       "send": "Reply posted!"
+    },
+    "pin": {
+      "pin": "Pin",
+      "pinned": "Pinned",
+      "pinTooltip": "Pin {0} to the top of your profile",
+      "unpinTooltip": "Remove {0} from the pinned section of your profile"
     }
   },
   "page": {
@@ -862,9 +872,9 @@
     "memberSince": "Member since {0}",
     "numProjects": "No projects | {0} project | {0} projects",
     "addTagline": "Add a tagline",
-    "noOrgs": "{0} is not part of any organizations. 😢",
-    "noWatching": "{0} is not watching any projects. 😢",
-    "noStarred": "{0}  has not starred any projects. 😢",
+    "noOrgs": "{0} is not part of any organizations.",
+    "noWatching": "{0} is not watching any projects.",
+    "noStarred": "{0} has not starred any projects.",
     "tooltips": {
       "settings": "User Settings",
       "lock": "Lock Account",
@@ -900,7 +910,10 @@
     "error": {
       "invalidTagline": "Invalid tagline",
       "invalidUsername": "Invalid username"
-    }
+    },
+    "pinnedPlugins": "Pinned plugins",
+    "sharesAddress": "Shares address with",
+    "nameHistory": "Previous names"
   },
   "linkout": {
     "title": "External Link Warning",

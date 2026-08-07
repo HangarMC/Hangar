@@ -156,7 +156,7 @@ async function doSearch(val?: string) {
     <template v-if="!bare" #header>
       <div class="flex items-center gap-1">
         <h2>{{ i18n.t("project.members") }}</h2>
-        <Tooltip v-if="canEdit" class="text-base font-normal">
+        <Tooltip v-if="canEdit">
           <template #content>
             {{ i18n.t("form.memberList.info") }}
           </template>
