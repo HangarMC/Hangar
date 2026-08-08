@@ -33,7 +33,7 @@ const renderer = {
     const text = this.parser?.parseInline(tokens);
     const heading = { level: depth, text, id };
     headings.push(heading);
-    const level = depth + 1;
+    const level = Math.min(depth + 1, 6);
 
     return `<h${level} id="${id}">
               ${text}

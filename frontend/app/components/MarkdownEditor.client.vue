@@ -112,6 +112,13 @@ async function startEditing() {
       delay: 300,
     },
     maxHeight: props.maxHeight,
+    status: [
+      {
+        className: "characters",
+        defaultValue: (el: HTMLElement) => updateCharCount(el, rawEdited.value.length),
+        onUpdate: (el: HTMLElement) => updateCharCount(el, easyMDE?.value().length ?? 0),
+      },
+    ],
     previewClass: ["prose", "dark:prose-invert", "markdown", "background-default"],
     previewRender: (markdownPlaintext, previewElement) => {
       const html = useDomPurify(parseMarkdown(markdownPlaintext)?.html);
@@ -126,7 +133,19 @@ async function startEditing() {
       sanitizerFunction: (renderedHTML) => useDomPurify(renderedHTML),
     },
   });
+  easyMDE.codemirror.on("beforeChange", (instance, change) => {
+    if (change.origin === "setValue" || !change.update) return;
+    const delta = change.text.join("\n").length - (change.removed?.join("\n").length ?? 0);
+    if (delta > 0 && instance.getValue().length + delta > props.maxlength) {
+      change.cancel();
+    }
+  });
   easyMDE.codemirror.on("change", (instance) => (rawEdited.value = instance.getValue()));
+}
+
+function updateCharCount(el: HTMLElement, length: number) {
+  el.textContent = `${length} / ${props.maxlength}`;
+  el.classList.toggle("over-limit", length > props.maxlength);
 }
 
 function stopEditing() {
@@ -215,13 +234,11 @@ function stopEditing() {
   .CodeMirror {
     clip-path: none !important;
     color: unset;
+    border-color: var(--gray-300);
+    background: var(--input-surface);
 
     .dark & {
-      background: rgba(39, 39, 42, 1);
-    }
-
-    .light & {
-      background: rgba(250, 250, 250, 1);
+      border-color: var(--gray-700);
     }
 
     .CodeMirror-selected {
@@ -252,20 +269,75 @@ function stopEditing() {
     max-width: 100%;
   }
 
-  .editor-toolbar button.active,
-  .editor-toolbar button:hover {
-    background: unset;
+  .editor-toolbar {
+    border-radius: 6px 6px 0 0;
+
+    button {
+      border: none;
+      border-radius: 4px;
+      color: inherit;
+    }
+
+    button:hover {
+      background: var(--input-surface-hover);
+    }
+
+    button.active {
+      background: color-mix(in srgb, var(--primary-500) 15%, transparent);
+      color: var(--primary-ink);
+    }
+
+    i.separator {
+      border-left-color: var(--gray-300);
+      border-right-color: transparent;
+    }
+
+    .dark & {
+      button.active {
+        background: color-mix(in srgb, var(--primary-300) 18%, transparent);
+        color: var(--primary-300);
+      }
+
+      i.separator {
+        border-left-color: var(--gray-700);
+      }
+    }
+  }
+
+  .CodeMirror {
+    border-radius: 0 0 6px 6px;
+    line-height: 1.65;
+  }
+
+  .editor-statusbar {
+    color: var(--gray-500);
+    padding: 6px 2px;
+
+    .over-limit {
+      color: #b91c1c;
+      font-weight: 500;
+
+      .dark & {
+        color: #fca5a5;
+      }
+    }
+  }
+
+  .editor-preview-side {
+    border-color: var(--gray-300);
+    background: var(--input-surface);
+
+    .dark & {
+      border-color: var(--gray-700);
+    }
   }
 
   .cm-s-easymde {
-    .cm-header {
-      display: inline-block;
-      margin: 20px 0 0 0;
-      line-height: 1.25;
-    }
-
-    .cm-header-1,
-    .cm-header-2 {
+    // useMarked renders headings one level down, so `#` is an h2, `##` an h3, and so on
+    .cm-header-1 {
+      font-size: 1.5em;
+      font-weight: 700;
+      line-height: 1.5;
       border-bottom: 1px solid;
       padding-bottom: 5px;
 
@@ -278,28 +350,59 @@ function stopEditing() {
       }
     }
 
-    .cm-header-1 {
-      font-size: 2.25em;
-    }
-
     .cm-header-2 {
-      font-size: 1.75em;
+      font-size: 1.25em;
+      font-weight: 600;
+      line-height: 1.6;
     }
 
     .cm-header-3 {
-      font-size: 1.375em;
+      font-size: 1em;
+      font-weight: 600;
+      line-height: 1.5;
     }
 
     .cm-header-4 {
-      font-size: 1.125em;
+      font-size: 0.83em;
+      font-weight: 700;
+      line-height: 1.65;
     }
 
-    .cm-header-5 {
-      line-height: 1.25;
-    }
-
+    .cm-header-5,
     .cm-header-6 {
-      line-height: 1.25;
+      font-size: 0.67em;
+      font-weight: 700;
+      line-height: 1.65;
+    }
+
+    // CodeMirror tags inline code and fenced code alike as .cm-comment; only a fenced line has it as its line's sole span
+    // the backticks are their own spans, so horizontal padding would break the run into separate chips
+    .cm-comment {
+      padding: 0.15em 0;
+      background: #dfe0e1;
+      color: #000;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.875em;
+
+      .dark & {
+        background: #37393b;
+        color: #fff;
+      }
+    }
+
+    .cm-comment:only-child {
+      padding: 0;
+      background: none;
+      color: inherit;
+      font-size: 1em;
+    }
+
+    .CodeMirror-line:has(> span > .cm-comment:only-child) {
+      background: #f2f2f3;
+
+      .dark & {
+        background: #37393b;
+      }
     }
   }
 }

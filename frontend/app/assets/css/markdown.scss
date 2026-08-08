@@ -57,8 +57,68 @@
     padding: 0.1em 0.35em;
   }
 
+  details {
+    margin-block: 16px;
+    padding: 0 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    background: var(--input-surface);
+
+    .dark & {
+      border-color: var(--gray-700);
+    }
+  }
+
+  details[open] {
+    padding-bottom: 12px;
+  }
+
   summary {
+    margin: 0 -12px;
+    padding: 8px 12px;
+    border-radius: 5px;
     cursor: pointer;
+    font-weight: 500;
+
+    list-style: none;
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 0;
+      height: 0;
+      margin-right: 8px;
+      vertical-align: middle;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 5px solid currentColor;
+      transition: transform 0.15s ease;
+    }
+
+    &:hover {
+      background: var(--input-surface-hover);
+    }
+  }
+
+  details[open] > summary {
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--gray-300);
+    border-radius: 5px 5px 0 0;
+
+    &::before {
+      transform: rotate(90deg);
+    }
+
+    .dark & {
+      border-bottom-color: var(--gray-700);
+    }
+  }
+
+  details > summary + * {
+    margin-top: 0;
   }
 
   a code &:hover {
@@ -246,4 +306,8 @@
 .markdown.markdown p:has(+ ul),
 .markdown.markdown p:has(+ ol) {
   margin-bottom: 8px;
+}
+
+.markdown.markdown details > :last-child {
+  margin-bottom: 0;
 }
