@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { locate } from "codeceptjs";
 
 Feature("Index Page");
 
@@ -12,13 +13,13 @@ Scenario("Test Project List", async ({ I, util, IndexPage }) => {
 
     // check that query works
     I.fillField(IndexPage.searchField, "Some Value That doesnt Exist");
-    I.waitInUrl("query");
+    I.waitTillUrlContains("query");
     I.see("There are no projects.");
     I.fillField(IndexPage.searchField, "Test");
 
     // check that buttons work
     I.click(IndexPage.mostDownloadsButton);
-    I.waitInUrl("sort=-downloads");
+    I.waitTillUrlContains("sort=-downloads");
     I.waitToHide("//*[contains(text(),'There are no projects.')]");
 });
 

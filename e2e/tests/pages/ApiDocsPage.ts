@@ -1,3 +1,5 @@
+import { locate } from "codeceptjs";
+
 Feature("Api Docs Page");
 
 Scenario("Test Api Docs", async ({ I, util, IndexPage }) => {

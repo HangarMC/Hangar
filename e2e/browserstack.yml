@@ -1,0 +1,23 @@
+platforms:
+  - os: Windows
+    osVersion: 10
+    browserName: Chrome
+    browserVersion: '120.0'
+  - os: OS X
+    osVersion: Monterey
+    browserName: Safari
+    browserVersion: '15.6'
+  - deviceName: iPhone 13
+    osVersion: 15
+    browserName: Safari
+    browserVersion: '15.6'
+    deviceOrientation: 'portrait'
+parallelsPerPlatform: 1
+browserstackLocal: true
+buildName: bstack-demo
+projectName: Hangar
+debug: true
+networkLogs: true
+consoleLogs: info
+selfHeal: true
+aiAuthoring: true

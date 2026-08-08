@@ -1,3 +1,6 @@
+import { locate } from "codeceptjs";
+import { tryTo } from "codeceptjs/effects";
+
 Feature("New Version Page");
 
 Scenario("Test New Version", async ({ I, util }) => {
@@ -77,7 +80,7 @@ Scenario("Test New Version", async ({ I, util }) => {
     I.click(locate("button").withText("Create").at(2)); // 1 is create project/org
 
     // check
-    I.waitInUrl("/e2e_user/e2e_test/versions");
+    I.waitTillUrlContains("/e2e_user/e2e_test/versions");
     I.seeElement(locate("h2").withText(name));
     I.seeElement(locate("span").withText("1.18.2, 1.19.4"));
     await I.seeElement(locate(".tags").withText("e2etest"));

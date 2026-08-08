@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { locate } from "codeceptjs";
 
 Feature("BBCode Page");
 

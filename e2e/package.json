@@ -1,27 +1,23 @@
 {
     "name": "hangar-e2e",
     "version": "1.0.0",
+    "type": "module",
     "scripts": {
-        "staging": "BROWSERSTACK_DEV=true npx codeceptjs run -c codecept.conf.ts --steps -p pauseOnFail",
-        "local": "BROWSERSTACK_DEV=true BROWSERSTACK_LOCAL=true npx codeceptjs run -c codecept.conf.ts --steps -p pauseOnFail",
-        "browserstack-single": "npx codeceptjs run -c codecept.conf.ts --steps",
-        "browserstack-multiple": "npx codeceptjs run-multiple bstack -c codecept.conf.ts --steps",
-        "browserstack-local": "BROWSERSTACK_LOCAL=true npx codeceptjs run -c codecept.conf.ts --steps",
-        "def": "npx codeceptjs def"
+        "staging": "codeceptjs run -c codecept.conf.ts --steps -p pause",
+        "local": "codeceptjs run -c codecept.conf.ts --steps -p pause",
+        "postinstall": "codeceptjs def && npm update browserstack-node-sdk",
+        "staging-browserstack": "browserstack-node-sdk codeceptjs run -c codecept.conf.ts --steps -p pause",
+        "local-browserstack": "browserstack-node-sdk codeceptjs run -c codecept.conf.ts --steps -p pause"
     },
     "dependencies": {
-        "@types/chai": "4.3.20",
-        "browserstack-local": "1.5.12",
-        "chai": "4.5.0",
-        "codeceptjs": "3.7.7",
-        "dotenv": "16.6.1",
+        "@types/chai": "5.2.3",
+        "browserstack-node-sdk": "1.65.5",
+        "chai": "6.2.2",
+        "codeceptjs": "4.1.0",
         "jwt-decode": "4.0.0",
-        "totp-generator": "1.0.0",
-        "ts-node": "10.9.2",
-        "webdriverio": "7.40.0"
+        "totp-generator": "2.0.1",
+        "tsx": "4.23.11",
+        "webdriverio": "9.30.1"
     },
-    "devDependencies": {
-        "codeceptjs-bshelper": "3.1.3"
-    },
-    "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"
+    "packageManager": "pnpm@10.34.5+sha512.a4ee05f2f73658255bd6a89859c065a45c28a57daefae2c893a168ee2b73168c37b91e83e57ea67654ad03f03031746430e8bce38e362e042605fb8abc80192e"
 }
