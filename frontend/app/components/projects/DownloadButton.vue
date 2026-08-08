@@ -105,7 +105,6 @@ function formatVersionRange(versions?: string[]): string {
         <DropdownItem
           v-for="(v, p) in pinnedVersion.platformDependenciesFormatted"
           :key="p"
-          class="flex items-center"
           :href="downloadLink(p, pinnedVersion)"
           target="_blank"
           rel="noopener noreferrer"
@@ -113,10 +112,12 @@ function formatVersionRange(versions?: string[]): string {
           @click.middle="trackDownload(p, pinnedVersion)"
           v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: false, platform: p, project: project.name })"
         >
-          <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-          {{ usePlatformName(p) }}
-          <span v-if="showVersions" class="ml-1">({{ formatVersionRange(v) }})</span>
-          <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="ml-0.5 text-sm pb-0.5" />
+          <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
+          <span class="min-w-0 flex-1">
+            <span class="block leading-tight">{{ usePlatformName(p) }}</span>
+            <span v-if="showVersions" class="block text-xs font-normal leading-tight text-gray-secondary">{{ formatVersionRange(v) }}</span>
+          </span>
+          <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="flex-shrink-0 text-sm text-gray-secondary" />
         </DropdownItem>
       </DropdownButton>
     </div>
@@ -133,15 +134,15 @@ function formatVersionRange(versions?: string[]): string {
       @click.middle="trackDownload(singlePlatform, singleVersion)"
       v-on="useTracking('download-link', { pinned: false, dropdown: false, mainchannel: false, platform: singlePlatform, project: project.name })"
     >
-      <div class="flex flex-col" :class="{ '-mb-0.5': showSinglePlatform }">
-        <div class="inline-flex items-center">
+      <div class="flex flex-col items-center" :class="{ '-mb-0.5': showSinglePlatform }">
+        <div class="inline-flex items-center gap-1.5">
           <IconMdiDownloadOutline class="download-icon" />
           <span v-if="!small">
             {{ !!singleVersion.downloads[singlePlatform]?.externalUrl ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
           </span>
         </div>
-        <div v-if="showSinglePlatform" class="inline-flex justify-center items-center font-normal text-0.75rem">
-          <PlatformLogo :platform="singlePlatform" :size="15" class="mr-1 flex-shrink-0" />
+        <div v-if="showSinglePlatform" class="inline-flex items-center gap-1 font-normal text-0.75rem">
+          <PlatformLogo :platform="singlePlatform" :size="15" class="flex-shrink-0" />
           <span v-if="singleVersion?.platformDependencies && showVersions">
             {{ formatVersionRange(singleVersion?.platformDependenciesFormatted[singlePlatform]) }}
           </span>
@@ -161,18 +162,21 @@ function formatVersionRange(versions?: string[]): string {
         v-for="(v, p) in version.downloads"
         :key="p"
         :href="downloadLink(p, version)"
-        class="flex items-center"
         target="_blank"
         rel="noopener noreferrer"
         @click="trackDownload(p, version)"
         @click.middle="trackDownload(p, version)"
         v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: false, platform: p, project: project.name })"
       >
-        <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-        {{ usePlatformName(p) }}
-        <span v-if="showVersions && version.platformDependencies" class="ml-1">({{ formatVersionRange(version.platformDependenciesFormatted[p]) }})</span>
-        <span v-if="v.fileInfo?.sizeBytes" class="ml-1"> ({{ formatSize(v.fileInfo.sizeBytes) }}) </span>
-        <IconMdiOpenInNew v-if="v.externalUrl" class="ml-0.5 text-sm pb-0.5" />
+        <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
+        <span class="min-w-0 flex-1">
+          <span class="block leading-tight">{{ usePlatformName(p) }}</span>
+          <span class="block text-xs font-normal leading-tight text-gray-secondary">
+            <template v-if="showVersions && version.platformDependencies">{{ formatVersionRange(version.platformDependenciesFormatted[p]) }}</template>
+            <template v-if="v.fileInfo?.sizeBytes"> &middot; {{ formatSize(v.fileInfo.sizeBytes) }}</template>
+          </span>
+        </span>
+        <IconMdiOpenInNew v-if="v.externalUrl" class="flex-shrink-0 text-sm text-gray-secondary" />
       </DropdownItem>
     </DropdownButton>
 
@@ -191,7 +195,6 @@ function formatVersionRange(versions?: string[]): string {
       <DropdownItem
         v-for="(v, p) in project.mainChannelVersions"
         :key="p"
-        class="flex items-center"
         :href="downloadLink(p, v)"
         target="_blank"
         rel="noopener noreferrer"
@@ -199,10 +202,14 @@ function formatVersionRange(versions?: string[]): string {
         @click.middle="trackDownload(p, v)"
         v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: true, platform: p, project: project.name })"
       >
-        <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-        {{ usePlatformName(p) }}
-        <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ formatVersionRange(v.platformDependenciesFormatted[p]) }})</span>
-        <IconMdiOpenInNew v-if="v.downloads[p]?.externalUrl" class="ml-0.5 text-sm pb-0.5" />
+        <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
+        <span class="min-w-0 flex-1">
+          <span class="block leading-tight">{{ usePlatformName(p) }}</span>
+          <span v-if="v.platformDependencies && showVersions" class="block text-xs font-normal leading-tight text-gray-secondary">
+            {{ formatVersionRange(v.platformDependenciesFormatted[p]) }}
+          </span>
+        </span>
+        <IconMdiOpenInNew v-if="v.downloads[p]?.externalUrl" class="flex-shrink-0 text-sm text-gray-secondary" />
       </DropdownItem>
     </DropdownButton>
   </div>
