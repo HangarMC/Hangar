@@ -21,23 +21,21 @@ const options = computed<DateTimeFormatOptions & { prefix?: string }>(() => {
     const dateTime = date.value.getTime();
     const todayDays = Math.floor(todayTime / (1000 * 60 * 60 * 24));
     const dateDays = Math.floor(dateTime / (1000 * 60 * 60 * 24));
-    // eslint-disable-next-line unicorn/prefer-switch
+
     if (todayDays === dateDays) {
       return { prefix: i18n.t("general.today"), hour: "numeric", minute: "numeric" };
-    } else if (todayDays === dateDays + 1) {
-      return { prefix: i18n.t("general.yesterday"), hour: "numeric", minute: "numeric" };
-    } else if (todayDays === dateDays - 1) {
-      return { prefix: i18n.t("general.tomorrow"), hour: "numeric", minute: "numeric" };
-    } else if (todayDays - dateDays < 7) {
-      return { weekday: "short", hour: "numeric", minute: "numeric" };
-    } else {
-      return { day: "numeric", month: "long", year: "numeric" };
     }
-  } else if (props.long) {
-    return { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric" };
-  } else {
-    return { day: "numeric", month: "long", year: "numeric" };
+    if (todayDays === dateDays + 1) {
+      return { prefix: i18n.t("general.yesterday"), hour: "numeric", minute: "numeric" };
+    }
+    if (todayDays === dateDays - 1) {
+      return { prefix: i18n.t("general.tomorrow"), hour: "numeric", minute: "numeric" };
+    }
+    return todayDays - dateDays < 7 ? { weekday: "short", hour: "numeric", minute: "numeric" } : { day: "numeric", month: "long", year: "numeric" };
   }
+  return props.long
+    ? { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric" }
+    : { day: "numeric", month: "long", year: "numeric" };
 });
 
 const formattedDate = computed(() => {

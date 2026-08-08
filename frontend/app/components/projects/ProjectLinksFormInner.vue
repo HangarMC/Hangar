@@ -34,7 +34,11 @@ function add() {
             <InputText
               v-model="element.name"
               :label="i18n.t('project.settings.links.nameField')"
-              :rules="[required(), maxLength()(useBackendData.validations.project.pageName.max!), minLength()(useBackendData.validations.project.pageName.min!)]"
+              :rules="[
+                required(),
+                maxLength()(useBackendData.validations.project.pageName.max!),
+                minLength()(useBackendData.validations.project.pageName.min!),
+              ]"
             />
           </div>
           <div class="min-w-60 flex-[2]">

@@ -9,7 +9,8 @@ export function track(type: string, elementName: MaybeRefOrGetter<string>, addit
   if (import.meta.server) return;
   const name = toValue(elementName);
   const data: Record<string, unknown> = { type };
-  for (const [k, v] of Object.entries(toValue(additionalData))) {
+  const entries = Object.entries(toValue(additionalData));
+  for (const [k, v] of entries) {
     data[k] = toValue(v);
   }
   data["type"] = type;
@@ -22,9 +23,10 @@ export function identify() {
   const settingsStore = useSettingsStore();
   const i18n = useNuxtApp().$i18n;
 
-  const props: Record<string, unknown> = {};
-  props.user = authStore.user ? authStore.user.name : "<anonymous>";
-  props.theme = settingsStore.darkMode ? "dark" : "light";
-  props.language = i18n.locale.value;
+  const props: Record<string, unknown> = {
+    user: authStore.user ? authStore.user.name : "<anonymous>",
+    theme: settingsStore.darkMode ? "dark" : "light",
+    language: i18n.locale.value,
+  };
   window.umami?.identify(props);
 }

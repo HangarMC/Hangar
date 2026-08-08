@@ -86,13 +86,15 @@ function remove(t: string) {
 }
 
 function add() {
-  if (tag.value && (!props.maxlength || tags.value.length < props.maxlength)) {
-    if (props.options && !filteredOptions.value?.includes(tag.value)) {
-      return;
-    }
-    tags.value.push(tag.value);
-    tag.value = "";
+  if (!(tag.value && (!props.maxlength || tags.value.length < props.maxlength))) {
+    return;
   }
+
+  if (props.options && !filteredOptions.value?.includes(tag.value)) {
+    return;
+  }
+  tags.value.push(tag.value);
+  tag.value = "";
 }
 
 const filteredOptions = computed(() => {

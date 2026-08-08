@@ -40,13 +40,15 @@ function resolve(flag: HangarProjectFlag) {
   useInternalApi(`flags/${flag.id}/resolve/${props.resolved ? "false" : "true"}`, "POST")
     .catch<any>((err) => handleRequestError(err))
     .then(async () => {
-      if (queueFlags && queueFlags.value) {
-        const newFlags = await useInternalApi<PaginatedResultHangarProjectFlag>("flags/" + (props.resolved ? "resolved" : "unresolved")).catch((err) =>
-          handleRequestError(err)
-        );
-        if (newFlags) {
-          queueFlags.value = newFlags;
-        }
+      if (!(queueFlags && queueFlags.value)) {
+        return;
+      }
+
+      const newFlags = await useInternalApi<PaginatedResultHangarProjectFlag>("flags/" + (props.resolved ? "resolved" : "unresolved")).catch((err) =>
+        handleRequestError(err)
+      );
+      if (newFlags) {
+        queueFlags.value = newFlags;
       }
     })
     .finally(() => {

@@ -62,10 +62,12 @@ defineExpose({ rawEdited });
 watch(
   () => props.editing,
   (val) => {
-    if (!val) {
-      loading.save = false;
-      loading.delete = false;
+    if (val) {
+      return;
     }
+
+    loading.save = false;
+    loading.delete = false;
   }
 );
 

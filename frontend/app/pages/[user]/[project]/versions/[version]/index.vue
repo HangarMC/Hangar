@@ -23,7 +23,7 @@ const isReviewStateChecked = computed<boolean>(
 const isUnderReview = computed<boolean>(() => props.version?.reviewState === ReviewState.UnderReview);
 const currentVisibility = computed(() => useBackendData.visibilities.find((v) => (v.name as Visibility) === props.version?.visibility));
 const editingPage = ref(false);
-// eslint-disable-next-line vue/return-in-computed-property
+
 const confirmationWarningKey = computed<string | undefined>(() => {
   if (props.version?.reviewState !== ReviewState.Reviewed) {
     return "version.page.unsafeWarning";

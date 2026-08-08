@@ -5,7 +5,7 @@ const i18n = useI18n();
 const router = useRouter();
 
 const trustedHosts = useLocalStorage("trustedHosts", [] as string[]);
-// eslint-disable-next-line vue/return-in-computed-property
+
 const host = computed<string | undefined>(() => {
   if (remoteUrl) {
     try {
@@ -29,7 +29,7 @@ function trust() {
 }
 
 function go() {
-  location.href = remoteUrl as string;
+  location.assign(remoteUrl as string);
 }
 
 function back() {

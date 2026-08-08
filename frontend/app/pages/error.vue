@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute();
 
-// eslint-disable-next-line vue/return-in-computed-property
 const hangarApiError = computed(() => {
   if (route.query.errorCode || route.query.errorMessage) {
     return {

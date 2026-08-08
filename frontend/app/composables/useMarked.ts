@@ -30,6 +30,7 @@ const renderer = {
       .trim()
       .replaceAll(/<[!/a-z].*?>/gi, "");
     const id = `${slugger.slug(raw)}`;
+    // eslint-disable-next-line unicorn/no-this-outside-of-class
     const text = this.parser?.parseInline(tokens);
     const heading = { level: depth, text, id };
     headings.push(heading);
@@ -68,23 +69,26 @@ const renderer = {
 
       res += ">" + text + "</iframe>";
       return res;
-    } else {
-      let res = '<img src="' + proxyImage(url) + '" alt="' + text + '"';
-      if (height) res += ' height="' + height + '"';
-      if (width) res += ' width="' + width + '"';
-      if (title) res += ' title="' + title + '"';
-      res += ">";
-      return res;
     }
+
+    let res = '<img src="' + proxyImage(url) + '" alt="' + text + '"';
+    if (height) res += ' height="' + height + '"';
+    if (width) res += ' width="' + width + '"';
+    if (title) res += ' title="' + title + '"';
+    res += ">";
+    return res;
   },
   link({ href, title, tokens }) {
+    // eslint-disable-next-line unicorn/no-this-outside-of-class
     return `<a href="${linkout(href)}"` + (title ? ` title="${title}">` : ">") + this.parser?.parseInline(tokens) + "</a>";
   },
 } satisfies Partial<Renderer>;
+/* eslint-disable unicorn/no-top-level-side-effects */
 marked.use({ hooks, renderer });
 marked.use(markedExtendedTables());
 marked.use(markedLinkifyIt());
 marked.use(markedAlert());
+/* eslint-enable unicorn/no-top-level-side-effects */
 
 export function parseMarkdown(text?: string | null) {
   if (!text) return {};

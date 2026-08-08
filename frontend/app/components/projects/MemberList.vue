@@ -148,7 +148,7 @@ async function doSearch(val?: string) {
     limit: 25,
     offset: 0,
   });
-  result.value = users.result.filter((u) => !props.members.some((m) => m.user.name === u.name)).map((u) => u.name);
+  result.value = users.result.filter((u) => props.members.every((m) => m.user.name !== u.name)).map((u) => u.name);
 }
 </script>
 

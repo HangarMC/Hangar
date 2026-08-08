@@ -109,7 +109,10 @@ const severityStyles: Record<Severity, { surface: string; puck: string; bar: str
             <IconMdiInformation v-else class="text-lg" />
           </span>
           <!-- eslint-disable-next-line vue/no-v-html -->
-          <div class="flex-1 min-w-0 pt-1 text-sm leading-snug break-words whitespace-pre-line text-gray-900 dark:text-gray-100" v-html="useDomPurify(notification.message)" />
+          <div
+            class="flex-1 min-w-0 pt-1 text-sm leading-snug break-words whitespace-pre-line text-gray-900 dark:text-gray-100"
+            v-html="useDomPurify(notification.message)"
+          />
           <Button
             v-if="notification.clearable"
             variant="ghost"

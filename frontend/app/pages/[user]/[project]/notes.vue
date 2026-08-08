@@ -15,7 +15,14 @@ const { notes, refreshNotes } = useProjectNotes(() => route.params.project);
 const text = ref("");
 const loading = ref(false);
 
-useSeo(computed(() => ({ title: i18n.t("notes.title") + " | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
+useSeo(
+  computed(() => ({
+    title: i18n.t("notes.title") + " | " + props.project?.name,
+    route,
+    description: props.project?.description,
+    image: props.project?.avatarUrl,
+  }))
+);
 
 async function addNote() {
   if (!text.value) {

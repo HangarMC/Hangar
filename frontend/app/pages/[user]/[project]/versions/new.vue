@@ -149,7 +149,7 @@ const v = useVuelidate();
 
 const timeout = ref(30_000);
 async function createPendingVersion() {
-  selectedPlatforms.value.splice(0);
+  selectedPlatforms.value.length = 0;
 
   loading.create = true;
   const formData: FormData = new FormData();
@@ -177,7 +177,7 @@ async function createPendingVersion() {
   }).catch<any>((err) => {
     if (err.code === "ECONNABORTED") {
       notification.error("The request timed out, please try again.");
-      timeout.value = timeout.value * 2;
+      timeout.value *= 2;
     } else {
       handleRequestError(err);
     }
@@ -218,10 +218,12 @@ async function createVersion() {
   }
 
   for (const platform in pendingVersion.value.platformDependencies) {
-    if (!selectedPlatforms.value.includes(platform as Platform)) {
-      delete pendingVersion.value.platformDependencies[platform as Platform];
-      delete pendingVersion.value.pluginDependencies[platform as Platform];
+    if (selectedPlatforms.value.includes(platform as Platform)) {
+      continue;
     }
+
+    delete pendingVersion.value.platformDependencies[platform as Platform];
+    delete pendingVersion.value.pluginDependencies[platform as Platform];
   }
 
   try {

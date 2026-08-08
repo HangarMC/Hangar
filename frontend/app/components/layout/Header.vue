@@ -95,12 +95,14 @@ function markNotificationsRead() {
 }
 
 function markNotificationRead(notification: HangarNotification) {
-  if (!notification.read) {
-    notification.read = true;
-    unreadCount && unreadCount.value.notifications--;
-    loadedUnreadNotifications.value--;
-    useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
+  if (notification.read) {
+    return;
   }
+
+  notification.read = true;
+  unreadCount && unreadCount.value.notifications--;
+  loadedUnreadNotifications.value--;
+  useInternalApi(`notifications/${notification.id}`, "post").catch((err) => handleRequestError(err));
 }
 
 function updateNavData() {
@@ -118,21 +120,23 @@ function updateNotifications() {
   useInternalApi<HangarNotification[]>("recentnotifications?amount=30")
     .catch(handleRequestError)
     .then((v) => {
-      if (v) {
-        // Only show notifications that are recent or unread (from the last 30 notifications)
-        let filteredAmount = 0;
-        notifications.value = v.filter((notification: HangarNotification) => {
-          if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
-            if (!notification.read) {
-              loadedUnreadNotifications.value++;
-            }
-
-            filteredAmount++;
-            return true;
-          }
-          return false;
-        });
+      if (!v) {
+        return;
       }
+
+      // Only show notifications that are recent or unread (from the last 30 notifications)
+      let filteredAmount = 0;
+      notifications.value = v.filter((notification: HangarNotification) => {
+        if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
+          if (!notification.read) {
+            loadedUnreadNotifications.value++;
+          }
+
+          filteredAmount++;
+          return true;
+        }
+        return false;
+      });
     });
 }
 

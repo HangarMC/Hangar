@@ -52,20 +52,20 @@ function checkReset() {
 }
 
 function click(header: Header<H>) {
-  if (header.sortable) {
-    if (sorter[header.name] === 1) {
-      checkReset();
-      sorter[header.name] = -1;
-    } else if (sorter[header.name] === -1) {
-      checkReset();
-      sorter[header.name] = 0;
-    } else {
-      checkReset();
-      sorter[header.name] = 1;
-    }
-    sort();
-    emit("update:sort", header.name, sorter);
+  if (!header.sortable) {
+    return;
   }
+
+  checkReset();
+  if (sorter[header.name] === 1) {
+    sorter[header.name] = -1;
+  } else if (sorter[header.name] === -1) {
+    sorter[header.name] = 0;
+  } else {
+    sorter[header.name] = 1;
+  }
+  sort();
+  emit("update:sort", header.name, sorter);
 }
 
 const emit = defineEmits<{

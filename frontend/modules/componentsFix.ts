@@ -7,7 +7,7 @@ export default defineNuxtModule({
   },
   setup(_, nuxt) {
     nuxt.hook("components:extend", (components) => {
-      for (const component of components.filter((component) => component.pascalName === "Link")) component.priority = 1337;
+      components.find((component) => component.pascalName === "Link")!.priority = 1337;
     });
   },
 });

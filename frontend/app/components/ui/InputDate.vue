@@ -15,7 +15,7 @@ const date = computed({
   },
   set: (value) => {
     let valueToEmit = value;
-    if (props.time && value) {
+    if (value && props.time) {
       // add seconds and millies back...
       valueToEmit += ":00.000Z";
     }

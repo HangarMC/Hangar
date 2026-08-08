@@ -66,10 +66,7 @@ function resetPlatformVersions() {
 const roles = ref([...useBackendData.orgRoles, ...useBackendData.globalRoles, ...useBackendData.projectRoles]);
 async function saveRoles() {
   loading.value = true;
-  const data = [];
-  for (const role of roles.value) {
-    data.push({ roleId: role.roleId, title: role.title, color: role.color, rank: Number(role.rank) });
-  }
+  const data = Array.from(roles.value, (role) => ({ roleId: role.roleId, title: role.title, color: role.color, rank: Number(role.rank) }));
   try {
     await useInternalApi("admin/roles", "post", data);
     notification.success("Updated roles!");
@@ -251,9 +248,7 @@ async function updateNotifications() {
           </div>
           <div class="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-gray-secondary">
             <Chip v-if="index >= savedAnnouncements" tone="amber">Unsaved</Chip>
-            <span v-else class="tabular-nums">
-              {{ announcement.createdBy }} &middot; <PrettyTime :time="announcement.createdAt" />
-            </span>
+            <span v-else class="tabular-nums"> {{ announcement.createdBy }} &middot; <PrettyTime :time="announcement.createdAt" /> </span>
           </div>
         </li>
       </ul>

@@ -304,7 +304,7 @@ const unlinkUrl = ref<string>();
 
 async function setupOAuth(provider: string) {
   try {
-    window.location.href = await useInternalApi<string>("oauth/" + provider + "/login?mode=settings&returnUrl=" + encodeURIComponent(route.fullPath), "GET");
+    window.location.assign(await useInternalApi<string>("oauth/" + provider + "/login?mode=settings&returnUrl=" + encodeURIComponent(route.fullPath), "GET"));
   } catch (err) {
     if (isAxiosError(err) && err.response?.data?.message === "error.privileged") {
       await router.push(useAuth.loginUrl(route.path) + "&privileged=true");

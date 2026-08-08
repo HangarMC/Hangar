@@ -4,7 +4,8 @@ import type { H3Event } from "h3";
 import localeParser from "accept-language-parser";
 
 export const useSettingsStore = defineStore("settings", () => {
-  type ThemeMode = "system" | "light" | "dark";
+  const themes = ["system", "light", "dark"];
+  type ThemeMode = (typeof themes)[number];
 
   settingsLog("defineSettingsStore");
   const darkMode = ref<boolean>();
@@ -14,7 +15,7 @@ export const useSettingsStore = defineStore("settings", () => {
   let systemThemeListenerSetup = false;
 
   function normalizeThemeMode(theme: string | undefined, fallback: ThemeMode): ThemeMode {
-    return theme === "system" || theme === "light" || theme === "dark" ? theme : fallback;
+    return theme && themes.includes(theme) ? theme : fallback;
   }
 
   function updateDarkMode() {

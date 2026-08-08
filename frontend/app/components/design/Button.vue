@@ -9,10 +9,14 @@ defineEmits<{
 const props = withDefaults(
   defineProps<{
     variant?: "solid" | "outline" | "ghost";
-    /** `danger` is reserved for irreversible actions -- never for "back" or "cancel". */
+    /**
+    `danger` is reserved for irreversible actions -- never for "back" or "cancel".
+    */
     tone?: "primary" | "neutral" | "danger";
     size?: "sm" | "md" | "lg";
-    /** Square button holding a single icon. Requires an `aria-label`. */
+    /**
+    Square button holding a single icon. Requires an `aria-label`.
+    */
     iconOnly?: boolean;
     disabled?: boolean;
     loading?: boolean;

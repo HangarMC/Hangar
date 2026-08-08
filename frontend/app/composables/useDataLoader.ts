@@ -39,7 +39,8 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
       if (data.value && paramKey(loadedParam.value) === newParamKey) {
         dataLoaderLog("skip loading", key); // TODO test this
         return newParam;
-      } else if (!param || newParam) {
+      }
+      if (!param || newParam) {
         // sanitize a bit to make undertow happy
         const regex = /["#<>\\^`{|}]/;
         if (newParam && regex.test(newParam)) {
@@ -67,13 +68,12 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
         return newParam;
       }
       console.warn("dataLoader " + key + " is miss configured for " + to.path + "! (no param " + param + ")");
-      return;
     } else {
       requestId.value++;
       loadedParam.value = undefined;
       data.value = undefined;
-      return;
     }
+    return;
   }
 
   return { loader, data };
@@ -87,7 +87,9 @@ export function useData<T, P extends Record<string, unknown> | string>(
   skip: (params: P) => boolean = () => false,
   callback: (params: P) => void = () => {},
   defaultValue?: T | undefined,
-  /** Keep the previous result on screen while revalidating instead of blanking it. */
+  /**
+  Keep the previous result on screen while revalidating instead of blanking it.
+  */
   keepPreviousData = false
 ) {
   // state tracking is twofold.
@@ -98,6 +100,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
   const data = ref<T | undefined>();
 
   const status = ref<"idle" | "loading" | "success" | "error">("idle");
+  // eslint-disable-next-line unicorn/no-declarations-before-early-exit
   let promise: Promise<void> | undefined;
 
   function refresh() {
@@ -201,7 +204,8 @@ export function useData<T, P extends Record<string, unknown> | string>(
 function checkEqual(a: Record<string, unknown> | string, b: Record<string, unknown> | string) {
   if (!a) {
     return !b;
-  } else if (!b) {
+  }
+  if (!b) {
     return false;
   }
 

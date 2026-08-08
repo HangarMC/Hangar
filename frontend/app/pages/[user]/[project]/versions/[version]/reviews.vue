@@ -44,7 +44,7 @@ const isCurrentReviewOpen = computed<boolean>(() => {
 });
 
 const currentReviewLastAction = computed<ReviewAction>(() => {
-  const lastMsg = currentUserReview.value!.messages[currentUserReview.value!.messages.length - 1];
+  const lastMsg = currentUserReview.value!.messages.at(-1);
   return lastMsg!.action;
 });
 
@@ -273,7 +273,9 @@ function sendReviewRequest(
   action: ReviewAction,
   then: () => void,
   final: () => void = () => {
-    /* empty */
+    /*
+    empty
+    */
   }
 ): Promise<void> {
   const msg = `reviews.presets.${urlPath}`;

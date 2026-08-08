@@ -308,7 +308,7 @@ useSeo(
                 </div>
                 <div class="max-h-52 overflow-auto pr-1">
                   <VersionSelector
-                    v-if="filteredPlatformVersions.length"
+                    v-if="filteredPlatformVersions.length > 0"
                     v-model="filters.versions"
                     :versions="filteredPlatformVersions"
                     :open="false"

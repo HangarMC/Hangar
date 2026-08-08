@@ -32,9 +32,8 @@ const steps: Step[] = [
       if (spigotAuthor.value) {
         spigotResources.value = await getAllSpigotResourcesByAuthor(spigotAuthor.value.id);
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
   },
   {
@@ -53,9 +52,8 @@ const steps: Step[] = [
         const selected = spigotResources.value.filter((r) => selectedSpigotResources.value.includes(r.id));
         hangarResources.value = (await convertSpigotProjects(selected, ownerId)) as ImportedProject[];
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
   },
   {

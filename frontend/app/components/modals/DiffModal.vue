@@ -26,20 +26,20 @@ const prettyDiff = computed(() => {
     const op = diff_[0]; // Operation (insert, delete, equal)
     const data = diff_[1]; // Text of change.
     const text = data.replaceAll(patternAmp, "&amp;").replaceAll(patternLt, "&lt;").replaceAll(patternGt, "&gt;").replaceAll(patternPara, "&para;<br>");
-    switch (op) {
-      case DIFF_INSERT:
-        html[x] = '<ins style="background:#46954a33;">' + text + "</ins>";
-        break;
-      case DIFF_DELETE:
-        html[x] = '<del style="background:#c93c3733;">' + text + "</del>";
-        break;
-      case DIFF_EQUAL:
-        html[x] = "<span>" + text + "</span>";
-        break;
-    }
+    html[x] = handleOp(text, op);
   }
   return useDomPurify(html.join("").replaceAll("&para;", ""));
 });
+function handleOp(text: string, op: number) {
+  switch (op) {
+    case DIFF_INSERT:
+      return '<ins style="background:#46954a33;">' + text + "</ins>";
+    case DIFF_DELETE:
+      return '<del style="background:#c93c3733;">' + text + "</del>";
+    case DIFF_EQUAL:
+      return "<span>" + text + "</span>";
+  }
+}
 </script>
 
 <template>

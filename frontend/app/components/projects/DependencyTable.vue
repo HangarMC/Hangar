@@ -41,7 +41,7 @@ function deleteDep(index: number) {
 }
 
 function reset() {
-  dependencies.value.splice(0);
+  dependencies.value.length = 0;
 }
 
 defineExpose({ dependencies, reset });

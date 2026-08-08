@@ -60,9 +60,8 @@ async function doSpigotRequest<T>(params: Record<string, string>): Promise<T> {
   const request = await fetch("https://cors.papermc.io/s?" + new URLSearchParams(params).toString());
   if (request.ok) {
     return await request.json();
-  } else {
-    throw new Error(`Spigot request failed: ${request.status} ${request.statusText}: ` + (await request.text()));
   }
+  throw new Error(`Spigot request failed: ${request.status} ${request.statusText}: ` + (await request.text()));
 }
 
 const categoryMapping = {

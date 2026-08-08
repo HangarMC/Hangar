@@ -24,12 +24,14 @@ const modeOptions: { value: "file" | "url"; label: string }[] = [
 ];
 
 async function onSearch(val: string | undefined) {
-  if (val) {
-    const projects = await useApi<PaginatedResultProject>(`projects?limit=25&offset=0&q=${val.replace("/", " ")}`);
-    completionResult.value = projects.result
-      .filter((p) => p.namespace.owner !== route.params.user || p.namespace.slug !== route.params.project)
-      .map((p) => p.name);
+  if (!val) {
+    return;
   }
+
+  const projects = await useApi<PaginatedResultProject>(`projects?limit=25&offset=0&q=${val.replace("/", " ")}`);
+  completionResult.value = projects.result
+    .filter((p) => p.namespace.owner !== route.params.user || p.namespace.slug !== route.params.project)
+    .map((p) => p.name);
 }
 </script>
 

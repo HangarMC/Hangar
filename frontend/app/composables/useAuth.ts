@@ -100,6 +100,7 @@ class Auth {
         } else {
           authLog("Refresh failed");
         }
+        // eslint-disable-next-line unicorn/no-multiple-promise-resolver-calls
         resolve(false);
       }
     });

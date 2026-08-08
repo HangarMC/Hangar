@@ -119,7 +119,7 @@ onMounted(() => {
     () => {
       cropperInput.value = reader?.result as ArrayBuffer;
     },
-    false
+    { capture: false }
   );
   reader.addEventListener("loadend", (e) => {
     if (!e || !e.target || !e.target.result) return;

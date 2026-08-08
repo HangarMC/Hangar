@@ -116,11 +116,8 @@ export const validPageName = withOverrideMessage((body: { projectId: number; par
       } catch (err: AxiosError | any) {
         if (err?.response?.data?.detail) {
           return { $valid: false, $message: err.response.data.detail };
-        } else if (err?.response?.data?.message) {
-          return { $valid: false, $message: err.response.data.message };
-        } else {
-          return { $valid: false };
         }
+        return err?.response?.data?.message ? { $valid: false, $message: err.response.data.message } : { $valid: false };
       }
     }, body)
   )
@@ -129,5 +126,6 @@ export const validPageName = withOverrideMessage((body: { projectId: number; par
 export function isSame(arrayOne?: any[], arrayTwo?: any[]) {
   const a = uniq(arrayOne);
   const b = uniq(arrayTwo);
+  // eslint-disable-next-line unicorn/require-array-sort-compare
   return a.length === b.length && isEmpty(difference(b.toSorted(), a.toSorted()));
 }

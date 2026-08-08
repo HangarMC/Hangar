@@ -23,7 +23,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const { loader: userLoader, data: user } = useDataLoader("user");
   const userPromiseIndex = promises.length;
-  const userName = userLoader("user", to, from, (userName) => useApi<User>("users/" + userName + "?resolveId=false"), promises);
+  const username = userLoader("user", to, from, (username) => useApi<User>("users/" + username + "?resolveId=false"), promises);
   const userPromise = promises[userPromiseIndex];
 
   const { loader: projectLoader, data: project } = useDataLoader("project");
@@ -84,16 +84,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     } catch (err) {
       if (isAxiosError(err) && err.response?.status === 404) {
         throw createError({ statusCode: 404, statusMessage: "Not found" });
-      } else {
-        console.error("Failed to load data for route " + to.fullPath, err);
-        throw createError({ statusCode: 500, statusMessage: "Failed to load data" });
       }
+      console.error("Failed to load data for route " + to.fullPath, err);
+      throw createError({ statusCode: 500, statusMessage: "Failed to load data" });
     }
 
     // check if we need to redirect to a proper casing
     let newPath = to.fullPath;
-    if (userName && user.value && user.value.name !== userName) {
-      newPath = newPath.replace(userName, user.value.name);
+    if (username && user.value && user.value.name !== username) {
+      newPath = newPath.replace(username, user.value.name);
     }
     if (projectName && project.value && project.value.name !== projectName) {
       newPath = newPath.replace(projectName, project.value.name);
@@ -108,8 +107,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       }
     }
     // check if we need to redirect to proper owner
-    if (projectName && userName && project.value && project.value.namespace.owner !== userName) {
-      newPath = newPath.replace(userName, project.value.namespace.owner);
+    if (projectName && username && project.value && project.value.namespace.owner !== username) {
+      newPath = newPath.replace(username, project.value.namespace.owner);
     }
 
     // do redirect

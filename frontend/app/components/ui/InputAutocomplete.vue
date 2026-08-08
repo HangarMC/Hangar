@@ -41,21 +41,15 @@ const props = withDefaults(
 function getValue(val: any) {
   if (typeof props.itemValue === "function") {
     return props.itemValue(val);
-  } else if (val[props.itemValue]) {
-    return val[props.itemValue];
-  } else {
-    return val as string;
   }
+  return val[props.itemValue] ?? (val as string);
 }
 
 function getText(val: any) {
   if (typeof props.itemText === "function") {
     return props.itemText(val);
-  } else if (val[props.itemText]) {
-    return val[props.itemText];
-  } else {
-    return val as string;
   }
+  return val[props.itemText] ?? (val as string);
 }
 
 onMounted(() => {

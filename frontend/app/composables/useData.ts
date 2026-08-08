@@ -78,17 +78,19 @@ export function useProjects(
     true,
     () => false,
     ({ offset, limit, member, ...paramsWithoutLimit }) => {
-      if (router) {
-        const oldQuery = router.currentRoute.value.query;
-        router.replace({
-          query: {
-            ...oldQuery,
-            page: offset && limit ? Math.floor(offset / limit) : undefined,
-            ...paramsWithoutLimit,
-            query: paramsWithoutLimit.query || undefined,
-          },
-        });
+      if (!router) {
+        return;
       }
+
+      const oldQuery = router.currentRoute.value.query;
+      router.replace({
+        query: {
+          ...oldQuery,
+          page: offset && limit ? Math.floor(offset / limit) : undefined,
+          ...paramsWithoutLimit,
+          query: paramsWithoutLimit.query || undefined,
+        },
+      });
     }
   );
   return { projects, projectsStatus, refreshProjects };
@@ -298,13 +300,13 @@ export function useVersionApprovals() {
   return { versionApprovals, versionApprovalsStatus };
 }
 
-export function useUser(userName: () => string) {
+export function useUser(username: () => string) {
   const {
     data: user,
     status: userStatus,
     refresh: refreshUser,
   } = useData(
-    userName,
+    username,
     (u) => "user:" + u,
     (u) => useApi<User>("users/" + u)
   );
@@ -331,10 +333,12 @@ export function useActionLogs(
     true,
     () => false,
     ({ offset, limit, ...paramsWithoutLimit }) => {
-      if (router) {
-        const oldQuery = router.currentRoute.value.query;
-        router.replace({ query: { ...oldQuery, ...paramsWithoutLimit } });
+      if (!router) {
+        return;
       }
+
+      const oldQuery = router.currentRoute.value.query;
+      router.replace({ query: { ...oldQuery, ...paramsWithoutLimit } });
     }
   );
   return { actionLogs, actionLogsStatus };

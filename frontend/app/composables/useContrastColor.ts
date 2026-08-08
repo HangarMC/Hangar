@@ -9,7 +9,7 @@ function hexToRgb(hex: string): [number, number, number] | undefined {
 function relativeLuminance([r, g, b]: [number, number, number]): number {
   const [R, G, B] = [r, g, b].map((c) => {
     const s = c / 255;
-    return s <= 0.039_28 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
   }) as [number, number, number];
   return 0.2126 * R + 0.7152 * G + 0.0722 * B;
 }
@@ -26,7 +26,7 @@ const MIN_CONTRAST = 4.6;
 // as the bg lightens. "background-card" (slate-200 / slate-700, see color.css) is the least-contrasty
 // surface a tag realistically sits on in each mode, so targeting it is the binding case in both directions.
 const DARK_SURFACE_LUMINANCE = relativeLuminance([0x33, 0x41, 0x55]); // slate-700
-const LIGHT_SURFACE_LUMINANCE = relativeLuminance([0xE2, 0xE8, 0xF0]); // slate-200
+const LIGHT_SURFACE_LUMINANCE = relativeLuminance([0xe2, 0xe8, 0xf0]); // slate-200
 
 /**
  * Mixes an arbitrary backend colour toward black (light mode) or white (dark mode) until it clears

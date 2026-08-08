@@ -36,5 +36,15 @@ export default withNuxt()
       "unicorn/switch-case-braces": ["error", "avoid"],
       "unicorn/prefer-query-selector": "off",
       "unicorn/prefer-global-this": "off",
+      "unicorn/name-replacements": "off",
+      "unicorn/consistent-boolean-name": "off",
+      "unicorn/no-top-level-assignment-in-function": "off",
+      "unicorn/max-nested-calls": "off",
+      "unicorn/no-unsafe-string-replacement": "off",
+      "unicorn/consistent-class-member-order": "off",
+      // we want this but this is wayy too much work rn
+      "unicorn/prefer-await": "off",
+      "unicorn/no-computed-property-existence-check": "off",
+      "unicorn/prefer-simple-condition-first": "off",
     },
   });

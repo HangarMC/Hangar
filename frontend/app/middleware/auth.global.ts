@@ -132,8 +132,10 @@ function projectPermsRequired(authStore: ReturnType<typeof useAuthStore>, to: Ro
 }
 
 function checkLogin(authStore: ReturnType<typeof useAuthStore>, to: RouteLocationNormalized, status: number, msg?: string) {
-  if (!authStore.authenticated) {
-    routePermLog("not logged in!");
-    return useErrorRedirect(status, msg || "Not logged in!", { logErrorMessage: false });
+  if (authStore.authenticated) {
+    return;
   }
+
+  routePermLog("not logged in!");
+  return useErrorRedirect(status, msg || "Not logged in!", { logErrorMessage: false });
 }

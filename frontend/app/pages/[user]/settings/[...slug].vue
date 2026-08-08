@@ -42,7 +42,7 @@ watch(
   () => props.user,
   (user) => {
     form.tagline = user?.tagline || "";
-    form.socials = { ...(user?.socials || {}) };
+    form.socials = { ...user?.socials };
   },
   { immediate: true }
 );

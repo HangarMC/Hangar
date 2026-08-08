@@ -37,14 +37,18 @@ function hashOf(name: string): number {
   return Math.abs(hash);
 }
 
-/** Flat duotone: two adjacent shades of one hue, angle varied per name. No highlight -- that reads as gloss. */
+/**
+Flat duotone: two adjacent shades of one hue, angle varied per name. No highlight -- that reads as gloss.
+*/
 export function monogramBackground(name?: string): string {
   const [from, to] = MONOGRAM_GRADIENTS[name ? hashOf(name) % MONOGRAM_GRADIENTS.length : 0]!;
   const angle = name ? 90 + (hashOf(name) % 5) * 30 : 135;
   return `linear-gradient(${angle}deg, ${from} 0%, ${to} 100%)`;
 }
 
-/** Hangar serves this when a subject has no uploaded avatar. */
+/**
+Hangar serves this when a subject has no uploaded avatar.
+*/
 export function isDefaultAvatar(url?: string): boolean {
   return !url || url.includes("/avatar/default/");
 }

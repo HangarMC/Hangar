@@ -34,7 +34,7 @@ const internalValue = computed({
 });
 
 watch(internalValue, (n) => {
-  if (props.tabs.length > 0 && !props.tabs.some((t) => t.value === n)) {
+  if (props.tabs.length > 0 && props.tabs.every((t) => t.value !== n)) {
     internalValue.value = props.tabs[0]!.value;
   }
 });
@@ -49,7 +49,7 @@ function selectTab(event: Event, tab: Tab<T>) {
 }
 
 function isSelected(tab: Tab<T>) {
-  return props.router ? route.path.substring(route.path.lastIndexOf("/") + 1) === tab.value : internalValue.value === tab.value;
+  return props.router ? route.path.slice(Math.max(0, route.path.lastIndexOf("/") + 1)) : internalValue.value === tab.value;
 }
 
 defineSlots<

@@ -2,8 +2,8 @@ function compareVersions(a: string, b: string): number {
   const pa = a.split(".");
   const pb = b.split(".");
   for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
-    const na = Number.parseInt(pa[i] ?? "0", 10);
-    const nb = Number.parseInt(pb[i] ?? "0", 10);
+    const na = Math.trunc(Number(pa[i] ?? "0"));
+    const nb = Math.trunc(Number(pb[i] ?? "0"));
     if (Number.isNaN(na) || Number.isNaN(nb)) {
       const cmp = (pa[i] ?? "").localeCompare(pb[i] ?? "");
       if (cmp !== 0) return cmp;
@@ -14,15 +14,19 @@ function compareVersions(a: string, b: string): number {
   return 0;
 }
 
-/** Already-formatted ranges ("1.8.8-1.9", "1.9.2", …) -> a single "1.8.8–26.1.2" span. */
+/**
+Already-formatted ranges ("1.8.8-1.9", "1.9.2", …) -> a single "1.8.8–26.1.2" span.
+*/
 export function collapseRanges(entries?: string[] | readonly string[]): string {
   if (!entries?.length) return "";
-  const first = entries[0]!.split("-")[0]!;
+  const first = entries[0]!.split("-", 1)[0]!;
   const last = entries.at(-1)!.split("-").at(-1)!;
   return first === last ? first : `${first}–${last}`;
 }
 
-/** "1.19", "1.19.1", … "1.21.4"  ->  "1.19–1.21.4". Sorts itself; don't trust incoming order. */
+/**
+"1.19", "1.19.1", … "1.21.4"  ->  "1.19–1.21.4". Sorts itself; don't trust incoming order.
+*/
 export function versionRange(versions?: string[] | readonly string[]): string {
   if (!versions?.length) return "";
   const sorted = versions.toSorted(compareVersions);

@@ -73,13 +73,13 @@ export function useSeo(
       result.push(
         {
           type: "text/javascript",
-          innerHTML: `var _jipt = [];
+          innerHTML: String.raw`var _jipt = [];
                    _jipt.push(['project', '0cbf58a3d76226e92659632533015495']);
                    _jipt.push(['domain', 'hangar']);
                    _jipt.push([
                        "edit_strings_context",
                        (context) => {
-                           const separator = "\\n";
+                           const separator = "\n";
                            const lineStart = "* ";
                            const contextParts = context.split(separator);
                            let linkCount = 0;

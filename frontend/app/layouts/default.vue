@@ -7,7 +7,7 @@ function fixCrowdin() {
   document.body.classList.remove("jipt-highlight");
   document.getElementById("crowdin-jipt-mask")?.remove();
   document.getElementById("jipt-modal-mask")?.remove();
-  // eslint-disable-next-line unicorn/no-array-for-each
+  // eslint-disable-next-line unicorn/no-for-each
   document.querySelectorAll(".crowdin-jipt")?.forEach((e) => e.remove());
 }
 </script>

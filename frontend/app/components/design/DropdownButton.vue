@@ -7,9 +7,13 @@ const props = withDefaults(
     buttonTone?: "primary" | "neutral" | "danger";
     buttonArrow?: boolean;
     placement?: "bottom" | "top" | "left" | "right" | "bottom-end" | "bottom-start";
-    /** `false` renders the popper next to its trigger instead of teleporting to `body`, needed inside a native `<dialog>`. */
+    /**
+    `false` renders the popper next to its trigger instead of teleporting to `body`, needed inside a native `<dialog>`.
+    */
     container?: string | false;
-    /** Positioning strategy passed through to floating-vue; use `"fixed"` alongside `container: false` inside a `<dialog>`. */
+    /**
+    Positioning strategy passed through to floating-vue; use `"fixed"` alongside `container: false` inside a `<dialog>`.
+    */
     strategy?: "absolute" | "fixed";
   }>(),
   {

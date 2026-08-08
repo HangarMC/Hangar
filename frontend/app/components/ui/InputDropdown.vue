@@ -25,7 +25,9 @@ const props = withDefaults(
     rules?: ValidationRule<string | undefined>[];
     i18nTextValues?: boolean;
     buttonSize?: "sm" | "md" | "lg";
-    /** `false` renders the dropdown next to its trigger instead of teleporting to `body`, needed inside a native `<dialog>`. */
+    /**
+    `false` renders the dropdown next to its trigger instead of teleporting to `body`, needed inside a native `<dialog>`.
+    */
     container?: string | false;
   }>(),
   {

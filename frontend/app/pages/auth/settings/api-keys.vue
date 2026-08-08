@@ -172,14 +172,7 @@ function copy(event: any) {
               <template v-else>{{ i18n.t("apiKeys.neverUsed") }}</template>
             </div>
           </div>
-          <Button
-            variant="outline"
-            tone="danger"
-            size="sm"
-            :loading="loadingDelete[key.name]"
-            :title="i18n.t('general.delete')"
-            @click="deleteKey(key)"
-          >
+          <Button variant="outline" tone="danger" size="sm" :loading="loadingDelete[key.name]" :title="i18n.t('general.delete')" @click="deleteKey(key)">
             <IconMdiDelete />
             {{ i18n.t("general.delete") }}
           </Button>

@@ -24,24 +24,19 @@ const type = computed(() => {
   }
   if (props.to) {
     return NuxtLink;
-  } else if (props.href) {
-    return "a";
-  } else {
-    return "button";
   }
+  return props.href ? "a" : "button";
 });
 
 // we can't pass href as undefined, else links aren't middle clickable, so we gotta use this computed...
 const attrs = computed(() => {
   if (props.disabled) {
     return {};
-  } else if (props.to) {
-    return { to: props.to };
-  } else if (props.href) {
-    return { href: props.href };
-  } else {
-    return { type: "button" };
   }
+  if (props.to) {
+    return { to: props.to };
+  }
+  return props.href ? { href: props.href } : { type: "button" };
 });
 </script>
 

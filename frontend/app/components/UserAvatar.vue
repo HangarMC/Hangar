@@ -7,11 +7,15 @@ const props = withDefaults(
     avatarUrl?: string;
     imgSrc?: string;
     to?: string;
-    /** `fill` sizes to the parent box -- use it when the surrounding layout dictates the height. */
+    /**
+    `fill` sizes to the parent box -- use it when the surrounding layout dictates the height.
+    */
     size?: "xs" | "sm" | "md" | "lg" | "xl" | "fill";
     disableLink?: boolean;
     loading?: boolean;
-    /** Name the monogram is derived from when there is no uploaded avatar. Defaults to `username`. */
+    /**
+    Name the monogram is derived from when there is no uploaded avatar. Defaults to `username`.
+    */
     monogramName?: string;
   }>(),
   {
@@ -53,13 +57,11 @@ const showMonogram = computed(() => errored.value || isDefaultAvatar(src.value))
 const url = computed(() => {
   if (props.disableLink) {
     return;
-  } else if (props.to) {
-    return props.to;
-  } else if (props.username) {
-    return "/" + props.username;
-  } else {
-    return "#";
   }
+  if (props.to) {
+    return props.to;
+  }
+  return props.username ? "/" + props.username : "#";
 });
 </script>
 

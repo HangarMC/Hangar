@@ -3,7 +3,9 @@ const props = withDefaults(
   defineProps<{
     raw?: string | null;
     inline?: boolean;
-    /** Off when a wrapper (MarkdownEditor) renders the overview in its own control cluster. */
+    /**
+    Off when a wrapper (MarkdownEditor) renders the overview in its own control cluster.
+    */
     showToc?: boolean;
   }>(),
   {

@@ -55,9 +55,8 @@ function getStarredCount() {
   }
   if (starredChanged.value) {
     return starred.value ? starredCount.value - 1 : starredCount.value + 1;
-  } else {
-    return starredCount.value;
   }
+  return starredCount.value;
 }
 
 function getWatchingCount() {
@@ -66,9 +65,8 @@ function getWatchingCount() {
   }
   if (watchingChanged.value) {
     return watching.value ? watchingCount.value - 1 : watchingCount.value + 1;
-  } else {
-    return watchingCount.value;
   }
+  return watchingCount.value;
 }
 
 async function sendForApproval() {
