@@ -170,41 +170,51 @@ async function restoreVersion() {
 <template>
   <div v-if="version" class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_344px] lg:items-start">
     <section class="min-w-0">
-      <div class="flex flex-wrap items-center gap-3">
-        <ChannelTile :channel="version.channel" size="md" />
+      <Card class="pb-0 overflow-clip overflow-hidden">
+        <div class="flex flex-wrap items-center gap-3 border-b border-gray-300 pb-3 dark:border-gray-700">
+          <ChannelTile :channel="version.channel" size="md" />
 
-        <h1 class="min-w-0 flex-1 truncate text-2xl font-bold">{{ version.name }}</h1>
+          <h1 class="min-w-0 flex-1 truncate text-2xl font-bold">{{ version.name }}</h1>
 
-        <div class="flex flex-shrink-0 items-center gap-2">
-          <Tooltip v-if="confirmationWarningKey">
-            <template #content>
-              {{ i18n.t(confirmationWarningKey) }}
-            </template>
-            <div class="text-2xl">
-              <IconMdiAlert v-if="confirmationWarningKey === 'version.page.unsafeWarningExternal'" />
-              <IconMdiProgressQuestion v-else class="text-gray-400" />
-            </div>
-          </Tooltip>
-          <DownloadButton v-if="version && project" :version="version" :project="project" :show-single-platform="false" :show-versions="false" show-file-size />
+          <div class="flex flex-shrink-0 items-center gap-2">
+            <Tooltip v-if="confirmationWarningKey">
+              <template #content>
+                {{ i18n.t(confirmationWarningKey) }}
+              </template>
+              <div class="text-2xl">
+                <IconMdiAlert v-if="confirmationWarningKey === 'version.page.unsafeWarningExternal'" />
+                <IconMdiProgressQuestion v-else class="text-gray-400" />
+              </div>
+            </Tooltip>
+            <DownloadButton
+              v-if="version && project"
+              :version="version"
+              :project="project"
+              :show-single-platform="false"
+              :show-versions="false"
+              show-file-size
+            />
+          </div>
         </div>
-      </div>
 
-      <Card class="relative mt-4 pb-0 overflow-clip overflow-hidden">
-        <ClientOnly v-if="hasPerms(NamedPermission.EditVersion)">
-          <MarkdownEditor
-            v-model:editing="editingPage"
-            :raw="version.description"
-            :deletable="false"
-            :cancellable="true"
-            :saveable="true"
-            :rules="[required()]"
-            @save="savePage"
-          />
-          <template #fallback>
-            <Markdown :raw="version.description" />
-          </template>
-        </ClientOnly>
-        <Markdown v-else :raw="version.description" />
+        <!-- anchors the editor's absolutely positioned controls to the body rather than the header row -->
+        <div class="relative pt-3">
+          <ClientOnly v-if="hasPerms(NamedPermission.EditVersion)">
+            <MarkdownEditor
+              v-model:editing="editingPage"
+              :raw="version.description"
+              :deletable="false"
+              :cancellable="true"
+              :saveable="true"
+              :rules="[required()]"
+              @save="savePage"
+            />
+            <template #fallback>
+              <Markdown :raw="version.description" />
+            </template>
+          </ClientOnly>
+          <Markdown v-else :raw="version.description" />
+        </div>
       </Card>
     </section>
 
