@@ -108,11 +108,11 @@ async function togglePin() {
 
       <div class="ml-auto hidden flex-shrink-0 flex-col items-end gap-0.5 self-center sm:flex">
         <span class="inline-flex items-center gap-1.5 font-semibold tabular-nums">
-          <IconMdiDownload class="h-4 w-4 flex-shrink-0" />
+          <IconMdiDownload class="stat-icon h-4 w-4 flex-shrink-0" />
           {{ project.stats.downloads.toLocaleString("en-US") }}
         </span>
         <span class="inline-flex items-center gap-1.5 font-semibold tabular-nums">
-          <IconMdiStar class="h-4 w-4 flex-shrink-0" />
+          <IconMdiStar class="stat-icon h-4 w-4 flex-shrink-0" />
           {{ project.stats.stars.toLocaleString("en-US") }}
         </span>
         <Tooltip class="relative z-1">
@@ -123,14 +123,25 @@ async function togglePin() {
     </div>
 
     <div class="mt-2 flex items-center justify-center gap-4 text-sm sm:hidden">
-      <span class="inline-flex items-center gap-1 font-semibold tabular-nums"><IconMdiDownload />{{ project.stats.downloads.toLocaleString("en-US") }}</span>
-      <span class="inline-flex items-center gap-1 font-semibold tabular-nums"><IconMdiStar />{{ project.stats.stars.toLocaleString("en-US") }}</span>
-      <span class="inline-flex items-center gap-1 text-gray-secondary"><IconMdiCalendar /><PrettyTime :time="project.lastUpdated" short-relative /></span>
+      <span class="inline-flex items-center gap-1 font-semibold tabular-nums">
+        <IconMdiDownload class="stat-icon" />{{ project.stats.downloads.toLocaleString("en-US") }}
+      </span>
+      <span class="inline-flex items-center gap-1 font-semibold tabular-nums">
+        <IconMdiStar class="stat-icon" />{{ project.stats.stars.toLocaleString("en-US") }}
+      </span>
+      <span class="inline-flex items-center gap-1 text-gray-secondary">
+        <IconMdiCalendar class="stat-icon" /><PrettyTime :time="project.lastUpdated" short-relative />
+      </span>
     </div>
   </Card>
 </template>
 
 <style scoped>
+/* digits have no descender, so their ink sits ~1px below the line box centre items-center aligns to */
+.stat-icon {
+  transform: translateY(1px);
+}
+
 .pin-toggle:focus-visible {
   outline: 2px solid var(--primary-500);
   outline-offset: 2px;

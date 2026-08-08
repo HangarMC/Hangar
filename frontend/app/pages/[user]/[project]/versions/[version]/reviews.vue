@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ReviewAction, ReviewState } from "#shared/types/backend";
-import type { Platform, HangarProject, HangarReview, HangarReviewMessage, Version } from "#shared/types/backend";
+import type { Platform, HangarProject, HangarReview, Version } from "#shared/types/backend";
 import { useReviews } from "~/composables/useData";
 
 definePageMeta({
@@ -22,6 +22,7 @@ const props = defineProps<{
 const { reviews, refreshReviews } = useReviews(() => props.version?.id as unknown as string);
 const hideClosed = ref<boolean>(false);
 const message = ref<string>("");
+const expanded = ref<Record<number, boolean>>({});
 const loadingValues = reactive({
   start: false,
   send: false,
@@ -58,10 +59,17 @@ const isReviewStateChecked = computed<boolean>(() => {
   return props.version?.reviewState === ReviewState.PartiallyReviewed || props.version?.reviewState === ReviewState.Reviewed;
 });
 
-function getReviewStateString(review: HangarReview): string {
-  if (!review.messages) return "error";
+function isExpanded(review: HangarReview): boolean {
+  if (review.userId in expanded.value) return expanded.value[review.userId]!;
+  return currentUserReview.value === review;
+}
 
-  const lastMsg = review.messages.at(-1);
+function toggleExpanded(review: HangarReview) {
+  expanded.value[review.userId] = !isExpanded(review);
+}
+
+function getReviewStateString(review: HangarReview): "ongoing" | "stopped" | "approved" | "partiallyApproved" | "error" {
+  const lastMsg = review.messages?.at(-1);
   if (!lastMsg) return "error";
 
   switch (lastMsg.action) {
@@ -81,53 +89,52 @@ function getReviewStateString(review: HangarReview): string {
   return "error";
 }
 
-function getReviewStateColor(review: HangarReview): string {
-  if (!review.messages) return "#D50000";
-
-  const lastMsg = review.messages.at(-1);
-  if (!lastMsg) return "#D50000";
-
-  switch (lastMsg.action) {
-    case ReviewAction.START:
-    case ReviewAction.MESSAGE:
-    case ReviewAction.REOPEN:
-    case ReviewAction.UNDO_APPROVAL:
-      return "#ffc801";
-    case ReviewAction.STOP:
-      return "#D50000";
-    case ReviewAction.APPROVE:
-      return "#69F0AE";
-    case ReviewAction.PARTIALLY_APPROVE:
-      return "#4CAF50";
+function getReviewPuckClasses(review: HangarReview): string {
+  switch (getReviewStateString(review)) {
+    case "ongoing":
+      return "bg-amber-500/15 text-amber-500";
+    case "stopped":
+      return "bg-red-500/15 text-red-500";
+    case "approved":
+    case "partiallyApproved":
+      return "bg-lime-500/15 text-lime-500";
+    default:
+      return "bg-red-500/15 text-red-500";
   }
-
-  return "#D50000";
 }
 
-function getReviewMessageColor(msg: HangarReviewMessage): string {
-  switch (msg.action) {
+function getReviewChipTone(review: HangarReview): "amber" | "red" | "green" {
+  switch (getReviewStateString(review)) {
+    case "ongoing":
+      return "amber";
+    case "stopped":
+      return "red";
+    case "approved":
+    case "partiallyApproved":
+      return "green";
+    default:
+      return "red";
+  }
+}
+
+function getMessageActionClasses(action: ReviewAction): string {
+  switch (action) {
     case ReviewAction.START:
     case ReviewAction.REOPEN:
-      return "#ffc801";
-    case ReviewAction.MESSAGE:
-      return "";
+      return "text-amber-500";
     case ReviewAction.STOP:
-      return "#FF5252";
+    case ReviewAction.UNDO_APPROVAL:
+      return "text-red-500";
     case ReviewAction.APPROVE:
     case ReviewAction.PARTIALLY_APPROVE:
-      return "#69F0AE";
-    case ReviewAction.UNDO_APPROVAL:
-      return "#ff9100";
+      return "text-lime-500";
+    default:
+      return "";
   }
 }
 
 function getLastUpdateDate(review: HangarReview): string {
-  if (!review.messages) return "error";
-
-  const lastMsg = review.messages.at(-1);
-  if (!lastMsg) return "error";
-
-  return lastMsg.createdAt;
+  return review.messages?.at(-1)?.createdAt ?? review.createdAt;
 }
 
 function startReview() {
@@ -291,127 +298,162 @@ useSeo(computed(() => ({ title: "Reviews | " + props.project?.name, route, descr
 </script>
 
 <template>
-  <div v-if="version" class="mt-4">
-    <div class="float-right inline-flex">
-      <template v-if="!isReviewStateChecked">
-        <Button size="lg" :to="{ name: 'user-project', params: route.params }" exact>
+  <div v-if="version" class="mt-4 flex flex-col gap-4">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold">{{ t("reviews.title") }}</h1>
+        <p class="mt-1 text-gray-secondary">
+          {{ t("reviews.headline", [version.author, version.name]) }}
+          <PrettyTime :time="version.createdAt" long />
+        </p>
+      </div>
+      <div v-if="!isReviewStateChecked" class="flex flex-wrap gap-2">
+        <Button variant="outline" tone="neutral" :to="{ name: 'user-project', params: route.params }" exact>
           <IconMdiHome />
           {{ t("reviews.projectPage") }}
         </Button>
-        <Button class="ml-1" size="lg" :to="route.path.replace('/reviews', '/scan')">
+        <Button variant="outline" tone="neutral" :to="route.path.replace('/reviews', '/scan')">
           <IconMdiAlertDecagram />
           {{ i18n.t("version.page.scans") }}
         </Button>
-        <DownloadButton v-if="project" :project="project" :version="version" class="ml-1" />
-      </template>
-    </div>
-
-    <h2 class="my-3 text-2xl">
-      {{ t("reviews.title") }}
-      <span class="text-base">
-        {{ t("reviews.headline", [version.author, version.name]) }}
-        <PrettyTime :time="version.createdAt" long />
-      </span>
-    </h2>
-    <div class="my-1 flex space-x-2">
-      <div v-if="!currentUserReview" class="flex-grow-0">
-        <Button :loading="loadingValues.start" @click="startReview">
-          <IconMdiPlay />
-          {{ t("reviews.startReview") }}
-        </Button>
-      </div>
-      <div class="flex-grow-0">
-        <Button @click="refreshReviews">
-          <IconMdiRefresh />
-          {{ t("general.refresh") }}
-        </Button>
-      </div>
-      <div class="flex items-center">
-        <InputCheckbox v-model="hideClosed" :label="t('reviews.hideClosed')" />
+        <DownloadButton v-if="project" :project="project" :version="version" small />
       </div>
     </div>
 
-    <Accordeon v-if="filteredReviews" :values="filteredReviews" class="mt-4">
-      <template #header="{ entry: review }">
-        <div class="flex">
-          <div class="flex-grow items-center inline-flex">
-            {{ t("reviews.presets.reviewTitle", { name: review.userName }) }}
-            <Tag :name="t(`reviews.state.${getReviewStateString(review)}`)" :color="{ background: getReviewStateColor(review) }" class="ml-2" />
-            <span class="text-xs ml-2 text-gray-400">
-              {{ t("reviews.state.lastUpdate") }}
-              <PrettyTime :time="getLastUpdateDate(review)" />
-            </span>
-          </div>
-        </div>
-      </template>
-      <template #plainHeader="{ entry: review }">
-        <div v-if="isCurrentReviewOpen && currentUserReview === review" class="space-x-1">
-          <TextAreaModal :title="t('reviews.stopReview')" :label="t('general.message')" :submit="stopReview">
-            <template #activator="slotProps">
-              <Button size="sm" color="error" v-on="slotProps.on">
-                <IconMdiStop />
-                {{ t("reviews.stopReview") }}
-              </Button>
-            </template>
-          </TextAreaModal>
+    <div class="flex flex-wrap items-center gap-2">
+      <Button v-if="!currentUserReview" :loading="loadingValues.start" @click="startReview">
+        <IconMdiPlay />
+        {{ t("reviews.startReview") }}
+      </Button>
+      <Button variant="outline" tone="neutral" @click="refreshReviews">
+        <IconMdiRefresh />
+        {{ t("general.refresh") }}
+      </Button>
+      <InputCheckbox v-model="hideClosed" class="ml-auto" :label="t('reviews.hideClosed')" />
+    </div>
 
-          <Button size="sm" :loading="loadingValues.approvePartial" @click="approvePartial">
-            <IconMdiCheckDecagramOutline />
-            {{ t("reviews.approvePartial") }}
-          </Button>
-          <Button size="sm" :loading="loadingValues.approve" @click="approve">
-            <IconMdiCheckDecagram />
-            {{ t("reviews.approve") }}
-          </Button>
-        </div>
-        <div v-else-if="currentUserReview === review" class="text-right">
-          <Button v-if="currentReviewLastAction === 'STOP'" size="sm" variant="solid" tone="neutral" :loading="loadingValues.reopen" @click="reopenReview">
-            <IconMdiRefresh />
-            {{ t("reviews.reopenReview") }}
-          </Button>
-          <Button
-            v-else-if="currentReviewLastAction === 'APPROVE' || currentReviewLastAction === 'PARTIALLY_APPROVE'"
-            size="sm"
-            color="error"
-            :loading="loadingValues.undoApproval"
-            @click="undoApproval"
-          >
-            <IconMdiUndo />
-            {{ t("reviews.undoApproval") }}
-          </Button>
-        </div>
-      </template>
-      <template #entry="{ entry: review, index }">
-        <ul class="py-1">
-          <li v-for="(msg, mIndex) in review.messages" :key="`review-${index}-msg-${mIndex}`">
-            <div :style="'color: ' + getReviewMessageColor(msg)" :class="{ 'ml-4': msg.action === ReviewAction.MESSAGE }">
-              <span>{{ t(msg.message, msg.args) }}</span>
-              <span class="text-xs ml-4 text-gray-400"><PrettyTime :time="msg.createdAt" long /></span>
+    <Card flat padding="none">
+      <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
+        <h2 class="flex-grow text-lg font-bold">{{ t("reviews.reviewers") }}</h2>
+        <span class="text-sm text-gray-secondary tabular-nums">{{ filteredReviews?.length ?? 0 }}</span>
+      </div>
+
+      <ul v-if="filteredReviews && filteredReviews.length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
+        <li v-for="review in filteredReviews" :key="review.userId" class="px-4 py-3">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div class="h-9 w-9 flex flex-shrink-0 items-center justify-center rounded-lg text-lg" :class="getReviewPuckClasses(review)">
+              <IconMdiStop v-if="getReviewStateString(review) === 'stopped'" />
+              <IconMdiCheckDecagram v-else-if="getReviewStateString(review) === 'approved' || getReviewStateString(review) === 'partiallyApproved'" />
+              <IconMdiEyeOutline v-else />
             </div>
-          </li>
-          <li v-if="isCurrentReviewOpen && currentUserReview === review">
-            <div class="w-full mt-1">
-              <InputTextarea v-model.trim="message" class="mt-2" :label="t('reviews.reviewMessage')" :rows="3" @keydown.enter.prevent="" />
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-semibold">{{ t("reviews.presets.reviewTitle", { name: review.userName }) }}</span>
+                <Chip :tone="getReviewChipTone(review)">{{ t(`reviews.state.${getReviewStateString(review)}`) }}</Chip>
+              </div>
+              <div class="mt-0.5 text-xs text-gray-secondary">
+                {{ t("reviews.state.lastUpdate") }}
+                <PrettyTime :time="getLastUpdateDate(review)" />
+              </div>
+            </div>
+            <div class="flex flex-shrink-0 flex-wrap gap-2 self-end sm:self-center">
+              <template v-if="isCurrentReviewOpen && currentUserReview === review">
+                <TextAreaModal :title="t('reviews.stopReview')" :label="t('general.message')" submit-tone="danger" :submit="stopReview">
+                  <template #activator="slotProps">
+                    <Button size="sm" variant="outline" tone="danger" v-on="slotProps.on">
+                      <IconMdiStop />
+                      {{ t("reviews.stopReview") }}
+                    </Button>
+                  </template>
+                </TextAreaModal>
+                <Button size="sm" variant="outline" tone="neutral" :loading="loadingValues.approvePartial" @click="approvePartial">
+                  <IconMdiCheckDecagramOutline />
+                  {{ t("reviews.approvePartial") }}
+                </Button>
+                <Button size="sm" :loading="loadingValues.approve" @click="approve">
+                  <IconMdiCheckDecagram />
+                  {{ t("reviews.approve") }}
+                </Button>
+              </template>
+              <template v-else-if="currentUserReview === review">
+                <Button
+                  v-if="currentReviewLastAction === 'STOP'"
+                  size="sm"
+                  variant="outline"
+                  tone="neutral"
+                  :loading="loadingValues.reopen"
+                  @click="reopenReview"
+                >
+                  <IconMdiRefresh />
+                  {{ t("reviews.reopenReview") }}
+                </Button>
+                <Button
+                  v-else-if="currentReviewLastAction === 'APPROVE' || currentReviewLastAction === 'PARTIALLY_APPROVE'"
+                  size="sm"
+                  variant="outline"
+                  tone="danger"
+                  :loading="loadingValues.undoApproval"
+                  @click="undoApproval"
+                >
+                  <IconMdiUndo />
+                  {{ t("reviews.undoApproval") }}
+                </Button>
+              </template>
               <Button
-                color="primary"
-                :loading="loadingValues.send"
-                class="mt-2 block w-full"
-                :disabled="message.length === 0 || v.$invalid"
-                @click="sendMessage"
+                variant="ghost"
+                tone="neutral"
+                size="sm"
+                icon-only
+                :title="t('reviews.toggleLog')"
+                :aria-label="t('reviews.toggleLog')"
+                :aria-expanded="isExpanded(review) ? 'true' : 'false'"
+                @click="toggleExpanded(review)"
               >
-                <span class="inline-flex items-center gap-1 text-white">
-                  <IconMdiSend />
-                  {{ t("general.send") }}
-                </span>
+                <IconMdiChevronDown class="transition-transform" :class="isExpanded(review) ? 'rotate-180' : ''" />
               </Button>
             </div>
-          </li>
-        </ul>
-      </template>
-    </Accordeon>
+          </div>
 
-    <Alert v-if="!reviews?.length" type="info" class="mt-2">
-      {{ t("reviews.notUnderReview") }}
-    </Alert>
+          <div v-if="isExpanded(review)" class="mt-3 sm:ml-12">
+            <Pagination :items="review.messages" :items-per-page="20">
+              <template #default="{ item: msg }">
+                <div class="flex flex-wrap items-start gap-x-2 gap-y-0.5 border-l-2 border-gray-300 py-1 pl-3 dark:border-gray-700">
+                  <span class="mt-0.5 flex-shrink-0" :class="getMessageActionClasses(msg.action)">
+                    <IconMdiPlay v-if="msg.action === ReviewAction.START" />
+                    <IconMdiRefresh v-else-if="msg.action === ReviewAction.REOPEN" />
+                    <IconMdiStop v-else-if="msg.action === ReviewAction.STOP" />
+                    <IconMdiCheckDecagram v-else-if="msg.action === ReviewAction.APPROVE" />
+                    <IconMdiCheckDecagramOutline v-else-if="msg.action === ReviewAction.PARTIALLY_APPROVE" />
+                    <IconMdiUndo v-else-if="msg.action === ReviewAction.UNDO_APPROVAL" />
+                    <IconMdiMessageOutline v-else />
+                  </span>
+                  <span class="min-w-0 flex-1 text-sm" :class="getMessageActionClasses(msg.action)">{{ t(msg.message, msg.args) }}</span>
+                  <span class="flex-shrink-0 text-xs text-gray-secondary tabular-nums"><PrettyTime :time="msg.createdAt" long /></span>
+                </div>
+              </template>
+              <template #pagination="{ page, pages, updatePage }">
+                <div class="border-l-2 border-gray-300 py-2 pl-3 dark:border-gray-700">
+                  <PaginationButtons :page="page" :pages="pages" @update:page="updatePage" />
+                </div>
+              </template>
+            </Pagination>
+
+            <div v-if="isCurrentReviewOpen && currentUserReview === review" class="mt-2 border-l-2 border-gray-300 pl-3 dark:border-gray-700">
+              <InputTextarea v-model.trim="message" :label="t('reviews.reviewMessage')" :rows="3" @keydown.enter.prevent="" />
+              <Button :loading="loadingValues.send" class="mt-2 w-full" :disabled="message.length === 0 || v.$invalid" @click="sendMessage">
+                <IconMdiSend />
+                {{ t("general.send") }}
+              </Button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div v-else class="flex flex-col items-center px-4 py-10 text-center">
+        <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full background-card text-xl text-gray-secondary">
+          <IconMdiEyeOutline />
+        </div>
+        <p class="text-gray-secondary">{{ reviews?.length ? t("reviews.hiddenByFilter") : t("reviews.notUnderReview") }}</p>
+      </div>
+    </Card>
   </div>
 </template>

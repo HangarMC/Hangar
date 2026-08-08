@@ -25,6 +25,8 @@ const props = withDefaults(
     rules?: ValidationRule<string | undefined>[];
     i18nTextValues?: boolean;
     buttonSize?: "sm" | "md" | "lg";
+    /** `false` renders the dropdown next to its trigger instead of teleporting to `body`, needed inside a native `<dialog>`. */
+    container?: string | false;
   }>(),
   {
     modelValue: undefined,
@@ -37,6 +39,7 @@ const props = withDefaults(
     rules: () => [],
     i18nTextValues: false,
     buttonSize: "lg",
+    container: "body",
   }
 );
 
@@ -69,7 +72,13 @@ function select(val: any) {
   <div>
     <label v-if="label" class="mb-2 block">{{ label }}</label>
     <ErrorTooltip :error-messages="errors">
-      <DropdownButton button-variant="outline" button-tone="neutral" :button-size="buttonSize">
+      <DropdownButton
+        button-variant="outline"
+        button-tone="neutral"
+        :button-size="buttonSize"
+        :container="container"
+        :strategy="container === false ? 'fixed' : undefined"
+      >
         <template #button-label>
           <span v-if="prefix" class="flex-shrink-0 font-normal text-gray-secondary">{{ prefix }}:</span>
           <span class="truncate" :class="{ 'text-gray-secondary': selectedText === undefined }">

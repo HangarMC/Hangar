@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import type { HangarProjectPage, User } from "#shared/types/backend";
+import type { HangarOrganization, HangarProjectPage, User } from "#shared/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 
 defineProps<{
   user?: User;
+  organization?: HangarOrganization;
 }>();
 
 const { data: project } = useDataLoader("project");

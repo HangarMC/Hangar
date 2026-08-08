@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { Header } from "#shared/types/components/SortableTable";
 import type { HangarProject, User } from "#shared/types/backend";
 
 definePageMeta({
@@ -16,13 +15,7 @@ const { notes, refreshNotes } = useProjectNotes(() => route.params.project);
 const text = ref("");
 const loading = ref(false);
 
-const headers = [
-  { title: "Date", name: "createdAt", width: "10%" },
-  { title: "User", name: "userName", width: "10%" },
-  { title: "Message", name: "message", width: "80%" },
-] as const satisfies Header<string>[];
-
-useSeo(computed(() => ({ title: "Notes | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
+useSeo(computed(() => ({ title: i18n.t("notes.title") + " | " + props.project?.name, route, description: props.project?.description, image: props.project?.avatarUrl })));
 
 async function addNote() {
   if (!text.value) {
@@ -39,30 +32,60 @@ async function addNote() {
 </script>
 
 <template>
-  <Card>
-    <template #header>
-      {{ i18n.t("notes.header") }}
-      <Link v-if="project" :to="'/' + project.namespace.owner + '/' + project.namespace.slug">
-        {{ project.namespace.owner + "/" + project.namespace.slug }}
-      </Link>
-      <Skeleton v-else />
-    </template>
-
-    <div class="flex">
-      <div class="flex-grow"><InputText v-model="text" :placeholder="i18n.t('notes.placeholder')" /></div>
-      <Button :disabled="!text || loading" class="ml-4 w-max" @click="addNote">{{ i18n.t("notes.addNote") }}</Button>
+  <div>
+    <div class="mb-5">
+      <h1 class="text-3xl font-bold">{{ i18n.t("notes.title") }}</h1>
+      <p class="mt-1 text-gray-secondary">{{ i18n.t("notes.subtitle") }}</p>
     </div>
 
-    <h2 class="text-lg font-bold mb-1 mt-2">
-      {{ i18n.t("notes.notes") }}
-    </h2>
-    <SortableTable v-if="notes" :items="notes" :headers="headers">
-      <template #empty>
-        <Alert type="warning">{{ i18n.t("notes.noNotes") }}</Alert>
-      </template>
-      <template #createdAt="{ item }">
-        {{ i18n.d(item.createdAt, "time") }}
-      </template>
-    </SortableTable>
-  </Card>
+    <Card flat padding="none" class="mb-4">
+      <div class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
+        <InputText v-model="text" class="flex-grow" :placeholder="i18n.t('notes.placeholder')" @keyup.enter="addNote" />
+        <Button :disabled="!text" :loading="loading" class="flex-shrink-0" @click="addNote">
+          <IconMdiPlus />
+          {{ i18n.t("notes.addNote") }}
+        </Button>
+      </div>
+    </Card>
+
+    <Card flat padding="none">
+      <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
+        <h2 class="flex-grow text-lg font-bold">{{ i18n.t("notes.notes") }}</h2>
+        <span class="text-sm text-gray-secondary tabular-nums">{{ notes?.length ?? 0 }}</span>
+      </div>
+
+      <ul v-if="notes && notes.length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
+        <Pagination :items="notes" :items-per-page="15">
+          <template #default="{ item: note }">
+            <li class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-start">
+              <div class="h-9 w-9 flex flex-shrink-0 items-center justify-center rounded-lg bg-sky-500/15 text-lg text-sky-500">
+                <IconMdiNoteTextOutline />
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <Link :to="'/' + note.userName" class="font-semibold">{{ note.userName }}</Link>
+                  <span class="text-xs text-gray-secondary">{{ i18n.d(note.createdAt, "time") }}</span>
+                </div>
+                <p class="mt-1 whitespace-pre-wrap break-words text-sm">{{ note.message }}</p>
+              </div>
+            </li>
+          </template>
+          <template #pagination="{ page, pages, updatePage }">
+            <li class="p-3">
+              <PaginationButtons :page="page" :pages="pages" @update:page="updatePage" />
+            </li>
+          </template>
+        </Pagination>
+      </ul>
+      <div v-else-if="notes" class="flex flex-col items-center px-4 py-10 text-center">
+        <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full background-card text-xl text-gray-secondary">
+          <IconMdiNoteTextOutline />
+        </div>
+        <p class="text-gray-secondary">{{ i18n.t("notes.noNotes") }}</p>
+      </div>
+      <div v-else class="p-4">
+        <Skeleton />
+      </div>
+    </Card>
+  </div>
 </template>

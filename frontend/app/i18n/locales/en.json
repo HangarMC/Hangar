@@ -482,7 +482,8 @@
         "save": "Unable to save page"
       },
       "name": "Page Name",
-      "parent": "Parent Page (optional)"
+      "parent": "Parent Page (optional)",
+      "parentNone": "None"
     },
     "delete": {
       "title": "Delete page?",
@@ -934,13 +935,16 @@
     "trust": "Trust and continue"
   },
   "flags": {
-    "header": "Reports for",
+    "header": "Reports submitted by users about this project.",
+    "allReports": "All reports",
     "noFlags": "No reports found",
     "resolved": "Yes, by {0} on {1}",
     "notResolved": "No"
   },
   "notes": {
     "header": "Notes for",
+    "title": "Staff notes",
+    "subtitle": "Internal notes about this project, visible only to staff.",
     "noNotes": "No notes found",
     "addNote": "Add note",
     "notes": "Notes",
@@ -986,6 +990,9 @@
     "reopenReview": "Reopen Review",
     "undoApproval": "Undo Approval",
     "hideClosed": "Hide all finished reviews",
+    "reviewers": "Reviewers",
+    "toggleLog": "Toggle review log",
+    "hiddenByFilter": "All reviews are hidden by the current filter.",
     "error": {
       "noReviewStarted": "There is no unfinished review to add a message to",
       "notCorrectUser": "You are not the user that started this review",
@@ -1257,6 +1264,10 @@
     "title": "Reports",
     "resolved": "Resolved reports",
     "unresolved": "Unresolved reports",
+    "statusResolved": "Resolved",
+    "statusOpen": "Open",
+    "reportedWord": "reported",
+    "reportedByLabel": "Reported by",
     "noFlags": "There are no reports to review.",
     "markResolved": "Mark resolved",
     "markUnresolved": "Mark unresolved",

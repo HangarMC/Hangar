@@ -15,7 +15,7 @@ const v = useVuelidate();
 const updateProjectPagesCallback = inject<(pages: HangarProjectPage[]) => void>("updateProjectPages");
 const modal = useTemplateRef("modal");
 
-const pageRoots = computed(() => [{ value: -1, text: "<none>" }, ...flatDeep(props.pages, "")]);
+const pageRoots = computed(() => [{ value: -1, text: i18n.t("page.new.parentNone") }, ...flatDeep(props.pages, "")]);
 const loading = ref<boolean>(false);
 
 const body = reactive({
@@ -70,7 +70,7 @@ async function createPage() {
 
 <template>
   <Modal ref="modal" :title="i18n.t('page.new.title')" window-classes="w-120">
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-3">
       <InputText
         v-model.trim="body.name"
         :label="i18n.t('page.new.name')"
@@ -79,9 +79,8 @@ async function createPage() {
         :minlength="useBackendData.validations.project.pageName.min"
         :rules="rules"
       />
-      <InputDropdown v-model="body.parentId" :values="pageRoots" :label="i18n.t('page.new.parent')" class="pt-2 pb-1" />
+      <InputDropdown v-model="body.parentId" :values="pageRoots" :label="i18n.t('page.new.parent')" :container="false" />
     </div>
-    <div></div>
     <template #activator="{ on }">
       <Button
         v-bind="$attrs"

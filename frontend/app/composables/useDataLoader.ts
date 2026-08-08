@@ -12,6 +12,11 @@ type DataLoaderTypes = {
   globalData: GlobalData;
 };
 
+function paramKey(param: unknown): string | undefined {
+  if (param === undefined) return undefined;
+  return Array.isArray(param) ? param.join("/") : String(param);
+}
+
 // TODO check every handling of the reject stuff (for both composables)
 export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
   const data = useState<DataLoaderTypes[K] | undefined>(key);
@@ -22,14 +27,16 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
     param: routeParams | undefined,
     to: RouteLocationNormalized,
     _from: RouteLocationNormalized,
-    loader: (param: string) => Promise<DataLoaderTypes[K]>,
+    loader: (param: string) => Promise<DataLoaderTypes[K] | undefined>,
     promises: Promise<any>[],
     lenient = false
   ) {
     const meta = to.meta["dataLoader_" + key];
     if (meta || key === "globalData") {
       const newParam = param && param in to.params ? (to.params[param as never] as string) : undefined;
-      if (data.value && loadedParam.value === newParam) {
+      // array-valued params (the catch-all "page" segment) get reactive-wrapped by useState, so raw === never matches
+      const newParamKey = paramKey(newParam);
+      if (data.value && paramKey(loadedParam.value) === newParamKey) {
         dataLoaderLog("skip loading", key); // TODO test this
         return newParam;
       } else if (!param || newParam) {
@@ -50,7 +57,7 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
               else reject(err);
             });
             // await new Promise((resolve) => setTimeout(resolve, 5000));
-            if (result && requestId.value === currentRequestId && loadedParam.value === newParam) {
+            if (result && requestId.value === currentRequestId && paramKey(loadedParam.value) === newParamKey) {
               data.value = result;
               dataLoaderLog("load loaded", key, newParam);
             }

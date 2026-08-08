@@ -41,7 +41,8 @@ const formattedError = computed<string | Ref<string> | undefined>(() => {
   transition-duration: 0s !important;
 }
 
-.v-popper--theme-error-tooltip .v-popper__inner {
+/* child-scoped: a descendant selector also paints a nested container="false" popper red */
+.v-popper--theme-error-tooltip > .v-popper__wrapper > .v-popper__inner {
   max-width: 700px;
   background-color: #d62e22;
   padding: 0.5rem;
@@ -49,7 +50,7 @@ const formattedError = computed<string | Ref<string> | undefined>(() => {
   color: #fff;
 }
 
-.v-popper--theme-error-tooltip .v-popper__arrow-outer {
+.v-popper--theme-error-tooltip > .v-popper__wrapper > .v-popper__arrow-container .v-popper__arrow-outer {
   border-color: #d62e22;
 }
 </style>

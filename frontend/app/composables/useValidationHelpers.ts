@@ -107,6 +107,9 @@ export const validPageName = withOverrideMessage((body: { projectId: number; par
   helpers.withParams(
     { body, type: "validPageName" },
     helpers.withAsync(async () => {
+      if (!helpers.req(body.name)) {
+        return { $valid: true };
+      }
       try {
         await useInternalApi("pages/checkName", "get", body);
         return { $valid: true };

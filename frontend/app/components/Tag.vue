@@ -10,44 +10,25 @@ const props = defineProps<{
   tooltip?: string;
 }>();
 
-const ccColor = computed<Color>(() => ({
-  foreground: props.color?.foreground ?? contrastForeground(props.color?.background),
-  background: props.color?.background,
-}));
+const settingsStore = useSettingsStore();
+
+const label = computed(() => props.color?.foreground ?? readableAccent(props.color?.background, settingsStore.darkMode ?? false));
 </script>
 
 <template>
-  <div class="tags inline-flex flex-wrap items-center justify-start" :title="tooltip">
-    <span
-      :style="{
-        color: ccColor?.foreground,
-        background: ccColor?.background,
-        'border-color': ccColor?.background,
-      }"
-      class="flex rounded px-2 py-0.5 text-0.8em"
-    >
-      {{ name }}
-    </span>
-  </div>
+  <span
+    class="role-tag inline-flex flex-shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold leading-5"
+    :class="color?.background ? 'border-tinted' : 'border-gray-300 text-gray-secondary dark:border-gray-600'"
+    :style="color?.background ? { '--tag-color': color.background, color: label } : undefined"
+    :title="tooltip"
+  >
+    {{ name }}
+  </span>
 </template>
 
-<style lang="scss" scoped>
-.tags {
-  &.has-addons {
-    .tag:first-child {
-      border-bottom-right-radius: 0;
-      border-top-right-radius: 0;
-    }
-
-    .tag:nth-child(2) {
-      border-bottom-left-radius: 0;
-      border-top-left-radius: 0;
-      border-left: none;
-    }
-  }
-
-  .tag {
-    border: 1px solid #dcdcdc;
-  }
+<style scoped>
+.border-tinted {
+  background-color: color-mix(in srgb, var(--tag-color) 15%, transparent);
+  border-color: color-mix(in srgb, var(--tag-color) 40%, transparent);
 }
 </style>

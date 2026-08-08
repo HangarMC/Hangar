@@ -7,7 +7,7 @@ const i18n = useI18n();
 </script>
 
 <template>
-  <Modal :title="i18n.t('page.delete.title')">
+  <Modal :title="i18n.t('page.delete.title')" window-classes="w-120">
     <p>{{ i18n.t("page.delete.text") }}</p>
     <template #activator="{ on }">
       <slot name="activator" :on="on" />

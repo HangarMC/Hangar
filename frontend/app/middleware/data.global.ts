@@ -22,7 +22,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   globalDataLoader(undefined, to, from, () => useInternalApi("globalData/"), promises);
 
   const { loader: userLoader, data: user } = useDataLoader("user");
+  const userPromiseIndex = promises.length;
   const userName = userLoader("user", to, from, (userName) => useApi<User>("users/" + userName + "?resolveId=false"), promises);
+  const userPromise = promises[userPromiseIndex];
 
   const { loader: projectLoader, data: project } = useDataLoader("project");
   const projectName = projectLoader(
@@ -33,14 +35,17 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     promises
   );
 
-  // TODO ideally we only make this request _after_ the user request returned and we know we need to fetch an org
-  // alternatively we could make a new controller that returns both
   const { loader: organizationLoader } = useDataLoader("organization");
   organizationLoader(
     "user",
     to,
     from,
-    (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName + "?resolveId=false"),
+    async (organizationName) => {
+      // the route can't tell us whether the namespace is an org, so wait for the user before spending a request
+      await userPromise;
+      if (!user.value?.isOrganization) return;
+      return useInternalApi<HangarOrganization>("organizations/org/" + organizationName + "?resolveId=false");
+    },
     promises,
     true
   );
