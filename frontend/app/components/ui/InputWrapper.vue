@@ -30,11 +30,9 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
   >
     <label
       :class="[
-        'relative flex w-full outline-none p-2 border-1px rounded',
-        'bg-gray-100 dark:bg-gray-900',
-        'border-gray-500',
-        'focus-within:border-primary-500 focus-within:hover:border-primary-500',
-        'hover:border-gray-400',
+        'input-field relative flex w-full outline-none p-2 border-1px rounded-md',
+        'border-gray-300 dark:border-gray-600',
+        'hover:border-gray-400 dark:hover:border-gray-500',
         'error:border-red-400',
         'transition duration-200 ease',
       ]"
@@ -51,10 +49,10 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
       <span
         v-if="label"
         :class="[
-          'absolute origin-top-left left-2 italic pointer-events-none',
+          'absolute origin-top-left left-2 pointer-events-none',
           'input-hover:(opacity-100)',
-          'input-focused:(transform scale-60 opacity-100 not-italic) filled:(transform scale-60 text-black-50 not-italic)',
-          'opacity-60 error:(!text-red-400) input-focused:(text-primary-400)',
+          'input-focused:(transform scale-60 opacity-100) filled:(transform scale-60 text-gray-secondary)',
+          'opacity-70 error:(!text-red-400) input-focused:(text-primary-400)',
           'py-0.5 input-focused:(top-0) filled:(top-0)',
           'transition duration-250 ease',
         ]"
@@ -75,5 +73,25 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
 /* we have our own one */
 input[type="password" i]::-ms-reveal {
   display: none;
+}
+
+.input-field {
+  background-color: var(--input-surface);
+}
+
+/* doubled class so focus wins over the hover border */
+.input-field.input-field:focus-within {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-500) 12%, transparent);
+}
+
+.dark .input-field.input-field:focus-within {
+  border-color: var(--primary-300);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-300) 12%, transparent);
+}
+
+.error .input-field.input-field:focus-within {
+  border-color: #f87171;
+  box-shadow: 0 0 0 2px rgb(248 113 113 / 0.12);
 }
 </style>

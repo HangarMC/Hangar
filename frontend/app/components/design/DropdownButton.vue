@@ -28,7 +28,12 @@ const props = withDefaults(
 <template>
   <Popper :placement="placement" :container="container" :strategy="strategy">
     <template #default="{ shown }">
-      <Button :variant="props.buttonVariant" :tone="props.buttonTone" :size="props.buttonSize">
+      <Button
+        :variant="props.buttonVariant"
+        :tone="props.buttonTone"
+        :size="props.buttonSize"
+        :class="{ 'dropdown-trigger': props.buttonVariant === 'outline' && props.buttonTone === 'neutral' }"
+      >
         <slot name="button-label">
           {{ props.name }}
         </slot>
@@ -42,3 +47,13 @@ const props = withDefaults(
     </template>
   </Popper>
 </template>
+
+<style>
+.dropdown-trigger.dropdown-trigger {
+  background-color: var(--input-surface);
+}
+
+.dropdown-trigger.dropdown-trigger:hover {
+  background-color: var(--input-surface-hover);
+}
+</style>

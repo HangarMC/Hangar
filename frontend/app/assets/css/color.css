@@ -296,3 +296,14 @@
 .dark {
   --primary-ink: var(--primary-ink-dark);
 }
+
+/* form controls sit a step below the card they're on */
+:root {
+  --input-surface: #e9eaed;
+  --input-surface-hover: #e2e3e7;
+}
+
+.dark {
+  --input-surface: #212125;
+  --input-surface-hover: #2a2a2f;
+}
