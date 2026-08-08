@@ -1,4 +1,8 @@
-process.loadEnvFile(".env");
+try {
+    process.loadEnvFile(".env");
+} catch (e) {
+    console.warn("Didn't load env file");
+}
 
 export const config = {
     name: "Hangar E2E",
