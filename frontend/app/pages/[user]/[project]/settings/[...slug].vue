@@ -27,11 +27,11 @@ const props = defineProps<{
 }>();
 
 const selectedTab = ref(route.params.slug?.[0] || "general");
-const tabs = ref([
+const tabs = ref<Tab<string>[]>([
   { value: "general", header: i18n.t("project.settings.tabs.general"), icon: IconMdiTune },
   { value: "links", header: i18n.t("project.settings.tabs.links"), icon: IconMdiLinkVariant },
   { value: "members", header: i18n.t("project.settings.tabs.members"), icon: IconMdiAccountGroup },
-] satisfies Tab<string>[]);
+]);
 
 if (hasPerms(NamedPermission.EditChannels)) {
   tabs.value.push({ value: "channels", header: i18n.t("project.settings.tabs.channels"), icon: IconMdiTagMultiple });
@@ -466,8 +466,15 @@ useSeo(
         </ProjectSettingsSection>
       </template>
       <template #members>
-        <ProjectSettingsSection class="max-w-3xl" title="project.settings.tabs.members" description="project.settings.membersSub">
-          <MemberList bare :members="project?.members || []" :author="project?.namespace?.owner" :slug="project?.name" />
+        <ProjectSettingsSection class="max-w-3xl">
+          <MemberList
+            bare
+            title="project.settings.tabs.members"
+            description="project.settings.membersSub"
+            :members="project?.members || []"
+            :author="project?.namespace?.owner"
+            :slug="project?.name"
+          />
         </ProjectSettingsSection>
       </template>
       <template #channels>

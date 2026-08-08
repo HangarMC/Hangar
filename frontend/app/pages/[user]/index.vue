@@ -53,8 +53,6 @@ const { watching } = useWatching(() => route.params.user);
 const { pinned } = usePinned(() => route.params.user);
 const { organizations } = useOrganizations(() => route.params.user);
 
-const orgRoles = useBackendData.orgRoles.filter((role) => role.assignable);
-
 interface UserButton {
   icon: FunctionalComponent;
   action?: () => void;
@@ -165,7 +163,7 @@ useSeo(
         <Skeleton class="h-50" />
       </Card>
 
-      <Card v-if="user && (buttons.length > 0 || (organization && hasPerms(NamedPermission.IsSubjectOwner)))">
+      <Card v-if="user && (buttons.length > 0 || (organization && hasPerms(NamedPermission.EditSubjectSettings)))">
         <template #header>
           <h2>{{ i18n.t("author.management") }}</h2>
         </template>
@@ -175,10 +173,10 @@ useSeo(
             {{ i18n.t("author.tooltips." + btn.name) }}
           </Button>
 
-          <template v-if="organization && hasPerms(NamedPermission.IsSubjectOwner)">
-            <OrgTransferModal :organization="user.name" />
-            <OrgDeleteModal :organization="user.name" />
-          </template>
+          <Button v-if="organization && hasPerms(NamedPermission.EditSubjectSettings)" variant="outline" tone="neutral" size="sm" :to="`/${user.name}/settings`">
+            <IconMdiCog />
+            {{ i18n.t("organization.settings.title") }}
+          </Button>
           <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IsStaff)" :user="user" />
           <DeleteUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.ManualValueChanges)" :user="user" />
         </div>
@@ -280,7 +278,14 @@ useSeo(
           <p v-else class="text-sm text-gray-secondary">{{ i18n.t("author.noWatching", [user?.name]) }}</p>
         </Card>
       </template>
-      <MemberList v-else-if="organization" :members="organization.members" :roles="orgRoles" organization :author="user?.name" />
+      <MemberList
+        v-else-if="organization && user"
+        :members="organization.members"
+        organization
+        :author="user.name"
+        :manage="false"
+        :settings-link="`/${user.name}/settings/members`"
+      />
     </div>
   </div>
 </template>

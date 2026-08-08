@@ -20,7 +20,7 @@ const props = defineProps<{
 const pageChangeScrollAnchor = useTemplateRef("pageChangeScrollAnchor");
 const page = ref(route.query.page ? Number(route.query.page) : 0);
 const requestParams = computed(() => {
-  const limit = 7;
+  const limit = 25;
   return {
     limit,
     offset: page.value * limit,

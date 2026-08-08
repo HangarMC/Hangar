@@ -19,6 +19,8 @@ const props = withDefaults(
     bare?: boolean;
     manage?: boolean;
     settingsLink?: string;
+    title?: string;
+    description?: string;
   }>(),
   {
     organization: false,
@@ -28,20 +30,19 @@ const props = withDefaults(
     bare: false,
     manage: true,
     settingsLink: undefined,
+    title: undefined,
+    description: undefined,
   }
 );
 
-const sortedMembers = props.members.toSorted((r1, r2) => {
-  const role1 = getRole(r1.role.roleId);
-  const role2 = getRole(r2.role.roleId);
-  if (role1?.rank) {
-    if (role2?.rank) {
-      return role1.rank - role2.rank;
-    }
-    return 1;
-  }
-  return role2?.rank ? -1 : 1;
-});
+// unranked last, then by name -- a comparator that never returns 0 sorts unstably across engines
+const sortedMembers = computed(() =>
+  props.members.toSorted((r1, r2) => {
+    const rank1 = getRole(r1.role.roleId)?.rank ?? Number.MAX_SAFE_INTEGER;
+    const rank2 = getRole(r2.role.roleId)?.rank ?? Number.MAX_SAFE_INTEGER;
+    return rank1 === rank2 ? r1.user.name.localeCompare(r2.user.name) : rank1 - rank2;
+  })
+);
 
 const i18n = useI18n();
 const router = useRouter();
@@ -156,12 +157,6 @@ async function doSearch(val?: string) {
     <template v-if="!bare" #header>
       <div class="flex items-center gap-1">
         <h2>{{ i18n.t("project.members") }}</h2>
-        <Tooltip v-if="canEdit">
-          <template #content>
-            {{ i18n.t("form.memberList.info") }}
-          </template>
-          <IconMdiHelpCircleOutline class="text-gray-secondary" />
-        </Tooltip>
         <div class="flex-grow" />
         <MemberLeaveModal v-if="canLeave && author" :author="author" :organization="organization" :slug="slug" />
         <Button
@@ -179,8 +174,14 @@ async function doSearch(val?: string) {
       </div>
     </template>
 
-    <div v-if="bare && canLeave && author" class="mb-3 flex justify-end">
-      <MemberLeaveModal :author="author" :organization="organization" :slug="slug" />
+    <div v-if="bare && (title || (canLeave && author))" class="mb-3 flex items-start gap-3">
+      <div class="min-w-0 flex-1">
+        <h2 v-if="title" class="text-lg font-semibold">{{ i18n.t(title) }}</h2>
+        <p v-if="description" class="mt-0.5 text-sm text-gray-secondary">{{ i18n.t(description) }}</p>
+      </div>
+      <div v-if="canLeave && author" class="flex-shrink-0">
+        <MemberLeaveModal :author="author" :organization="organization" :slug="slug" />
+      </div>
     </div>
 
     <ul class="divide-y divide-gray-300 rounded-md border border-gray-300 dark:divide-gray-700 dark:border-gray-700">
@@ -188,17 +189,17 @@ async function doSearch(val?: string) {
         <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" class="flex-shrink-0" />
 
         <div class="min-w-30 flex-1">
-          <p class="min-w-0 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <p class="min-w-0 flex items-center gap-x-2">
             <Link :to="'/' + member.user.name" class="min-w-0 truncate font-semibold">{{ member.user.name }}</Link>
-            <Tooltip v-if="isPending(member)" class="flex-shrink-0">
-              <template #content>
-                {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId)?.title]) }}
-              </template>
-              <Chip tone="amber">
-                <IconMdiClockOutline />
-                {{ i18n.t("form.memberList.pending") }}
-              </Chip>
-            </Tooltip>
+            <Chip
+              v-if="isPending(member)"
+              tone="amber"
+              class="flex-shrink-0"
+              :title="i18n.t('form.memberList.invitedAs', [getRole(member.role.roleId)?.title])"
+            >
+              <IconMdiClockOutline />
+              {{ i18n.t("form.memberList.pending") }}
+            </Chip>
           </p>
           <p v-if="!canEditRole(member)" class="text-sm text-gray-secondary">{{ getRole(member.role.roleId)?.title }}</p>
         </div>

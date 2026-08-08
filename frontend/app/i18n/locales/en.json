@@ -716,7 +716,23 @@
       "slotsUsed": "{0} of {1} organizations used"
     },
     "settings": {
+      "title": "Organization settings",
       "changeAvatar": "Change avatar",
+      "icon": "Icon",
+      "iconSub": "Upload an image representing this organization.",
+      "tagline": "Tagline",
+      "taglineSub": "A short line of text shown under the organization name.",
+      "socials": "Social links",
+      "socialsSub": "Links shown on the organization's profile.",
+      "membersSub": "Manage who belongs to this organization and what they can do.",
+      "transfer": "Transfer ownership",
+      "transferSub": "Send an invitation for another user to take over as owner.",
+      "delete": "Delete organization",
+      "tabs": {
+        "general": "General",
+        "members": "Members",
+        "management": "Management"
+      },
       "members": {
         "invalidUser": "{0} is not a valid user",
         "alreadyInvited": "{0} is already invited to the organization",
@@ -734,7 +750,9 @@
         "description": "This will delete all projects of the organization and permanently delete the org. Are you sure you want to do that?"
       },
       "success": {
-        "transferRequest": "Successfully sent a transfer request to {0}. You can cancel this via the member list."
+        "transferRequest": "Successfully sent a transfer request to {0}. You can cancel this via the member list.",
+        "saved": "Saved",
+        "deleted": "Deleted {0}"
       }
     }
   },
