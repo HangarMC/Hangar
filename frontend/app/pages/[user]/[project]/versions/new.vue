@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Step } from "#shared/types/components/design/Steps";
 import type { Tab } from "#shared/types/components/design/Tabs";
-import type { HangarChannel, HangarProject, PendingVersion, Platform, PlatformData } from "#shared/types/backend";
+import type { HangarChannel, HangarProject, PendingVersion, Platform, PlatformData, ProjectChannel } from "#shared/types/backend";
 import { guidelinesLastUpdated } from "~/pages/guidelines.vue";
 
 definePageMeta({
@@ -236,10 +236,10 @@ async function createVersion() {
   }
 }
 
-function addChannel(channel: HangarChannel) {
+function addChannel(channel: HangarChannel | ProjectChannel) {
   if (!channels.value) return;
   channels.value = channels.value.filter((c) => !c.temp);
-  channels.value.push(Object.assign({ temp: true }, channel));
+  channels.value.push(Object.assign({ temp: true }, channel as HangarChannel));
   selectedChannel.value = channel.name;
 }
 
@@ -296,7 +296,7 @@ useSeo(
                 </template>
               </DropdownButton>
 
-              <ChannelModal v-if="project" :project-id="project.id" @create="addChannel as unknown as HangarChannel">
+              <ChannelModal v-if="project" :project-id="project.id" @create="addChannel">
                 <template #activator="{ on }">
                   <Button variant="outline" tone="neutral" size="lg" v-on="on">
                     <IconMdiPlus />

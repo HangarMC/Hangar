@@ -7,7 +7,7 @@ export function useSeo(
     description?: string | null;
     route: RouteLocationNormalized;
     image?: string | null;
-    additionalScripts?: { type: string; textContent: string; key: string }[];
+    additionalScripts?: Script[];
     manualTitle?: boolean;
   }>
 ) {
