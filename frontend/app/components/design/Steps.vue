@@ -129,11 +129,13 @@ async function goto(step: Step) {
 
     <div class="mt-4">
       <Card accent>
-        <template #header>
-          <span class="hidden md:block">{{ activeStep?.header }}</span>
-        </template>
-        <div v-for="step in steps" :key="step.value">
-          <slot v-if="internalValue === step.value" :name="step.value" />
+        <div class="border-b border-gray-300 pb-3 dark:border-gray-700">
+          <h2 class="text-2xl font-bold">{{ activeStep?.header }}</h2>
+        </div>
+        <div class="pt-4">
+          <div v-for="step in steps" :key="step.value">
+            <slot v-if="internalValue === step.value" :name="step.value" />
+          </div>
         </div>
         <div class="mt-5 flex justify-end gap-2 border-t border-gray-300 pt-4 dark:border-gray-700">
           <Button

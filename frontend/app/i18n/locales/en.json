@@ -523,6 +523,7 @@
         "artifactTitle": "After setting the channel, you can either upload a file or set an external download url. Each file/url needs at least one platform selected.",
         "artifactNumber": "Download #{0}",
         "externalLinkAlert": "An external link needs to be a direct download link!",
+        "downloads": "Downloads",
         "addedArtifacts": "Provided Artifacts",
         "addAnotherArtifact": "Add another file or URL"
       },

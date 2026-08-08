@@ -53,7 +53,7 @@ defineExpose({
 <template>
   <dialog
     ref="dialog"
-    class="max-w-[calc(100vw-2rem)] background-default rounded-md border border-gray-300 p-0 text-base font-normal shadow-xl dark:border-gray-700 >md:max-w-250"
+    class="max-w-[calc(100vw-2rem)] background-default rounded-md border border-gray-300 p-0 text-base font-normal text-left shadow-xl dark:border-gray-700 >md:max-w-250"
     :class="windowClasses"
     :data-title="title"
     @close="close"

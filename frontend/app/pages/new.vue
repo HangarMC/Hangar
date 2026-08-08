@@ -130,131 +130,122 @@ function createProject() {
       <p class="mt-2 inline-flex flex-wrap items-center gap-x-2">
         <IconMdiFileDocumentAlert class="flex-shrink-0 text-gray-secondary" />
         <Link to="/guidelines">{{ i18n.t("project.new.step1.text2") }}</Link>
-        <Tooltip>
-          <template #content><PrettyTime :time="guidelinesLastUpdated" long /></template>
-          <span class="text-sm text-gray-secondary">(Last updated <PrettyTime :time="guidelinesLastUpdated" short-relative />)</span>
-        </Tooltip>
+        <span class="text-sm text-gray-secondary">(Last updated <PrettyTime :time="guidelinesLastUpdated" short-relative />)</span>
       </p>
     </template>
     <template #basic>
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-6">
         <p class="text-gray-secondary">{{ i18n.t("project.new.step2.description") }}</p>
 
-        <div class="flex flex-wrap items-end gap-2">
-          <div class="flex-none">
-            <InputDropdown
-              v-model="form.ownerId"
-              :values="projectOwners"
-              item-value="id"
-              item-text="name"
-              :label="i18n.t('project.new.step2.userSelect')"
-              :rules="[required()]"
-            />
+        <FormSection :title="i18n.t('project.new.step2.projectName')">
+          <template #icon><IconMdiCubeOutline /></template>
+          <div class="flex flex-wrap items-end gap-2">
+            <div class="flex-none">
+              <InputDropdown
+                v-model="form.ownerId"
+                :values="projectOwners"
+                item-value="id"
+                item-text="name"
+                :label="i18n.t('project.new.step2.userSelect')"
+                :rules="[required()]"
+              />
+            </div>
+            <span class="pb-2 text-xl text-gray-secondary lt-md:hidden">/</span>
+            <div class="min-w-50 flex-1">
+              <InputText
+                v-model.trim="form.name"
+                :label="i18n.t('project.new.step2.projectName')"
+                :maxlength="useBackendData.validations.project.name.max"
+                name="name"
+                counter
+                :rules="[
+                  required(),
+                  maxLength()(useBackendData.validations.project.name.max!),
+                  pattern()(useBackendData.validations.project.name.regex!),
+                  validProjectName()(),
+                ]"
+              />
+            </div>
           </div>
-          <span class="pb-2 text-xl text-gray-secondary lt-md:hidden">/</span>
-          <div class="min-w-50 flex-1">
-            <InputText
-              v-model.trim="form.name"
-              :label="i18n.t('project.new.step2.projectName')"
-              :maxlength="useBackendData.validations.project.name.max"
-              name="name"
-              counter
-              :rules="[
-                required(),
-                maxLength()(useBackendData.validations.project.name.max!),
-                pattern()(useBackendData.validations.project.name.regex!),
-                validProjectName()(),
-              ]"
-            />
-          </div>
-        </div>
+        </FormSection>
 
-        <InputText
-          v-model.trim="form.description"
-          :label="i18n.t('project.new.step2.projectSummary')"
-          :rules="[required()]"
-          :maxlength="useBackendData.validations.project.desc.max"
-          name="description"
-          counter
-        />
-
-        <div>
-          <InputDropdown
-            v-model="form.category"
-            :values="useCategoryOptions"
-            :label="i18n.t('project.new.step2.projectCategory')"
+        <FormSection :title="i18n.t('project.new.step2.projectSummary')" :description="i18n.t('project.settings.descriptionSub')">
+          <template #icon><IconMdiTextShort /></template>
+          <InputText
+            v-model.trim="form.description"
+            :label="i18n.t('project.new.step2.projectSummary')"
             :rules="[required()]"
-            i18n-text-values
+            :maxlength="useBackendData.validations.project.desc.max"
+            name="description"
+            counter
           />
-        </div>
+        </FormSection>
+
+        <FormSection :title="i18n.t('project.new.step2.projectCategory')" :description="i18n.t('project.settings.categorySub')">
+          <template #icon><IconMdiShapeOutline /></template>
+          <InputDropdown v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
+        </FormSection>
       </div>
     </template>
     <template #additional>
-      <p>{{ i18n.t("project.new.step3.description") }}</p>
-      <div class="mt-4 flex items-center gap-2">
-        <IconMdiLink class="flex-shrink-0 text-gray-secondary" />
-        <span class="flex-shrink-0 text-lg font-bold">{{ i18n.t("project.new.step3.links") }}</span>
-        <hr class="flex-1 border-gray-300 dark:border-gray-700" />
-      </div>
-      <ProjectLinksForm v-model="form.settings.links" class="mt-2" />
-      <div class="mt-6 flex items-center gap-2">
-        <IconMdiLicense class="flex-shrink-0 text-gray-secondary" />
-        <span class="flex-shrink-0 text-lg font-bold">{{ i18n.t("project.new.step3.license") }}</span>
-        <hr class="flex-1 border-gray-300 dark:border-gray-700" />
-      </div>
-      <div class="flex flex-wrap items-start gap-2">
-        <div class="mt-2 flex-shrink-0">
-          <InputDropdown v-model="form.settings.license.type" :values="useLicenseOptions" :label="i18n.t('project.new.step3.type')" :rules="[required()]" />
-        </div>
-        <div v-if="isCustomLicense" class="mt-2 min-w-60 flex-1">
-          <InputText
-            v-model.trim="form.settings.license.name"
-            :label="i18n.t('project.new.step3.customName')"
-            :rules="[
-              requiredIf()(isCustomLicense),
-              maxLength()(useBackendData.validations.project.license.max!),
-              pattern()(useBackendData.validations.project.license.regex!),
-            ]"
-          />
-        </div>
-        <div v-if="!licenseUnset" class="mt-2 min-w-60 flex-1">
-          <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[validUrl()]" />
-        </div>
-      </div>
-      <div class="mt-6 flex items-center gap-2">
-        <IconMdiTag class="flex-shrink-0 text-gray-secondary" />
-        <span class="flex-shrink-0 text-lg font-bold">{{ i18n.t("project.new.step3.tags") }}</span>
-        <hr class="flex-1 border-gray-300 dark:border-gray-700" />
-      </div>
-      <p class="mb-1">{{ i18n.t("project.new.step3.description2") }}</p>
-      <div class="mt-2 flex flex-wrap gap-2">
-        <Tooltip v-for="tag in Object.values(Tag)" :key="tag">
-          <template #content>{{ i18n.t("project.settings.tags." + tag + ".description") }}</template>
-          <button
-            type="button"
-            class="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors"
-            :class="
-              form.settings.tags.includes(tag)
-                ? 'border-primary-500 background-card color-primary'
-                : 'border-gray-300 hover:background-card dark:border-gray-700'
-            "
-            :aria-pressed="form.settings.tags.includes(tag)"
-            @click="toggleTag(tag)"
-          >
-            <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-            <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-            <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-            {{ i18n.t("project.settings.tags." + tag + ".title") }}
-          </button>
-        </Tooltip>
-      </div>
-      <div class="mt-4 flex items-center gap-2">
-        <IconMdiCloudSearch class="flex-shrink-0 text-gray-secondary" />
-        <span class="flex-shrink-0 text-lg font-bold">{{ i18n.t("project.new.step3.keywords") }}</span>
-        <hr class="flex-1 border-gray-300 dark:border-gray-700" />
-      </div>
-      <div class="flex">
-        <div class="mt-2 basis-full">
+      <div class="flex flex-col gap-6">
+        <p class="text-gray-secondary">{{ i18n.t("project.new.step3.description") }}</p>
+
+        <FormSection :title="i18n.t('project.new.step3.links')" :description="i18n.t('project.settings.links.sub')">
+          <template #icon><IconMdiLink /></template>
+          <ProjectLinksForm v-model="form.settings.links" />
+        </FormSection>
+
+        <FormSection :title="i18n.t('project.new.step3.license')" :description="i18n.t('project.settings.licenseSub')">
+          <template #icon><IconMdiLicense /></template>
+          <div class="flex flex-wrap items-end gap-2">
+            <div class="flex-shrink-0">
+              <InputDropdown v-model="form.settings.license.type" :values="useLicenseOptions" :rules="[required()]" />
+            </div>
+            <div v-if="isCustomLicense" class="min-w-60 flex-1">
+              <InputText
+                v-model.trim="form.settings.license.name"
+                :label="i18n.t('project.new.step3.customName')"
+                :rules="[
+                  requiredIf()(isCustomLicense),
+                  maxLength()(useBackendData.validations.project.license.max!),
+                  pattern()(useBackendData.validations.project.license.regex!),
+                ]"
+              />
+            </div>
+            <div v-if="!licenseUnset" class="min-w-60 flex-1">
+              <InputText v-model.trim="form.settings.license.url" :label="i18n.t('project.new.step3.url')" :rules="[validUrl()]" />
+            </div>
+          </div>
+        </FormSection>
+
+        <FormSection :title="i18n.t('project.new.step3.tags')" :description="i18n.t('project.new.step3.description2')">
+          <template #icon><IconMdiTag /></template>
+          <div class="flex flex-wrap gap-2">
+            <Tooltip v-for="tag in Object.values(Tag)" :key="tag">
+              <template #content>{{ i18n.t("project.settings.tags." + tag + ".description") }}</template>
+              <button
+                type="button"
+                class="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors"
+                :class="
+                  form.settings.tags.includes(tag)
+                    ? 'border-primary-500 background-card color-primary'
+                    : 'border-gray-300 hover:background-card dark:border-gray-700'
+                "
+                :aria-pressed="form.settings.tags.includes(tag)"
+                @click="toggleTag(tag)"
+              >
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
+                {{ i18n.t("project.settings.tags." + tag + ".title") }}
+              </button>
+            </Tooltip>
+          </div>
+        </FormSection>
+
+        <FormSection :title="i18n.t('project.new.step3.keywords')" :description="i18n.t('project.settings.keywordsSub')">
+          <template #icon><IconMdiCloudSearch /></template>
           <InputTag
             v-model="form.settings.keywords"
             :label="i18n.t('project.new.step3.keywords')"
@@ -263,7 +254,7 @@ function createProject() {
             :maxlength="useBackendData?.validations?.project?.keywords?.max || 5"
             counter
           />
-        </div>
+        </FormSection>
       </div>
     </template>
     <template #finishing>

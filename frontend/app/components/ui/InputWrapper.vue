@@ -30,7 +30,8 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
   >
     <label
       :class="[
-        'input-field relative flex w-full outline-none p-2 border-1px rounded-md',
+        // 7px keeps single-line fields at h-11 like the buttons beside them, without capping textareas
+        'input-field relative flex w-full outline-none px-2 py-[7px] border-1px rounded-md',
         'border-gray-300 dark:border-gray-600',
         'hover:border-gray-400 dark:hover:border-gray-500',
         'error:border-red-400',

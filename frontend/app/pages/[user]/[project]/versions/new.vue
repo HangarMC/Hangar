@@ -267,9 +267,11 @@ useSeo(
   <div>
     <Steps v-model="selectedStep" :steps="steps" button-lang-key="version.new.steps." tracking-name="new-version">
       <template #artifact>
-        <p class="mb-4">{{ t("version.new.form.artifactTitle") }}</p>
-        <div class="mb-6">
-          <InputGroup v-model="selectedChannel" :label="t('version.new.form.channel')" :rules="[required()]" full-width>
+        <p class="mb-6 text-gray-secondary">{{ t("version.new.form.artifactTitle") }}</p>
+
+        <FormSection class="mb-6" :title="t('version.new.form.channel')">
+          <template #icon><IconMdiPaletteSwatch /></template>
+          <InputGroup v-model="selectedChannel" :rules="[required()]" full-width>
             <div class="flex flex-wrap items-center gap-2">
               <DropdownButton button-variant="outline" button-tone="neutral" button-size="lg">
                 <template #button-label>
@@ -302,7 +304,11 @@ useSeo(
               </ChannelModal>
             </div>
           </InputGroup>
-        </div>
+        </FormSection>
+
+        <FormSection class="mb-3" :title="t('version.new.form.downloads')">
+          <template #icon><IconMdiDownloadBox /></template>
+        </FormSection>
 
         <div v-for="(platformFile, idx) in platformFiles" :key="idx" class="mb-3 rounded-md border border-gray-300 p-4 dark:border-gray-700">
           <div class="mb-3 flex items-center gap-2">
@@ -363,10 +369,12 @@ useSeo(
         </Button>
       </template>
       <template #basic>
-        <p class="mb-4">{{ i18n.t("version.new.form.versionDescription") }}</p>
-        <div class="flex flex-wrap mt-2 md:-space-x-2 lt-md:space-y-2">
+        <p class="mb-6 text-gray-secondary">{{ i18n.t("version.new.form.versionDescription") }}</p>
+
+        <FormSection :title="t('version.new.form.versionString')">
+          <template #icon><IconMdiTagTextOutline /></template>
           <!-- TODO validate version string against existing versions - now super easy! -->
-          <div v-if="pendingVersion" class="basis-full md:basis-4/12 items-center">
+          <div v-if="pendingVersion" class="max-w-sm">
             <InputText
               v-model="pendingVersion.versionString"
               :label="t('version.new.form.versionString')"
@@ -376,10 +384,12 @@ useSeo(
               name="version"
             />
           </div>
-        </div>
+        </FormSection>
 
-        <h2 class="mt-8 text-lg font-bold">{{ t("version.new.form.addedArtifacts") }}</h2>
-        <ul class="mt-2 divide-y divide-gray-300 rounded-md border border-gray-300 dark:divide-gray-700 dark:border-gray-700">
+        <FormSection class="mt-6" :title="t('version.new.form.addedArtifacts')">
+          <template #icon><IconMdiFileOutline /></template>
+        </FormSection>
+        <ul class="mt-3 divide-y divide-gray-300 rounded-md border border-gray-300 dark:divide-gray-700 dark:border-gray-700">
           <li v-for="(pendingFile, idx) in pendingVersion?.files" :key="idx" class="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2.5">
             <IconMdiFileOutline v-if="pendingFile.fileInfo" class="flex-shrink-0 text-xl text-gray-secondary" />
             <IconMdiLinkVariant v-else class="flex-shrink-0 text-xl text-gray-secondary" />
@@ -398,43 +408,47 @@ useSeo(
         </ul>
       </template>
       <template #dependencies>
-        <p class="mb-4">{{ i18n.t("version.new.form.platformVersionsDescription") }}</p>
-        <h2 class="text-xl mt-2 mb-2">{{ t("version.new.form.platformVersions") }}</h2>
-        <div class="flex flex-wrap space-y-5 mb-8">
-          <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
-            <span class="mb-2 inline-flex items-center gap-1.5 text-lg font-bold"
-              ><PlatformLogo :platform="platform.enumName" :size="22" /> {{ platform.name }}</span
-            >
-            <div class="ml-1">
-              <VersionSelector
-                v-if="pendingVersion"
-                v-model="pendingVersion.platformDependencies[platform.enumName]"
-                :versions="platform.platformVersions"
-                :rules="platformVersionRules"
-                open
-              />
-            </div>
-          </div>
-        </div>
+        <div class="flex flex-col gap-6">
+          <p class="text-gray-secondary">{{ i18n.t("version.new.form.platformVersionsDescription") }}</p>
 
-        <h2 class="text-xl mb-3">{{ t("version.new.form.dependencies") }}</h2>
-        <div class="flex flex-wrap space-y-7">
-          <div v-for="platform in selectedPlatformsData" :key="platform.enumName" class="basis-full">
-            <span class="mb-2 inline-flex items-center gap-1.5 text-lg font-bold"
-              ><PlatformLogo :platform="platform.enumName" :size="22" /> {{ platform.name }}</span
-            >
-            <DependencyTable
-              v-if="pendingVersion"
-              ref="dependencyTables"
-              :key="`${platform.name}-deps-table`"
-              :platform="platform.enumName"
-              :plugin-dependencies="pendingVersion.pluginDependencies"
-            />
-          </div>
+          <FormSection :title="t('version.new.form.platformVersions')">
+            <template #icon><IconMdiCog /></template>
+            <div class="flex flex-col gap-5">
+              <div v-for="platform in selectedPlatformsData" :key="platform.enumName">
+                <span class="mb-2 inline-flex items-center gap-1.5 font-semibold">
+                  <PlatformLogo :platform="platform.enumName" :size="20" /> {{ platform.name }}
+                </span>
+                <VersionSelector
+                  v-if="pendingVersion"
+                  v-model="pendingVersion.platformDependencies[platform.enumName]"
+                  :versions="platform.platformVersions"
+                  :rules="platformVersionRules"
+                  open
+                />
+              </div>
+            </div>
+          </FormSection>
+
+          <FormSection :title="t('version.new.form.dependencies')">
+            <template #icon><IconMdiPuzzleOutline /></template>
+            <div class="flex flex-col gap-6">
+              <div v-for="platform in selectedPlatformsData" :key="platform.enumName">
+                <span class="mb-2 inline-flex items-center gap-1.5 font-semibold">
+                  <PlatformLogo :platform="platform.enumName" :size="20" /> {{ platform.name }}
+                </span>
+                <DependencyTable
+                  v-if="pendingVersion"
+                  ref="dependencyTables"
+                  :key="`${platform.name}-deps-table`"
+                  :platform="platform.enumName"
+                  :plugin-dependencies="pendingVersion.pluginDependencies"
+                />
+              </div>
+            </div>
+          </FormSection>
         </div>
       </template>
       <template #changelog>
-        <h2 class="text-xl mt-2">{{ t("version.new.form.changelogTitle") }}</h2>
         <ClientOnly>
           <MarkdownEditor
             ref="descriptionEditor"
