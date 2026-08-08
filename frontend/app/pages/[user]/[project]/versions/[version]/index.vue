@@ -304,47 +304,38 @@ async function restoreVersion() {
           <h2>{{ i18n.t("project.info.title") }}</h2>
         </template>
 
-        <dl class="flex flex-col gap-1.5">
-          <div class="flex items-baseline justify-between gap-3">
-            <dt class="inline-flex min-w-0 items-center gap-1.5 truncate text-gray-secondary">
-              <IconMdiAccount class="flex-shrink-0" />
-              {{ i18n.t("version.page.author") }}
-            </dt>
-            <dd class="min-w-0 truncate text-right font-semibold">
-              <Link :to="'/' + version.author">{{ version.author }}</Link>
-            </dd>
-          </div>
-          <div class="flex items-baseline justify-between gap-3">
-            <dt class="inline-flex min-w-0 items-center gap-1.5 truncate text-gray-secondary">
-              <IconMdiCalendar class="flex-shrink-0" />
-              {{ i18n.t("project.info.publishDate") }}
-            </dt>
-            <dd class="flex-shrink-0 whitespace-nowrap text-right font-semibold tabular-nums">{{ i18n.d(version.createdAt, "date") }}</dd>
-          </div>
-          <div class="flex items-baseline justify-between gap-3">
-            <dt class="inline-flex min-w-0 items-center gap-1.5 truncate text-gray-secondary">
-              <IconMdiDownload class="flex-shrink-0" />
-              {{ i18n.t(hasPerms(NamedPermission.IsSubjectMember) ? "project.info.totalTotalDownloads" : "project.info.totalDownloads", 0) }}
-            </dt>
-            <dd class="flex-shrink-0 whitespace-nowrap text-right font-semibold tabular-nums">{{ version.stats.totalDownloads.toLocaleString("en-US") }}</dd>
-          </div>
+        <div class="flex flex-col gap-3">
+          <InfoRow :label="i18n.t('project.info.publishDate')">
+            <template #icon><IconMdiCalendar /></template>
+            <span class="tabular-nums">{{ i18n.d(version.createdAt, "date") }}</span>
+          </InfoRow>
 
-          <template v-if="hasPerms(NamedPermission.IsSubjectMember)">
-            <div
+          <InfoRow :label="i18n.t('version.page.author')">
+            <template #icon><IconMdiAccount /></template>
+            <Link :to="'/' + version.author">{{ version.author }}</Link>
+          </InfoRow>
+        </div>
+
+        <div class="mt-4 flex flex-col gap-2 border-t border-gray-300 pt-4 dark:border-gray-700">
+          <div class="flex">
+            <StatTile
+              :label="i18n.t(hasPerms(NamedPermission.IsSubjectMember) ? 'project.info.totalTotalDownloads' : 'project.info.totalDownloads', 0)"
+              :value="version.stats.totalDownloads"
+            >
+              <template #icon><IconMdiDownload /></template>
+            </StatTile>
+          </div>
+          <div v-if="hasPerms(NamedPermission.IsSubjectMember)" class="flex flex-wrap gap-2">
+            <StatTile
               v-for="platform in Object.keys(version.stats.platformDownloads)"
               :key="platform"
-              class="flex items-baseline justify-between gap-3 border-t border-gray-300 pt-1.5 first:border-t-0 first:pt-0 dark:border-gray-700"
+              :label="usePlatformName(platform as Platform) ?? platform"
+              :value="version.stats.platformDownloads[platform] ?? 0"
             >
-              <dt class="inline-flex min-w-0 flex-shrink items-center gap-1.5 text-gray-secondary">
-                <PlatformLogo :platform="platform as Platform" :size="16" class="flex-shrink-0" />
-                <span class="truncate">{{ usePlatformName(platform as Platform) }}</span>
-              </dt>
-              <dd class="flex-shrink-0 whitespace-nowrap text-right font-semibold tabular-nums">
-                {{ version.stats.platformDownloads[platform]?.toLocaleString("en-US") }}
-              </dd>
-            </div>
-          </template>
-        </dl>
+              <template #icon><PlatformLogo :platform="platform as Platform" :size="14" /></template>
+            </StatTile>
+          </div>
+        </div>
       </Card>
 
       <Card>

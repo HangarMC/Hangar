@@ -22,64 +22,40 @@ const license = computed(() => {
       <h2>{{ i18n.t("project.info.title") }}</h2>
     </template>
     <template #default>
-      <dl class="flex flex-col gap-1.5">
-        <div class="flex items-baseline justify-between gap-3">
-          <dt class="inline-flex flex-shrink-0 items-center gap-1.5 text-gray-secondary">
-            <CategoryLogo v-if="project" :category="project.category" :size="16" class="flex-shrink-0" /> {{ i18n.t("project.category.info") }}
-          </dt>
-          <dd v-if="project" class="min-w-0 truncate text-right font-semibold">{{ i18n.t("project.category." + project.category) }}</dd>
-          <dd v-else class="w-24"><Skeleton /></dd>
-        </div>
-        <div class="flex items-baseline justify-between gap-3">
-          <dt class="inline-flex flex-shrink-0 items-center gap-1.5 text-gray-secondary">
-            <IconMdiCalendar class="flex-shrink-0" /> {{ i18n.t("project.info.publishDate") }}
-          </dt>
-          <dd v-if="project" class="text-right font-semibold tabular-nums">{{ i18n.d(project.createdAt, "date") }}</dd>
-          <dd v-else class="w-24"><Skeleton /></dd>
-        </div>
-        <div class="flex items-baseline justify-between gap-3">
-          <dt class="inline-flex flex-shrink-0 items-center gap-1.5 text-gray-secondary">
-            <IconMdiLicense class="flex-shrink-0" /> {{ i18n.t("project.info.license") }}
-          </dt>
-          <dd v-if="license" class="min-w-0 truncate text-right font-semibold">
+      <div class="flex flex-col gap-3">
+        <InfoRow :label="i18n.t('project.category.info')">
+          <template #icon><CategoryLogo v-if="project" :category="project.category" :size="20" /></template>
+          <template v-if="project">{{ i18n.t("project.category." + project.category) }}</template>
+          <Skeleton v-else class="w-24" />
+        </InfoRow>
+
+        <InfoRow :label="i18n.t('project.info.publishDate')">
+          <template #icon><IconMdiCalendar /></template>
+          <span v-if="project" class="tabular-nums">{{ i18n.d(project.createdAt, "date") }}</span>
+          <Skeleton v-else class="w-24" />
+        </InfoRow>
+
+        <InfoRow :label="i18n.t('project.info.license')">
+          <template #icon><IconMdiLicense /></template>
+          <template v-if="license">
             <Link v-if="license.url" :href="license.url" target="_blank" rel="noreferrer noopener">{{ license.label }}</Link>
             <template v-else>{{ license.label }}</template>
-          </dd>
-          <dd v-else class="w-24"><Skeleton /></dd>
-        </div>
-      </dl>
+          </template>
+          <Skeleton v-else class="w-24" />
+        </InfoRow>
+      </div>
 
-      <!-- Stats are split off so the member-only "views" row can't reshape the block above it. -->
-      <dl class="mt-3 flex flex-col gap-1.5 border-t border-gray-300 pt-3 dark:border-gray-700">
-        <div class="flex items-baseline justify-between gap-3">
-          <dt class="inline-flex flex-shrink-0 items-center gap-1.5 text-gray-secondary">
-            <IconMdiDownload class="flex-shrink-0" /> {{ i18n.t("project.info.totalDownloads", 0) }}
-          </dt>
-          <dd v-if="project" class="text-right font-semibold tabular-nums">{{ project.stats.downloads.toLocaleString("en-US") }}</dd>
-          <dd v-else class="w-12"><Skeleton /></dd>
-        </div>
-        <NuxtLink :to="`/${namespace}/stars`" class="flex items-baseline justify-between gap-3 hover:color-primary">
-          <dt class="inline-flex flex-shrink-0 items-center gap-1.5 text-gray-secondary">
-            <IconMdiStarOutline class="flex-shrink-0" /> {{ i18n.t("project.info.stars", 0) }}
-          </dt>
-          <dd v-if="project" class="text-right font-semibold tabular-nums">{{ project.stats.stars.toLocaleString("en-US") }}</dd>
-          <dd v-else class="w-12"><Skeleton /></dd>
-        </NuxtLink>
-        <NuxtLink :to="`/${namespace}/watchers`" class="flex items-baseline justify-between gap-3 hover:color-primary">
-          <dt class="inline-flex flex-shrink-0 items-center gap-1.5 text-gray-secondary">
-            <IconMdiBellOutline class="flex-shrink-0" /> {{ i18n.t("project.info.watchers", 0) }}
-          </dt>
-          <dd v-if="project" class="text-right font-semibold tabular-nums">{{ project.stats.watchers.toLocaleString("en-US") }}</dd>
-          <dd v-else class="w-12"><Skeleton /></dd>
-        </NuxtLink>
-        <div v-if="hasPerms(NamedPermission.IsSubjectMember)" class="flex items-baseline justify-between gap-3">
-          <dt class="inline-flex flex-shrink-0 items-center gap-1.5 text-gray-secondary">
-            <IconMdiEyeOutline class="flex-shrink-0" /> {{ i18n.t("project.info.views", 0) }}
-          </dt>
-          <dd v-if="project" class="text-right font-semibold tabular-nums">{{ project.stats.views.toLocaleString("en-US") }}</dd>
-          <dd v-else class="w-12"><Skeleton /></dd>
-        </div>
-      </dl>
+      <div v-if="project" class="mt-4 flex flex-wrap gap-2 border-t border-gray-300 pt-4 dark:border-gray-700">
+        <StatTile :label="i18n.t('project.info.totalDownloads', 0)" :value="project.stats.downloads">
+          <template #icon><IconMdiDownload /></template>
+        </StatTile>
+        <StatTile :label="i18n.t('project.info.stars', 0)" :value="project.stats.stars">
+          <template #icon><IconMdiStarOutline /></template>
+        </StatTile>
+        <StatTile v-if="hasPerms(NamedPermission.IsSubjectMember)" :label="i18n.t('project.info.views', 0)" :value="project.stats.views">
+          <template #icon><IconMdiEyeOutline /></template>
+        </StatTile>
+      </div>
 
       <div v-if="project?.settings?.tags?.length" class="mt-3 flex flex-wrap gap-1 border-t border-gray-300 pt-3 dark:border-gray-700">
         <span
