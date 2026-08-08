@@ -1,5 +1,6 @@
 package io.papermc.hangar.db.dao.internal.table.projects;
 
+import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.service.internal.projects.ProjectFactory;
@@ -29,6 +30,9 @@ public interface ProjectsDAO {
         "license_type = :licenseType, license_name = :licenseName, license_url = :licenseUrl, description = :description, visibility = :visibility, " +
         "donation_enabled = :donationEnabled, donation_subject = :donationSubject, sponsors = :sponsors WHERE id = :id")
     ProjectTable update(@BindBean ProjectTable project);
+
+    @SqlUpdate("UPDATE projects SET links = :links WHERE id = :id")
+    void updateLinks(long id, JSONB links);
 
     @SqlUpdate("UPDATE projects SET owner_name = :ownerName, owner_id = :ownerId WHERE id = :id")
     void updateOwner(@BindBean ProjectTable project);

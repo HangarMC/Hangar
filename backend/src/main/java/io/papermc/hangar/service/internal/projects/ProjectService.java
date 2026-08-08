@@ -21,6 +21,7 @@ import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
+import io.papermc.hangar.model.internal.api.requests.projects.ProjectLinksForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
@@ -228,6 +229,15 @@ public class ProjectService extends HangarComponent {
         this.projectsDAO.update(projectTable);
 
         // TODO what settings changed
+        projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
+    }
+
+    public void saveLinks(final ProjectTable projectTable, final ProjectLinksForm linksForm) {
+        this.validateLinks(linksForm.getLinks());
+
+        projectTable.setLinks(new JSONB(linksForm.getLinks()));
+        this.projectsDAO.updateLinks(projectTable.getId(), projectTable.getLinks());
+
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
 
