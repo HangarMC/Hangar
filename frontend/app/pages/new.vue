@@ -137,11 +137,11 @@ function createProject() {
       </p>
     </template>
     <template #basic>
-      <div>
-        <p class="mb-4">{{ i18n.t("project.new.step2.description") }}</p>
+      <div class="flex flex-col gap-4">
+        <p class="text-gray-secondary">{{ i18n.t("project.new.step2.description") }}</p>
 
-        <div class="flex flex-wrap items-start gap-2">
-          <div class="min-w-50 flex-1">
+        <div class="flex flex-wrap items-end gap-2">
+          <div class="flex-none">
             <InputDropdown
               v-model="form.ownerId"
               :values="projectOwners"
@@ -151,7 +151,7 @@ function createProject() {
               :rules="[required()]"
             />
           </div>
-          <span class="pt-3 text-xl text-gray-secondary lt-md:hidden">/</span>
+          <span class="pb-2 text-xl text-gray-secondary lt-md:hidden">/</span>
           <div class="min-w-50 flex-1">
             <InputText
               v-model.trim="form.name"
@@ -169,18 +169,16 @@ function createProject() {
           </div>
         </div>
 
-        <div class="mt-4">
-          <InputText
-            v-model.trim="form.description"
-            :label="i18n.t('project.new.step2.projectSummary')"
-            :rules="[required()]"
-            :maxlength="useBackendData.validations.project.desc.max"
-            name="description"
-            counter
-          />
-        </div>
+        <InputText
+          v-model.trim="form.description"
+          :label="i18n.t('project.new.step2.projectSummary')"
+          :rules="[required()]"
+          :maxlength="useBackendData.validations.project.desc.max"
+          name="description"
+          counter
+        />
 
-        <div class="mt-4">
+        <div>
           <InputDropdown
             v-model="form.category"
             :values="useCategoryOptions"

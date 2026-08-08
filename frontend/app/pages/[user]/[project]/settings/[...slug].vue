@@ -30,7 +30,6 @@ const selectedTab = ref(route.params.slug?.[0] || "general");
 const tabs = ref([
   { value: "general", header: i18n.t("project.settings.tabs.general"), icon: IconMdiTune },
   { value: "links", header: i18n.t("project.settings.tabs.links"), icon: IconMdiLinkVariant },
-  { value: "banners", header: i18n.t("project.settings.tabs.banners"), icon: IconMdiImageMultiple },
   { value: "members", header: i18n.t("project.settings.tabs.members"), icon: IconMdiAccountGroup },
 ] satisfies Tab<string>[]);
 
@@ -40,6 +39,8 @@ if (hasPerms(NamedPermission.EditChannels)) {
 if (hasPerms(NamedPermission.IsSubjectOwner) || hasPerms(NamedPermission.DeleteProject) || hasPerms(NamedPermission.HardDeleteProject)) {
   tabs.value.push({ value: "management", header: i18n.t("project.settings.tabs.management"), icon: IconMdiShieldAlert });
 }
+
+tabs.value.push({ value: "banners", header: i18n.t("project.settings.tabs.banners"), icon: IconMdiImageMultiple, separated: true });
 
 const isFormTab = computed(() => selectedTab.value === "general" || selectedTab.value === "links");
 
@@ -233,9 +234,6 @@ useSeo(
   <Card>
     <Tabs v-model="selectedTab" :tabs="tabs" highlight-selected divided>
       <template #general>
-        <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-          <InputDropdown v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
-        </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.description" description="project.settings.descriptionSub">
           <InputText
             v-model="form.description"
@@ -244,16 +242,20 @@ useSeo(
             :rules="[required(), maxLength()(useBackendData.validations?.project?.desc?.max || 120)]"
           />
         </ProjectSettingsSection>
-        <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
-          <InputTag
-            v-if="form.settings"
-            v-model="form.settings.keywords"
-            counter
-            :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
-            :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
-            :label="i18n.t('project.new.step3.keywords')"
-            :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings?.keywords)]"
+        <ProjectSettingsSection title="project.settings.icon" description="project.settings.iconSub">
+          <EditableAvatar
+            :username="project?.namespace?.owner"
+            :monogram-name="project?.name"
+            :img-src="imgSrc"
+            :action="`projects/project/${route.params.project}/saveIcon`"
+            :reset-action="hasCustomIcon ? `projects/project/${route.params.project}/resetIcon` : undefined"
+            field="projectIcon"
+            :label="i18n.t('project.settings.changeIcon')"
+            size="xl"
           />
+        </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
+          <InputDropdown v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
         </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">
           <div v-if="form.settings" class="flex flex-wrap gap-2">
@@ -278,8 +280,19 @@ useSeo(
             </Tooltip>
           </div>
         </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.keywords" description="project.settings.keywordsSub">
+          <InputTag
+            v-if="form.settings"
+            v-model="form.settings.keywords"
+            counter
+            :maxlength="useBackendData.validations?.project?.keywords?.max || 5"
+            :tag-maxlength="useBackendData.validations?.project?.keywordName?.max || 16"
+            :label="i18n.t('project.new.step3.keywords')"
+            :rules="[maxLength()(useBackendData.validations?.project?.keywords?.max || 5), noDuplicated()(() => form.settings?.keywords)]"
+          />
+        </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
-          <div class="flex flex-wrap items-start gap-2">
+          <div class="flex flex-wrap items-end gap-2">
             <div class="flex-shrink-0">
               <InputDropdown
                 v-if="form.settings"
@@ -304,18 +317,6 @@ useSeo(
               <InputText v-if="form.settings" v-model.trim="form.settings.license.url" :label="i18n.t('project.settings.licenseUrl')" :rules="[validUrl()]" />
             </div>
           </div>
-        </ProjectSettingsSection>
-        <ProjectSettingsSection title="project.settings.icon" description="project.settings.iconSub">
-          <EditableAvatar
-            :username="project?.namespace?.owner"
-            :monogram-name="project?.name"
-            :img-src="imgSrc"
-            :action="`projects/project/${route.params.project}/saveIcon`"
-            :reset-action="hasCustomIcon ? `projects/project/${route.params.project}/resetIcon` : undefined"
-            field="projectIcon"
-            :label="i18n.t('project.settings.changeIcon')"
-            size="xl"
-          />
         </ProjectSettingsSection>
       </template>
       <template #links>
@@ -476,7 +477,7 @@ useSeo(
       </template>
     </Tabs>
 
-    <div v-if="isFormTab" class="mt-6 flex justify-end">
+    <div v-if="isFormTab" class="mt-6 flex justify-end border-t border-gray-300 pt-4 dark:border-gray-700">
       <Button :disabled="v.$error" :loading="loading.save" @click="save">
         <IconMdiCheck />
         {{ i18n.t("project.settings.save") }}

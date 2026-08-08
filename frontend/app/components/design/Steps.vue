@@ -89,7 +89,7 @@ async function goto(step: Step) {
 
 <template>
   <div>
-    <ol class="list-none flex items-center gap-2">
+    <ol class="m-0 list-none flex items-center gap-2 p-0">
       <template v-for="(step, count) in steps" :key="step.value">
         <li class="min-w-0 flex-shrink-0">
           <button

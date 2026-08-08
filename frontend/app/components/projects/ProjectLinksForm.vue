@@ -24,48 +24,62 @@ function removeSection(index: number) {
 </script>
 
 <template>
-  <Draggable v-model="sections" tag="ul" :animation="200" group="sections" handle=".handle" item-key="id">
-    <template #item="{ element: section, index }">
-      <li>
-        <Card flat class="mb-2">
-          <div class="flex items-center gap-2 mb-2">
-            <IconMdiMenu class="handle flex-shrink-0 cursor-grab" />
-            <InputDropdown
-              v-model="section.type"
-              :values="[
-                { value: 'top', text: i18n.t('project.settings.links.top') },
-                { value: 'sidebar', text: i18n.t('project.settings.links.sidebar') },
-              ]"
-              :label="i18n.t('project.settings.links.typeField')"
-              :rules="[required(), noDuplicated('Can only have one top section')(() => types)]"
-            />
-            <InputText
-              v-if="section.type !== 'top'"
-              v-model="section.title"
-              :label="i18n.t('project.settings.links.titleField')"
-              :rules="[
-                required(),
-                maxLength()(useBackendData.validations.project.pageName.max!),
-                minLength()(useBackendData.validations.project.pageName.min!),
-              ]"
-            />
+  <div>
+    <Draggable v-model="sections" tag="ul" :animation="200" group="sections" handle=".handle" item-key="id" class="flex flex-col gap-3">
+      <template #item="{ element: section, index }">
+        <li class="overflow-hidden rounded-md border border-gray-300 dark:border-gray-700">
+          <div class="flex flex-wrap items-end gap-2 border-b border-gray-300 px-3 py-2.5 dark:border-gray-700">
+            <IconMdiMenu class="handle mb-2 flex-shrink-0 cursor-grab text-gray-secondary" />
 
-            <IconMdiClose class="flex-shrink-0 cursor-pointer" @click="removeSection(index)" />
+            <div class="flex-shrink-0">
+              <InputDropdown
+                v-model="section.type"
+                :values="[
+                  { value: 'top', text: i18n.t('project.settings.links.top') },
+                  { value: 'sidebar', text: i18n.t('project.settings.links.sidebar') },
+                ]"
+                :label="i18n.t('project.settings.links.typeField')"
+                :rules="[required(), noDuplicated('Can only have one top section')(() => types)]"
+              />
+            </div>
+            <div v-if="section.type !== 'top'" class="min-w-50 flex-1">
+              <InputText
+                v-model="section.title"
+                :label="i18n.t('project.settings.links.titleField')"
+                :rules="[
+                  required(),
+                  maxLength()(useBackendData.validations.project.pageName.max!),
+                  minLength()(useBackendData.validations.project.pageName.min!),
+                ]"
+              />
+            </div>
+
+            <Button
+              variant="ghost"
+              tone="danger"
+              size="sm"
+              icon-only
+              class="mb-0.5 ml-auto flex-shrink-0"
+              :title="i18n.t('general.delete')"
+              :aria-label="i18n.t('general.delete')"
+              @click="removeSection(index)"
+            >
+              <IconMdiDelete />
+            </Button>
           </div>
 
-          <hr class="mb-2" />
+          <div class="p-3">
+            <ProjectLinksFormInner v-model="section.links" />
+          </div>
+        </li>
+      </template>
+    </Draggable>
 
-          <ProjectLinksFormInner v-model="section.links" />
-        </Card>
-      </li>
-    </template>
-    <template #footer>
-      <Button variant="outline" tone="neutral" size="sm" @click="addSection">
-        <IconMdiPlus />
-        {{ i18n.t("project.settings.links.addSection") }}
-      </Button>
-    </template>
-  </Draggable>
+    <Button variant="outline" tone="neutral" size="sm" class="mt-3" @click="addSection">
+      <IconMdiPlus />
+      {{ i18n.t("project.settings.links.addSection") }}
+    </Button>
+  </div>
 </template>
 
 <style>

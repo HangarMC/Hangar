@@ -72,7 +72,7 @@ defineSlots<
       }"
     >
       <ul :class="{ 'flex flex-row flex-wrap lt-md:gap-1 md:flex-col': vertical, 'md:space-y-1': !compact && vertical, 'flex flex-row gap-1': !vertical }">
-        <li v-for="tab in tabs" :key="tab.value">
+        <li v-for="tab in tabs" :key="tab.value" :class="{ 'md:(mt-2 border-t border-gray-300 pt-2) dark:md:border-gray-700': tab.separated && vertical }">
           <Button
             v-if="!tab.show || tab.show()"
             variant="ghost"

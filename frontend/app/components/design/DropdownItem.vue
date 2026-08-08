@@ -54,10 +54,10 @@ const attrs = computed(() => {
       tone === 'danger' ? 'text-red-600 dark:text-red-400' : '',
       selected ? 'background-card' : '',
     ]"
+    :aria-current="selected ? 'true' : undefined"
     v-bind="attrs"
   >
     <slot />
-    <IconMdiCheck v-if="selected" class="ml-auto flex-shrink-0 color-primary" />
   </component>
 </template>
 

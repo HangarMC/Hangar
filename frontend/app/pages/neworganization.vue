@@ -36,7 +36,7 @@ async function create() {
 </script>
 
 <template>
-  <Card class="max-w-2xl">
+  <Card>
     <template #header>
       <div class="flex items-center gap-2">
         <IconMdiAccountGroup class="flex-shrink-0 color-primary" />
