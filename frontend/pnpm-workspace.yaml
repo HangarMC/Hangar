@@ -1,0 +1,14 @@
+allowBuilds:
+  '@parcel/watcher': true
+  '@scarf/scarf': false
+  '@sentry/cli': true
+  '@sentry/node-cpu-profiler': true
+  '@tree-sitter-grammars/tree-sitter-yaml': true
+  core-js-pure: false
+  esbuild: true
+  tree-sitter: true
+  tree-sitter-json: true
+  unrs-resolver: true
+  vue-demi: true
+minimumReleaseAgeExclude:
+  - eslint@10.8.1

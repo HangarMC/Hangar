@@ -5,7 +5,7 @@
     "scripts": {
         "staging": "codeceptjs run -c codecept.conf.ts --steps -p pause",
         "local": "codeceptjs run -c codecept.conf.ts --steps -p pause",
-        "postinstall": "codeceptjs def && npm update browserstack-node-sdk",
+        "postinstall": "codeceptjs def",
         "staging-browserstack": "browserstack-node-sdk codeceptjs run -c codecept.conf.ts --steps -p pause",
         "local-browserstack": "browserstack-node-sdk codeceptjs run -c codecept.conf.ts --steps -p pause"
     },
@@ -19,5 +19,5 @@
         "tsx": "4.23.11",
         "webdriverio": "9.30.1"
     },
-    "packageManager": "pnpm@10.34.5+sha512.a4ee05f2f73658255bd6a89859c065a45c28a57daefae2c893a168ee2b73168c37b91e83e57ea67654ad03f03031746430e8bce38e362e042605fb8abc80192e"
+    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
 }

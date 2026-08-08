@@ -114,21 +114,5 @@
     "vite-plugin-devtools-json": "1.1.0",
     "vue-tsc": "3.3.9"
   },
-  "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "@sentry-internal/node-cpu-profiler",
-      "@sentry/cli",
-      "@tree-sitter-grammars/tree-sitter-yaml",
-      "core-js-pure",
-      "esbuild",
-      "tree-sitter",
-      "tree-sitter-json",
-      "vue-demi"
-    ],
-    "ignoredBuiltDependencies": [
-      "@scarf/scarf"
-    ]
-  }
+  "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
 }
