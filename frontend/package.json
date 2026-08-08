@@ -102,7 +102,7 @@
     "husky": "9.1.7",
     "import-in-the-middle": "3.0.1",
     "lint-staged": "17.0.4",
-    "nuxt": "4.4.5",
+    "nuxt": "4.5.1",
     "oxlint": "1.65.0",
     "pnpm": "11.1.2",
     "prettier": "3.8.3",
