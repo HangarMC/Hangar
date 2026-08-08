@@ -2,7 +2,6 @@
 @use "markdown-dark";
 
 .markdown {
-  margin-top: -10px;
   table tr > th {
     padding: 5px;
   }
@@ -13,9 +12,24 @@
   h4,
   h5,
   h6 {
-    margin-top: 20px;
-    margin-bottom: 0;
+    margin-top: 36px;
+    margin-bottom: 12px;
   }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 28px;
+    margin-bottom: 6px;
+  }
+
+  > :first-child,
+  > * > :first-child {
+    margin-top: 0;
+  }
+
+  line-height: 1.65;
 
   img {
     max-width: 100%;
@@ -37,6 +51,14 @@
 
   code {
     border-radius: 3px;
+  }
+
+  :not(pre) > code {
+    padding: 0.1em 0.35em;
+  }
+
+  summary {
+    cursor: pointer;
   }
 
   a code &:hover {
@@ -96,13 +118,8 @@
     padding-inline-start: 1.5em;
   }
 
-  p + ul,
-  p + ol {
-    margin-top: 0.5em;
-  }
-
   li {
-    margin-block: 0.25em;
+    margin-block: 2px;
     padding-inline-start: 0;
 
     > p {
@@ -218,4 +235,15 @@
 // ff is dum
 .prose :where(table):not(:where(.not-prose, .not-prose *)) {
   padding-left: 1px;
+}
+
+/* doubled class beats prose's :where() */
+.markdown.markdown p {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown.markdown p:has(+ ul),
+.markdown.markdown p:has(+ ol) {
+  margin-bottom: 8px;
 }

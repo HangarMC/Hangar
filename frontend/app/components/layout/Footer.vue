@@ -50,10 +50,7 @@ const { t } = useI18n();
           <p class="font-bold">© {{ new Date().getFullYear() }} <a href="https://papermc.io/">PaperMC</a></p>
         </div>
         <div class="flex flex-grow-1 text-opacity-80 font-size-3 font-light text-center">
-          <p>
-            This website is not an official Minecraft website and is not associated with Mojang Studios or Microsoft. All product and company names are
-            trademarks or registered trademarks of their respective holders. Use of these names does not imply any affiliation or endorsement by them.
-          </p>
+          <p>Not an official Minecraft service, and not affiliated with Mojang Studios or Microsoft. All trademarks are property of their respective owners.</p>
         </div>
       </div>
     </div>
