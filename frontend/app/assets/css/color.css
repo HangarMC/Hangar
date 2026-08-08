@@ -297,13 +297,19 @@
   --primary-ink: var(--primary-ink-dark);
 }
 
-/* form controls sit a step below the card they're on */
+/* form controls sit a step below the card they're on, tinted toward the active theme so they don't read as disabled */
 :root {
-  --input-surface: #e9eaed;
-  --input-surface-hover: #e2e3e7;
+  --input-surface: color-mix(in srgb, var(--primary-500) 7%, #edeef2);
+  --input-surface-hover: color-mix(in srgb, var(--primary-500) 12%, #e7e9ef);
+
+  /* same idea for panels that aren't controls, so they stay neutral */
+  --surface-sunken: #e9eaed;
+  --surface-sunken-hover: #e2e3e7;
 }
 
 .dark {
   --input-surface: #212125;
   --input-surface-hover: #2a2a2f;
+  --surface-sunken: #212125;
+  --surface-sunken-hover: #2a2a2f;
 }

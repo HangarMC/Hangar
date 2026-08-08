@@ -62,7 +62,7 @@
     padding: 0 12px;
     border: 1px solid var(--gray-300);
     border-radius: 6px;
-    background: var(--input-surface);
+    background: var(--surface-sunken);
 
     .dark & {
       border-color: var(--gray-700);
@@ -99,7 +99,7 @@
     }
 
     &:hover {
-      background: var(--input-surface-hover);
+      background: var(--surface-sunken-hover);
     }
   }
 

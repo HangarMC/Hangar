@@ -143,11 +143,11 @@ function requiresConfirmation(): ConfirmationType {
             :img-src="project?.avatarUrl"
           />
           <template v-if="project">
-            <NuxtLink class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">
+            <NuxtLink class="!sm:ml-0 px-1 rounded breadcrumb-link" :to="'/' + project.namespace.owner">
               {{ project.namespace.owner }}
             </NuxtLink>
             <span class="text-gray-500 dark:text-gray-400"> / </span>
-            <NuxtLink class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
+            <NuxtLink class="px-1 rounded breadcrumb-link" :to="'/' + project.namespace.owner + '/' + project.name">
               <h1 class="font-semibold">{{ project.name }}</h1>
             </NuxtLink>
           </template>
@@ -200,3 +200,9 @@ function requiresConfirmation(): ConfirmationType {
     </div>
   </Card>
 </template>
+
+<style scoped>
+.breadcrumb-link:hover {
+  background-color: color-mix(in srgb, var(--gray-400) 25%, transparent);
+}
+</style>

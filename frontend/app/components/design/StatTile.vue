@@ -14,6 +14,6 @@ defineProps<{ label: string; value: number }>();
 
 <style scoped>
 .stat-tile {
-  background-color: var(--input-surface);
+  background-color: var(--surface-sunken);
 }
 </style>

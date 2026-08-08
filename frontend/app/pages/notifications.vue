@@ -155,7 +155,7 @@ async function updateInvite(invite: HangarOrganizationInvite | HangarProjectInvi
                   'bg-lime-500/15 text-lime-500': item.type === 'success',
                   'bg-amber-500/15 text-amber-500': item.type === 'warning',
                   'bg-red-500/15 text-red-500': item.type === 'error',
-                  'bg-gray-500/15 text-gray-500 dark:text-gray-300': item.type === 'neutral',
+                  'icon-neutral text-gray-600 dark:text-gray-300': item.type === 'neutral',
                 }"
               >
                 <IconMdiInformationOutline v-if="item.type === 'info'" />
@@ -244,3 +244,9 @@ async function updateInvite(invite: HangarOrganizationInvite | HangarProjectInvi
     </Card>
   </div>
 </template>
+
+<style scoped>
+.icon-neutral {
+  background-color: color-mix(in srgb, var(--gray-500) 15%, transparent);
+}
+</style>
