@@ -70,6 +70,19 @@ function formatVersionRange(versions?: string[]): string {
   // In download buttons, only show the latest version/version range + the remaining amount
   return versions.length > 1 ? i18n.t("version.page.shortVersions", [versions.at(-1), versions.length - 1]) : versions[0]!;
 }
+
+// joined here rather than in the template so a missing part can't leave a dangling separator
+function downloadDetails(versionRange?: string[], sizeBytes?: number): string {
+  const parts: string[] = [];
+  if (props.showVersions) {
+    const range = formatVersionRange(versionRange);
+    if (range) parts.push(range);
+  }
+  if (sizeBytes) {
+    parts.push(formatSize(sizeBytes));
+  }
+  return parts.join(" · ");
+}
 </script>
 
 <template>
@@ -115,7 +128,7 @@ function formatVersionRange(versions?: string[]): string {
           <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
           <span class="min-w-0 flex-1">
             <span class="block leading-tight">{{ usePlatformName(p) }}</span>
-            <span v-if="showVersions" class="block text-xs font-normal leading-tight text-gray-secondary">{{ formatVersionRange(v) }}</span>
+            <span v-if="downloadDetails(v)" class="block text-xs font-normal leading-tight text-gray-secondary">{{ downloadDetails(v) }}</span>
           </span>
           <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="flex-shrink-0 text-sm text-gray-secondary" />
         </DropdownItem>
@@ -171,9 +184,11 @@ function formatVersionRange(versions?: string[]): string {
         <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
         <span class="min-w-0 flex-1">
           <span class="block leading-tight">{{ usePlatformName(p) }}</span>
-          <span class="block text-xs font-normal leading-tight text-gray-secondary">
-            <template v-if="showVersions && version.platformDependencies">{{ formatVersionRange(version.platformDependenciesFormatted[p]) }}</template>
-            <template v-if="v.fileInfo?.sizeBytes"> &middot; {{ formatSize(v.fileInfo.sizeBytes) }}</template>
+          <span
+            v-if="downloadDetails(version.platformDependenciesFormatted[p], v.fileInfo?.sizeBytes)"
+            class="block text-xs font-normal leading-tight text-gray-secondary"
+          >
+            {{ downloadDetails(version.platformDependenciesFormatted[p], v.fileInfo?.sizeBytes) }}
           </span>
         </span>
         <IconMdiOpenInNew v-if="v.externalUrl" class="flex-shrink-0 text-sm text-gray-secondary" />
@@ -205,8 +220,8 @@ function formatVersionRange(versions?: string[]): string {
         <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
         <span class="min-w-0 flex-1">
           <span class="block leading-tight">{{ usePlatformName(p) }}</span>
-          <span v-if="v.platformDependencies && showVersions" class="block text-xs font-normal leading-tight text-gray-secondary">
-            {{ formatVersionRange(v.platformDependenciesFormatted[p]) }}
+          <span v-if="downloadDetails(v.platformDependenciesFormatted[p])" class="block text-xs font-normal leading-tight text-gray-secondary">
+            {{ downloadDetails(v.platformDependenciesFormatted[p]) }}
           </span>
         </span>
         <IconMdiOpenInNew v-if="v.downloads[p]?.externalUrl" class="flex-shrink-0 text-sm text-gray-secondary" />
