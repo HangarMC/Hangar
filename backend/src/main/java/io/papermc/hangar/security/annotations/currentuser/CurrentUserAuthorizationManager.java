@@ -8,6 +8,7 @@ import io.papermc.hangar.security.authorization.HangarAuthorizationManager;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import org.aopalliance.intercept.MethodInvocation;
+import org.jspecify.annotations.Nullable;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -29,30 +30,30 @@ public class CurrentUserAuthorizationManager extends HangarAuthorizationManager 
     private final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation methodInvocation) {
+    public AuthorizationDecision authorize(Supplier<? extends @Nullable Authentication> authentication, MethodInvocation methodInvocation) {
         // Check if method or class has @CurrentUser annotation
         Method method = methodInvocation.getMethod();
         Class<?> targetClass = methodInvocation.getThis() != null ? methodInvocation.getThis().getClass() : method.getDeclaringClass();
-        
+
         CurrentUser methodAnnotation = AnnotationUtils.findAnnotation(method, CurrentUser.class);
         CurrentUser classAnnotation = AnnotationUtils.findAnnotation(targetClass, CurrentUser.class);
         CurrentUser annotation = methodAnnotation != null ? methodAnnotation : classAnnotation;
-        
+
         if (annotation == null) {
             // Abstain if annotation not present
             return null;
         }
-        
+
         Authentication auth = authentication.get();
         if (!(auth instanceof final HangarAuthenticationToken hangarAuthenticationToken)) {
             throw HangarApiException.forbidden();
         }
-        
+
         // Check for global permission to edit all user settings
         if (hangarAuthenticationToken.getPrincipal().isAllowedGlobal(Permission.EditAllUserSettings)) {
             return this.granted();
         }
-        
+
         // Evaluate SpEL expression to get the username
         final MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(
             method.getDeclaringClass(),
@@ -60,7 +61,7 @@ public class CurrentUserAuthorizationManager extends HangarAuthorizationManager 
             methodInvocation.getArguments(),
             this.parameterNameDiscoverer
         );
-        
+
         final Object user = this.expressionParser.parseExpression(annotation.value()).getValue(context);
         final String userName;
         if (user instanceof UserTable) {
@@ -70,11 +71,11 @@ public class CurrentUserAuthorizationManager extends HangarAuthorizationManager 
         } else {
             throw new IllegalArgumentException(user + " is not supported for the CurrentUser check");
         }
-        
+
         if (!hangarAuthenticationToken.getName().equals(userName)) {
             throw HangarApiException.forbidden();
         }
-        
+
         return this.granted();
     }
 }

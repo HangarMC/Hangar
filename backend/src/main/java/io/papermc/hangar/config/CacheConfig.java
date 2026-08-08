@@ -6,7 +6,7 @@ import io.papermc.hangar.service.ReplicationService;
 import io.papermc.hangar.util.CacheWrapper;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
-import org.springframework.boot.actuate.metrics.cache.CacheMetricsRegistrar;
+import org.springframework.boot.cache.metrics.CacheMetricsRegistrar;
 import org.springframework.cache.Cache;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;

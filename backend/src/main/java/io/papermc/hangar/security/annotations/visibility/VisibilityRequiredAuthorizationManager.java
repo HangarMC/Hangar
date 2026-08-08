@@ -11,6 +11,7 @@ import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import org.aopalliance.intercept.MethodInvocation;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -49,20 +50,20 @@ public class VisibilityRequiredAuthorizationManager extends HangarAuthorizationM
     }
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication, MethodInvocation methodInvocation) {
+    public AuthorizationDecision authorize(Supplier<? extends @Nullable Authentication> authentication, MethodInvocation methodInvocation) {
         // Check if method or class has @VisibilityRequired annotation
         Method method = methodInvocation.getMethod();
         Class<?> targetClass = methodInvocation.getThis() != null ? methodInvocation.getThis().getClass() : method.getDeclaringClass();
-        
+
         VisibilityRequired methodAnnotation = AnnotationUtils.findAnnotation(method, VisibilityRequired.class);
         VisibilityRequired classAnnotation = AnnotationUtils.findAnnotation(targetClass, VisibilityRequired.class);
         VisibilityRequired annotation = methodAnnotation != null ? methodAnnotation : classAnnotation;
-        
+
         if (annotation == null) {
             // Abstain if annotation not present
             return null;
         }
-        
+
         // Evaluate SpEL expression to get the arguments
         final MethodBasedEvaluationContext context = new MethodBasedEvaluationContext(
             method.getDeclaringClass(),
@@ -70,12 +71,12 @@ public class VisibilityRequiredAuthorizationManager extends HangarAuthorizationM
             methodInvocation.getArguments(),
             this.parameterNameDiscoverer
         );
-        
+
         final Object[] arguments = this.expressionParser.parseExpression(annotation.args()).getValue(context, Object[].class);
         if (arguments == null || !annotation.type().getArgCount().contains(arguments.length)) {
             throw new IllegalStateException("Bad annotation configuration on " + method.getDeclaringClass().getName() + "#" + method.getName());
         }
-        
+
         switch (annotation.type()) {
             case PROJECT:
                 if (arguments.length == 1) {
@@ -112,7 +113,7 @@ public class VisibilityRequiredAuthorizationManager extends HangarAuthorizationM
                 }
                 throw HangarApiException.notFound();
         }
-        
+
         // Abstain for unknown types
         return null;
     }

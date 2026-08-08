@@ -1,10 +1,12 @@
 package io.papermc.hangar.security.authentication;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,7 +25,7 @@ public class HangarAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     private HangarAuthenticationToken(final DecodedJWT token) {
-        super(null);
+        super((Collection<? extends GrantedAuthority>) null);
         this.token = token;
         this.user = null;
     }

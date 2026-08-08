@@ -11,7 +11,7 @@ import io.papermc.hangar.components.index.webhook.WebhookMessageConverter;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimitInterceptor;
-import io.sentry.spring.jakarta.SentryTaskDecorator;
+import io.sentry.spring7.SentryTaskDecorator;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,16 +25,14 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.task.SimpleAsyncTaskSchedulerBuilder;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.boot.task.SimpleAsyncTaskSchedulerCustomizer;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -53,7 +51,6 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -61,7 +58,6 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -184,8 +180,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         }
 
         builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
-        builder.setConnectTimeout(timeout);
-        builder.setReadTimeout(timeout);
+        builder.clientSettings((s) -> s.withConnectTimeout(timeout).withReadTimeout(timeout));
 
         this.addDefaultHttpMessageConverters(messageConverters);
         builder.messageConverters(messageConverters);
@@ -194,7 +189,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-    public WebClient webClient(final WebClient.Builder builder) {
+    public WebClient webClient() {
         // Only used by the image proxy: the resolver blocks internal addresses at connect time (SSRF guard)
         final HttpClient httpClient = HttpClient.create()
             .resolver(new SsrfProtectedAddressResolverGroup())
@@ -203,6 +198,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
             .doOnConnected(conn ->
                 conn.addHandlerLast(new ReadTimeoutHandler(timeout.toMillis(), TimeUnit.MILLISECONDS))
                     .addHandlerLast(new WriteTimeoutHandler(timeout.toMillis(), TimeUnit.MILLISECONDS)));
+
+        final WebClient.Builder builder = WebClient.builder();
         builder.clientConnector(new ReactorClientHttpConnector(httpClient));
 
         final int size = 16 * 1024 * 1024;

@@ -4,10 +4,6 @@
 server:
   address: 0.0.0.0
   port: 8080
-  servlet:
-    encoding:
-      charset: "UTF-8"
-
   tomcat:
     mbeanregistry:
       enabled: true
@@ -32,11 +28,13 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
+    encoding:
+      charset: "UTF-8"
   devtools:
     restart:
       additional-exclude: work/**
       quiet-period: 900
-  jackson:
+  jackson2:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat

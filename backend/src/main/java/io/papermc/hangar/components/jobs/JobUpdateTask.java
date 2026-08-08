@@ -1,6 +1,6 @@
 package io.papermc.hangar.components.jobs;
 
-import io.sentry.spring.jakarta.tracing.SentryTransaction;
+import io.sentry.spring7.tracing.SentryTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

@@ -109,26 +109,27 @@ export default defineNuxtConfig({
     },
     optimizeDeps: {
       include: [
-        "dompurify",
-        "debug", // CJS
-        "nprogress", // CJS
-        "axios",
-        "jwt-decode",
-        "accept-language-parser", // CJS
-        "qs", // CJS
-        "universal-cookie",
-        "easymde",
-        "filesize",
-        "github-slugger",
-        "marked",
-        "marked-linkify-it",
-        "marked-extended-tables",
-        "marked-alert",
-        "prismjs",
         "@headlessui/vue",
         "@vuelidate/core",
         "@vuelidate/validators",
+        "accept-language-parser", // CJS
+        "axios",
+        "debug", // CJS
+        "dompurify",
+        "easymde", // CJS
+        "filesize",
+        "github-slugger",
+        "jwt-decode",
         "lodash-es",
+        "marked",
+        "marked-alert",
+        "marked-extended-tables",
+        "marked-linkify-it",
+        "nprogress", // CJS
+        "prismjs", // CJS
+        "qs", // CJS
+        "rapidoc", // CJS
+        "universal-cookie",
       ],
     },
   },

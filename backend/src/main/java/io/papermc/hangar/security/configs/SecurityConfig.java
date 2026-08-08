@@ -24,7 +24,6 @@ import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.RequestRejectedHandler;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -32,6 +31,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.*;
+import static org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher.pathPattern;
 
 @Configuration
 @EnableWebSecurity
@@ -43,11 +43,11 @@ public class SecurityConfig {
     public static final String AUTH_NAME = "HangarAuth";
     public static final String REFRESH_COOKIE_NAME = AUTH_NAME + "_REFRESH";
 
-    private static final RequestMatcher API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/internal/auth/refresh")));
-    private static final RequestMatcher PUBLIC_API_MATCHER = new AndRequestMatcher(new AntPathRequestMatcher("/api/v1/**"), new NegatedRequestMatcher(new AntPathRequestMatcher("/api/v1/authenticate/**")));
-    private static final RequestMatcher INTERNAL_API_MATCHER = new AntPathRequestMatcher("/api/internal/**");
-    private static final RequestMatcher LOGOUT_MATCHER = new AntPathRequestMatcher("/logout");
-    private static final RequestMatcher INVALIDATE_MATCHER = new AntPathRequestMatcher("/invalidate");
+    private static final RequestMatcher API_MATCHER = new AndRequestMatcher(pathPattern("/api/**"), new NegatedRequestMatcher(pathPattern("/api/v1/authenticate/**")), new NegatedRequestMatcher(pathPattern("/api/internal/auth/refresh")));
+    private static final RequestMatcher PUBLIC_API_MATCHER = new AndRequestMatcher(pathPattern("/api/v1/**"), new NegatedRequestMatcher(pathPattern("/api/v1/authenticate/**")));
+    private static final RequestMatcher INTERNAL_API_MATCHER = pathPattern("/api/internal/**");
+    private static final RequestMatcher LOGOUT_MATCHER = pathPattern("/logout");
+    private static final RequestMatcher INVALIDATE_MATCHER = pathPattern("/invalidate");
 
     private final TokenService tokenService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
