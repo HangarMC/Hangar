@@ -42,7 +42,7 @@
     "debug": "4.4.3",
     "defu": "6.1.7",
     "diff-match-patch": "1.0.5",
-    "dompurify": "3.4.3",
+    "dompurify": "3.4.13",
     "easymde": "2.21.0",
     "filesize": "11.0.17",
     "floating-vue": "5.2.2",
