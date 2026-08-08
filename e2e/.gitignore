@@ -5,3 +5,4 @@ local.log
 .env
 output
 test.http
+log

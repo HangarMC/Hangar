@@ -3,10 +3,7 @@ package io.papermc.hangar.config;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesAnnotationIntrospector;
-import io.netty.channel.ChannelOption;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutHandler;
-import io.papermc.hangar.components.images.service.SsrfProtectedAddressResolverGroup;
+import io.papermc.hangar.components.images.service.SsrfProtectedDnsResolver;
 import io.papermc.hangar.components.index.webhook.WebhookMessageConverter;
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.config.jackson.HangarAnnotationIntrospector;
@@ -25,8 +22,14 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.core5.util.Timeout;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +49,6 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -56,15 +58,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.ResourceUrlEncodingFilter;
-import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
@@ -189,27 +188,27 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-    public WebClient webClient() {
+    public CloseableHttpClient imageProxyHttpClient() {
         // Only used by the image proxy: the resolver blocks internal addresses at connect time (SSRF guard)
-        final HttpClient httpClient = HttpClient.create()
-            .resolver(new SsrfProtectedAddressResolverGroup())
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) timeout.toMillis())
-            .responseTimeout(timeout)
-            .doOnConnected(conn ->
-                conn.addHandlerLast(new ReadTimeoutHandler(timeout.toMillis(), TimeUnit.MILLISECONDS))
-                    .addHandlerLast(new WriteTimeoutHandler(timeout.toMillis(), TimeUnit.MILLISECONDS)));
-
-        final WebClient.Builder builder = WebClient.builder();
-        builder.clientConnector(new ReactorClientHttpConnector(httpClient));
-
-        final int size = 16 * 1024 * 1024;
-        builder.exchangeStrategies(ExchangeStrategies.builder()
-            .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
-            .build());
-
-        builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
-
-        return builder.build();
+        final PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+            .setDnsResolver(new SsrfProtectedDnsResolver())
+            .setDefaultConnectionConfig(ConnectionConfig.custom()
+                .setConnectTimeout(Timeout.of(timeout))
+                .setSocketTimeout(Timeout.of(timeout))
+                .build())
+            .build();
+        return HttpClients.custom()
+            .setConnectionManager(connectionManager)
+            .setDefaultRequestConfig(RequestConfig.custom()
+                .setConnectionRequestTimeout(Timeout.of(timeout))
+                .setResponseTimeout(Timeout.of(timeout))
+                .build())
+            // don't follow redirects, the redirect target would bypass the up-front validation
+            .disableRedirectHandling()
+            // forward the bytes (and Content-Encoding) untouched instead of decompressing in the proxy
+            .disableContentCompression()
+            .setUserAgent("Hangar <hangar@papermc.io>")
+            .build();
     }
 
     @Bean
