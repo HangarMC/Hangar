@@ -119,16 +119,22 @@ async function save() {
   if (!(await v.value.$validate())) return;
   loading.save = true;
   try {
-    if (form.settings && !isCustomLicense.value) {
-      form.settings.license.name = undefined as unknown as string;
-    }
-    if (form.settings && isUnspecifiedLicense.value) {
-      form.settings.license.url = undefined;
-    }
+    if (selectedTab.value === "links") {
+      await useInternalApi(`projects/project/${route.params.project}/links`, "post", {
+        links: form.settings?.links ?? [],
+      });
+    } else {
+      if (form.settings && !isCustomLicense.value) {
+        form.settings.license.name = undefined as unknown as string;
+      }
+      if (form.settings && isUnspecifiedLicense.value) {
+        form.settings.license.url = undefined;
+      }
 
-    await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {
-      ...form,
-    });
+      await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {
+        ...form,
+      });
+    }
     await router.go(0);
   } catch (err: any) {
     handleRequestError(err);
