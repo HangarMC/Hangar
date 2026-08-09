@@ -155,8 +155,9 @@ async function doSearch(val?: string) {
 <template>
   <component :is="bare ? 'div' : Card" v-if="sortedMembers.length > 0 || canEdit" :class="props.class">
     <template v-if="!bare" #header>
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-2">
         <h2>{{ i18n.t("project.members") }}</h2>
+        <span class="text-sm font-normal text-gray-secondary tabular-nums">{{ sortedMembers.length }}</span>
         <div class="flex-grow" />
         <MemberLeaveModal v-if="canLeave && author" :author="author" :organization="organization" :slug="slug" />
         <Button
@@ -174,9 +175,12 @@ async function doSearch(val?: string) {
       </div>
     </template>
 
-    <div v-if="bare && (title || (canLeave && author))" class="mb-3 flex items-start gap-3">
-      <div class="min-w-0 flex-1">
-        <h2 v-if="title" class="text-lg font-semibold">{{ i18n.t(title) }}</h2>
+    <div v-if="bare" class="flex flex-wrap items-start gap-x-3 gap-y-2 border-b border-gray-300 pb-3 dark:border-gray-700">
+      <div class="min-w-50 flex-1">
+        <h2 v-if="title" class="flex items-center gap-2 text-lg font-semibold">
+          {{ i18n.t(title) }}
+          <span class="text-sm font-normal text-gray-secondary tabular-nums">{{ sortedMembers.length }}</span>
+        </h2>
         <p v-if="description" class="mt-0.5 text-sm text-gray-secondary">{{ i18n.t(description) }}</p>
       </div>
       <div v-if="canLeave && author" class="flex-shrink-0">
@@ -184,9 +188,10 @@ async function doSearch(val?: string) {
       </div>
     </div>
 
-    <ul class="divide-y divide-gray-300 rounded-md border border-gray-300 dark:divide-gray-700 dark:border-gray-700">
-      <li v-for="member in sortedMembers" :key="member.user.name" class="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2">
-        <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" class="flex-shrink-0" />
+    <p v-if="sortedMembers.length === 0" class="py-3 text-sm text-gray-secondary">No members</p>
+    <ul v-else class="divide-y divide-gray-300 dark:divide-gray-700">
+      <li v-for="member in sortedMembers" :key="member.user.name" class="flex flex-wrap items-center gap-x-3 gap-y-2 py-2">
+        <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="xs" class="flex-shrink-0" />
 
         <div class="min-w-30 flex-1">
           <p class="min-w-0 flex items-center gap-x-2">
@@ -206,7 +211,7 @@ async function doSearch(val?: string) {
 
         <DropdownButton
           v-if="canEditRole(member)"
-          class="ml-auto flex-shrink-0"
+          class="ml-auto flex flex-shrink-0"
           :name="getRole(member.role.roleId)?.title"
           button-variant="outline"
           button-tone="neutral"
@@ -255,7 +260,7 @@ async function doSearch(val?: string) {
       </li>
     </ul>
 
-    <div v-if="canEdit && manage" class="mt-3 flex flex-wrap items-center gap-2">
+    <div v-if="canEdit && manage" class="flex flex-wrap items-center gap-2 border-t border-gray-300 pt-4 dark:border-gray-700">
       <div class="min-w-50 flex-1">
         <InputAutocomplete
           id="membersearch"

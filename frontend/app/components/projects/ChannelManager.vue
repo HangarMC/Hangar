@@ -57,8 +57,8 @@ async function editChannel(channel: HangarChannel | ProjectChannel) {
 
 <template>
   <div>
-    <ul v-if="channels?.length" class="divide-y divide-gray-300 rounded-md border border-gray-300 dark:divide-gray-700 dark:border-gray-700">
-      <li v-for="channel in channels" :key="channel.name" class="flex flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5">
+    <ul v-if="channels?.length" class="divide-y divide-gray-300 border-t border-gray-300 dark:divide-gray-700 dark:border-gray-700">
+      <li v-for="channel in channels" :key="channel.name" class="flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5">
         <ChannelTile :channel="channel" />
 
         <div class="min-w-0 flex-1">
@@ -100,9 +100,9 @@ async function editChannel(channel: HangarChannel | ProjectChannel) {
         </div>
       </li>
     </ul>
-    <p v-else class="rounded-md border border-gray-300 px-3 py-4 text-sm text-gray-secondary dark:border-gray-700">{{ i18n.t("channel.manage.empty") }}</p>
+    <p v-else class="border-t border-gray-300 py-6 text-center text-sm text-gray-secondary dark:border-gray-700">{{ i18n.t("channel.manage.empty") }}</p>
 
-    <div class="mt-3 flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3 border-t border-gray-300 pt-4 dark:border-gray-700">
       <ChannelModal v-if="project" :project-id="project.id" @create="addChannel">
         <template #activator="{ on }">
           <Button variant="outline" tone="neutral" :disabled="atLimit" v-on="on">
