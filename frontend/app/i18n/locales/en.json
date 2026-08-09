@@ -1044,6 +1044,16 @@
       "approved": "Approved",
       "partiallyApproved": "Partially Approved",
       "lastUpdate": "Last Update: "
+    },
+    "artifacts": {
+      "title": "Files & scans",
+      "scanDetails": "Scan details",
+      "external": "External",
+      "hasExternal": "No external downloads | {0} external download | {0} external downloads",
+      "hasUnscanned": "Nothing unscanned | {0} not scanned | {0} not scanned",
+      "notScannable": "Cannot be scanned",
+      "notScanned": "Not scanned",
+      "severity": "{0} severity"
     }
   },
   "apiKeys": {

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { titleCase } from "scule";
 import { ReviewAction, ReviewState } from "#shared/types/backend";
 import type { Platform, HangarProject, HangarReview, Version } from "#shared/types/backend";
-import { useReviews } from "~/composables/useData";
+import { useJarScans, useReviews } from "~/composables/useData";
 
 definePageMeta({
   globalPermsRequired: ["Reviewer"],
@@ -20,6 +21,7 @@ const props = defineProps<{
 }>();
 
 const { reviews, refreshReviews } = useReviews(() => props.version?.id as unknown as string);
+const { jarScans } = useJarScans(() => props.version?.id as unknown as string);
 const hideClosed = ref<boolean>(false);
 const message = ref<string>("");
 const expanded = ref<Record<number, boolean>>({});
@@ -58,6 +60,43 @@ const filteredReviews = computed<HangarReview[] | undefined>(() => {
 const isReviewStateChecked = computed<boolean>(() => {
   return props.version?.reviewState === ReviewState.PartiallyReviewed || props.version?.reviewState === ReviewState.Reviewed;
 });
+
+const scanPath = computed<string>(() => route.path.replace("/reviews", "/scan"));
+
+const artifacts = computed(() =>
+  [...props.versionPlatforms].map((platform) => ({
+    platform,
+    externalUrl: props.version?.downloads?.[platform]?.externalUrl,
+    fileInfo: props.version?.downloads?.[platform]?.fileInfo,
+    scan: jarScans.value?.find((s) => s.platform === platform),
+  }))
+);
+
+const externalCount = computed<number>(() => artifacts.value.filter((a) => a.externalUrl).length);
+const unscannedCount = computed<number>(() => artifacts.value.filter((a) => !a.externalUrl && !a.scan).length);
+
+function severityTone(severity: string): "neutral" | "amber" | "green" | "red" {
+  switch (severity) {
+    case "HIGHEST":
+    case "HIGH":
+      return "red";
+    case "MEDIUM":
+      return "amber";
+    case "LOW":
+    case "LOWEST":
+      return "green";
+    default:
+      return "neutral";
+  }
+}
+
+function externalHost(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
+}
 
 function isExpanded(review: HangarReview): boolean {
   if (review.userId in expanded.value) return expanded.value[review.userId]!;
@@ -314,13 +353,78 @@ useSeo(computed(() => ({ title: "Reviews | " + props.project?.name, route, descr
           <IconMdiHome />
           {{ t("reviews.projectPage") }}
         </Button>
-        <Button variant="outline" tone="neutral" :to="route.path.replace('/reviews', '/scan')">
-          <IconMdiAlertDecagram />
-          {{ i18n.t("version.page.scans") }}
-        </Button>
         <DownloadButton v-if="project" :project="project" :version="version" small />
       </div>
     </div>
+
+    <Card v-if="artifacts.length > 0" flat padding="none">
+      <div class="flex flex-wrap items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
+        <h2 class="flex-grow text-lg font-bold">{{ t("reviews.artifacts.title") }}</h2>
+        <Chip v-if="externalCount > 0" tone="amber">
+          <IconMdiOpenInNew />
+          {{ t("reviews.artifacts.hasExternal", [externalCount], externalCount) }}
+        </Chip>
+        <Chip v-if="unscannedCount > 0" tone="amber">
+          <IconMdiShieldOffOutline />
+          {{ t("reviews.artifacts.hasUnscanned", [unscannedCount], unscannedCount) }}
+        </Chip>
+        <Button size="sm" variant="outline" tone="neutral" :to="scanPath">
+          <IconMdiAlertDecagramOutline />
+          {{ t("reviews.artifacts.scanDetails") }}
+        </Button>
+      </div>
+
+      <ul class="divide-y divide-gray-300 dark:divide-gray-700">
+        <li v-for="artifact in artifacts" :key="artifact.platform" class="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-3">
+          <div class="flex flex-shrink-0 items-center gap-2 sm:w-32">
+            <PlatformLogo :platform="artifact.platform" :size="20" class="flex-shrink-0" />
+            <span class="font-semibold">{{ usePlatformName(artifact.platform) }}</span>
+          </div>
+
+          <div class="min-w-0 flex flex-1 items-center gap-2">
+            <template v-if="artifact.externalUrl">
+              <Chip tone="amber">
+                <IconMdiOpenInNew />
+                {{ t("reviews.artifacts.external") }}
+              </Chip>
+              <a
+                :href="linkout(artifact.externalUrl)"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="min-w-0 truncate text-sm text-gray-secondary hover:underline"
+                :title="artifact.externalUrl"
+              >
+                {{ externalHost(artifact.externalUrl) }}
+              </a>
+            </template>
+            <template v-else-if="artifact.fileInfo">
+              <IconMdiFileOutline class="flex-shrink-0 text-gray-secondary" />
+              <span class="min-w-0 truncate text-sm">{{ artifact.fileInfo.name }}</span>
+              <span class="flex-shrink-0 text-xs text-gray-secondary tabular-nums">{{ formatSize(artifact.fileInfo.sizeBytes) }}</span>
+            </template>
+          </div>
+
+          <div class="flex flex-shrink-0 flex-wrap items-center gap-2 sm:justify-end">
+            <Chip v-if="artifact.externalUrl">
+              <IconMdiShieldOffOutline />
+              {{ t("reviews.artifacts.notScannable") }}
+            </Chip>
+            <template v-else-if="artifact.scan">
+              <Chip :tone="severityTone(artifact.scan.highestSeverity)">
+                <IconMdiShieldAlertOutline v-if="severityTone(artifact.scan.highestSeverity) === 'red'" />
+                <IconMdiShieldCheckOutline v-else />
+                {{ t("reviews.artifacts.severity", [titleCase(artifact.scan.highestSeverity.toLowerCase())]) }}
+              </Chip>
+              <span class="text-xs text-gray-secondary"><PrettyTime :time="artifact.scan.createdAt" short-relative /></span>
+            </template>
+            <Chip v-else tone="amber">
+              <IconMdiShieldOffOutline />
+              {{ t("reviews.artifacts.notScanned") }}
+            </Chip>
+          </div>
+        </li>
+      </ul>
+    </Card>
 
     <div class="flex flex-wrap items-center gap-2">
       <Button v-if="!currentUserReview" :loading="loadingValues.start" @click="startReview">
