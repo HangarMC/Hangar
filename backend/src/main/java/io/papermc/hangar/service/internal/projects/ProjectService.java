@@ -21,6 +21,7 @@ import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
+import io.papermc.hangar.model.internal.api.requests.projects.ProjectLinksForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
@@ -191,7 +192,10 @@ public class ProjectService extends HangarComponent {
 
     public void validateSettings(final ProjectSettingsForm settingsForm) {
         this.validateLinks(settingsForm.getSettings().getLinks());
+        this.validateGeneralSettings(settingsForm);
+    }
 
+    private void validateGeneralSettings(final ProjectSettingsForm settingsForm) {
         for (final String keyword : settingsForm.getSettings().getKeywords()) {
             if (keyword.length() < 3) {
                 throw new HangarApiException(HttpStatus.BAD_REQUEST, "project.settings.keywordTooShort", keyword);
@@ -208,13 +212,13 @@ public class ProjectService extends HangarComponent {
         }
     }
 
+    // links belong to saveLinks; they are neither validated nor written here so a broken link can't block a general settings save
     public void saveSettings(final ProjectTable projectTable, final ProjectSettingsForm settingsForm) {
-        this.validateSettings(settingsForm);
+        this.validateGeneralSettings(settingsForm);
 
         projectTable.setCategory(settingsForm.getCategory());
         projectTable.setTags(new LinkedHashSet<>(settingsForm.getSettings().getTags()));
         projectTable.setKeywords(settingsForm.getSettings().getKeywords());
-        projectTable.setLinks(new JSONB(settingsForm.getSettings().getLinks()));
         String licenseName = org.apache.commons.lang3.StringUtils.stripToNull(settingsForm.getSettings().getLicense().name());
         if (licenseName == null) {
             licenseName = settingsForm.getSettings().getLicense().type();
@@ -228,6 +232,16 @@ public class ProjectService extends HangarComponent {
         this.projectsDAO.update(projectTable);
 
         // TODO what settings changed
+        projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
+    }
+
+    @Transactional
+    public void saveLinks(final ProjectTable projectTable, final ProjectLinksForm linksForm) {
+        this.validateLinks(linksForm.getLinks());
+
+        projectTable.setLinks(new JSONB(linksForm.getLinks()));
+        this.projectsDAO.updateLinks(projectTable.getId(), projectTable.getLinks());
+
         projectTable.logAction(this.actionLogger, LogAction.PROJECT_SETTINGS_CHANGED, "", "");
     }
 

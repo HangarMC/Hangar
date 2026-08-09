@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { cloneDeep } from "lodash-es";
+import { cloneDeep, isEqual, omit } from "lodash-es";
 import { useVuelidate } from "@vuelidate/core";
 import type { Tab } from "#shared/types/components/design/Tabs";
 import IconMdiTune from "~icons/mdi/tune";
@@ -42,13 +42,17 @@ if (hasPerms(NamedPermission.IsSubjectOwner) || hasPerms(NamedPermission.DeleteP
 
 tabs.value.push({ value: "banners", header: i18n.t("project.settings.tabs.banners"), icon: IconMdiImageMultiple, separated: true });
 
-const isFormTab = computed(() => selectedTab.value === "general" || selectedTab.value === "links");
+// the parent holds the project in shared state; writing it back avoids a full reload so the success message survives
+const { data: sharedProject } = useDataLoader("project");
+
+type SettingsForm = { settings?: ProjectSettings; description?: string; category?: Category };
 
 const form = reactive({
   settings: undefined,
   description: undefined,
   category: undefined,
-} as { settings?: ProjectSettings; description?: string; category?: Category });
+} as SettingsForm);
+const pristine = ref<SettingsForm>({});
 
 watch(
   () => props.project,
@@ -63,9 +67,26 @@ watch(
     if (form.settings && !form.settings?.links) {
       form.settings.links = [];
     }
+    pristine.value = cloneDeep(toRaw(form));
   },
   { immediate: true }
 );
+
+const linksDirty = computed(() => !isEqual(form.settings?.links, pristine.value.settings?.links));
+const generalDirty = computed(
+  () =>
+    form.description !== pristine.value.description ||
+    form.category !== pristine.value.category ||
+    !isEqual(omit(form.settings, "links"), omit(pristine.value.settings, "links"))
+);
+const isDirty = computed(() => (selectedTab.value === "links" ? linksDirty.value : selectedTab.value === "general" && generalDirty.value));
+
+function discard() {
+  form.settings = cloneDeep(pristine.value.settings);
+  form.description = pristine.value.description;
+  form.category = pristine.value.category;
+  v.value.$reset();
+}
 
 const imgSrc = ref(props.project?.avatarUrl);
 const hasCustomIcon = computed(() => imgSrc.value?.includes("/project/"));
@@ -101,7 +122,11 @@ const isCustomLicense = computed(() => form.settings?.license?.type === "Other")
 const isUnspecifiedLicense = computed(() => form.settings?.license?.type === "Unspecified");
 
 watch(route, (val) => (selectedTab.value = val.params.slug?.[0] || "general"), { deep: true });
-watch(selectedTab, (val) => router.replace("/" + route.params.user + "/" + route.params.project + "/settings/" + val));
+watch(selectedTab, (val) => {
+  // each tab saves on its own, so errors from the one we left must not block it
+  v.value.$reset();
+  router.replace("/" + route.params.user + "/" + route.params.project + "/settings/" + val);
+});
 
 const search = ref<string>("");
 const result = ref<string[]>([]);
@@ -116,20 +141,43 @@ async function doSearch(val: unknown) {
 }
 
 async function save() {
-  if (!(await v.value.$validate())) return;
+  if (!form.settings || !props.project || !(await v.value.$validate())) return;
   loading.save = true;
   try {
-    if (form.settings && !isCustomLicense.value) {
-      form.settings.license.name = undefined as unknown as string;
-    }
-    if (form.settings && isUnspecifiedLicense.value) {
-      form.settings.license.url = undefined;
-    }
+    // the shared project is updated field by field on purpose: replacing the object would re-run the watcher
+    // above, which rebuilds the whole form and would throw away unsaved edits sitting on the other tab
+    const shared = sharedProject.value;
+    if (selectedTab.value === "links") {
+      const links = cloneDeep(toRaw(form.settings.links));
+      await useInternalApi(`projects/project/${route.params.project}/links`, "post", { links });
+      if (shared) shared.settings.links = cloneDeep(links);
+      if (pristine.value.settings) pristine.value.settings.links = links;
+      notificationStore.success(i18n.t("project.settings.success.savedLinks"));
+    } else {
+      if (!isCustomLicense.value) {
+        form.settings.license.name = undefined as unknown as string;
+      }
+      if (isUnspecifiedLicense.value) {
+        form.settings.license.url = undefined;
+      }
 
-    await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {
-      ...form,
-    });
-    await router.go(0);
+      // links have their own endpoint and are ignored here, but the field is required, so send an empty list
+      // rather than the real one -- that keeps a broken link from failing validation on an unrelated tab
+      await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {
+        ...form,
+        settings: { ...form.settings, links: [] },
+      });
+
+      const saved = cloneDeep(toRaw(form.settings));
+      if (shared) {
+        shared.category = form.category!;
+        shared.description = form.description!;
+        shared.settings = { ...saved, links: shared.settings.links };
+      }
+      // keep the links baseline untouched so unsaved link edits stay marked as unsaved
+      pristine.value = { ...cloneDeep(toRaw(form)), settings: { ...saved, links: pristine.value.settings?.links ?? [] } };
+      notificationStore.success(i18n.t("project.settings.success.savedGeneral"));
+    }
   } catch (err: any) {
     handleRequestError(err);
   }
@@ -294,12 +342,7 @@ useSeo(
         <ProjectSettingsSection title="project.settings.license" description="project.settings.licenseSub">
           <div class="flex flex-wrap items-end gap-2">
             <div class="flex-shrink-0">
-              <InputDropdown
-                v-if="form.settings"
-                v-model="form.settings.license.type"
-                :values="useLicenseOptions"
-                :label="i18n.t('project.settings.licenseType')"
-              />
+              <InputDropdown v-if="form.settings" v-model="form.settings.license.type" :values="useLicenseOptions" />
             </div>
             <div v-if="isCustomLicense" class="min-w-60 flex-1">
               <InputText
@@ -484,11 +527,6 @@ useSeo(
       </template>
     </Tabs>
 
-    <div v-if="isFormTab" class="mt-6 flex justify-end border-t border-gray-300 pt-4 dark:border-gray-700">
-      <Button :disabled="v.$error" :loading="loading.save" @click="save">
-        <IconMdiCheck />
-        {{ i18n.t("project.settings.save") }}
-      </Button>
-    </div>
+    <UnsavedChanges :show="isDirty" :loading="loading.save" :disabled="v.$error" @save="save" @discard="discard" />
   </Card>
 </template>

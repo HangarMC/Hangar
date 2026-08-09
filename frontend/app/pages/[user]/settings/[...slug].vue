@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { cloneDeep, isEqual } from "lodash-es";
 import { NamedPermission } from "#shared/types/backend";
 import type { HangarOrganization, User } from "#shared/types/backend";
 import type { Tab } from "#shared/types/components/design/Tabs";
@@ -22,6 +23,7 @@ const i18n = useI18n();
 const v = useVuelidate();
 const notification = useNotificationStore();
 
+const { data: sharedUser } = useDataLoader("user");
 const orgName = computed(() => props.user?.name || (route.params.user as string));
 const isOwner = computed(() => hasPerms(NamedPermission.IsSubjectOwner));
 
@@ -35,17 +37,40 @@ if (isOwner.value) {
 }
 
 watch(route, (val) => (selectedTab.value = val.params.slug?.[0] || "general"), { deep: true });
-watch(selectedTab, (val) => router.replace(`/${orgName.value}/settings/${val}`));
+watch(selectedTab, (val) => {
+  // each tab saves on its own, so errors from the one we left must not block it
+  v.value.$reset();
+  router.replace(`/${orgName.value}/settings/${val}`);
+});
 
 const form = reactive<{ tagline: string; socials: Record<string, string> }>({ tagline: "", socials: {} });
+const pristine = ref({ tagline: "", socials: {} as Record<string, string> });
 watch(
   () => props.user,
   (user) => {
     form.tagline = user?.tagline || "";
     form.socials = { ...user?.socials };
+    pristine.value = cloneDeep(toRaw(form));
   },
   { immediate: true }
 );
+
+// SocialForm drops retired link types on mount, so the baseline is only settled once children have set up
+onMounted(() => (pristine.value = cloneDeep(toRaw(form))));
+
+const isDirty = computed(
+  () => selectedTab.value === "general" && (form.tagline !== pristine.value.tagline || !isEqual(form.socials, pristine.value.socials))
+);
+
+// SocialForm keeps its own draft of the fields, so it has to be remounted to pick the reverted values back up
+const socialFormKey = ref(0);
+
+function discard() {
+  form.tagline = pristine.value.tagline;
+  form.socials = cloneDeep(pristine.value.socials);
+  socialFormKey.value++;
+  v.value.$reset();
+}
 
 const loading = reactive({ save: false, transfer: false });
 
@@ -55,8 +80,12 @@ async function save() {
   try {
     await useInternalApi(`organizations/org/${orgName.value}/settings/tagline`, "post", { content: form.tagline });
     await useInternalApi(`organizations/org/${orgName.value}/settings/socials`, "post", form.socials);
+    // writing the shared user back instead of reloading keeps the header in sync and lets the success message survive
+    if (sharedUser.value) {
+      sharedUser.value = { ...sharedUser.value, tagline: form.tagline, socials: cloneDeep(toRaw(form.socials)) };
+    }
+    pristine.value = cloneDeep(toRaw(form));
     await notification.success(i18n.t("organization.settings.success.saved"));
-    router.go(0);
   } catch (err) {
     handleRequestError(err);
   }
@@ -123,7 +152,7 @@ useSeo(computed(() => ({ title: i18n.t("organization.settings.title") + " | " + 
           </ProjectSettingsSection>
 
           <ProjectSettingsSection>
-            <SocialForm v-model="form.socials" compact />
+            <SocialForm :key="socialFormKey" v-model="form.socials" compact />
           </ProjectSettingsSection>
         </template>
 
@@ -186,12 +215,7 @@ useSeo(computed(() => ({ title: i18n.t("organization.settings.title") + " | " + 
         </template>
       </Tabs>
 
-      <div v-if="selectedTab === 'general'" class="mt-6 flex justify-end border-t border-gray-300 pt-4 dark:border-gray-700">
-        <Button :disabled="v.$error" :loading="loading.save" @click="save">
-          <IconMdiCheck />
-          {{ i18n.t("project.settings.save") }}
-        </Button>
-      </div>
+      <UnsavedChanges :show="isDirty" :loading="loading.save" :disabled="v.$error" @save="save" @discard="discard" />
     </Card>
   </div>
 </template>

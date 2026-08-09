@@ -35,6 +35,10 @@
     "tomorrow": "Tomorrow",
     "used": "Used",
     "reveal": "Reveal",
+    "unsavedChanges": "You have unsaved changes",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "discard": "Discard",
     "error": {
       "invalidUrl": "Invalid URL format (did you forget the https://?)",
       "nameEmpty": "Name cannot be empty",
@@ -393,7 +397,6 @@
       "save": "Save changes",
       "optional": "(optional)",
       "licenseCustom": "Custom Name",
-      "licenseType": "Type",
       "licenseUrl": "URL",
       "donation": {
         "enable": "Enable",
@@ -433,6 +436,8 @@
         "changedIconWarn": "Successfully changed the project icon, however the cache couldn't be cleared, it might not be updated instantly: {0}",
         "resetIcon": "Successfully reset the project icon",
         "resetIconWarn": "Successfully reset the project icon, however the cache couldn't be cleared, it might not be updated instantly: {0}",
+        "savedGeneral": "General settings saved",
+        "savedLinks": "Links saved",
         "rename": "Successfully renamed the project to {0}",
         "transferRequest": "Sent a transfer request to {0}. You can cancel this via the member list.",
         "softDelete": "You have deleted this project",

@@ -8,6 +8,7 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
+import io.papermc.hangar.model.internal.api.requests.projects.ProjectLinksForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
 import io.papermc.hangar.model.internal.projects.HangarProject;
@@ -119,6 +120,16 @@ public class ProjectController extends HangarComponent {
     @PostMapping(path = "/project/{slugOrId}/settings", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveProjectSettings(@PathVariable("slugOrId") final ProjectTable project, @RequestBody final @Valid ProjectSettingsForm settingsForm) {
         this.projectService.saveSettings(project, settingsForm);
+    }
+
+    @Unlocked
+    @RequireAal(1)
+    @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 10)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/links", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveProjectLinks(@PathVariable("slugOrId") final ProjectTable project, @RequestBody final @Valid ProjectLinksForm linksForm) {
+        this.projectService.saveLinks(project, linksForm);
     }
 
     @Unlocked
