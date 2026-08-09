@@ -5,14 +5,12 @@ import type { RouteLocationRaw } from "vue-router";
 import type { RouteNamedMap } from "vue-router/auto-routes";
 import hangarLogo from "~/assets/hangar-logo.svg";
 
-import IconMdiHome from "~icons/mdi/home";
-import IconMdiAccountGroup from "~icons/mdi/account-group";
-import IconMdiForum from "~icons/mdi/forum";
+import IconMdiHomeOutline from "~icons/mdi/home-outline";
+import IconMdiAccountGroupOutline from "~icons/mdi/account-group-outline";
 import IconMdiCodeBraces from "~icons/mdi/code-braces";
-import IconMdiBookOpen from "~icons/mdi/book-open";
-import IconMdiLanguageJava from "~icons/mdi/language-java";
-import IconMdiDownloadCircle from "~icons/mdi/download-circle";
-import IconMdiFileDocumentAlert from "~icons/mdi/file-document-alert";
+import IconMdiBookOpenOutline from "~icons/mdi/book-open-outline";
+import IconMdiDownloadCircleOutline from "~icons/mdi/download-circle-outline";
+import IconMdiFileDocumentAlertOutline from "~icons/mdi/file-document-alert-outline";
 import IconMdiAlertOutline from "~icons/mdi/alert-outline";
 import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
@@ -61,11 +59,11 @@ const navBarLinks: NavBarLinks = [
 ];
 
 const navBarMenuLinksHangar: NavBarLinks = [
-  { link: "index", label: t("general.home"), icon: IconMdiHome },
-  { link: "guidelines", label: t("guidelines.title"), icon: IconMdiFileDocumentAlert },
+  { link: "index", label: t("general.home"), icon: IconMdiHomeOutline },
+  { link: "guidelines", label: t("guidelines.title"), icon: IconMdiFileDocumentAlertOutline },
   { link: "new", label: t("nav.links.createProject"), icon: IconMdiFolderPlusOutline },
   { link: "neworganization", label: t("nav.links.createOrganization"), icon: IconMdiAccountMultiplePlusOutline },
-  { link: "authors", label: t("nav.usersTitle"), icon: IconMdiAccountGroup },
+  { link: "authors", label: t("nav.usersTitle"), icon: IconMdiAccountGroupOutline },
 ];
 if (!authStore.user) {
   navBarMenuLinksHangar.splice(2, 2);
@@ -82,12 +80,10 @@ const auth = useAuth;
 authLog("render with user " + authStore.user?.name);
 
 const navBarMenuLinksMoreFromPaper = [
-  { link: "https://papermc.io/", label: t("nav.hangar.home"), icon: IconMdiHome },
-  { link: "https://forums.papermc.io/", label: t("nav.hangar.forums"), icon: IconMdiForum },
+  { link: "https://papermc.io/", label: t("nav.hangar.home"), icon: IconMdiHomeOutline },
   { link: "https://github.com/PaperMC", label: t("nav.hangar.code"), icon: IconMdiCodeBraces },
-  { link: "https://docs.papermc.io/", label: t("nav.hangar.docs"), icon: IconMdiBookOpen },
-  { link: "https://papermc.io/javadocs", label: t("nav.hangar.javadocs"), icon: IconMdiLanguageJava },
-  { link: "https://papermc.io/downloads", label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircle },
+  { link: "https://docs.papermc.io/", label: t("nav.hangar.docs"), icon: IconMdiBookOpenOutline },
+  { link: "https://papermc.io/downloads", label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircleOutline },
 ];
 
 function markNotificationsRead() {
@@ -399,9 +395,9 @@ function isRecent(date: string): boolean {
             </button>
             <template #content="{ close }">
               <DropdownPanel @click="close()">
-                <DropdownItem :to="'/' + authStore.user.name"><IconMdiAccount class="flex-shrink-0" />{{ t("nav.user.profile") }}</DropdownItem>
+                <DropdownItem :to="'/' + authStore.user.name"><IconMdiAccountOutline class="flex-shrink-0" />{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications"><IconMdiBellOutline class="flex-shrink-0" />{{ t("nav.user.notifications") }}</DropdownItem>
-                <DropdownItem to="/auth/settings/profile"><IconMdiCog class="flex-shrink-0" />{{ t("nav.user.settings") }}</DropdownItem>
+                <DropdownItem to="/auth/settings/profile"><IconMdiCogOutline class="flex-shrink-0" />{{ t("nav.user.settings") }}</DropdownItem>
                 <hr v-if="hasStaffLinks" class="my-1 border-gray-300 dark:border-gray-700" />
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   <IconMdiFlagOutline class="flex-shrink-0" />
@@ -414,7 +410,7 @@ function isRecent(date: string): boolean {
                   <span v-if="authStore.user.headerData.projectApprovals !== 0">{{ "(" + authStore.user?.headerData.projectApprovals + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.Reviewer)" to="/admin/approval/versions">
-                  <IconMdiPackageVariantClosed class="flex-shrink-0" />
+                  <IconMdiArchiveOutline class="flex-shrink-0" />
                   {{ t("nav.user.versionApprovals") }}
                   <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user?.headerData.reviewQueueCount + ")" }}</span>
                 </DropdownItem>
@@ -422,17 +418,17 @@ function isRecent(date: string): boolean {
                   <IconMdiChartLine class="flex-shrink-0" />{{ t("nav.user.stats") }}
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ViewHealth)" to="/admin/health">
-                  <IconMdiHeartPulse class="flex-shrink-0" />{{ t("nav.user.health") }}
+                  <IconMdiPulse class="flex-shrink-0" />{{ t("nav.user.health") }}
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ViewLogs)" to="/admin/log">
                   <IconMdiHistory class="flex-shrink-0" />{{ t("nav.user.log") }}
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ManualValueChanges)" to="/admin/settings">
-                  <IconMdiCogs class="flex-shrink-0" />
+                  <IconMdiShieldCrownOutline class="flex-shrink-0" />
                   {{ t("nav.user.adminSettings") }}
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.EditAllUserSettings)" to="/admin/user/">
-                  <IconMdiAccountGroup class="flex-shrink-0" />
+                  <IconMdiAccountGroupOutline class="flex-shrink-0" />
                   {{ t("nav.user.userList") }}
                 </DropdownItem>
                 <hr class="my-1 border-gray-300 dark:border-gray-700" />

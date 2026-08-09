@@ -15,39 +15,38 @@ useSeo(computed(() => ({ title: "Hangar Version", route })));
       <Card flat padding="none">
         <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
           <h2 class="flex-grow text-lg font-bold">Build info</h2>
-          <Chip tone="primary" class="tabular-nums">{{ version.version }}</Chip>
         </div>
-        <dl class="divide-y divide-gray-300 dark:divide-gray-700">
-          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4">
+        <dl class="m-0 divide-y divide-gray-300 dark:divide-gray-700">
+          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
             <dt class="text-sm text-gray-secondary sm:w-36 sm:flex-shrink-0">Version</dt>
-            <dd class="min-w-0 flex-1">
-              <code class="rounded background-card px-2 py-1.5 text-sm tabular-nums">{{ version.version }}</code>
+            <dd class="min-w-0 flex flex-1 items-center">
+              <code class="inline-flex items-center rounded background-card px-2 py-0.5 text-sm tabular-nums">{{ version.version }}</code>
             </dd>
           </div>
-          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4">
+          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
             <dt class="text-sm text-gray-secondary sm:w-36 sm:flex-shrink-0">Commit</dt>
-            <dd class="min-w-0 flex-1">
+            <dd class="min-w-0 flex flex-1 items-center">
               <Link :href="'https://github.com/HangarMC/Hangar/commit/' + version.commit">
-                <code class="rounded background-card px-2 py-1.5 text-sm tabular-nums">{{ version.commitShort }}</code>
+                <code class="inline-flex items-center rounded background-card px-2 py-0.5 text-sm tabular-nums">{{ version.commitShort }}</code>
               </Link>
             </dd>
           </div>
-          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4">
+          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
             <dt class="text-sm text-gray-secondary sm:w-36 sm:flex-shrink-0">Committer</dt>
             <dd class="min-w-0 flex-1 font-semibold">{{ version.committer }}</dd>
           </div>
-          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4">
+          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
             <dt class="text-sm text-gray-secondary sm:w-36 sm:flex-shrink-0">Committed</dt>
             <dd class="min-w-0 flex-1 tabular-nums">{{ version.time }}</dd>
           </div>
-          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4">
+          <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
             <dt class="text-sm text-gray-secondary sm:w-36 sm:flex-shrink-0">Message</dt>
             <dd class="min-w-0 flex-1 whitespace-pre-line">{{ version.message }}</dd>
           </div>
-          <div v-if="version.tag" class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4">
+          <div v-if="version.tag" class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
             <dt class="text-sm text-gray-secondary sm:w-36 sm:flex-shrink-0">Last tag</dt>
             <dd class="min-w-0 flex flex-1 flex-wrap items-center gap-2">
-              <code class="rounded background-card px-2 py-1.5 text-sm tabular-nums">{{ version.tag }}</code>
+              <code class="inline-flex items-center rounded background-card px-2 py-0.5 text-sm tabular-nums">{{ version.tag }}</code>
               <span class="text-sm text-gray-secondary tabular-nums">{{ version.behind || 0 }} commits since tag</span>
             </dd>
           </div>

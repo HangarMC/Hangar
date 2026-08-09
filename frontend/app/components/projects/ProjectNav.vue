@@ -24,11 +24,11 @@ function childRoute(route = ""): string {
       {{ i18n.t("project.tabs.docs") }}
     </ProjectNavItem>
     <ProjectNavItem :to="childRoute('/versions')">
-      <IconMdiPackageVariantClosed class="flex-shrink-0" />
+      <IconMdiArchiveOutline class="flex-shrink-0" />
       {{ i18n.t("project.tabs.versions") }}
     </ProjectNavItem>
     <ProjectNavItem v-if="hasPerms(NamedPermission.EditSubjectSettings)" :to="childRoute('/settings')">
-      <IconMdiCog class="flex-shrink-0" />
+      <IconMdiCogOutline class="flex-shrink-0" />
       {{ i18n.t("project.tabs.settings") }}
     </ProjectNavItem>
     <template v-for="section in props.project?.settings?.links">
