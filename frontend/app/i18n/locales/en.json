@@ -358,13 +358,15 @@
       "invalidTag": "Invalid tag",
       "links": {
         "title": "Links",
-        "sub": "You can define sections of links here and where they are displayed.",
-        "typeField": "Type",
-        "titleField": "Title",
-        "top": "Top",
-        "sidebar": "Sidebar",
+        "sub": "Link out to your homepage, issue tracker, wiki or anywhere else.",
+        "titleField": "Section title",
+        "topTitle": "Header links",
+        "topSub": "Shown next to the project tabs at the top of the page.",
+        "sidebarTitle": "Sidebar sections",
+        "sidebarSub": "Each section becomes its own card in the project sidebar.",
         "addSection": "Add section",
-        "addLink": "Add",
+        "removeSection": "Remove section",
+        "addLink": "Add link",
         "nameField": "Name",
         "urlField": "URL"
       },
@@ -1094,14 +1096,10 @@
         "social": "Social",
         "socialLinks": {
           "title": "Links",
-          "description": "Shown as icons on your profile.",
-          "add": "Add link",
-          "noValue": "No value entered",
-          "empty": "You haven't added any links yet.",
-          "selectType": "Select a link type first.",
-          "alreadyAdded": "You already have a link of that type.",
-          "edit": "Edit {0}",
-          "remove": "Remove {0}"
+          "description": "Shown as icons on your profile. Leave a field empty to hide it.",
+          "usernamePlaceholder": "username",
+          "discordHint": "Shown as a tooltip on your profile, not as a link.",
+          "websiteHint": "Full URL, including https://"
         }
       },
       "account": {

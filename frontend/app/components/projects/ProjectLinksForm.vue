@@ -7,78 +7,117 @@ const emit = defineEmits(["update:modelValue"]);
 const sections = useVModel(props, "modelValue", emit);
 const i18n = useI18n();
 
-// only top is not allowed to be duplicated... (#1342)
-const types = computed(() => sections.value.map((l) => (l.type === "top" ? l.type : l.type + "-" + Math.random())));
+// mirrors LinkSectionType on the backend
+const MAX_TOP_LINKS = 5;
+const MAX_SIDEBAR_LINKS = 10;
+
+const topSection = computed(() => sections.value.find((section) => section.type === "top"));
+const sidebarSections = computed({
+  get: () => sections.value.filter((section) => section.type !== "top"),
+  set: (value) => (sections.value = topSection.value ? [topSection.value, ...value] : value),
+});
+
+function nextId(items: { id: number }[]) {
+  return items.length === 0 ? 0 : Math.max(...items.map((item) => item.id)) + 1;
+}
+
+function addTopLink() {
+  sections.value.unshift({ id: nextId(sections.value), type: "top", title: "", links: [{ id: 0, name: "", url: "" }] });
+}
 
 function addSection() {
-  let nextId = Math.max(...sections.value.map((l) => l.id)) + 1;
-  if (nextId === -Infinity) {
-    nextId = 0;
-  }
-  sections.value.push({ id: nextId, type: "top", title: "", links: [] });
+  sections.value.push({ id: nextId(sections.value), type: "sidebar", title: "", links: [] });
 }
 
-function removeSection(index: number) {
-  sections.value.splice(index, 1);
+function removeSection(section: LinkSection) {
+  sections.value.splice(sections.value.indexOf(section), 1);
 }
+
+// the top section carries no title of its own, so an emptied one is dropped rather than saved as a stub
+watch(
+  () => topSection.value?.links.length,
+  (count) => {
+    if (count === 0 && topSection.value) removeSection(topSection.value);
+  }
+);
 </script>
 
 <template>
-  <div>
-    <Draggable v-model="sections" tag="ul" :animation="200" group="sections" handle=".handle" item-key="id" class="flex flex-col gap-3">
-      <template #item="{ element: section, index }">
-        <li class="overflow-hidden rounded-md border border-gray-300 dark:border-gray-700">
-          <div class="flex flex-wrap items-end gap-2 border-b border-gray-300 px-3 py-2.5 dark:border-gray-700">
-            <IconMdiMenu class="handle mb-2 flex-shrink-0 cursor-grab text-gray-secondary" />
+  <div class="flex flex-col gap-7">
+    <section>
+      <div class="border-b border-gray-300 pb-2 dark:border-gray-700">
+        <div class="flex items-center gap-2">
+          <h3 class="flex-grow font-semibold">{{ i18n.t("project.settings.links.topTitle") }}</h3>
+          <span class="text-sm text-gray-secondary tabular-nums">{{ topSection?.links?.length ?? 0 }}/{{ MAX_TOP_LINKS }}</span>
+        </div>
+        <p class="mt-0.5 text-sm text-gray-secondary">{{ i18n.t("project.settings.links.topSub") }}</p>
+      </div>
 
-            <div class="flex-shrink-0">
-              <InputDropdown
-                v-model="section.type"
-                :values="[
-                  { value: 'top', text: i18n.t('project.settings.links.top') },
-                  { value: 'sidebar', text: i18n.t('project.settings.links.sidebar') },
-                ]"
-                :label="i18n.t('project.settings.links.typeField')"
-                :rules="[required(), noDuplicated('Can only have one top section')(() => types)]"
-              />
+      <ProjectLinksFormInner v-if="topSection" v-model="topSection.links" :max="MAX_TOP_LINKS" class="mt-3" />
+      <Button v-else variant="outline" tone="neutral" size="sm" class="mt-3" @click="addTopLink">
+        <IconMdiPlus />
+        {{ i18n.t("project.settings.links.addLink") }}
+      </Button>
+    </section>
+
+    <section>
+      <div class="border-b border-gray-300 pb-2 dark:border-gray-700">
+        <div class="flex flex-wrap items-center gap-2">
+          <h3 class="flex-grow font-semibold">{{ i18n.t("project.settings.links.sidebarTitle") }}</h3>
+          <Button variant="outline" tone="neutral" size="sm" @click="addSection">
+            <IconMdiPlus />
+            {{ i18n.t("project.settings.links.addSection") }}
+          </Button>
+        </div>
+        <p class="mt-0.5 text-sm text-gray-secondary">{{ i18n.t("project.settings.links.sidebarSub") }}</p>
+      </div>
+
+      <p v-if="sidebarSections.length === 0" class="mt-3 text-sm text-gray-secondary">No sections</p>
+      <Draggable
+        v-else
+        v-model="sidebarSections"
+        tag="ul"
+        :animation="200"
+        group="sections"
+        handle=".section-handle"
+        item-key="id"
+        class="mt-1 divide-y divide-gray-300 dark:divide-gray-700"
+      >
+        <template #item="{ element: section }">
+          <li class="py-3">
+            <div class="flex items-center gap-2">
+              <IconMdiDragVertical class="section-handle shrink-0 cursor-grab text-xl text-gray-secondary active:cursor-grabbing hover:color-primary" />
+              <div class="min-w-50 max-w-100 flex-1">
+                <InputText
+                  v-model="section.title"
+                  :label="i18n.t('project.settings.links.titleField')"
+                  :rules="[
+                    required(),
+                    maxLength()(useBackendData.validations.project.pageName.max!),
+                    minLength()(useBackendData.validations.project.pageName.min!),
+                  ]"
+                />
+              </div>
+              <span class="ml-auto shrink-0 text-sm text-gray-secondary tabular-nums">{{ section.links.length }}/{{ MAX_SIDEBAR_LINKS }}</span>
+              <Button
+                variant="ghost"
+                tone="danger"
+                size="sm"
+                icon-only
+                class="shrink-0"
+                :title="i18n.t('project.settings.links.removeSection')"
+                :aria-label="i18n.t('project.settings.links.removeSection')"
+                @click="removeSection(section)"
+              >
+                <IconMdiDelete />
+              </Button>
             </div>
-            <div v-if="section.type !== 'top'" class="min-w-50 flex-1">
-              <InputText
-                v-model="section.title"
-                :label="i18n.t('project.settings.links.titleField')"
-                :rules="[
-                  required(),
-                  maxLength()(useBackendData.validations.project.pageName.max!),
-                  minLength()(useBackendData.validations.project.pageName.min!),
-                ]"
-              />
-            </div>
 
-            <Button
-              variant="ghost"
-              tone="danger"
-              size="sm"
-              icon-only
-              class="mb-0.5 ml-auto flex-shrink-0"
-              :title="i18n.t('general.delete')"
-              :aria-label="i18n.t('general.delete')"
-              @click="removeSection(index)"
-            >
-              <IconMdiDelete />
-            </Button>
-          </div>
-
-          <div class="p-3">
-            <ProjectLinksFormInner v-model="section.links" />
-          </div>
-        </li>
-      </template>
-    </Draggable>
-
-    <Button variant="outline" tone="neutral" size="sm" class="mt-3" @click="addSection">
-      <IconMdiPlus />
-      {{ i18n.t("project.settings.links.addSection") }}
-    </Button>
+            <ProjectLinksFormInner v-model="section.links" :max="MAX_SIDEBAR_LINKS" class="mt-2 pl-7" />
+          </li>
+        </template>
+      </Draggable>
+    </section>
   </div>
 </template>
 
