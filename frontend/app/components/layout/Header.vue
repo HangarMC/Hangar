@@ -50,6 +50,7 @@ const hasStaffLinks = computed(() =>
   ].some((permission) => hasPerms(permission))
 );
 const loadedUnreadNotifications = ref<number>(0);
+const totalUnread = computed(() => (unreadCount?.value ? unreadCount.value.notifications + unreadCount.value.invites : 0));
 
 type NavBarLinks = { link: keyof RouteNamedMap; label: string; icon?: any }[];
 
@@ -126,6 +127,7 @@ function updateNotifications() {
 
       // Only show notifications that are recent or unread (from the last 30 notifications)
       let filteredAmount = 0;
+      loadedUnreadNotifications.value = 0;
       notifications.value = v.filter((notification: HangarNotification) => {
         if (filteredAmount < 8 && (!notification.read || isRecent(notification.createdAt))) {
           if (!notification.read) {
@@ -139,6 +141,13 @@ function updateNotifications() {
       });
     });
 }
+
+watch(
+  () => route.path,
+  (_path, from) => {
+    if (from === "/notifications") refreshUnreadCount();
+  }
+);
 
 function isRecent(date: string): boolean {
   const now: Date = new Date();
@@ -170,8 +179,7 @@ function isRecent(date: string): boolean {
                 v-for="link in navBarMenuLinksHangar"
                 :key="link.label"
                 :to="{ name: link.link } as RouteLocationRaw"
-                class="flex items-center rounded-md px-6 py-2"
-                hover="text-primary-500 bg-primary-0"
+                class="header-menu-link"
                 v-on="useTracking('nav-burger-link', { link: link.link })"
                 @click="close()"
               >
@@ -186,8 +194,7 @@ function isRecent(date: string): boolean {
                 v-for="link in navBarMenuLinksTools"
                 :key="link.label"
                 :to="{ name: link.link } as RouteLocationRaw"
-                class="flex items-center rounded-md px-6 py-2"
-                hover="text-primary-500 bg-primary-0"
+                class="header-menu-link"
                 v-on="useTracking('nav-burger-link', { link: link.link })"
                 @click="close()"
               >
@@ -201,7 +208,7 @@ function isRecent(date: string): boolean {
               <a
                 v-for="link in navBarMenuLinksMoreFromPaper"
                 :key="link.label"
-                class="flex items-center rounded-md px-6 py-2 hover:(text-primary-500 bg-primary-0)"
+                class="header-menu-link"
                 :href="link.link"
                 v-on="useTracking('nav-burger-link', { link: link.link })"
               >
@@ -246,9 +253,9 @@ function isRecent(date: string): boolean {
           </DropdownButton>
         </div>
         <button
-          class="flex rounded-md p-2"
-          hover="text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700)"
-          aria-label="Toogle dark mode"
+          class="header-icon-btn"
+          :aria-label="settings.darkMode ? t('nav.darkModeOff') : t('nav.darkModeOn')"
+          :title="settings.darkMode ? t('nav.darkModeOff') : t('nav.darkModeOn')"
           @click="settings.toggleDarkMode()"
           v-on="useTracking('nav-theme', { darkMode: settings.darkMode })"
         >
@@ -258,78 +265,112 @@ function isRecent(date: string): boolean {
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
             <button
-              class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
-              aria-label="Notifications"
+              class="header-icon-btn relative"
+              :aria-label="t('notifications.title')"
+              :title="t('notifications.title')"
               @click="updateNotifications"
-              v-on="useTracking('nav-notifications', () => ({ unread: unreadCount ? unreadCount.notifications + unreadCount.invites : -1 }))"
+              v-on="useTracking('nav-notifications', () => ({ unread: totalUnread }))"
             >
-              <IconMdiBellOutline v-show="!unreadCount || unreadCount.notifications + unreadCount.invites === 0" class="text-[1.2em]" />
-              <div v-show="unreadCount && unreadCount.notifications + unreadCount.invites !== 0" class="relative">
-                <!-- This is fine:tm: -->
-                <IconMdiBellBadge class="text-[1.2em]" />
-                <svg class="absolute top-0.6 left-3.3" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <circle style="fill: #c83737" r="3.75" cx="3.75" cy="3.75" />
-                </svg>
-              </div>
+              <IconMdiBellOutline class="text-[1.2em]" />
+              <span
+                v-if="totalUnread > 0"
+                class="accent-fill absolute right-1 top-1 min-w-4 rounded-full px-1 text-center text-[10px] font-semibold leading-4 tabular-nums"
+              >
+                {{ totalUnread > 9 ? "9+" : totalUnread }}
+              </span>
             </button>
             <template #content="{ close }">
               <ClientOnly>
                 <div
-                  class="min-h-0 max-w-150 flex flex-col overflow-auto rounded-md border border-gray-300 background-default shadow-default dark:border-gray-700"
+                  class="max-h-[min(70vh,32rem)] max-w-[calc(100vw-2rem)] w-96 flex flex-col overflow-hidden rounded-md border border-gray-300 background-default shadow-default dark:border-gray-700"
                 >
-                  <div v-if="unreadCount?.invites">
-                    <span class="flex shadow-0 p-2 pb-0 mt-2 ml-3 mr-2">
-                      <Link class="font-bold" to="/notifications" @click="close()">
-                        {{ i18n.t("notifications.invitesPending", [unreadCount.invites]) }}
-                      </Link>
-                    </span>
+                  <div class="flex flex-shrink-0 items-center gap-2 border-b border-gray-300 px-4 py-2.5 dark:border-gray-700">
+                    <h2 class="flex-grow font-bold">{{ i18n.t("notifications.recentNotifications") }}</h2>
+                    <Chip v-if="totalUnread > 0" tone="primary" class="tabular-nums">{{ totalUnread }}</Chip>
                   </div>
-                  <span class="flex font-bold shadow-0 p-2 pt-0 mt-2 ml-3 mr-2">{{ i18n.t("notifications.recentNotifications") }}</span>
-                  <div v-if="notifications.length === 0">
-                    <span class="flex shadow-0 p-2 mt-2 ml-3 mr-2">{{ i18n.t("notifications.empty.recent") }}</span>
-                  </div>
-                  <div
-                    v-for="notification in notifications"
-                    v-else
-                    :key="notification.id"
-                    :class="'text-sm flex shadow-0 p-3 pt-2 pr-4 inline-flex items-center ' + (!notification.read ? 'bg-blue-100 dark:bg-slate-700' : '')"
+
+                  <NuxtLink
+                    v-if="unreadCount?.invites"
+                    to="/notifications"
+                    active-class=""
+                    class="flex flex-shrink-0 items-center gap-3 border-b border-gray-300 px-4 py-2.5 transition-colors hover:background-card dark:border-gray-700"
                     @click="close()"
                   >
-                    <span class="text-lg mr-2">
-                      <IconMdiInformationOutline v-if="notification.type === 'info'" class="text-sky-600" />
-                      <IconMdiCheck v-else-if="notification.type === 'success'" class="text-lime-600" />
-                      <IconMdiAlertOutline v-else-if="notification.type === 'warning'" class="text-red-600" />
-                      <IconMdiMessageOutline v-else-if="notification.type === 'neutral'" />
+                    <span class="chip-primary h-8 w-8 flex flex-shrink-0 items-center justify-center rounded-lg color-primary">
+                      <IconMdiAccountPlus />
                     </span>
+                    <span class="flex-grow text-sm font-semibold">{{ i18n.t("notifications.invitesPending", [unreadCount.invites]) }}</span>
+                    <IconMdiChevronRight class="flex-shrink-0 text-gray-secondary" />
+                  </NuxtLink>
 
-                    <NuxtLink
-                      v-if="notification.action"
-                      :to="'/' + notification.action"
-                      active-class=""
-                      @click="markNotificationRead(notification)"
-                      @click.middle="markNotificationRead(notification)"
-                    >
-                      {{ i18n.t(notification.message[0]!, notification.message.slice(1)) }}
-                      <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
-                    </NuxtLink>
-                    <div v-else>
-                      {{ i18n.t(notification.message[0]!, notification.message.slice(1)) }}
-                      <div class="text-xs mt-1">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
-                    </div>
+                  <div class="min-h-0 flex-1 overflow-y-auto">
+                    <p v-if="notifications.length === 0" class="px-4 py-8 text-center text-sm text-gray-secondary">
+                      {{ i18n.t("notifications.empty.recent") }}
+                    </p>
+                    <ul v-else class="divide-y divide-gray-300 dark:divide-gray-700">
+                      <li
+                        v-for="notification in notifications"
+                        :key="notification.id"
+                        class="relative flex items-start gap-3 px-4 py-3 transition-colors"
+                        :class="notification.action ? 'hover:background-card' : ''"
+                      >
+                        <span class="mt-2.5 w-2 flex-shrink-0">
+                          <span v-if="!notification.read" class="block h-2 w-2 rounded-full bg-primary-500" />
+                        </span>
+
+                        <span
+                          class="h-8 w-8 flex flex-shrink-0 items-center justify-center rounded-lg"
+                          :class="{
+                            'bg-sky-500/15 text-sky-500': notification.type === 'info',
+                            'bg-lime-500/15 text-lime-500': notification.type === 'success',
+                            'bg-amber-500/15 text-amber-500': notification.type === 'warning',
+                            'bg-red-500/15 text-red-500': notification.type === 'error',
+                            'chip-neutral text-gray-600 dark:text-gray-300': notification.type === 'neutral',
+                          }"
+                        >
+                          <IconMdiInformationOutline v-if="notification.type === 'info'" />
+                          <IconMdiCheck v-else-if="notification.type === 'success'" />
+                          <IconMdiAlertOutline v-else-if="notification.type === 'warning' || notification.type === 'error'" />
+                          <IconMdiMessageOutline v-else />
+                        </span>
+
+                        <div class="min-w-0 flex-1 text-sm">
+                          <NuxtLink
+                            v-if="notification.action"
+                            :to="'/' + notification.action"
+                            active-class=""
+                            class="line-clamp-2 after:(absolute inset-0 content-empty)"
+                            :class="notification.read ? '' : 'font-semibold'"
+                            @click="markNotificationRead(notification), close()"
+                            @click.middle="markNotificationRead(notification)"
+                          >
+                            {{ i18n.t(notification.message[0]!, notification.message.slice(1)) }}
+                          </NuxtLink>
+                          <span v-else class="line-clamp-2 block" :class="notification.read ? '' : 'font-semibold'">
+                            {{ i18n.t(notification.message[0]!, notification.message.slice(1)) }}
+                          </span>
+                          <div class="mt-0.5 text-xs text-gray-secondary">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
-                  <div class="p-2 mb-1 ml-2 space-x-3 text-sm">
-                    <Link to="/notifications" @click="close()">
-                      <span v-if="unreadCount" :class="loadedUnreadNotifications >= unreadCount.notifications ? 'font-normal' : ''">
-                        {{
-                          loadedUnreadNotifications >= unreadCount.notifications
-                            ? i18n.t("notifications.viewAll")
-                            : i18n.t("notifications.viewMoreUnread", [unreadCount.notifications - loadedUnreadNotifications])
-                        }}
-                      </span>
+
+                  <div class="flex flex-shrink-0 items-center gap-3 border-t border-gray-300 px-4 py-2.5 text-sm dark:border-gray-700">
+                    <Link to="/notifications" class="flex-grow" @click="close()">
+                      {{
+                        !unreadCount || loadedUnreadNotifications >= unreadCount.notifications
+                          ? i18n.t("notifications.viewAll")
+                          : i18n.t("notifications.viewMoreUnread", [unreadCount.notifications - loadedUnreadNotifications])
+                      }}
                     </Link>
-                    <span v-if="loadedUnreadNotifications !== 0" class="color-primary hover:(underline cursor-pointer)" @click="markNotificationsRead">
-                      {{ i18n.t("notifications.markAsRead") }}
-                    </span>
+                    <button
+                      v-if="loadedUnreadNotifications !== 0"
+                      type="button"
+                      class="flex-shrink-0 color-primary hover:underline"
+                      @click="markNotificationsRead"
+                    >
+                      {{ i18n.t("notifications.readAll") }}
+                    </button>
                   </div>
                 </div>
               </ClientOnly>
@@ -342,7 +383,7 @@ function isRecent(date: string): boolean {
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
             <button
-              class="flex items-center gap-2 rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
+              class="header-icon-btn"
               @click="updateNavData"
               v-on="useTracking('nav-profile-dropdown')"
             >
@@ -397,7 +438,7 @@ function isRecent(date: string): boolean {
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
           <NuxtLink
-            class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
+            class="header-icon-btn"
             :to="auth.loginUrl(route.fullPath)"
             rel="nofollow"
           >
@@ -405,7 +446,7 @@ function isRecent(date: string): boolean {
             {{ t("nav.login") }}
           </NuxtLink>
           <NuxtLink
-            class="flex items-center rounded-md p-2 hover:(text-primary-500 bg-primary-0 dark:(text-white bg-zinc-700))"
+            class="header-icon-btn"
             :to="auth.signupUrl(route.fullPath)"
           >
             <icon-mdi-clipboard-outline class="mr-1 flex-shrink-0 text-[1.2em]" />
@@ -423,6 +464,22 @@ nav .router-link-active {
   font-weight: 700;
 }
 
+.header-icon-btn {
+  @apply flex items-center gap-2 rounded-md p-2 transition-colors;
+  @apply hover:(text-primary-500 bg-primary-0) dark:hover:(text-white bg-zinc-700);
+}
+
+.header-menu-link {
+  @apply flex items-center rounded-md px-6 py-2 transition-colors;
+  @apply hover:(text-primary-500 bg-primary-0) dark:hover:(text-white bg-zinc-700);
+}
+
+.header-icon-btn:focus-visible,
+.header-menu-link:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: -2px;
+}
+
 .header-link.router-link-active:after {
   content: "";
   background: linear-gradient(-270deg, var(--primary-500) 0%, var(--primary-400) 100%);
@@ -431,7 +488,7 @@ nav .router-link-active {
 }
 
 .header-link:not(.router-link-active):hover:after {
-  background: #d3e1f6;
+  background: color-mix(in srgb, var(--primary-500) 45%, transparent);
   transition: width 0.2s ease-in;
   width: 80%;
 }

@@ -144,8 +144,7 @@ async function save() {
   if (!form.settings || !props.project || !(await v.value.$validate())) return;
   loading.save = true;
   try {
-    // the shared project is updated field by field on purpose: replacing the object would re-run the watcher
-    // above, which rebuilds the whole form and would throw away unsaved edits sitting on the other tab
+    // field by field: replacing the object re-runs the watcher above and would drop unsaved edits on the other tab
     const shared = sharedProject.value;
     if (selectedTab.value === "links") {
       const links = cloneDeep(toRaw(form.settings.links));
@@ -161,8 +160,7 @@ async function save() {
         form.settings.license.url = undefined;
       }
 
-      // links have their own endpoint and are ignored here, but the field is required, so send an empty list
-      // rather than the real one -- that keeps a broken link from failing validation on an unrelated tab
+      // links are ignored here but the field is required; an empty list keeps a broken link from failing this tab
       await useInternalApi(`projects/project/${route.params.project}/settings`, "post", {
         ...form,
         settings: { ...form.settings, links: [] },

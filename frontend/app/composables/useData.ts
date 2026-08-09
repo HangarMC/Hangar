@@ -177,7 +177,8 @@ export function useUnreadCount() {
     false,
     () => !authStore.user,
     () => {},
-    authStore.user?.headerData?.unreadCount
+    authStore.user?.headerData?.unreadCount,
+    true
   );
   // TODO a default value should change the type so that this cast isnt needed
   return { unreadCount: unreadCount as Ref<{ notifications: number; invites: number }> | undefined, unreadCountStatus, refreshUnreadCount };
