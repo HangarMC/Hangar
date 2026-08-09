@@ -2,7 +2,7 @@
 const props = defineProps<{
   to?: string;
   href?: string;
-  icon?: string;
+  label: string;
 }>();
 
 const route = useRoute();
@@ -22,9 +22,10 @@ const clazz = computed(() => {
     <!-- icons carry ~2px of transparent margin in their box, so the padding is trimmed on whichever side one sits -->
     <NuxtLink v-if="to" :to="to" class="pl-1.5 pr-2" :class="clazz">
       <slot />
+      <span class="nav-label" :data-label="label">{{ label }}</span>
     </NuxtLink>
     <a v-if="href" :href="linkout(href)" class="pl-2 pr-1.5" :class="clazz" target="_blank">
-      <slot />
+      {{ label }}
       <IconMdiOpenInNew class="text-xs" />
     </a>
   </div>
@@ -43,5 +44,19 @@ const clazz = computed(() => {
 .nav-underline:hover,
 .nav-underline-active {
   background-size: 100% 2px;
+}
+
+/* a hidden bold copy holds the width, so selecting a tab can't nudge the ones after it */
+.nav-label {
+  display: inline-grid;
+  justify-items: center;
+}
+
+.nav-label::after {
+  content: attr(data-label);
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  font-weight: 600;
 }
 </style>

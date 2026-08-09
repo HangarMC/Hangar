@@ -19,23 +19,18 @@ function childRoute(route = ""): string {
 
 <template>
   <nav class="mt-3 mb-4 flex flex-wrap border-b-2 border-gray-200 dark:border-gray-800">
-    <ProjectNavItem :to="childRoute()">
+    <ProjectNavItem :to="childRoute()" :label="i18n.t('project.tabs.docs')">
       <IconMdiTextBoxOutline class="flex-shrink-0" />
-      {{ i18n.t("project.tabs.docs") }}
     </ProjectNavItem>
-    <ProjectNavItem :to="childRoute('/versions')">
+    <ProjectNavItem :to="childRoute('/versions')" :label="i18n.t('project.tabs.versions')">
       <IconMdiArchiveOutline class="flex-shrink-0" />
-      {{ i18n.t("project.tabs.versions") }}
     </ProjectNavItem>
-    <ProjectNavItem v-if="hasPerms(NamedPermission.EditSubjectSettings)" :to="childRoute('/settings')">
+    <ProjectNavItem v-if="hasPerms(NamedPermission.EditSubjectSettings)" :to="childRoute('/settings')" :label="i18n.t('project.tabs.settings')">
       <IconMdiCogOutline class="flex-shrink-0" />
-      {{ i18n.t("project.tabs.settings") }}
     </ProjectNavItem>
     <template v-for="section in props.project?.settings?.links">
       <template v-if="section.type === 'top'">
-        <ProjectNavItem v-for="item in section.links" :key="item.id" :href="item.url">
-          {{ item.name }}
-        </ProjectNavItem>
+        <ProjectNavItem v-for="item in section.links" :key="item.id" :href="item.url" :label="item.name" />
       </template>
     </template>
   </nav>

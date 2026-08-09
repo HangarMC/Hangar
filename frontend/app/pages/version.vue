@@ -26,7 +26,7 @@ useSeo(computed(() => ({ title: "Hangar Version", route })));
           <div class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
             <dt class="text-sm text-gray-secondary sm:w-36 sm:flex-shrink-0">Commit</dt>
             <dd class="min-w-0 flex flex-1 items-center">
-              <Link :href="'https://github.com/HangarMC/Hangar/commit/' + version.commit">
+              <Link :href="'https://github.com/HangarMC/Hangar/commit/' + version.commit" class="inline-flex">
                 <code class="inline-flex items-center rounded background-card px-2 py-0.5 text-sm tabular-nums">{{ version.commitShort }}</code>
               </Link>
             </dd>
