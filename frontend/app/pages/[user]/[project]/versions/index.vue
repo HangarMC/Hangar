@@ -7,7 +7,7 @@ const router = useRouter();
 const route = useRoute("user-project-versions");
 const globalData = useGlobalData();
 
-const toArray = <T,>(input: unknown): T => (Array.isArray(input) ? input : input ? [input] : []) as T;
+const toArray = <T,>(input: unknown): T => (Array.isArray(input) ? input : (input ? [input] : [])) as T;
 const filter = reactive({
   channels: toArray<string[]>(route.query.channel),
   platforms: toArray<Platform[]>(route.query.platform),
@@ -77,6 +77,16 @@ function getVisibilityTitle(visibility: Visibility) {
       </template>
       <Alert v-else-if="!versions?.result?.length" type="info"> {{ i18n.t("version.page.noVersions") }} </Alert>
       <Card v-else flat padding="none">
+        <div
+          class="version-columns hidden gap-x-3 border-b border-gray-300 px-4 py-2 text-xs text-gray-secondary font-semibold uppercase tracking-wide lg:grid dark:border-gray-700"
+        >
+          <span :aria-label="i18n.t('version.page.channel')" />
+          <span class="min-w-0">{{ i18n.t("version.page.version") }}</span>
+          <span class="min-w-0">{{ i18n.t("version.page.platforms") }}</span>
+          <span class="min-w-0">{{ i18n.t("version.page.published") }}</span>
+          <span class="min-w-0">{{ i18n.t("version.page.downloads") }}</span>
+          <span />
+        </div>
         <ul class="divide-y divide-gray-300 dark:divide-gray-700">
           <Pagination :items="versions.result" :server-pagination="versions.pagination" :reset-anchor="pageChangeScrollAnchor" @update:page="(p) => (page = p)">
             <template #pagination="{ page: current, pages, updatePage }">
@@ -86,7 +96,7 @@ function getVisibilityTitle(visibility: Visibility) {
             </template>
             <template #default="{ item }">
               <li
-                class="relative flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 transition-colors hover:background-card lg:flex-nowrap"
+                class="version-columns relative flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 transition-colors hover:background-card lg:grid"
                 :class="getRowClasses(item)"
               >
                 <ChannelTile :channel="item.channel" />
@@ -108,11 +118,11 @@ function getVisibilityTitle(visibility: Visibility) {
                 </div>
 
                 <!-- below lg this drops under the title as a two-column block; on lg the wrappers
-                     dissolve (display:contents) so the parts become columns of the row itself -->
+                     dissolve (display:contents) so the parts land in the row's own grid columns -->
                 <div
                   class="order-2 basis-full grid grid-cols-2 gap-x-4 gap-y-1 border-t border-gray-300 pt-2 text-sm lg:(order-none basis-auto contents) dark:border-gray-700"
                 >
-                  <div class="min-w-0 flex flex-col gap-1 lg:(flex-1 flex-row items-center gap-3 overflow-hidden)">
+                  <div class="min-w-0 flex flex-col gap-1 lg:(flex-row items-center gap-3 overflow-hidden)">
                     <span v-for="(v, p) in item?.platformDependenciesFormatted" :key="p" class="inline-flex items-center gap-1" :title="v.join(', ')">
                       <PlatformLogo :platform="p as unknown as Platform" :size="16" class="flex-shrink-0" />
                       <span class="tabular-nums">{{ collapseRanges(v) }}</span>
@@ -120,11 +130,11 @@ function getVisibilityTitle(visibility: Visibility) {
                   </div>
 
                   <div class="flex flex-col gap-1 lg:contents">
-                    <span class="min-w-0 inline-flex items-center gap-1.5 truncate lg:flex-1">
+                    <span class="min-w-0 inline-flex items-center gap-1.5 truncate">
                       <IconMdiCalendar class="flex-shrink-0 lg:hidden" />
                       {{ i18n.d(item.createdAt, "date") }}
                     </span>
-                    <span class="inline-flex flex-shrink-0 items-center gap-1.5 lg:w-16">
+                    <span class="inline-flex flex-shrink-0 items-center gap-1.5">
                       <IconMdiDownload class="flex-shrink-0" />
                       <span class="tabular-nums">{{ item.stats.totalDownloads.toLocaleString("en-US") }}</span>
                     </span>
@@ -138,7 +148,7 @@ function getVisibilityTitle(visibility: Visibility) {
                   small
                   :show-versions="false"
                   :show-single-platform="false"
-                  class="relative z-1 order-1 flex-shrink-0 justify-end lg:(order-none w-18)"
+                  class="relative z-1 order-1 flex-shrink-0 justify-end lg:order-none"
                 />
               </li>
             </template>
@@ -227,3 +237,13 @@ function getVisibilityTitle(visibility: Visibility) {
     </section>
   </div>
 </template>
+
+<style scoped>
+/* one template shared by the header and every row, so the columns line up without hand-matched widths */
+@media (min-width: 1024px) {
+  .version-columns {
+    grid-template-columns: 2rem minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 4rem 4.5rem;
+    align-items: center;
+  }
+}
+</style>

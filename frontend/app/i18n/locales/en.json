@@ -635,6 +635,10 @@
       "downloadUrlCopied": "Copied!",
       "downloadUrlHover": "Click to copy download URL",
       "noVersions": "There are no versions yet!",
+      "channel": "Channel",
+      "version": "Version",
+      "published": "Published",
+      "downloads": "Downloads",
       "confirmation": {
         "title": "Warning - {0} {1} by {2}",
         "alert": "This version has not been reviewed by our moderation staff yet and may not be safe to use.",
