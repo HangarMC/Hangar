@@ -242,7 +242,12 @@ useSeo(computed(() => ({ title: t("importer.title"), route })));
                 label="Category"
                 :rules="[required(), (category) => category !== Category.Undefined]"
                 i18n-text-values
-              />
+              >
+                <template #option="{ value, text }">
+                  <CategoryLogo :category="value as Category" :size="18" class="flex-shrink-0" />
+                  <span class="truncate">{{ text }}</span>
+                </template>
+              </InputDropdown>
             </div>
             <Spoiler title="Description" :open="false" class="!max-w-full mt-2">
               <template #content>

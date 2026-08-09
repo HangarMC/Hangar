@@ -20,12 +20,15 @@ function childRoute(route = ""): string {
 <template>
   <nav class="mt-3 mb-4 flex flex-wrap border-b-2 border-gray-200 dark:border-gray-800">
     <ProjectNavItem :to="childRoute()">
+      <IconMdiTextBoxOutline class="flex-shrink-0" />
       {{ i18n.t("project.tabs.docs") }}
     </ProjectNavItem>
     <ProjectNavItem :to="childRoute('/versions')">
+      <IconMdiPackageVariantClosed class="flex-shrink-0" />
       {{ i18n.t("project.tabs.versions") }}
     </ProjectNavItem>
     <ProjectNavItem v-if="hasPerms(NamedPermission.EditSubjectSettings)" :to="childRoute('/settings')">
+      <IconMdiCog class="flex-shrink-0" />
       {{ i18n.t("project.tabs.settings") }}
     </ProjectNavItem>
     <template v-for="section in props.project?.settings?.links">

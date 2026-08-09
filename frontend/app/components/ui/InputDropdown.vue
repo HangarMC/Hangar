@@ -83,8 +83,11 @@ function select(val: any) {
       >
         <template #button-label>
           <span v-if="prefix" class="flex-shrink-0 font-normal text-gray-secondary">{{ prefix }}:</span>
-          <span class="truncate" :class="{ 'text-gray-secondary': selectedText === undefined }">
-            {{ selectedText ?? placeholder ?? i18n.t("general.select") }}
+          <span v-if="selectedText === undefined" class="truncate text-gray-secondary">{{ placeholder ?? i18n.t("general.select") }}</span>
+          <span v-else class="min-w-0 inline-flex items-center gap-2">
+            <slot name="option" :value="internalVal" :text="selectedText">
+              <span class="truncate">{{ selectedText }}</span>
+            </slot>
           </span>
         </template>
         <template #default="{ close }">
@@ -97,7 +100,9 @@ function select(val: any) {
               close();
             "
           >
-            {{ textOf(val) }}
+            <slot name="option" :value="valueOf(val)" :text="textOf(val)">
+              {{ textOf(val) }}
+            </slot>
           </DropdownItem>
         </template>
       </DropdownButton>

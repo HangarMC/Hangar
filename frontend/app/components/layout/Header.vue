@@ -351,33 +351,44 @@ function isRecent(date: string): boolean {
             </button>
             <template #content="{ close }">
               <DropdownPanel @click="close()">
-                <DropdownItem :to="'/' + authStore.user.name">{{ t("nav.user.profile") }}</DropdownItem>
-                <DropdownItem to="/notifications">{{ t("nav.user.notifications") }}</DropdownItem>
-                <DropdownItem to="/auth/settings/profile">{{ t("nav.user.settings") }}</DropdownItem>
+                <DropdownItem :to="'/' + authStore.user.name"><IconMdiAccount class="flex-shrink-0" />{{ t("nav.user.profile") }}</DropdownItem>
+                <DropdownItem to="/notifications"><IconMdiBellOutline class="flex-shrink-0" />{{ t("nav.user.notifications") }}</DropdownItem>
+                <DropdownItem to="/auth/settings/profile"><IconMdiCog class="flex-shrink-0" />{{ t("nav.user.settings") }}</DropdownItem>
                 <hr v-if="hasStaffLinks" class="my-1 border-gray-300 dark:border-gray-700" />
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
+                  <IconMdiFlagOutline class="flex-shrink-0" />
                   {{ t("nav.user.flags") }}
                   <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/approval/projects">
+                  <IconMdiFolderCheckOutline class="flex-shrink-0" />
                   {{ t("nav.user.projectApprovals") }}
                   <span v-if="authStore.user.headerData.projectApprovals !== 0">{{ "(" + authStore.user?.headerData.projectApprovals + ")" }}</span>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.Reviewer)" to="/admin/approval/versions">
+                  <IconMdiPackageVariantClosed class="flex-shrink-0" />
                   {{ t("nav.user.versionApprovals") }}
                   <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user?.headerData.reviewQueueCount + ")" }}</span>
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.ViewStats)" to="/admin/stats">{{ t("nav.user.stats") }}</DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.ViewHealth)" to="/admin/health">{{ t("nav.user.health") }}</DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.ViewLogs)" to="/admin/log">{{ t("nav.user.log") }}</DropdownItem>
+                <DropdownItem v-if="hasPerms(NamedPermission.ViewStats)" to="/admin/stats">
+                  <IconMdiChartLine class="flex-shrink-0" />{{ t("nav.user.stats") }}
+                </DropdownItem>
+                <DropdownItem v-if="hasPerms(NamedPermission.ViewHealth)" to="/admin/health">
+                  <IconMdiHeartPulse class="flex-shrink-0" />{{ t("nav.user.health") }}
+                </DropdownItem>
+                <DropdownItem v-if="hasPerms(NamedPermission.ViewLogs)" to="/admin/log">
+                  <IconMdiHistory class="flex-shrink-0" />{{ t("nav.user.log") }}
+                </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ManualValueChanges)" to="/admin/settings">
+                  <IconMdiCogs class="flex-shrink-0" />
                   {{ t("nav.user.adminSettings") }}
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.EditAllUserSettings)" to="/admin/user/">
+                  <IconMdiAccountGroup class="flex-shrink-0" />
                   {{ t("nav.user.userList") }}
                 </DropdownItem>
                 <hr class="my-1 border-gray-300 dark:border-gray-700" />
-                <DropdownItem tone="danger" @click="auth.logout()">{{ t("nav.user.logout") }}</DropdownItem>
+                <DropdownItem tone="danger" @click="auth.logout()"><IconMdiLogout class="flex-shrink-0" />{{ t("nav.user.logout") }}</DropdownItem>
               </DropdownPanel>
             </template>
           </Popper>

@@ -14,7 +14,7 @@ const selected = computed(() => {
 
 const clazz = computed(() => {
   return (
-    "px-2 py-1 inline-flex items-center transition duration-300 border-b-2 border-transparent hover:border-primary-500 " +
+    "px-2 py-1 inline-flex items-center gap-1.5 transition duration-300 border-b-2 border-transparent hover:border-primary-500 " +
     (selected.value ? "!border-primary-500 font-semibold " : "")
   );
 });
@@ -26,9 +26,7 @@ const clazz = computed(() => {
       <slot />
     </NuxtLink>
     <a v-if="href" :href="linkout(href)" :class="clazz" target="_blank">
-      <span class="mx-1">
-        <slot />
-      </span>
+      <slot />
       <IconMdiOpenInNew class="text-xs" />
     </a>
   </div>

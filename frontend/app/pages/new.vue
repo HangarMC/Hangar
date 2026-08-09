@@ -183,7 +183,12 @@ function createProject() {
 
         <FormSection :title="i18n.t('project.new.step2.projectCategory')" :description="i18n.t('project.settings.categorySub')">
           <template #icon><IconMdiShapeOutline /></template>
-          <InputDropdown v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
+          <InputDropdown v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values>
+            <template #option="{ value, text }">
+              <CategoryLogo :category="value as Category" :size="18" class="flex-shrink-0" />
+              <span class="truncate">{{ text }}</span>
+            </template>
+          </InputDropdown>
         </FormSection>
       </div>
     </template>

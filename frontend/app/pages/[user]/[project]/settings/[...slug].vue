@@ -303,7 +303,12 @@ useSeo(
           />
         </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.category" description="project.settings.categorySub">
-          <InputDropdown v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values />
+          <InputDropdown v-model="form.category" :values="useCategoryOptions" :rules="[required()]" i18n-text-values>
+            <template #option="{ value, text }">
+              <CategoryLogo :category="value as Category" :size="18" class="flex-shrink-0" />
+              <span class="truncate">{{ text }}</span>
+            </template>
+          </InputDropdown>
         </ProjectSettingsSection>
         <ProjectSettingsSection title="project.settings.tags.title" description="project.settings.tagsSub">
           <div v-if="form.settings" class="flex flex-wrap gap-2">
