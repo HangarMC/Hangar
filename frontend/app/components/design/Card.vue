@@ -21,7 +21,7 @@ const clazz = computed(() => {
     border: true,
     "border-gray-300": true,
     "dark:border-gray-700": true,
-    "!border-top-primary": props.accent,
+    "card-accent": props.accent,
     "card-raised": !props.flat,
     "rounded-lg": true,
     "p-4": props.padding === "md",
@@ -44,6 +44,13 @@ const clazz = computed(() => {
 </template>
 
 <style scoped>
+.card-accent {
+  border-top-color: transparent;
+  background-image: linear-gradient(90deg, var(--primary-500) 0%, var(--primary-400) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 3px;
+}
+
 /* shadow-md composited to fully transparent in dark mode, so the elevation is spelled out here */
 .card-raised {
   box-shadow:
