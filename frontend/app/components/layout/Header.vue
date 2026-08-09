@@ -18,6 +18,7 @@ import IconMdiInformationOutline from "~icons/mdi/information-outline";
 import IconMdiMessageOutline from "~icons/mdi/message-outline";
 import IconMdiCheck from "~icons/mdi/check";
 import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
+import IconMdiAccountMultiplePlusOutline from "~icons/mdi/account-multiple-plus-outline";
 import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
 
@@ -63,7 +64,7 @@ const navBarMenuLinksHangar: NavBarLinks = [
   { link: "index", label: t("general.home"), icon: IconMdiHome },
   { link: "guidelines", label: t("guidelines.title"), icon: IconMdiFileDocumentAlert },
   { link: "new", label: t("nav.links.createProject"), icon: IconMdiFolderPlusOutline },
-  { link: "neworganization", label: t("nav.links.createOrganization"), icon: IconMdiFolderPlusOutline },
+  { link: "neworganization", label: t("nav.links.createOrganization"), icon: IconMdiAccountMultiplePlusOutline },
   { link: "authors", label: t("nav.usersTitle"), icon: IconMdiAccountGroup },
 ];
 if (!authStore.user) {
@@ -247,8 +248,14 @@ function isRecent(date: string): boolean {
         <div v-if="authStore.user" class="flex items-center lt-sm:hidden">
           <DropdownButton :name="t('nav.new.title')" v-on="useTracking('nav-create-dropdwon')">
             <template #default="{ close }">
-              <DropdownItem to="/new" @click="close()" v-on="useTracking('nav-new')">{{ t("nav.new.project") }}</DropdownItem>
-              <DropdownItem to="/neworganization" @click="close()" v-on="useTracking('nav-new-org')">{{ t("nav.new.organization") }}</DropdownItem>
+              <DropdownItem to="/new" @click="close()" v-on="useTracking('nav-new')">
+                <IconMdiFolderPlusOutline class="flex-shrink-0" />
+                {{ t("nav.new.project") }}
+              </DropdownItem>
+              <DropdownItem to="/neworganization" @click="close()" v-on="useTracking('nav-new-org')">
+                <IconMdiAccountMultiplePlusOutline class="flex-shrink-0" />
+                {{ t("nav.new.organization") }}
+              </DropdownItem>
             </template>
           </DropdownButton>
         </div>

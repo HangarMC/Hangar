@@ -37,17 +37,17 @@ async function create() {
 
 <template>
   <Card>
-    <template #header>
-      <div class="flex items-center gap-2">
-        <IconMdiAccountGroup class="flex-shrink-0 color-primary" />
-        {{ i18n.t("organization.new.title") }}
-      </div>
-    </template>
+    <h2 class="text-2xl font-bold">{{ i18n.t("organization.new.title") }}</h2>
 
-    <p class="text-gray-secondary">{{ i18n.t("organization.new.text") }}</p>
+    <div class="pt-2 flex flex-col gap-6">
+      <p class="text-gray-secondary">{{ i18n.t("organization.new.text") }}</p>
 
-    <template v-if="currentUser && canCreateMore">
-      <div class="mt-4">
+      <FormSection
+        v-if="currentUser && canCreateMore"
+        :title="i18n.t('organization.new.name')"
+        :description="i18n.t('organization.new.nameHint', [useBackendData.validations.org.min, useBackendData.validations.org.max])"
+      >
+        <template #icon><IconMdiAccountMultiplePlusOutline /></template>
         <InputText
           v-model.trim="name"
           :label="i18n.t('organization.new.name')"
@@ -63,24 +63,21 @@ async function create() {
           ]"
           @keyup.enter="create"
         />
-        <p class="mt-1 text-sm text-gray-secondary">
-          {{ i18n.t("organization.new.nameHint", [useBackendData.validations.org.min, useBackendData.validations.org.max]) }}
-        </p>
-      </div>
+      </FormSection>
 
-      <div class="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-gray-300 pt-4 dark:border-gray-700">
-        <span class="text-sm text-gray-secondary tabular-nums">
-          {{ i18n.t("organization.new.slotsUsed", [orgCount, maxOrgs]) }}
-        </span>
-        <Button :disabled="!canCreate" :loading="loading" @click="create">
-          <IconMdiPlus />
-          {{ i18n.t("organization.new.create") }}
-        </Button>
-      </div>
-    </template>
+      <Alert v-else type="danger">
+        {{ i18n.t("organization.new.error.tooManyOrgs", [maxOrgs]) }}
+      </Alert>
+    </div>
 
-    <Alert v-else type="danger" class="mt-4">
-      {{ i18n.t("organization.new.error.tooManyOrgs", [maxOrgs]) }}
-    </Alert>
+    <div v-if="currentUser && canCreateMore" class="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-gray-300 pt-4 dark:border-gray-700">
+      <span class="text-sm text-gray-secondary tabular-nums">
+        {{ i18n.t("organization.new.slotsUsed", [orgCount, maxOrgs]) }}
+      </span>
+      <Button :disabled="!canCreate" :loading="loading" @click="create">
+        <IconMdiPlus />
+        {{ i18n.t("organization.new.create") }}
+      </Button>
+    </div>
   </Card>
 </template>
