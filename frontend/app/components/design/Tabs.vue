@@ -49,7 +49,7 @@ function selectTab(event: Event, tab: Tab<T>) {
 }
 
 function isSelected(tab: Tab<T>) {
-  return props.router ? route.path.slice(Math.max(0, route.path.lastIndexOf("/") + 1)) : internalValue.value === tab.value;
+  return (props.router ? route.path.slice(Math.max(0, route.path.lastIndexOf("/") + 1)) : internalValue.value) === tab.value;
 }
 
 defineSlots<

@@ -10,7 +10,6 @@ const socials = defineModel<Record<string, string>>({ required: true });
 const linkTypes = [
   { value: "github", text: "GitHub", base: "github.com/" },
   { value: "twitter", text: "Twitter", base: "twitter.com/" },
-  { value: "youtube", text: "YouTube", base: "youtube.com/" },
   { value: "discord", text: "Discord" },
   { value: "website", text: "Website" },
 ];
@@ -18,11 +17,14 @@ const linkTypes = [
 const draft = reactive(Object.fromEntries(linkTypes.map((type) => [type.value, socials.value?.[type.value] ?? ""])));
 
 // a link exists only while it has a value, so emptying a field removes it
-watch(draft, () => {
-  socials.value = Object.fromEntries(
-    linkTypes.map((type) => [type.value, draft[type.value]?.trim() ?? ""]).filter(([, value]) => value)
-  );
-});
+// immediate so retired types stored on old profiles are dropped even if nothing is edited
+watch(
+  draft,
+  () => {
+    socials.value = Object.fromEntries(linkTypes.map((type) => [type.value, draft[type.value]?.trim() ?? ""]).filter(([, value]) => value));
+  },
+  { immediate: true }
+);
 
 function hint(type: (typeof linkTypes)[number]) {
   if (type.value === "discord") return t("auth.settings.profile.socialLinks.discordHint");
@@ -40,7 +42,6 @@ function hint(type: (typeof linkTypes)[number]) {
       <div v-for="type in linkTypes" :key="type.value" class="flex items-start gap-3">
         <IconMdiGithub v-if="type.value === 'github'" class="mt-3 shrink-0 text-xl text-gray-secondary" />
         <IconMdiTwitter v-else-if="type.value === 'twitter'" class="mt-3 shrink-0 text-xl text-gray-secondary" />
-        <IconMdiYoutube v-else-if="type.value === 'youtube'" class="mt-3 shrink-0 text-xl text-gray-secondary" />
         <IconMdiDiscord v-else-if="type.value === 'discord'" class="mt-3 shrink-0 text-xl text-gray-secondary" />
         <IconMdiWeb v-else class="mt-3 shrink-0 text-xl text-gray-secondary" />
 

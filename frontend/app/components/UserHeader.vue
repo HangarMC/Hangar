@@ -24,7 +24,6 @@ const socialLinks = computed(() => {
   return [
     { key: "github", label: "GitHub", href: socials.github ? `https://github.com/${socials.github}` : undefined },
     { key: "twitter", label: "Twitter", href: socials.twitter ? `https://twitter.com/${socials.twitter}` : undefined },
-    { key: "youtube", label: "YouTube", href: socials.youtube ? `https://youtube.com/${socials.youtube}` : undefined },
     { key: "website", label: "Website", href: socials.website ? linkout(socials.website) : undefined },
   ].filter((link) => link.href);
 });
@@ -107,7 +106,6 @@ const socialLinks = computed(() => {
             >
               <IconMdiGithub v-if="link.key === 'github'" />
               <IconMdiTwitter v-else-if="link.key === 'twitter'" />
-              <IconMdiYoutube v-else-if="link.key === 'youtube'" />
               <IconMdiWeb v-else />
             </a>
             <Tooltip v-if="viewingUser.socials?.discord">
