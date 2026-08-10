@@ -2105,6 +2105,8 @@ export interface HangarUser {
   id: number;
   isOrganization: boolean;
   language: string;
+  /** @format date-time */
+  lastSeenChangelogAt?: string;
   locked: boolean;
   name: string;
   nameHistory: UserNameChange[];

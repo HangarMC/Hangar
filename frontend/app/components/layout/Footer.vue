@@ -13,6 +13,9 @@ const { t } = useI18n();
           <a href="https://status.papermc.io" class="footer-link" target="_blank" rel="noreferrer noopener">
             {{ t("hangar.footer.status") }}
           </a>
+          <NuxtLink :to="{ name: 'changelog' }" class="footer-link">
+            {{ t("hangar.footer.changelog") }}
+          </NuxtLink>
           <NuxtLink :to="{ name: 'api-docs' }" class="footer-link">
             {{ t("hangar.footer.api") }}
           </NuxtLink>

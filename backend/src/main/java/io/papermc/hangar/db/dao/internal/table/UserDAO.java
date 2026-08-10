@@ -44,6 +44,9 @@ public interface UserDAO {
     @SqlUpdate("DELETE FROM users WHERE id = :id")
     void delete(@BindBean UserTable user);
 
+    @SqlUpdate("UPDATE users SET last_seen_changelog_at = now() WHERE id = :id")
+    void markChangelogSeen(long id);
+
     @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name) OR lower(email) = lower(:name) OR uuid = :uuid")
     UserTable _getUserTable(Long id, String name, UUID uuid);
 

@@ -94,6 +94,10 @@ public class UserService extends HangarComponent {
         this.userDAO.update(userTable);
     }
 
+    public void markChangelogSeen(final long userId) {
+        this.userDAO.markChangelogSeen(userId);
+    }
+
     public void validateSocials(Map<String, String> socials) {
         for (final Map.Entry<String, String> social : socials.entrySet()) {
             if (!ACCEPTED_SOCIAL_TYPES.contains(social.getKey())) {

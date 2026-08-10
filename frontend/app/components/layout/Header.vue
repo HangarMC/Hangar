@@ -20,7 +20,9 @@ import IconMdiFolderPlusOutline from "~icons/mdi/folder-plus-outline";
 import IconMdiAccountMultiplePlusOutline from "~icons/mdi/account-multiple-plus-outline";
 import IconMdiFolderWrenchOutline from "~icons/mdi/folder-wrench-outline";
 import IconMdiFolderInformationOutline from "~icons/mdi/folder-information-outline";
+import IconMdiSparklesOutline from "~icons/mdi/sparkles-outline";
 
+import { unseenChangelog } from "#shared/changelog";
 import { NamedPermission } from "#shared/types/backend";
 import type { HangarNotification, HangarUser } from "#shared/types/backend";
 import { useUnreadCount } from "~/composables/useData";
@@ -49,6 +51,9 @@ const hasStaffLinks = computed(() =>
     NamedPermission.EditAllUserSettings,
   ].some((permission) => hasPerms(permission))
 );
+// logged-in only: anonymous visitors have no durable seen state, so a badge would return every visit
+const unseenChangelogCount = computed(() => (authStore.user ? unseenChangelog(authStore.user.lastSeenChangelogAt).length : 0));
+
 const loadedUnreadNotifications = ref<number>(0);
 const totalUnread = computed(() => (unreadCount?.value ? unreadCount.value.notifications + unreadCount.value.invites : 0));
 
@@ -388,6 +393,11 @@ function isRecent(date: string): boolean {
                 <DropdownItem :to="'/' + authStore.user.name"><IconMdiAccountOutline class="flex-shrink-0" />{{ t("nav.user.profile") }}</DropdownItem>
                 <DropdownItem to="/notifications"><IconMdiBellOutline class="flex-shrink-0" />{{ t("nav.user.notifications") }}</DropdownItem>
                 <DropdownItem to="/auth/settings/profile"><IconMdiCogOutline class="flex-shrink-0" />{{ t("nav.user.settings") }}</DropdownItem>
+                <DropdownItem to="/changelog">
+                  <IconMdiSparklesOutline class="flex-shrink-0" />
+                  {{ t("nav.user.changelog") }}
+                  <Chip v-if="unseenChangelogCount" tone="primary">{{ unseenChangelogCount }}</Chip>
+                </DropdownItem>
                 <hr v-if="hasStaffLinks" class="my-1 border-gray-300 dark:border-gray-700" />
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   <IconMdiFlagOutline class="flex-shrink-0" />
