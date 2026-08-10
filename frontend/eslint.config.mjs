@@ -46,5 +46,7 @@ export default withNuxt()
       "unicorn/prefer-await": "off",
       "unicorn/no-computed-property-existence-check": "off",
       "unicorn/prefer-simple-condition-first": "off",
+      // toSorted is ES2023 and isn't polyfilled by the build, so it hard-crashes older browsers
+      "unicorn/no-array-sort": "off",
     },
   });

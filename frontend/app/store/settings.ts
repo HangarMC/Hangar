@@ -99,9 +99,12 @@ export const useSettingsStore = defineStore("settings", () => {
     }
 
     if (newThemeMode === "system") {
-      setResponseHeader(event, "Accept-CH", "Sec-CH-Prefers-Color-Scheme");
-      setResponseHeader(event, "Vary", "Sec-CH-Prefers-Color-Scheme");
-      setResponseHeader(event, "Critical-CH", "Sec-CH-Prefers-Color-Scheme");
+      // the middleware can still run after a redirect flushed the response, and setting headers then throws
+      if (!event.node.res.headersSent) {
+        setResponseHeader(event, "Accept-CH", "Sec-CH-Prefers-Color-Scheme");
+        setResponseHeader(event, "Vary", "Sec-CH-Prefers-Color-Scheme");
+        setResponseHeader(event, "Critical-CH", "Sec-CH-Prefers-Color-Scheme");
+      }
       systemDarkMode.value = useRequestHeader("sec-ch-prefers-color-scheme") === "dark";
     }
 

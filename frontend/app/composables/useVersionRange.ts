@@ -29,7 +29,7 @@ export function collapseRanges(entries?: string[] | readonly string[]): string {
 */
 export function versionRange(versions?: string[] | readonly string[]): string {
   if (!versions?.length) return "";
-  const sorted = versions.toSorted(compareVersions);
+  const sorted = [...versions].sort(compareVersions);
   const first = sorted[0]!;
   const last = sorted.at(-1)!;
   return first === last ? first : `${first}–${last}`;

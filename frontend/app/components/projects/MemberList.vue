@@ -43,7 +43,7 @@ const defaultInvitePermissions = props.organization
 const grantedCount = (member: Member) => member.role.permissions.filter((p) => p !== NamedPermission.IsSubjectMember).length;
 
 const sortedMembers = computed(() =>
-  props.members.toSorted((r1, r2) => {
+  [...props.members].sort((r1, r2) => {
     if (r1.role.owner !== r2.role.owner) return r1.role.owner ? -1 : 1;
     const diff = grantedCount(r2) - grantedCount(r1);
     return diff === 0 ? r1.user.name.localeCompare(r2.user.name) : diff;

@@ -127,5 +127,5 @@ export function isSame(arrayOne?: any[], arrayTwo?: any[]) {
   const a = uniq(arrayOne);
   const b = uniq(arrayTwo);
   // eslint-disable-next-line unicorn/require-array-sort-compare
-  return a.length === b.length && isEmpty(difference(b.toSorted(), a.toSorted()));
+  return a.length === b.length && isEmpty(difference([...b].sort(), [...a].sort()));
 }

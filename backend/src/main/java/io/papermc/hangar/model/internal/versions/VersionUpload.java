@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.*;
 import io.papermc.hangar.controller.validations.Validate;
@@ -20,12 +21,14 @@ public class VersionUpload {
     private final @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.versionNameRegex)", message = "version.new.error.invalidVersionString") String version;
     @Schema(description = "Map of each platform's plugin dependencies")
     private final Map<Platform, Set<@Valid PluginDependency>> pluginDependencies;
+    @NotNull(message = "version.new.error.invalidNumOfPlatforms")
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     @Schema(description = "Map of platforms and their versions this version runs on", example = "{PAPER: [\"1.12\", \"1.16-1.18.2\", \"1.20.x\"]}")
     private final Map<Platform, @Size(min = 1, message = "version.edit.error.noPlatformVersions") SortedSet<@NotBlank(message = "version.new.error.invalidPlatformVersion") String>> platformDependencies;
 
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.pages.maxLen)", message = "page.new.error.maxLength") String description;
+    @NotNull(message = "version.new.error.invalidNumOfPlatforms")
     @Size(min = 1, max = 3, message = "version.new.error.invalidNumOfPlatforms")
     private final List<@Valid MultipartFileOrUrl> files;
 
@@ -37,7 +40,7 @@ public class VersionUpload {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public VersionUpload(final String version, final Map<Platform, Set<PluginDependency>> pluginDependencies, final EnumMap<Platform, SortedSet<String>> platformDependencies, final @Nullable String description, final List<MultipartFileOrUrl> files, final String channel) {
         this.version = version;
-        this.pluginDependencies = pluginDependencies;
+        this.pluginDependencies = pluginDependencies != null ? pluginDependencies : new EnumMap<>(Platform.class); // optional in API
         this.platformDependencies = platformDependencies;
         this.description = description != null ? description : "*No description provided*";
         this.files = files;
