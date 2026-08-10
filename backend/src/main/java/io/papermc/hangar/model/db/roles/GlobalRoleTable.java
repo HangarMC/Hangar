@@ -3,7 +3,7 @@ package io.papermc.hangar.model.db.roles;
 import io.papermc.hangar.model.common.roles.GlobalRole;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
-public class GlobalRoleTable implements IRoleTable<GlobalRole> {
+public class GlobalRoleTable implements IRoleTable {
 
     private final long userId;
     private final GlobalRole role;
@@ -18,24 +18,12 @@ public class GlobalRoleTable implements IRoleTable<GlobalRole> {
         return this.userId;
     }
 
-    @Override
     public GlobalRole getRole() {
         return this.role;
     }
 
-    @Override
-    public void setRole(final GlobalRole role) {
-        throw new UnsupportedOperationException("Delete the global role and add a new one to change it");
-    }
-
-    @Override
     public long getRoleId() {
         return this.role.getRoleId();
-    }
-
-    @Override
-    public String getRoleType() {
-        return this.role.getValue();
     }
 
     @Override

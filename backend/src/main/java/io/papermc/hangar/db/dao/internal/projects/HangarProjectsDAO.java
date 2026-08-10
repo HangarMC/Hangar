@@ -66,7 +66,9 @@ public interface HangarProjectsDAO {
         "       upr.id upr_id," +
         "       upr.created_at upr_created_at," +
         "       upr.user_id upr_user_id," +
-        "       upr.role_type upr_role_type," +
+        "       upr.permissions::bigint upr_permissions," +
+        "       upr.title upr_title," +
+        "       upr.is_owner upr_is_owner," +
         "       upr.project_id upr_project_id," +
         "       upr.accepted upr_accepted" +
         "   FROM user_project_roles upr" +

@@ -63,7 +63,7 @@ function resetPlatformVersions() {
   }
 }
 
-const roles = ref([...useBackendData.orgRoles, ...useBackendData.globalRoles, ...useBackendData.projectRoles]);
+const roles = ref([...useBackendData.globalRoles]);
 async function saveRoles() {
   loading.value = true;
   const data = Array.from(roles.value, (role) => ({ roleId: role.roleId, title: role.title, color: role.color, rank: Number(role.rank) }));

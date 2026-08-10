@@ -138,7 +138,7 @@ useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.u
           <Link :to="'/' + orgs[item.name]?.ownerName">{{ orgs[item.name]?.ownerName }}</Link>
         </template>
         <template #role="{ item }">
-          {{ getRole(orgs[item.name]?.roleId)?.title }}
+          {{ orgs[item.name]?.title }}
         </template>
         <template #accepted="{ item }">
           <IconMdiCheck v-if="orgs[item.name]?.accepted" class="text-lime-500" />

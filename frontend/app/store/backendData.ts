@@ -1,10 +1,26 @@
 import backendData from "#shared/generated/backendData.json";
 import type { Option } from "#shared/types/components/ui/InputAutocomplete";
-import type { CategoryData, PermissionData, RoleData } from "#shared/types/backend";
+import { NamedPermission } from "#shared/types/backend";
+import type { CategoryData, PermissionData, PermissionGroup, RoleData } from "#shared/types/backend";
 import type { BackendData, ServerBackendData } from "#shared/types/backendData";
 
 const serverBackendData = { ...backendData } as unknown as ServerBackendData;
 const typedBackendData = { ...serverBackendData } as unknown as BackendData;
+
+// backendData.json is a build-time snapshot and may predate these endpoints; mirrors the backend MemberPermissions
+const PROJECT_PERMISSIONS = [NamedPermission.EditPage, NamedPermission.EditChannels, NamedPermission.DeleteProject];
+const VERSION_PERMISSIONS = [NamedPermission.CreateVersion, NamedPermission.EditVersion, NamedPermission.DeleteVersion];
+typedBackendData.projectPermissions ??= [
+  { name: "project", permissions: [NamedPermission.EditSubjectSettings, ...PROJECT_PERMISSIONS] },
+  { name: "versions", permissions: VERSION_PERMISSIONS },
+  { name: "people", permissions: [NamedPermission.ManageSubjectMembers] },
+] satisfies PermissionGroup[];
+typedBackendData.organizationPermissions ??= [
+  { name: "organization", permissions: [NamedPermission.EditSubjectSettings] },
+  { name: "projects", permissions: [NamedPermission.CreateProject, ...PROJECT_PERMISSIONS] },
+  { name: "versions", permissions: VERSION_PERMISSIONS },
+  { name: "people", permissions: [NamedPermission.ManageSubjectMembers] },
+] satisfies PermissionGroup[];
 
 // convert to bigint
 const permissionResult = serverBackendData.permissions?.map(
@@ -26,17 +42,11 @@ export const useBackendData = typedBackendData;
 
 export function getRole(id?: number): RoleData | undefined {
   if (!id) return undefined;
-  return (
-    getRoleFromRoles(id, typedBackendData.globalRoles) || getRoleFromRoles(id, typedBackendData.projectRoles) || getRoleFromRoles(id, typedBackendData.orgRoles)
-  );
+  return getRoleFromRoles(id, typedBackendData.globalRoles);
 }
 
 export function getRoleByValue(id: string): RoleData | undefined {
-  return (
-    getRoleFromRolesValue(id, typedBackendData.globalRoles) ||
-    getRoleFromRolesValue(id, typedBackendData.projectRoles) ||
-    getRoleFromRolesValue(id, typedBackendData.orgRoles)
-  );
+  return getRoleFromRolesValue(id, typedBackendData.globalRoles);
 }
 
 function getRoleFromRolesValue(id: string, roles: RoleData[]): RoleData | undefined {

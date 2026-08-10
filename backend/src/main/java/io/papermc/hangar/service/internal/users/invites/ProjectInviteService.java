@@ -1,7 +1,7 @@
 package io.papermc.hangar.service.internal.users.invites;
 
 import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
-import io.papermc.hangar.model.common.roles.ProjectRole;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProjectInviteService extends InviteService<ProjectContext, ProjectRole, ProjectRoleTable, ProjectTable> {
+public class ProjectInviteService extends InviteService<ProjectContext, ProjectRoleTable, ProjectTable> {
 
     private final ProjectService projectService;
     private final ProjectsDAO projectsDAO;
@@ -37,13 +37,8 @@ public class ProjectInviteService extends InviteService<ProjectContext, ProjectR
     }
 
     @Override
-    protected ProjectRole getOwnerRole() {
-        return ProjectRole.PROJECT_OWNER;
-    }
-
-    @Override
-    protected ProjectRole getAdminRole() {
-        return ProjectRole.PROJECT_ADMIN;
+    protected ProjectRoleTable createRole(final long projectId, final UserTable user, final Permission permissions, final String title, final boolean accepted, final boolean owner) {
+        return new ProjectRoleTable(user.getId(), permissions, title, accepted, owner, projectId);
     }
 
     @Override

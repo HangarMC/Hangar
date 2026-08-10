@@ -8,8 +8,6 @@ import io.papermc.hangar.db.dao.internal.table.roles.RolesDAO;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.model.common.roles.OrganizationRole;
-import io.papermc.hangar.model.common.roles.ProjectRole;
 import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.PlatformVersionTable;
 import io.papermc.hangar.model.db.roles.RoleTable;
@@ -60,8 +58,6 @@ public class PopulationService extends HangarComponent {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void populateRoles() {
         GlobalRole.values();
-        ProjectRole.values();
-        OrganizationRole.values();
 
         final RoleTable admin = this.rolesDAO.getById(1);
         if (admin != null && admin.getPermission().has(Permission.All)) {
@@ -70,7 +66,7 @@ public class PopulationService extends HangarComponent {
         }
 
         log.info("Populating 'roles' table with initial values");
-        for (final Role<?> role : Role.ID_ROLES.values()) {
+        for (final Role role : Role.ID_ROLES.values()) {
             this.rolesDAO.insert(RoleTable.fromRole(role));
         }
     }

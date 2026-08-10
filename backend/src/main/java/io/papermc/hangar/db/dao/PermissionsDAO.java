@@ -71,9 +71,9 @@ public interface PermissionsDAO {
         return this._getOrganizationPermission(userId, null, orgId);
     }
 
-    @SqlQuery("SELECT coalesce(bit_or(r.permission), B'0'::bit(64))::bigint perm_value FROM user_project_roles upr JOIN roles r ON upr.role_type = r.name WHERE upr.user_id = :userId")
+    @SqlQuery("SELECT coalesce(bit_or(upr.permissions), B'0'::bit(64))::bigint perm_value FROM user_project_roles upr WHERE upr.user_id = :userId")
     Permission getPossibleProjectPermissions(long userId);
 
-    @SqlQuery("SELECT coalesce(bit_or(r.permission), B'0'::bit(64))::bigint perm_value FROM user_organization_roles uor JOIN roles r ON uor.role_type = r.name WHERE uor.user_id = :userId")
+    @SqlQuery("SELECT coalesce(bit_or(uor.permissions), B'0'::bit(64))::bigint perm_value FROM user_organization_roles uor WHERE uor.user_id = :userId")
     Permission getPossibleOrganizationPermissions(long userId);
 }

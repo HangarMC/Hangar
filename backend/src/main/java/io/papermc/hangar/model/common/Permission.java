@@ -40,7 +40,6 @@ public class Permission implements Comparable<Permission>, Argument {
     public static final Permission EditTags = new Permission(1L << 15);
 
     public static final Permission CreateOrganization = new Permission(1L << 20);
-    public static final Permission PostAsOrganization = new Permission(1L << 21);
     public static final Permission DeleteOrganization = new Permission(1L << 22);
     public static final Permission EditOrganizationSettings = new Permission(EditSubjectSettings.value);
     public static final Permission ManageOrganizationMembers = new Permission(ManageSubjectMembers.value);

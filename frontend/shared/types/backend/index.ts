@@ -26,24 +26,6 @@ export enum Context {
   ORGANIZATION = "ORGANIZATION",
 }
 
-export enum ProjectRole {
-  PROJECT_SUPPORT = "PROJECT_SUPPORT",
-  PROJECT_EDITOR = "PROJECT_EDITOR",
-  PROJECT_DEVELOPER = "PROJECT_DEVELOPER",
-  PROJECT_MAINTAINER = "PROJECT_MAINTAINER",
-  PROJECT_ADMIN = "PROJECT_ADMIN",
-  PROJECT_OWNER = "PROJECT_OWNER",
-}
-
-export enum OrganizationRole {
-  ORGANIZATION_SUPPORT = "ORGANIZATION_SUPPORT",
-  ORGANIZATION_EDITOR = "ORGANIZATION_EDITOR",
-  ORGANIZATION_DEVELOPER = "ORGANIZATION_DEVELOPER",
-  ORGANIZATION_MAINTAINER = "ORGANIZATION_MAINTAINER",
-  ORGANIZATION_ADMIN = "ORGANIZATION_ADMIN",
-  ORGANIZATION_OWNER = "ORGANIZATION_OWNER",
-}
-
 /**
  * The visibility of a project or version
  * @example "PUBLIC"
@@ -137,7 +119,6 @@ export enum NamedPermission {
   EditChannels = "edit_channels",
   CreateOrganization = "create_organization",
   DeleteOrganization = "delete_organization",
-  PostAsOrganization = "post_as_organization",
   ModNotesAndFlags = "mod_notes_and_flags",
   SeeHidden = "see_hidden",
   IsStaff = "is_staff",
@@ -1378,7 +1359,13 @@ export interface ProjectLicense {
 }
 
 export interface ProjectMember {
-  roles: CompactRole[];
+  /** What the member is allowed to do in this project */
+  permissions: NamedPermission[];
+  /**
+   * The member's title within the project, chosen when they were added
+   * @example "Maintainer"
+   */
+  title: string;
   user: string;
   /** @format int64 */
   userId: number;
@@ -1534,12 +1521,10 @@ export interface UnreadCount {
   notifications: number;
 }
 
-export interface CompactRole {
-  category: string;
-  color: Color;
-  /** @format int32 */
-  rank?: number;
-  title: string;
+export interface PermissionGroup {
+  /** i18n key suffix under 'permissionGroup.' */
+  name: string;
+  permissions: NamedPermission[];
 }
 
 export interface RoleData {
@@ -1604,14 +1589,14 @@ export interface OrganizationRoleTable {
   createdAt: string;
   /** @format int64 */
   id: number;
+  owner: boolean;
   /** @format int64 */
   ownerId: number;
   ownerName: string;
+  permissions: NamedPermission[];
   /** @format int64 */
   principalId: number;
-  role: OrganizationRole;
-  /** @format int64 */
-  roleId: number;
+  title: string;
   /** @format int64 */
   userId: number;
   /** @format uuid */
@@ -1624,11 +1609,11 @@ export interface ProjectRoleTable {
   createdAt: string;
   /** @format int64 */
   id: number;
+  owner: boolean;
+  permissions: NamedPermission[];
   /** @format int64 */
   principalId: number;
-  role: ProjectRole;
-  /** @format int64 */
-  roleId: number;
+  title: string;
   /** @format int64 */
   userId: number;
 }
@@ -1699,20 +1684,24 @@ export interface ScopableProject {
 }
 
 export interface CreateOrganizationForm {
-  members: OrgMember[];
+  members: EditOrgMember[];
   name: string;
 }
 
-export interface OrgMember {
+export interface EditOrgMember {
   /** @minLength 1 */
   name: string;
-  role: OrganizationRole;
+  permissions?: NamedPermission[];
+  /** @maxLength 32 */
+  title?: string;
 }
 
-export interface ProjectMember {
+export interface EditProjectMember {
   /** @minLength 1 */
   name: string;
-  role: ProjectRole;
+  permissions?: NamedPermission[];
+  /** @maxLength 32 */
+  title?: string;
 }
 
 /** The path and new contents of the page */
@@ -2159,9 +2148,9 @@ export interface HangarOrganizationInvite {
   /** @format date-time */
   createdAt: string;
   name: string;
-  role: string;
   /** @format int64 */
   roleId: number;
+  title: string;
   type: InviteType;
   url: string;
 }
@@ -2171,9 +2160,9 @@ export interface HangarProjectInvite {
   createdAt: string;
   name: string;
   representingOrg: string;
-  role: string;
   /** @format int64 */
   roleId: number;
+  title: string;
   type: InviteType;
   url: string;
 }

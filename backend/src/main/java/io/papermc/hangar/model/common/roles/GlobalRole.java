@@ -3,14 +3,14 @@ package io.papermc.hangar.model.common.roles;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
+import io.papermc.hangar.model.common.MemberPermissions;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import org.jetbrains.annotations.NotNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import java.util.UUID;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum GlobalRole implements Role<GlobalRoleTable> {
+public enum GlobalRole implements Role {
 
     HANGAR_ADMIN("Hangar_Admin", 1, Permission.All, "Hangar Admin", Color.RED, 10),
     HANGAR_DEV("Hangar_Dev", 2, Permission.IsStaff.add(Permission.SeeHidden).add(Permission.ViewStats).add(Permission.ViewLogs).add(Permission.ViewHealth), "Hangar Developer", Color.ORANGE, 30),
@@ -22,7 +22,7 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
 
     DUMMY("Dummy", 42, Permission.ViewPublicInfo, "Dummy", Color.LIME, 42),
 
-    ORGANIZATION("Organization", 100, OrganizationRole.ORGANIZATION_OWNER.getPermissions(), "Organization", Color.PURPLE);
+    ORGANIZATION("Organization", 100, MemberPermissions.ORGANIZATION_OWNER, "Organization", Color.PURPLE);
 
     private final String value;
     private final long roleId;
@@ -85,8 +85,7 @@ public enum GlobalRole implements Role<GlobalRoleTable> {
         return this.rank;
     }
 
-    @Override
-    public @NotNull GlobalRoleTable create(final @Nullable Long ignored, final @Nullable UUID principalUuid, final long userId, final boolean ignoredToo) {
+    public @NotNull GlobalRoleTable create(final long userId) {
         return new GlobalRoleTable(userId, this);
     }
 

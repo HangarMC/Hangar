@@ -3,20 +3,18 @@ package io.papermc.hangar.model.common.roles;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
-import io.papermc.hangar.model.db.roles.IRoleTable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-// TODO Remove this and the enums to keep everything data driven (see RoleData)
-public interface Role<T extends IRoleTable<? extends Role<T>>> {
+// Global only; project and organization membership carries its own permissions, see MemberPermissions
+public interface Role {
 
-    Map<String, Role<?>> VALUE_ROLES = new HashMap<>();
-    Map<Long, Role<?>> ID_ROLES = new HashMap<>();
+    Map<String, Role> VALUE_ROLES = new HashMap<>();
+    Map<Long, Role> ID_ROLES = new HashMap<>();
 
-    static <C extends Enum<C> & Role<?>> void registerRole(final C roleEnum) {
+    static <C extends Enum<C> & Role> void registerRole(final C roleEnum) {
         if (ID_ROLES.containsKey(roleEnum.getRoleId()) || VALUE_ROLES.containsKey(roleEnum.getValue())) {
             throw new IllegalArgumentException(roleEnum + " has a duplicate role ID or value");
         }
@@ -44,7 +42,4 @@ public interface Role<T extends IRoleTable<? extends Role<T>>> {
     boolean isAssignable();
 
     @Nullable Integer rank();
-
-    @NotNull
-    T create(@Nullable Long principalId, @Nullable UUID principalUuid, long userId, boolean isAccepted);
 }

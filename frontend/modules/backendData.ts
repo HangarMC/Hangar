@@ -5,6 +5,7 @@ import type { AxiosInstance } from "axios";
 // noinspection ES6PreferShortImport
 import { backendDataLog } from "../app/composables/useLog";
 import type {
+  PermissionGroup,
   RoleData,
   Security,
   Validations,
@@ -27,7 +28,8 @@ export default defineNuxtModule({
     serverUrl: "https://hangar.papermc.dev",
     path: "./shared/generated/backendData.json",
     ttl: 30 * 60 * 1000, // 30 min
-    version: 1,
+    // bumped when the shape of the fetched data changes, forcing a refetch
+    version: 2,
   },
   setup(moduleOptions, nuxt) {
     nuxt.hook("prepare:types", async () => {
@@ -133,8 +135,8 @@ async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) 
     axiosInstance.get<PromptData[]>("/prompts"),
     axiosInstance.get<VisibilityData[]>("/visibilities"),
     axiosInstance.get<string[]>("/licenses"),
-    axiosInstance.get<RoleData[]>("/orgRoles"),
-    axiosInstance.get<RoleData[]>("/projectRoles"),
+    axiosInstance.get<PermissionGroup[]>("/organizationPermissions"),
+    axiosInstance.get<PermissionGroup[]>("/projectPermissions"),
     axiosInstance.get<RoleData[]>("/globalRoles"),
     axiosInstance.get<ColorData[]>("/channelColors"),
     axiosInstance.get<FlagReasonData[]>("/flagReasons"),
@@ -148,8 +150,8 @@ async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) 
     prompts,
     visibilities,
     licenses,
-    orgRoles,
-    projectRoles,
+    organizationPermissions,
+    projectPermissions,
     globalRoles,
     channelColors,
     flagReasons,
@@ -163,8 +165,8 @@ async function loadData(state: ServerBackendData, axiosInstance: AxiosInstance) 
   state.prompts = prompts as typeof state.prompts;
   state.visibilities = visibilities as typeof state.visibilities;
   state.licenses = licenses as typeof state.licenses;
-  state.orgRoles = orgRoles as typeof state.orgRoles;
-  state.projectRoles = projectRoles as typeof state.projectRoles;
+  state.organizationPermissions = organizationPermissions as typeof state.organizationPermissions;
+  state.projectPermissions = projectPermissions as typeof state.projectPermissions;
   state.globalRoles = globalRoles as typeof state.globalRoles;
   state.channelColors = channelColors as typeof state.channelColors;
   state.flagReasons = flagReasons as typeof state.flagReasons;

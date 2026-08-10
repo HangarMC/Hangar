@@ -132,7 +132,7 @@ useSeo(
     <UserHeader :viewing-user="user" :organization="organization" />
 
     <div class="flex gap-4 flex-basis-full flex-col lg:flex-row">
-      <div class="flex-basis-full flex flex-col gap-3 flex-grow lg:max-w-7/10 lg:min-w-6/10">
+      <div class="flex-basis-full flex flex-col gap-3 flex-grow lg:max-w-3/4 lg:min-w-7/10">
         <template v-if="pinned?.length">
           <h2 v-if="user" class="text-xl font-bold">{{ i18n.t("author.pinnedPlugins") }}</h2>
           <ProjectCard v-for="project in pinned" :key="project.namespace.slug" :project pinned :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)" />
@@ -155,7 +155,7 @@ useSeo(
         />
       </div>
 
-      <div class="flex-basis-full flex flex-col gap-4 flex-grow lg:max-w-3/10 lg:min-w-2/10">
+      <div class="flex-basis-full flex flex-col gap-4 flex-grow lg:max-w-1/4 lg:min-w-2/10">
         <Card v-if="!user">
           <template #header>
             <Skeleton />
@@ -214,7 +214,7 @@ useSeo(
                   <UserAvatar :username="orgName + ''" :avatar-url="org.avatarUrl" size="xs" disable-link class="flex-shrink-0" />
                   <span class="min-w-0 flex-1 truncate font-semibold">{{ orgName }}</span>
                   <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName + '']" class="flex-shrink-0 text-gray-secondary" />
-                  <Tag :color="{ background: getRole(org.roleId)?.color }" :name="getRole(org.roleId)?.title" class="flex-shrink-0" />
+                  <Chip tone="primary" class="flex-shrink-0">{{ org.title }}</Chip>
                 </NuxtLink>
               </li>
             </ul>

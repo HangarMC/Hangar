@@ -6,7 +6,8 @@ import io.papermc.hangar.db.dao.internal.table.projects.ProjectsDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.ChannelFlag;
 import io.papermc.hangar.model.common.projects.Visibility;
-import io.papermc.hangar.model.common.roles.ProjectRole;
+import io.papermc.hangar.model.common.MemberPermissions;
+import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
@@ -74,7 +75,7 @@ public class ProjectFactory extends HangarComponent {
         try {
             projectTable = this.projectsDAO.insert(new ProjectTable(projectOwner, newProject));
             this.channelService.createProjectChannel(this.config.channels().nameDefault(), this.config.channels().descriptionDefault(), this.config.channels().colorDefault(), projectTable.getId(), Set.of(ChannelFlag.FROZEN, ChannelFlag.PINNED, ChannelFlag.SENDS_NOTIFICATIONS));
-            this.projectMemberService.addNewAcceptedByDefaultMember(ProjectRole.PROJECT_OWNER.create(projectTable.getId(), null, projectOwner.getUserId(), true));
+            this.projectMemberService.addNewAcceptedByDefaultMember(new ProjectRoleTable(projectOwner.getUserId(), MemberPermissions.PROJECT_OWNER, MemberPermissions.DEFAULT_OWNER_TITLE, true, true, projectTable.getId()));
             String newPageContent = newProject.getPageContent();
             if (newPageContent == null) {
                 newPageContent = "# " + projectTable.getName() + "\n\n" + this.config.pages().home().message();

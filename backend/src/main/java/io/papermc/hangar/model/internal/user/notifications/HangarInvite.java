@@ -8,14 +8,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public abstract class HangarInvite {
 
     private final long roleId;
-    private final String role;
+    private final String title;
     private final String name;
     private final String url;
     private final OffsetDateTime createdAt;
 
-    protected HangarInvite(final long roleId, final String role, final String name, final String url, final OffsetDateTime createdAt) {
+    protected HangarInvite(final long roleId, final String title, final String name, final String url, final OffsetDateTime createdAt) {
         this.roleId = roleId;
-        this.role = role;
+        this.title = title;
         this.name = name;
         this.url = url;
         this.createdAt = createdAt;
@@ -25,8 +25,8 @@ public abstract class HangarInvite {
         return this.roleId;
     }
 
-    public String getRole() {
-        return this.role;
+    public String getTitle() {
+        return this.title;
     }
 
     public abstract InviteType getType();
@@ -47,8 +47,8 @@ public abstract class HangarInvite {
 
         private final @Nullable String representingOrg;
 
-        public HangarProjectInvite(final long roleId, final String role, final String name, final String url, final OffsetDateTime createdAt, final @Nullable String representingOrg) {
-            super(roleId, role, name, url, createdAt);
+        public HangarProjectInvite(final long roleId, final String title, final String name, final String url, final OffsetDateTime createdAt, final @Nullable String representingOrg) {
+            super(roleId, title, name, url, createdAt);
             this.representingOrg = representingOrg;
         }
 
@@ -64,8 +64,8 @@ public abstract class HangarInvite {
 
     public static class HangarOrganizationInvite extends HangarInvite {
 
-        public HangarOrganizationInvite(final long roleId, final String role, final String name, final String url, final OffsetDateTime createdAt) {
-            super(roleId, role, name, url, createdAt);
+        public HangarOrganizationInvite(final long roleId, final String title, final String name, final String url, final OffsetDateTime createdAt) {
+            super(roleId, title, name, url, createdAt);
         }
 
         @Override

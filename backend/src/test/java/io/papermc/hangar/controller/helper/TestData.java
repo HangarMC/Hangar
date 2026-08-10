@@ -16,12 +16,13 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.common.MemberPermissions;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
+import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
@@ -137,7 +138,7 @@ public class TestData {
 
         logger.info("Creating some test orgs...");
         ORG = this.organizationFactory.createOrganization("PaperMC");
-        this.organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_DEVELOPER.create(ORG.getOrganizationId(), null, USER_MEMBER.getUserId(), true));
+        this.organizationMemberService.addNewAcceptedByDefaultMember(new OrganizationRoleTable(USER_MEMBER.getUserId(), Permission.EditPage.add(Permission.CreateProject).add(MemberPermissions.ORGANIZATION_BASE), "Developer", true, false, ORG.getOrganizationId(), null, null));
 
         logger.info("Creating some test projects...");
         PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null),

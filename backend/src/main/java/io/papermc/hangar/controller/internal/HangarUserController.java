@@ -353,7 +353,7 @@ public class HangarUserController extends HangarComponent {
         this.updateRole(this.organizationRoleService, this.organizationInviteService, id, status);
     }
 
-    private <RT extends ExtendedRoleTable<? extends Role<RT>, ?>, RS extends RoleService<RT, ?, ?>, IS extends InviteService<?, ?, RT, ?>> void updateRole(final RS roleService, final IS inviteService, final long id, final InviteStatus status) {
+    private <RT extends ExtendedRoleTable<?>, RS extends RoleService<RT, ?>, IS extends InviteService<?, RT, ?>> void updateRole(final RS roleService, final IS inviteService, final long id, final InviteStatus status) {
         final RT table = roleService.getRole(id);
         if (table == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);

@@ -428,8 +428,10 @@
           "invalidUser": "{0} is not a valid user",
           "alreadyInvited": "{0} is already invited to the project",
           "notMember": "{0} is not a member of the project, therefore you cannot edit their role",
-          "invalidRole": "{0} cannot be added/removed from the project",
-          "pendingTransfer": "You already have a pending transfer"
+          "pendingTransfer": "You already have a pending transfer",
+          "missingTitle": "Give {0} a title",
+          "cannotRemoveOwner": "{0} owns this project and cannot be removed",
+          "ownerCannotLeave": "You own this project and cannot leave it. Transfer ownership first."
         }
       },
       "success": {
@@ -776,8 +778,10 @@
         "invalidUser": "{0} is not a valid user",
         "alreadyInvited": "{0} is already invited to the organization",
         "notMember": "{0} is not a member of the organization, therefore you cannot edit their role",
-        "invalidRole": "{0} cannot be added/removed from the organization",
-        "pendingTransfer": "You already have a pending transfer"
+        "pendingTransfer": "You already have a pending transfer",
+        "missingTitle": "Give {0} a title",
+        "cannotRemoveOwner": "{0} owns this organization and cannot be removed",
+        "ownerCannotLeave": "You own this organization and cannot leave it. Transfer ownership first."
       },
       "transferModal": {
         "title": "Transfer {0} to another user",
@@ -797,7 +801,7 @@
   },
   "form": {
     "memberList": {
-      "info": "Here, you can manage the members and their permissions. Groups come in a hierarchy where higher groups inherit permissions: Support comes with no extra permissions; Editors and Developers can edit the docs pages; Maintainers can create, edit, and delete versions; Admins can invite and manage other members.",
+      "info": "Give each member a title of your choosing and tick exactly what they may do. Titles are free text and only shown to others; permissions are what actually grants access.",
       "addUser": "Add User...",
       "create": "Create",
       "editUser": "Edit User",
@@ -810,10 +814,12 @@
         "description": "Are you sure you want to leave {0}? After you leave, you can only rejoin after receiving a new invitation."
       },
       "pending": "Pending",
-      "role": "Role",
       "invite": "Invite",
       "cancelInvite": "Cancel invite",
-      "selectRole": "Select a role"
+      "title": "Title",
+      "titleHint": "Shown next to the member, for example \"Maintainer\" or \"Docs\".",
+      "ownerLocked": "Owners always hold every permission. Transfer ownership to change that.",
+      "noMembers": "No members"
     }
   },
   "notifications": {
@@ -1544,5 +1550,23 @@
       "dropHint": "Click to choose an image, or drop one here",
       "currentImage": "Current image"
     }
+  },
+  "permissionGroup": {
+    "versions": "Versions",
+    "project": "Project",
+    "projects": "Projects",
+    "organization": "Organization",
+    "people": "People"
+  },
+  "permission": {
+    "create_version": "Create versions",
+    "edit_version": "Edit versions",
+    "delete_version": "Delete versions",
+    "edit_channels": "Manage channels",
+    "edit_page": "Edit pages",
+    "edit_subject_settings": "Edit settings",
+    "delete_project": "Delete projects",
+    "manage_subject_members": "Manage members",
+    "create_project": "Create projects"
   }
 }

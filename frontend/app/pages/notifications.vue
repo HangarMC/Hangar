@@ -224,7 +224,7 @@ async function updateInvite(invite: HangarOrganizationInvite | HangarProjectInvi
                   {{ i18n.t("notifications.invite.invitedOrganizationAs", [invite.representingOrg]) }}
                 </span>
                 <span v-else>{{ i18n.t("notifications.invite.invitedYouAs") }}</span>
-                <Tag :color="{ background: getRoleByValue(invite.role)?.color }" :name="getRoleByValue(invite.role)?.title" />
+                <Chip tone="primary">{{ invite.title }}</Chip>
               </div>
               <div class="mt-1 text-xs text-gray-secondary">
                 {{ i18n.t(`notifications.invite.types.${invite.type}`) }} &middot; {{ lastUpdated(new Date(invite.createdAt)) }}

@@ -2,7 +2,6 @@ package io.papermc.hangar.service.internal.users.notifications;
 
 import io.papermc.hangar.db.dao.internal.table.NotificationsDAO;
 import io.papermc.hangar.model.Named;
-import io.papermc.hangar.model.common.roles.Role;
 import io.papermc.hangar.model.db.NotificationTable;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.Table;
@@ -15,7 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<? extends Role<RT>, ?>, J extends Table & Named> {
+public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?>, J extends Table & Named> {
 
     @Autowired
     private NotificationsDAO notificationsDAO;
@@ -45,23 +44,23 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
     public void removedFrom(final RT removedFromRoleTable, final J joinable, final @Nullable Long byUserId) {
         final String msgKey = this.msgPrefix + (removedFromRoleTable.isAccepted() ? "removed" : "inviteRescinded");
         this.notificationsDAO.insert(new NotificationTable(removedFromRoleTable.getUserId(), null, byUserId,
-            new String[]{msgKey, removedFromRoleTable.getRole().getTitle(), joinable.getName()}, NotificationType.WARNING));
+            new String[]{msgKey, removedFromRoleTable.getTitle(), joinable.getName()}, NotificationType.WARNING));
     }
 
     public void removedFromOrg(final RT removedFromRoleTable, OrganizationTable org, final J joinable, final @Nullable Long byUserId) {
         final String msgKey = this.msgPrefix + (removedFromRoleTable.isAccepted() ? "removedOrg" : "inviteRescindedOrg");
         this.notificationsDAO.insert(new NotificationTable(org.getOwnerId(), null, byUserId,
-            new String[]{msgKey, org.getName(), removedFromRoleTable.getRole().getTitle(), joinable.getName()}, NotificationType.WARNING));
+            new String[]{msgKey, org.getName(), removedFromRoleTable.getTitle(), joinable.getName()}, NotificationType.WARNING));
     }
 
     public void roleChanged(final RT changedRoleTable, final J joinable, final @Nullable Long byUserId) {
         this.notificationsDAO.insert(new NotificationTable(changedRoleTable.getUserId(), null, byUserId,
-            new String[]{this.msgPrefix + "roleChanged", changedRoleTable.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
+            new String[]{this.msgPrefix + "roleChanged", changedRoleTable.getTitle(), joinable.getName()}, NotificationType.INFO));
     }
 
     public void roleChangedOrg(final RT changedRoleTable, final OrganizationTable org, final J joinable, final @Nullable Long byUserId) {
         this.notificationsDAO.insert(new NotificationTable(org.getOwnerId(), null, byUserId,
-            new String[]{this.msgPrefix + "roleChangedOrg", org.getName(), changedRoleTable.getRole().getTitle(), joinable.getName()}, NotificationType.INFO));
+            new String[]{this.msgPrefix + "roleChangedOrg", org.getName(), changedRoleTable.getTitle(), joinable.getName()}, NotificationType.INFO));
     }
 
     @Service

@@ -8,20 +8,18 @@ CREATE OR REPLACE VIEW global_trust(user_id, permission) AS
 CREATE OR REPLACE VIEW project_trust(project_id, user_id, permission) AS
     SELECT pm.project_id,
            pm.user_id,
-           coalesce(bit_or(r.permission), '0'::bit(64)) AS permission
+           coalesce(bit_or(rp.permissions), '0'::bit(64)) AS permission
     FROM project_members pm
         JOIN user_project_roles rp ON pm.project_id = rp.project_id AND pm.user_id = rp.user_id AND rp.accepted
-        JOIN roles r ON rp.role_type::text = r.name::text
     GROUP BY pm.project_id, pm.user_id;
 
 CREATE OR REPLACE VIEW organization_trust(organization_id, user_id, permission) AS
     SELECT om.organization_id,
            om.user_id,
-           coalesce(bit_or(r.permission), '0'::bit(64)) AS permission
+           coalesce(bit_or(ro.permissions), '0'::bit(64)) AS permission
     FROM organization_members om
         JOIN user_organization_roles ro
              ON om.organization_id = ro.organization_id AND om.user_id = ro.user_id AND ro.accepted
-        JOIN roles r ON ro.role_type::text = r.name::text
     GROUP BY om.organization_id, om.user_id;
 
 CREATE OR REPLACE VIEW project_members_all(id, user_id) AS

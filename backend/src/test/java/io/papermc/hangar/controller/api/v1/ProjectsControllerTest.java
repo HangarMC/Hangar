@@ -117,7 +117,8 @@ class ProjectsControllerTest extends ControllerTest {
             .andExpect(status().is(200))
             .andExpect(jsonPath("$.pagination.count", is(1)))
             .andExpect(jsonPath("$.result[0].user", is("PaperMC")))
-            .andExpect(jsonPath("$.result[0].roles[0].title", is("Owner")));
+            .andExpect(jsonPath("$.result[0].title", is("Owner")))
+            .andExpect(jsonPath("$.result[0].permissions", hasItem("is_subject_owner")));
     }
 
     @Test

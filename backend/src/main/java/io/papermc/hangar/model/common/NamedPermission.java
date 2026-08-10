@@ -28,7 +28,6 @@ public enum NamedPermission {
 
     CREATE_ORGANIZATION("create_organization", Permission.CreateOrganization, "CreateOrganization"),
     DELETE_ORGANIZATION("delete_organization", Permission.DeleteOrganization, "DeleteOrganization"),
-    POST_AS_ORGANIZATION("post_as_organization", Permission.PostAsOrganization, "PostAsOrganization"),
 
     MOD_NOTES_AND_FLAGS("mod_notes_and_flags", Permission.ModNotesAndFlags, "ModNotesAndFlags"),
     SEE_HIDDEN("see_hidden", Permission.SeeHidden, "SeeHidden"),
@@ -42,7 +41,7 @@ public enum NamedPermission {
 
     MANUAL_VALUE_CHANGES("manual_value_changes", Permission.ManualValueChanges, "ManualValueChanges"),
     RESTORE_VERSION("restore_version", Permission.RestoreVersion, "RestoreVersion"),
-    RESTORE_PROJECT("restore_project", Permission.DeleteVersion, "RestoreProject"),
+    RESTORE_PROJECT("restore_project", Permission.RestoreProject, "RestoreProject"),
     HARD_DELETE_PROJECT("hard_delete_project", Permission.HardDeleteProject, "HardDeleteProject"),
     HARD_DELETE_VERSION("hard_delete_version", Permission.HardDeleteVersion, "HardDeleteVersion"),
     EDIT_ALL_USER_SETTINGS("edit_all_user_settings", Permission.EditAllUserSettings, "EditAllUserSettings");

@@ -1,7 +1,7 @@
 package io.papermc.hangar.service.internal.users.invites;
 
 import io.papermc.hangar.db.dao.internal.table.OrganizationDAO;
-import io.papermc.hangar.model.common.roles.OrganizationRole;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrganizationInviteService extends InviteService<OrganizationContext, OrganizationRole, OrganizationRoleTable, OrganizationTable> {
+public class OrganizationInviteService extends InviteService<OrganizationContext, OrganizationRoleTable, OrganizationTable> {
 
     private final OrganizationService organizationService;
     private final OrganizationDAO organizationDAO;
@@ -39,13 +39,8 @@ public class OrganizationInviteService extends InviteService<OrganizationContext
     }
 
     @Override
-    protected OrganizationRole getOwnerRole() {
-        return OrganizationRole.ORGANIZATION_OWNER;
-    }
-
-    @Override
-    protected OrganizationRole getAdminRole() {
-        return OrganizationRole.ORGANIZATION_ADMIN;
+    protected OrganizationRoleTable createRole(final long organizationId, final UserTable user, final Permission permissions, final String title, final boolean accepted, final boolean owner) {
+        return new OrganizationRoleTable(user.getId(), permissions, title, accepted, owner, organizationId, null, null);
     }
 
     @Override
