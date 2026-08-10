@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { NuxtLink } from "#components";
 
 import type { RouteLocationRaw } from "vue-router";
 import type { RouteNamedMap } from "vue-router/auto-routes";
@@ -86,6 +87,13 @@ const navBarMenuLinksMoreFromPaper = [
   { link: "https://papermc.io/downloads", label: t("nav.hangar.downloads"), icon: IconMdiDownloadCircleOutline },
 ];
 
+type MenuSection = { label: string; external?: boolean; links: { link: string; label: string; icon?: any }[] };
+const menuSections: MenuSection[] = [
+  { label: "Hangar", links: navBarMenuLinksHangar },
+  { label: t("nav.hangar.tools"), links: navBarMenuLinksTools },
+  { label: t("nav.hangar.moreFrom"), links: navBarMenuLinksMoreFromPaper, external: true },
+];
+
 function markNotificationsRead() {
   for (const notification of notifications.value) {
     markNotificationRead(notification);
@@ -162,57 +170,43 @@ function isRecent(date: string): boolean {
       <!-- Left side items -->
       <div class="flex items-center gap-4">
         <Popover v-slot="{ close, open }" class="relative">
-          <PopoverButton id="menu-button" aria-label="Menu" class="flex" v-on="useTracking('nav-burger-button', { open })">
-            <icon-mdi-menu class="transition-transform text-[1.2em]" :class="open ? 'transform rotate-90' : ''" />
+          <PopoverButton
+            id="menu-button"
+            :aria-label="t('nav.menu')"
+            :title="t('nav.menu')"
+            class="header-icon-btn"
+            v-on="useTracking('nav-burger-button', { open })"
+          >
+            <icon-mdi-menu class="transition-transform text-[1.2em]" :class="{ 'rotate-90': open }" />
           </PopoverButton>
 
-          <!-- todo: Use Popper -->
+          <!-- capture: a click on a NuxtLink never bubbles back up to this handler -->
           <PopoverPanel
-            class="absolute top-10 z-10 w-max lt-sm:w-90vw background-default left-1/20 filter shadow-default rounded-r-md rounded-bl-md border-top-primary text-sm p-[20px]"
+            class="absolute left-0 top-full z-10 mt-2 max-w-[calc(100vw-2rem)] w-max overflow-hidden rounded-md border border-gray-300 background-default p-4 pt-5 text-sm shadow-default lt-sm:w-[calc(100vw-2rem)] dark:border-gray-700"
+            @click.capture="close()"
           >
-            <p class="text-base font-semibold color-primary mb-3">Hangar</p>
-            <div class="grid grid-cols-2">
-              <NuxtLink
-                v-for="link in navBarMenuLinksHangar"
-                :key="link.label"
-                :to="{ name: link.link } as RouteLocationRaw"
-                class="header-menu-link"
-                v-on="useTracking('nav-burger-link', { link: link.link })"
-                @click="close()"
-              >
-                <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                {{ link.label }}
-              </NuxtLink>
-            </div>
+            <span class="absolute inset-x-0 top-0 h-1 bg-primary-400" />
 
-            <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.tools") }}</p>
-            <div class="grid grid-cols-2">
-              <NuxtLink
-                v-for="link in navBarMenuLinksTools"
-                :key="link.label"
-                :to="{ name: link.link } as RouteLocationRaw"
-                class="header-menu-link"
-                v-on="useTracking('nav-burger-link', { link: link.link })"
-                @click="close()"
-              >
-                <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                {{ link.label }}
-              </NuxtLink>
-            </div>
-
-            <p class="text-base font-semibold color-primary mb-3 mt-6">{{ t("nav.hangar.moreFrom") }}</p>
-            <div class="grid grid-cols-2">
-              <a
-                v-for="link in navBarMenuLinksMoreFromPaper"
-                :key="link.label"
-                class="header-menu-link"
-                :href="link.link"
-                v-on="useTracking('nav-burger-link', { link: link.link })"
-              >
-                <component :is="link.icon" class="mr-3 text-[1.2em]" />
-                {{ link.label }}
-              </a>
-            </div>
+            <section
+              v-for="(section, index) in menuSections"
+              :key="section.label"
+              :class="index > 0 ? 'mt-4 border-t border-gray-300 pt-4 dark:border-gray-700' : ''"
+            >
+              <p class="px-3 pb-1.5 text-sm font-semibold color-primary">{{ section.label }}</p>
+              <div class="grid grid-cols-1 gap-x-3 sm:grid-cols-2">
+                <component
+                  :is="section.external ? 'a' : NuxtLink"
+                  v-for="link in section.links"
+                  :key="link.label"
+                  v-bind="section.external ? { href: link.link } : { to: { name: link.link } as RouteLocationRaw }"
+                  class="header-menu-link"
+                  v-on="useTracking('nav-burger-link', { link: link.link })"
+                >
+                  <component :is="link.icon" class="flex-shrink-0 text-[1.2em]" />
+                  {{ link.label }}
+                </component>
+              </div>
+            </section>
           </PopoverPanel>
         </Popover>
 
@@ -344,7 +338,7 @@ function isRecent(date: string): boolean {
                             active-class=""
                             class="line-clamp-2 after:(absolute inset-0 content-empty)"
                             :class="notification.read ? '' : 'font-semibold'"
-                            @click="markNotificationRead(notification), close()"
+                            @click="(markNotificationRead(notification), close())"
                             @click.middle="markNotificationRead(notification)"
                           >
                             {{ i18n.t(notification.message[0]!, notification.message.slice(1)) }}
@@ -385,11 +379,7 @@ function isRecent(date: string): boolean {
         <!-- Profile dropdown -->
         <div v-if="authStore.user">
           <Popper placement="bottom-end">
-            <button
-              class="header-icon-btn"
-              @click="updateNavData"
-              v-on="useTracking('nav-profile-dropdown')"
-            >
+            <button class="header-icon-btn" @click="updateNavData" v-on="useTracking('nav-profile-dropdown')">
               <UserAvatar :username="authStore.user.name" :avatar-url="authStore.user.avatarUrl" size="xs" :disable-link="true" />
               {{ authStore.user.name }}
             </button>
@@ -440,18 +430,11 @@ function isRecent(date: string): boolean {
 
         <!-- Login/register buttons -->
         <div v-else class="flex gap-2">
-          <NuxtLink
-            class="header-icon-btn"
-            :to="auth.loginUrl(route.fullPath)"
-            rel="nofollow"
-          >
+          <NuxtLink class="header-icon-btn" :to="auth.loginUrl(route.fullPath)" rel="nofollow">
             <icon-mdi-key-outline class="mr-1 flex-shrink-0 text-[1.2em]" />
             {{ t("nav.login") }}
           </NuxtLink>
-          <NuxtLink
-            class="header-icon-btn"
-            :to="auth.signupUrl(route.fullPath)"
-          >
+          <NuxtLink class="header-icon-btn" :to="auth.signupUrl(route.fullPath)">
             <icon-mdi-clipboard-outline class="mr-1 flex-shrink-0 text-[1.2em]" />
             {{ t("nav.signup") }}
           </NuxtLink>
@@ -473,8 +456,8 @@ nav .router-link-active {
 }
 
 .header-menu-link {
-  @apply flex items-center rounded-md px-6 py-2 transition-colors;
-  @apply hover:(text-primary-500 bg-primary-0) dark:hover:(text-white bg-zinc-700);
+  @apply flex items-center gap-2.5 whitespace-nowrap rounded-md px-3 py-2 transition-colors;
+  @apply hover:background-card;
 }
 
 .header-icon-btn:focus-visible,
