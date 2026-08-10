@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import type { AnnouncementTable, GlobalNotificationTable, Platform, PlatformVersion } from "#shared/types/backend";
+import { NamedPermission } from "#shared/types/backend";
+import type { AnnouncementTable, GlobalNotificationTable, Platform, PlatformVersion, ProjectCompact, ProjectNamespace } from "#shared/types/backend";
 import { useVisiblePlatforms } from "~/composables/useGlobalData";
 
+// moderators get in for the discovery section alone; everything else is behind ManualValueChanges below
 definePageMeta({
-  globalPermsRequired: ["ManualValueChanges"],
+  globalPermsRequired: ["Reviewer"],
 });
 
 const i18n = useI18n();
@@ -14,8 +16,38 @@ const globalData = useGlobalData();
 const authStore = useAuthStore();
 
 const loading = ref<boolean>(false);
+const canManage = computed(() => hasPerms(NamedPermission.ManualValueChanges));
 
 useSeo(computed(() => ({ title: i18n.t("platformVersions.title"), route })));
+
+interface ExcludedProject {
+  projectId: number;
+  name: string;
+  namespace: ProjectNamespace;
+  createdAt: string;
+  excludedBy?: string;
+}
+
+const dailyPicks = ref(await useInternalApi<ProjectCompact[]>("discovery/daily").catch(() => []));
+const excluded = ref(await useInternalApi<ExcludedProject[]>("discovery/excluded").catch(() => []));
+
+async function refreshDiscovery() {
+  const [picks, removed] = await Promise.all([useInternalApi<ProjectCompact[]>("discovery/daily"), useInternalApi<ExcludedProject[]>("discovery/excluded")]);
+  dailyPicks.value = picks;
+  excluded.value = removed;
+}
+
+async function setExcluded(projectId: number, exclude: boolean) {
+  loading.value = true;
+  try {
+    await useInternalApi(`discovery/${exclude ? "exclude" : "include"}/${projectId}`, "post");
+    await refreshDiscovery();
+    notification.success(exclude ? "Removed from discovery" : "Back in the rotation");
+  } catch (err: any) {
+    handleRequestError(err);
+  }
+  loading.value = false;
+}
 
 const fullVersions = ref<Record<Platform, string[]>>({
   PAPER: [],
@@ -171,11 +203,68 @@ async function updateNotifications() {
     <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h1 class="text-3xl font-bold">{{ i18n.t("nav.user.adminSettings") }}</h1>
-        <p class="mt-1 text-gray-secondary">Platform versions, announcements and other global configuration.</p>
+        <p class="mt-1 text-gray-secondary">
+          {{ canManage ? "Platform versions, announcements and other global configuration." : "Moderation of what the homepage puts in front of people." }}
+        </p>
       </div>
     </div>
 
     <Card flat padding="none" class="mb-4">
+      <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
+        <h2 class="flex-grow text-lg font-bold">{{ i18n.t("hangar.discover.title") }}</h2>
+        <span class="text-sm text-gray-secondary tabular-nums">{{ dailyPicks.length }}</span>
+      </div>
+
+      <p class="border-b border-gray-300 px-4 py-2 text-sm text-gray-secondary dark:border-gray-700">
+        Today's picks for the homepage. Removing one takes it out of every future rotation, and the next project in its tier fills the slot.
+      </p>
+
+      <ul v-if="dailyPicks.length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
+        <li v-for="project in dailyPicks" :key="project.id" class="flex items-center gap-3 px-4 py-2">
+          <div class="h-32px w-32px flex-shrink-0">
+            <UserAvatar :username="project.namespace.owner" :monogram-name="project.name" :img-src="project.avatarUrl" size="fill" disable-link />
+          </div>
+          <div class="min-w-0 flex-1">
+            <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug" class="truncate font-semibold">{{ project.name }}</Link>
+            <p class="truncate text-xs text-gray-secondary">
+              {{ project.namespace.owner }}/{{ project.namespace.slug }} &middot;
+              <span class="tabular-nums">{{ project.stats.downloads.toLocaleString("en-US") }}</span> downloads
+            </p>
+          </div>
+          <Button variant="outline" tone="danger" size="sm" :disabled="loading" @click="setExcluded(project.id, true)">
+            <IconMdiEyeOff />
+            Remove
+          </Button>
+        </li>
+      </ul>
+      <div v-else class="flex flex-col items-center px-4 py-10 text-center">
+        <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full background-card text-xl text-gray-secondary">
+          <IconMdiCompassOutline />
+        </div>
+        <p class="text-gray-secondary">Nothing is being shown today.</p>
+      </div>
+
+      <template v-if="excluded.length > 0">
+        <div class="flex items-center gap-2 border-t border-gray-300 px-4 py-3 dark:border-gray-700">
+          <h3 class="flex-grow font-semibold">Removed from discovery</h3>
+          <span class="text-sm text-gray-secondary tabular-nums">{{ excluded.length }}</span>
+        </div>
+        <ul class="divide-y divide-gray-300 dark:divide-gray-700">
+          <li v-for="project in excluded" :key="project.projectId" class="flex items-center gap-3 px-4 py-2">
+            <div class="min-w-0 flex-1">
+              <Link :to="'/' + project.namespace.owner + '/' + project.namespace.slug" class="truncate font-semibold">{{ project.name }}</Link>
+              <p class="truncate text-xs text-gray-secondary">{{ project.excludedBy ?? "unknown" }} &middot; <PrettyTime :time="project.createdAt" /></p>
+            </div>
+            <Button variant="ghost" tone="neutral" size="sm" :disabled="loading" @click="setExcluded(project.projectId, false)">
+              <IconMdiRestore />
+              Restore
+            </Button>
+          </li>
+        </ul>
+      </template>
+    </Card>
+
+    <Card v-if="canManage" flat padding="none" class="mb-4">
       <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
         <h2 class="flex-grow text-lg font-bold">{{ i18n.t("platformVersions.title") }}</h2>
         <span class="text-sm text-gray-secondary tabular-nums">{{ platforms.length }}</span>
@@ -212,7 +301,7 @@ async function updateNotifications() {
       </div>
     </Card>
 
-    <Card flat padding="none" class="mb-4">
+    <Card v-if="canManage" flat padding="none" class="mb-4">
       <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
         <h2 class="flex-grow text-lg font-bold">Announcements</h2>
         <span class="text-sm text-gray-secondary tabular-nums">{{ announcements.length }}</span>
@@ -271,7 +360,7 @@ async function updateNotifications() {
       </div>
     </Card>
 
-    <Card flat padding="none" class="mb-4">
+    <Card v-if="canManage" flat padding="none" class="mb-4">
       <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
         <h2 class="flex-grow text-lg font-bold">Global notifications</h2>
         <span class="text-sm text-gray-secondary tabular-nums">{{ notifications.length }}</span>
@@ -333,7 +422,7 @@ async function updateNotifications() {
       </div>
     </Card>
 
-    <Card flat padding="none" class="mb-4">
+    <Card v-if="canManage" flat padding="none" class="mb-4">
       <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
         <h2 class="flex-grow text-lg font-bold">{{ i18n.t("pages.headers.roles") }}</h2>
         <span class="text-sm text-gray-secondary tabular-nums">{{ roles.length }}</span>
@@ -361,7 +450,7 @@ async function updateNotifications() {
       </div>
     </Card>
 
-    <Card flat padding="none">
+    <Card v-if="canManage" flat padding="none">
       <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
         <h2 class="flex-grow text-lg font-bold">Maintenance</h2>
       </div>

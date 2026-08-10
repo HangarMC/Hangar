@@ -140,6 +140,10 @@ hangar:
     version-name-regex: "^[a-zA-Z0-9-_.+]+$"
     license-name-regex: "^[a-zA-Z0-9-_.() +]*$"
 
+  discovery:
+    max-age-days: 365
+    per-bucket: 2
+
   orgs:
     create-limit: 5
     dummy-email-domain: "org.papermc.io"

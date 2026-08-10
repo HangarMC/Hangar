@@ -43,7 +43,7 @@ const sizeClass = computed(() => {
     case "lg":
       return "w-100px h-100px text-3xl";
     case "fill":
-      return "w-full h-full text-3xl";
+      return "w-full h-full avatar-fill";
     // No default
   }
 
@@ -71,7 +71,7 @@ const url = computed(() => {
       <Skeleton v-if="loading" class="rounded-lg w-full h-full" />
       <div
         v-else-if="showMonogram"
-        class="w-full h-full flex items-center justify-center rounded-lg font-bold tracking-tight text-white select-none"
+        class="monogram w-full h-full flex items-center justify-center rounded-lg font-bold tracking-tight text-white select-none"
         :style="{ background: monogramBackground(name) }"
         :title="name"
         role="img"
@@ -83,3 +83,13 @@ const url = computed(() => {
     </component>
   </div>
 </template>
+
+<style scoped>
+.avatar-fill {
+  container-type: size;
+}
+
+.avatar-fill .monogram {
+  font-size: 32cqmin;
+}
+</style>

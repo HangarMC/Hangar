@@ -88,6 +88,9 @@ const requestParams = computed(() => {
 });
 const { projects } = useProjects(() => requestParams.value, router);
 
+// somebody with a query or a filter set is looking for something specific, so don't push results down for a suggestion
+const browsing = computed(() => !query.value && page.value === 0 && activeFilterCount.value === 0);
+
 // if somebody set page too high, lets reset it back
 watch(projects, () => {
   if (projects.value && projects.value.pagination?.offset !== 0 && projects.value.pagination?.offset > projects.value.pagination?.count) {
@@ -273,6 +276,7 @@ useSeo(
     <Container class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start lg:gap-6">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0 lg:order-first">
+        <DiscoveryStrip v-if="browsing" class="mb-3" />
         <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
       </div>
       <!-- Sidebar -->

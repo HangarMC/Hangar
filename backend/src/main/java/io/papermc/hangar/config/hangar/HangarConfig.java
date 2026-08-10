@@ -39,7 +39,9 @@ public record HangarConfig(
     @NestedConfigurationProperty
     E2EConfig e2e,
     @NestedConfigurationProperty
-    MeiliConfig meili
+    MeiliConfig meili,
+    @NestedConfigurationProperty
+    DiscoveryConfig discovery
 ) {
     public void checkDev() {
         if (!this.dev) {

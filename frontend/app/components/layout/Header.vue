@@ -413,7 +413,8 @@ function isRecent(date: string): boolean {
                 <DropdownItem v-if="hasPerms(NamedPermission.ViewLogs)" to="/admin/log">
                   <IconMdiHistory class="flex-shrink-0" />{{ t("nav.user.log") }}
                 </DropdownItem>
-                <DropdownItem v-if="hasPerms(NamedPermission.ManualValueChanges)" to="/admin/settings">
+                <!-- moderators only see the discovery section there, but that is theirs to manage -->
+                <DropdownItem v-if="hasPerms(NamedPermission.Reviewer)" to="/admin/settings">
                   <IconMdiShieldCrownOutline class="flex-shrink-0" />
                   {{ t("nav.user.adminSettings") }}
                 </DropdownItem>
