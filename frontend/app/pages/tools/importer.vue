@@ -131,6 +131,7 @@ function createProject(project: ImportedProject) {
   if (project.util.licenseUnset) {
     project.settings.license.url = undefined;
   }
+  project.settings.links = stripUnfilledSuggestions(project.settings.links);
   useInternalApi<string>("projects/create", "post", project, { timeout: 10_000 })
     .then((u) => {
       status[project.name]!.success = true;

@@ -21,7 +21,7 @@ const form = ref<NewProjectForm>({
     license: {} as ProjectSettingsForm["settings"]["license"],
     donation: {} as ProjectSettingsForm["settings"]["donation"],
     keywords: [],
-    links: [],
+    links: suggestedLinkSections(),
     tags: [],
   } as unknown as ProjectSettingsForm["settings"],
 } as NewProjectForm);
@@ -103,6 +103,7 @@ function createProject() {
   if (licenseUnset.value) {
     form.value.settings.license.url = undefined;
   }
+  form.value.settings.links = stripUnfilledSuggestions(form.value.settings.links);
   useInternalApi<string>("projects/create", "post", form.value)
     .then((u) => {
       router.push(u);

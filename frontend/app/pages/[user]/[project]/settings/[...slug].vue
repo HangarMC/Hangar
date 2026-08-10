@@ -64,8 +64,8 @@ watch(
     if (form.settings && !form.settings?.license?.type) {
       form.settings.license.type = "Unspecified";
     }
-    if (form.settings && !form.settings?.links) {
-      form.settings.links = [];
+    if (form.settings && !form.settings.links?.length) {
+      form.settings.links = suggestedLinkSections();
     }
     pristine.value = cloneDeep(toRaw(form));
   },
@@ -148,8 +148,10 @@ async function save() {
     const shared = sharedProject.value;
     if (selectedTab.value === "links") {
       const links = cloneDeep(toRaw(form.settings.links));
-      await useInternalApi(`projects/project/${route.params.project}/links`, "post", { links });
-      if (shared) shared.settings.links = cloneDeep(links);
+      const saved = stripUnfilledSuggestions(links);
+      await useInternalApi(`projects/project/${route.params.project}/links`, "post", { links: saved });
+      if (shared) shared.settings.links = cloneDeep(saved);
+      // the baseline keeps the suggestions the form still shows, so saving doesn't leave it looking dirty
       if (pristine.value.settings) pristine.value.settings.links = links;
       notificationStore.success(i18n.t("project.settings.success.savedLinks"));
     } else {

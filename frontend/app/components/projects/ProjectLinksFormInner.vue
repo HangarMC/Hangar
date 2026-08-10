@@ -37,7 +37,11 @@ function add() {
             />
           </div>
           <div class="min-w-60 flex-[2]">
-            <InputText v-model="element.url" :label="i18n.t('project.settings.links.urlField')" :rules="[validUrl(), required()]" />
+            <InputText
+              v-model="element.url"
+              :label="i18n.t('project.settings.links.urlField')"
+              :rules="[validUrl(), requiredIf()(() => !isUnfilledSuggestion(element))]"
+            />
           </div>
 
           <Button
