@@ -59,6 +59,11 @@ public abstract class InviteService<LC extends LogContext<?, LC>, RT extends Ext
             throw new HangarApiException(this.errorPrefix + "invalidUser", invitee.getName());
         }
 
+        // Only allow inviting users
+        if (this.organizationService.getOrganizationTableByUser(userTable.getId()) != null) {
+            throw new HangarApiException(this.errorPrefix + "cannotInviteOrganization", invitee.getName());
+        }
+
         final String title = this.memberService.requireTitle(invitee);
         final Permission permissions = this.memberService.sanitize(invitee.asPermission());
         final RT roleTable = this.roleService.addRole(this.createRole(joinable.getId(), userTable, permissions, title, false, false), true);
@@ -66,13 +71,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, RT extends Ext
             throw new HangarApiException(this.errorPrefix + "alreadyInvited", invitee.getName());
         }
 
-        // If invitee is an organization, notify the organization owner
-        final OrganizationTable organizationTable = this.organizationService.getOrganizationTableByUser(userTable.getId());
-        if (organizationTable != null) {
-            this.joinableNotificationService.invitedOrg(organizationTable, title, joinable, this.getHangarPrincipal().getUserId());
-        } else {
-            this.joinableNotificationService.invited(roleTable.getUserId(), title, joinable, this.getHangarPrincipal().getUserId());
-        }
+        this.joinableNotificationService.invited(roleTable.getUserId(), title, joinable, this.getHangarPrincipal().getUserId());
 
         this.logInvitesSent(joinable, "Invited: " + userTable.getName() + " (" + title + ")");
     }
@@ -85,7 +84,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, RT extends Ext
         }
 
         final OrganizationTable organizationTable = this.organizationService.getOrganizationTableByUser(userTable.getId());
-        if (!this.canInviteOrganizationUser() && organizationTable != null) {
+        if (!this.canTransferToOrganization() && organizationTable != null) {
             throw new HangarApiException("Cannot transfer to an organization");
         }
 
@@ -116,7 +115,7 @@ public abstract class InviteService<LC extends LogContext<?, LC>, RT extends Ext
         this.logInvitesSent(joinable, "Sent transfer request: " + userTable.getName());
     }
 
-    protected boolean canInviteOrganizationUser() {
+    protected boolean canTransferToOrganization() {
         return true;
     }
 

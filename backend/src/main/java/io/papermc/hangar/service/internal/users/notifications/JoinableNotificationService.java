@@ -29,10 +29,6 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
         this.notificationsDAO.insert(new NotificationTable(inviteeId, "notifications", inviterId, new String[]{this.msgPrefix + "invite", roleTitle, joinable.getName()}, NotificationType.INFO));
     }
 
-    public void invitedOrg(final OrganizationTable org, final String roleTitle, final J joinable, final long inviterId) {
-        this.notificationsDAO.insert(new NotificationTable(org.getOwnerId(), "notifications", inviterId, new String[]{this.msgPrefix + "inviteOrg", org.getName(), roleTitle, joinable.getName()}, NotificationType.INFO));
-    }
-
     public void transferRequest(final long inviteeId, final J joinable, final long inviterId, final String inviterName) {
         this.notificationsDAO.insert(new NotificationTable(inviteeId, "notifications", inviterId, new String[]{this.msgPrefix + "transfer", inviterName, joinable.getName()}, NotificationType.INFO));
     }

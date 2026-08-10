@@ -432,6 +432,7 @@
           "pendingTransfer": "You already have a pending transfer",
           "missingTitle": "Give {0} a title",
           "cannotRemoveOwner": "{0} owns this project and cannot be removed",
+          "cannotInviteOrganization": "{0} is an organization and cannot be a member. Invite its members instead, or transfer the project to it.",
           "ownerCannotLeave": "You own this project and cannot leave it. Transfer ownership first."
         }
       },
@@ -781,6 +782,7 @@
         "pendingTransfer": "You already have a pending transfer",
         "missingTitle": "Give {0} a title",
         "cannotRemoveOwner": "{0} owns this organization and cannot be removed",
+        "cannotInviteOrganization": "{0} is an organization and cannot be a member. Invite its members instead.",
         "ownerCannotLeave": "You own this organization and cannot leave it. Transfer ownership first."
       },
       "transferModal": {

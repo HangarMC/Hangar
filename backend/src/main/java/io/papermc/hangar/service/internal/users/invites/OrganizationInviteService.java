@@ -34,7 +34,7 @@ public class OrganizationInviteService extends InviteService<OrganizationContext
     }
 
     @Override
-    protected boolean canInviteOrganizationUser() {
+    protected boolean canTransferToOrganization() {
         return false;
     }
 
