@@ -29,6 +29,7 @@
     "home": "Home",
     "message": "Message",
     "refresh": "Refresh",
+    "searching": "Searching...",
     "confirm": "Confirm",
     "today": "Today",
     "yesterday": "Yesterday",
@@ -596,7 +597,6 @@
       "hangar": "Hangar",
       "url": "URL",
       "openProject": "Open project",
-      "searching": "Searching...",
       "noProjects": "No projects found",
       "openLink": "Open link",
       "makeOptional": "Mark as optional",
@@ -819,7 +819,8 @@
       "title": "Title",
       "titleHint": "Shown next to the member, for example \"Maintainer\" or \"Docs\".",
       "ownerLocked": "Owners always hold every permission. Transfer ownership to change that.",
-      "noMembers": "No members"
+      "noMembers": "No members",
+      "noUsers": "No users found"
     }
   },
   "notifications": {

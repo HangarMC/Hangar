@@ -209,14 +209,18 @@ useSeo(
       <!-- Search Bar -->
       <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
         <!-- Text Input -->
-        <input
-          v-model="query"
-          name="query"
-          class="rounded-l-md md:rounded-md p-4 basis-full min-w-0 dark:bg-gray-700"
-          type="text"
-          :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
-          v-on="useTracking('homepage-search', { platformName })"
-        />
+        <div class="relative flex basis-full items-center min-w-0">
+          <IconMdiMagnify class="pointer-events-none absolute left-4 text-xl text-gray-500 dark:text-gray-400" />
+          <input
+            v-model="query"
+            name="query"
+            class="rounded-l-md md:rounded-md w-full p-4 pl-11 min-w-0 dark:bg-gray-700"
+            type="text"
+            autocomplete="off"
+            :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
+            v-on="useTracking('homepage-search', { platformName })"
+          />
+        </div>
         <div class="md:hidden flex">
           <Menu as="div">
             <MenuButton

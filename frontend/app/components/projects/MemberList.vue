@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NamedPermission } from "#shared/types/backend";
 import Card from "~/components/design/Card.vue";
-import type { JoinableMemberOrganizationRoleTable, JoinableMemberProjectRoleTable, PaginatedResultUser, PermissionGroup } from "#shared/types/backend";
+import type { JoinableMemberOrganizationRoleTable, JoinableMemberProjectRoleTable, PermissionGroup } from "#shared/types/backend";
 
 type Member = JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable;
 
@@ -57,9 +57,9 @@ const canLeave = computed<boolean>(() => {
 });
 
 const saving = ref<boolean>(false);
-const search = ref<string>("");
+const search = ref<string>();
 const addErrors = ref<string[]>([]);
-const result = ref<string[]>([]);
+const memberNames = computed(() => props.members.map((m) => m.user.name));
 
 watch(search, () => {
   addErrors.value = [];
@@ -85,6 +85,7 @@ function canEditMember(member: Member): boolean {
 function openInvite() {
   editing.value = undefined;
   inviting.value = true;
+  search.value = undefined;
   draftTitle.value = "";
   draftPerms.value = [...defaultInvitePermissions];
 }
@@ -118,12 +119,12 @@ const draftValid = computed(() => draftTitle.value.trim().length > 0 && draftTit
 
 function save() {
   if (!draftValid.value) return;
-  const payload = { name: editing.value ? editing.value.user.name : search.value, title: draftTitle.value.trim(), permissions: draftPerms.value };
-  if (!payload.name) {
+  const name = editing.value ? editing.value.user.name : search.value?.trim();
+  if (!name) {
     addErrors.value.push(i18n.t("general.error.nameEmpty"));
     return;
   }
-  post(payload, editing.value ? "edit" : "add");
+  post({ name, title: draftTitle.value.trim(), permissions: draftPerms.value }, editing.value ? "edit" : "add");
 }
 
 function removeMember(member: Member) {
@@ -150,12 +151,6 @@ function post(member: { name: string; title?: string; permissions?: NamedPermiss
     .then(() => router.go(0))
     .catch((err) => handleRequestError(err))
     .finally(() => (saving.value = false));
-}
-
-async function doSearch(val?: string) {
-  result.value = [];
-  const users = await useApi<PaginatedResultUser>("users", "get", { query: val, limit: 25, offset: 0 });
-  result.value = users.result.filter((u) => props.members.every((m) => m.user.name !== u.name)).map((u) => u.name);
 }
 </script>
 
@@ -279,14 +274,7 @@ async function doSearch(val?: string) {
 
       <div v-else>
         <div class="max-w-md">
-          <InputAutocomplete
-            id="membersearch"
-            v-model="search"
-            :values="result"
-            :label="i18n.t('form.memberList.addUser')"
-            :error-messages="addErrors"
-            @search="doSearch"
-          />
+          <UserSearchInput v-model="search" name="membersearch" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors" :exclude="memberNames" />
         </div>
         <MemberPermissionEditor
           v-model:title="draftTitle"
