@@ -87,7 +87,9 @@
     },
     "discover": {
       "title": "Discover",
-      "sub": "A new mix every day"
+      "sub": "A new mix every day",
+      "prev": "Scroll left",
+      "next": "Scroll right"
     },
     "subtitle": "A Minecraft package repository",
     "sponsoredBy": "Sponsored by"
