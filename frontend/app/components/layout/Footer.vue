@@ -7,37 +7,25 @@ const { t } = useI18n();
     <div class="mt-3 mb-3 max-w-screen-xl mx-auto px-4">
       <div class="flex flex-wrap flex-col gap-4 justify-around items-center text-sm">
         <div class="flex flex-row flex-wrap justify-center">
-          <a
-            href="https://github.com/HangarMC"
-            class="flex items-center rounded-md px-6 py-2"
-            hover="text-primary-500 bg-primary-0"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
+          <a href="https://github.com/HangarMC" class="footer-link" target="_blank" rel="noreferrer noopener">
             {{ t("hangar.footer.org") }}
           </a>
-          <a
-            href="https://status.papermc.io"
-            class="flex items-center rounded-md px-6 py-2"
-            hover="text-primary-500 bg-primary-0"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
+          <a href="https://status.papermc.io" class="footer-link" target="_blank" rel="noreferrer noopener">
             {{ t("hangar.footer.status") }}
           </a>
-          <NuxtLink :to="{ name: 'api-docs' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
+          <NuxtLink :to="{ name: 'api-docs' }" class="footer-link">
             {{ t("hangar.footer.api") }}
           </NuxtLink>
-          <NuxtLink :to="{ name: 'terms' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
+          <NuxtLink :to="{ name: 'terms' }" class="footer-link">
             {{ t("hangar.footer.terms") }}
           </NuxtLink>
-          <NuxtLink :to="{ name: 'privacy' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
+          <NuxtLink :to="{ name: 'privacy' }" class="footer-link">
             {{ t("hangar.footer.privacypolicy") }}
           </NuxtLink>
-          <NuxtLink :to="{ name: 'guidelines' }" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
+          <NuxtLink :to="{ name: 'guidelines' }" class="footer-link">
             {{ t("hangar.footer.guidelines") }}
           </NuxtLink>
-          <NuxtLink href="https://forums.papermc.io/help/legal-notice/" class="flex items-center rounded-md px-6 py-2" hover="text-primary-500 bg-primary-0">
+          <NuxtLink href="https://forums.papermc.io/help/legal-notice/" class="footer-link">
             {{ t("hangar.footer.legalNotice") }}
           </NuxtLink>
         </div>
@@ -56,3 +44,10 @@ const { t } = useI18n();
     </div>
   </footer>
 </template>
+
+<style lang="css" scoped>
+.footer-link {
+  @apply flex items-center rounded-md px-6 py-2 transition-colors;
+  @apply hover:background-card;
+}
+</style>
