@@ -65,6 +65,7 @@ public class TestData {
     public static UserTable USER_PROJECT_OWNER;
 
     public static String KEY_ADMIN;
+    public static String KEY_ADMIN_SCOPED;
     public static String KEY_PROJECT_ONLY;
     public static String KEY_SEE_HIDDEN;
     public static String KEY_PROJECT_OWNER;
@@ -154,12 +155,13 @@ public class TestData {
         this.projectVersionsDAO.update(VERSION_HIDDEN);
 
         logger.info("Creating test api keys...");
-        KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values())), Permission.All);
-        KEY_PROJECT_ONLY = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("Project Only", Set.of(NamedPermission.CREATE_PROJECT)), Permission.All);
-        KEY_SEE_HIDDEN = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("See Hidden", Set.of(NamedPermission.SEE_HIDDEN)), Permission.All);
-        KEY_PROJECT_OWNER = this.apiKeyService.createApiKey(USER_PROJECT_OWNER, new CreateAPIKeyForm("Project Owner", Set.of(NamedPermission.values())), Permission.All);
-        KEY_NO_PERMISSIONS = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("No Permissions", Set.of()), Permission.None);
-        KEY_BANNED = this.apiKeyService.createApiKey(USER_BANNED, new CreateAPIKeyForm("No Permissions", Set.of(NamedPermission.VIEW_PUBLIC_INFO, NamedPermission.EDIT_OWN_USER_SETTINGS, NamedPermission.EDIT_API_KEYS)), Permission.All);
+        KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values()), null, null), Permission.All);
+        KEY_PROJECT_ONLY = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("Project Only", Set.of(NamedPermission.CREATE_PROJECT), null, null), Permission.All);
+        KEY_SEE_HIDDEN = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("See Hidden", Set.of(NamedPermission.SEE_HIDDEN), null, null), Permission.All);
+        KEY_PROJECT_OWNER = this.apiKeyService.createApiKey(USER_PROJECT_OWNER, new CreateAPIKeyForm("Project Owner", Set.of(NamedPermission.values()), null, null), Permission.All);
+        KEY_NO_PERMISSIONS = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("No Permissions", Set.of(), null, null), Permission.None);
+        KEY_BANNED = this.apiKeyService.createApiKey(USER_BANNED, new CreateAPIKeyForm("No Permissions", Set.of(NamedPermission.VIEW_PUBLIC_INFO, NamedPermission.EDIT_OWN_USER_SETTINGS, NamedPermission.EDIT_API_KEYS), null, null), Permission.All);
+        KEY_ADMIN_SCOPED = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin Scoped", Set.of(NamedPermission.values()), Set.of(PRIVATE_PROJECT.getSlug()), null), Permission.All);
 
         this.userService.toggleStarred(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);
         this.userService.toggleWatching(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);

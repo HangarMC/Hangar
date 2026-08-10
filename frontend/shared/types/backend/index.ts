@@ -1146,10 +1146,16 @@ export interface MultiHangarApiException {
 export interface ApiKey {
   /** @format date-time */
   createdAt: string;
+  /** The time the key stops working, if it was created with an expiration date */
+  expiresAt?: string;
   /** @format date-time */
   lastUsed?: string;
   name: string;
   permissions: NamedPermission[];
+  /** The projects the key is limited to, empty unless the key is project scoped */
+  projects: ProjectNamespace[];
+  /** Whether the key may only be used on the projects listed below */
+  projectScoped: boolean;
   tokenIdentifier: string;
 }
 
@@ -1667,6 +1673,8 @@ export interface ReviewActivity {
 
 /** Data about the key to create */
 export interface CreateAPIKeyForm {
+  /** Point in time at which the key stops working. Leave empty for a key that never expires */
+  expiresAt?: string;
   /**
    * @min 5
    * @max 36
@@ -1676,6 +1684,18 @@ export interface CreateAPIKeyForm {
   name: string;
   /** @uniqueItems true */
   permissions: NamedPermission[];
+  /**
+   * Slugs of the projects the key may be used on. Leave empty to allow all projects
+   * @maxItems 100
+   * @uniqueItems true
+   */
+  projects?: string[];
+}
+
+export interface ScopableProject {
+  avatarUrl: string;
+  name: string;
+  namespace: ProjectNamespace;
 }
 
 export interface CreateOrganizationForm {

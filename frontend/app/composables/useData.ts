@@ -21,6 +21,7 @@ import type {
   ProjectCompact,
   ProjectOwner,
   ReviewQueue,
+  ScopableProject,
   SettingsResponse,
   User,
   VersionInfo,
@@ -250,6 +251,15 @@ export function usePossiblePerms(user: () => string) {
     (u) => useInternalApi<NamedPermission[]>("api-keys/possible-perms/" + u)
   );
   return { possiblePerms, possiblePermsStatus };
+}
+
+export function useScopableProjects(user: () => string) {
+  const { data: scopableProjects, status: scopableProjectsStatus } = useData(
+    user,
+    (u) => "scopableProjects:" + u,
+    (u) => useInternalApi<ScopableProject[]>("api-keys/possible-projects/" + u)
+  );
+  return { scopableProjects, scopableProjectsStatus };
 }
 
 export function useAdminStats(params: () => { from: string; to: string }) {

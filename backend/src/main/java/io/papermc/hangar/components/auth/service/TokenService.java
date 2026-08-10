@@ -184,6 +184,10 @@ public class TokenService extends HangarComponent {
             if (apiKeyTable == null) {
                 throw new BadCredentialsException("Invalid api key identifier");
             }
+            // the jwt outlives the key when it expires mid-session
+            if (apiKeyTable.isExpired()) {
+                throw new BadCredentialsException("Expired api key");
+            }
             return new HangarApiPrincipal(userId, subject, email, locked, globalPermission, apiKeyTable, aal);
         } else {
             return new HangarPrincipal(userId, subject, email, locked, globalPermission, null, aal, privileged);

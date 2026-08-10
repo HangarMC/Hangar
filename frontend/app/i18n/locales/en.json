@@ -1106,7 +1106,9 @@
     },
     "error": {
       "notEnoughPerms": "Not enough permissions to create that key",
-      "duplicateName": "Duplicate key name"
+      "duplicateName": "Duplicate key name",
+      "unknownProject": "Unknown project: {0}",
+      "expirationInPast": "The expiration date must be in the future"
     },
     "reveal": "Reveal",
     "hide": "Hide",
@@ -1114,7 +1116,32 @@
     "clearAll": "Clear all",
     "createHint": "The key is shown once after creation.",
     "neverUsed": "Never used",
-    "createdTitle": "Key created"
+    "createdTitle": "Key created",
+    "scope": {
+      "title": "Project access",
+      "sub": "Limit the key to specific projects. Endpoints for any other project answer as if the key had no access.",
+      "all": "All projects",
+      "selected": "Selected projects",
+      "filter": "Filter projects",
+      "noMatches": "No projects match \"{0}\"",
+      "noProjects": "You are not a member of any project yet.",
+      "projectRequired": "Pick at least one project, or switch back to all projects.",
+      "limitedTo": "Limited to",
+      "noneLeft": "no projects left"
+    },
+    "expiration": {
+      "title": "Expiration",
+      "sub": "An expired key stops working and can no longer be used to authenticate.",
+      "never": "No expiration",
+      "days": "{0} days",
+      "year": "1 year",
+      "custom": "Custom date",
+      "date": "Expires on",
+      "expiresOn": "Expires",
+      "expiredOn": "Expired",
+      "expired": "Expired",
+      "dateRequired": "Pick an expiration date in the future."
+    }
   },
   "auth": {
     "login": {
