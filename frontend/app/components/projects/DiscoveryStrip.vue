@@ -39,7 +39,9 @@ function nudge(direction: number) {
 }
 
 function onWheel(event: WheelEvent) {
-  const raw = Math.abs(event.deltaY) > Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+  if (!event.shiftKey && Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+
+  const raw = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
   if (!raw) return;
 
   event.preventDefault();
