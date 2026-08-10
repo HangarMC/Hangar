@@ -10,7 +10,7 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 
-const user = useAuthStore().user;
+const authStore = useAuthStore();
 
 const starred = computed(() => props.project?.userActions?.starred);
 const watching = computed(() => props.project?.userActions?.watching);
@@ -18,7 +18,8 @@ const starredCount = computed(() => props.project?.stats?.stars);
 const watchingCount = computed(() => props.project?.stats?.watchers);
 const reported = computed(() => props.project?.userActions?.flagged);
 
-const isOwn = computed(() => !user || user.name === props.project?.namespace?.owner);
+const loggedIn = computed(() => Boolean(authStore.user));
+const isOwn = computed(() => Boolean(authStore.user && authStore.user.name === props.project?.namespace?.owner));
 
 const starredChanged = ref(false);
 const watchingChanged = ref(false);
@@ -170,11 +171,12 @@ function requiresConfirmation(): ConfirmationType {
         <div class="flex gap-1.5">
           <Tooltip>
             <template #content>
-              <span v-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
+              <span v-if="!loggedIn">{{ i18n.t("project.actions.starLoggedOut") }}</span>
+              <span v-else-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
               <span v-else-if="hasStarred()">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button variant="outline" tone="neutral" size="sm" class="!px-2" @click="toggleStar">
+            <Button variant="outline" tone="neutral" size="sm" class="!px-2" :disabled="!loggedIn" @click="toggleStar">
               <IconMdiStar v-if="hasStarred()" />
               <IconMdiStarOutline v-else />
               <span class="tabular-nums">{{ getStarredCount()?.toLocaleString("en-US") }}</span>
@@ -182,17 +184,18 @@ function requiresConfirmation(): ConfirmationType {
           </Tooltip>
           <Tooltip>
             <template #content>
-              <span v-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
+              <span v-if="!loggedIn">{{ i18n.t("project.actions.watchLoggedOut") }}</span>
+              <span v-else-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
               <span v-else-if="isWatching()">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button variant="outline" tone="neutral" size="sm" class="!px-2" @click="toggleWatch">
+            <Button variant="outline" tone="neutral" size="sm" class="!px-2" :disabled="!loggedIn" @click="toggleWatch">
               <IconMdiBell v-if="isWatching()" />
               <IconMdiBellOutline v-else />
               <span class="tabular-nums">{{ getWatchingCount()?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
-          <FlagModal v-if="project" :project="project" :disabled="isOwn" :open-report="reported" @reported="reported = true" />
+          <FlagModal v-if="project" :project="project" :disabled="!loggedIn || isOwn" :open-report="reported" @reported="reported = true" />
         </div>
       </div>
     </div>

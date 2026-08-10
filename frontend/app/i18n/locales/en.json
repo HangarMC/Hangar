@@ -202,11 +202,13 @@
     "actions": {
       "unwatch": "Unwatch",
       "watch": "Watch",
+      "watchLoggedOut": "Log in to watch this resource",
       "watched": "You are now watching the resource",
       "unwatched": "You are no longer watching the resource",
       "flag": "Report",
       "openReport": "You still have an unresolved report on this resource",
       "star": "Star",
+      "starLoggedOut": "Log in to star this resource",
       "unstar": "Unstar",
       "starred": "You starred the resource",
       "unstarred": "You unstarred the resource",
