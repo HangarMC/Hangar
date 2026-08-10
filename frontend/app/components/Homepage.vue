@@ -195,29 +195,32 @@ useSeo(
         </h1>
         <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
       </template>
-      <div v-if="!index" class="text-center -mt-2">
-        Looking for other platforms?
-        <div class="flex gap-3 mt-2 mb-2">
-          <Button v-if="platform != Platform.PAPER" to="/paper">
-            Download Paper plugins <PlatformLogo :platform="Platform.PAPER" :size="24" class="ml-1" />
+      <div v-if="!index" class="flex flex-col items-center gap-2 text-center">
+        <span class="text-sm text-gray-secondary">Looking for other platforms?</span>
+        <div class="flex flex-wrap justify-center gap-2">
+          <Button v-if="platform != Platform.PAPER" variant="outline" tone="neutral" to="/paper">
+            <PlatformLogo :platform="Platform.PAPER" :size="20" class="flex-shrink-0" />
+            Paper plugins
           </Button>
-          <Button v-if="platform != Platform.VELOCITY" to="/velocity">
-            Download Velocity Plugins <PlatformLogo :platform="Platform.VELOCITY" :size="24" class="ml-1" />
+          <Button v-if="platform != Platform.VELOCITY" variant="outline" tone="neutral" to="/velocity">
+            <PlatformLogo :platform="Platform.VELOCITY" :size="20" class="flex-shrink-0" />
+            Velocity plugins
           </Button>
-          <Button v-if="platform != Platform.WATERFALL" to="/waterfall">
-            Download Waterfall plugins <PlatformLogo :platform="Platform.WATERFALL" :size="24" class="ml-1" />
+          <Button v-if="platform != Platform.WATERFALL" variant="outline" tone="neutral" to="/waterfall">
+            <PlatformLogo :platform="Platform.WATERFALL" :size="20" class="flex-shrink-0" />
+            Waterfall plugins
           </Button>
         </div>
       </div>
       <!-- Search Bar -->
-      <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
+      <div class="hero-search">
         <!-- Text Input -->
         <div class="relative flex basis-full items-center min-w-0">
           <IconMdiMagnify class="pointer-events-none absolute left-4 text-xl text-gray-500 dark:text-gray-400" />
           <input
             v-model="query"
             name="query"
-            class="rounded-l-md md:rounded-md w-full p-4 pl-11 min-w-0 dark:bg-gray-700"
+            class="w-full min-w-0 rounded-md bg-transparent p-4 pl-11 outline-none"
             type="text"
             autocomplete="off"
             :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
@@ -261,16 +264,18 @@ useSeo(
           </Menu>
         </div>
       </div>
-      <div class="justify-center inline-flex gap-1 lt-md:hidden">
-        <div v-for="sorter in sorters" :key="sorter.id">
-          <button
-            :class="{ 'bg-gradient-to-r from-primary-500 to-primary-400 text-white': activeSorter === sorter.id }"
-            class="rounded-lg py-2 px-4 hover:(bg-gray-300 dark:bg-gray-700)"
-            @click="activeSorter = sorter.id"
-          >
-            {{ sorter.label }}
-          </button>
-        </div>
+      <div class="flex flex-wrap justify-center gap-1 lt-md:hidden" role="group" :aria-label="i18n.t('hangar.projectSearch.sortBy')">
+        <button
+          v-for="sorter in sorters"
+          :key="sorter.id"
+          type="button"
+          class="sorter"
+          :class="{ 'sorter-active': activeSorter === sorter.id }"
+          :aria-pressed="activeSorter === sorter.id"
+          @click="activeSorter = sorter.id"
+        >
+          {{ sorter.label }}
+        </button>
       </div>
     </Container>
     <Container class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start lg:gap-6">
@@ -450,5 +455,37 @@ useSeo(
   100% {
     top: 0;
   }
+}
+
+.hero-search {
+  @apply relative w-full max-w-screen-md flex overflow-hidden rounded-md border-1px border-gray-300 shadow-sm transition duration-200 ease dark:border-gray-600;
+  background-color: var(--input-surface);
+}
+
+.hero-search:hover {
+  @apply border-gray-400 dark:border-gray-500;
+}
+
+.hero-search:focus-within {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-500) 12%, transparent);
+}
+
+.dark .hero-search:focus-within {
+  border-color: var(--primary-300);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-300) 12%, transparent);
+}
+
+.sorter {
+  @apply rounded-lg px-4 py-2 transition-colors hover:background-card;
+}
+
+.sorter-active {
+  @apply bg-gradient-to-r from-primary-500 to-primary-400 text-white;
+}
+
+.sorter:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
 }
 </style>

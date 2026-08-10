@@ -305,6 +305,9 @@
   /* same idea for panels that aren't controls, so they stay neutral */
   --surface-sunken: #e9eaed;
   --surface-sunken-hover: #e2e3e7;
+
+  /* gray-500: the light input surface is too pale for the gray-400 the dark theme can use */
+  --placeholder: #6b7280;
 }
 
 .dark {
@@ -312,4 +315,5 @@
   --input-surface-hover: #2a2a2f;
   --surface-sunken: #212125;
   --surface-sunken-hover: #2a2a2f;
+  --placeholder: #a1a1aa;
 }
