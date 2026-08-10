@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
+import { isEqual } from "lodash-es";
 import { Platform, Tag } from "#shared/types/backend";
 import type { Category } from "#shared/types/backend";
 import type { LocationQueryValue } from "#vue-router";
@@ -24,20 +25,24 @@ const sorters = [
 
 const toArray = (input: LocationQueryValue | LocationQueryValue[] | undefined): string[] =>
   Array.isArray(input) ? (input as string[]) : input ? [input!] : [];
-const filters = ref({
-  versions: toArray(route.query.version),
-  categories: toArray(route.query.category),
-  platform: (route.query.platform || undefined) as Platform | undefined,
-  tags: toArray(route.query.tag),
-});
 
-if (props.platform) {
-  filters.value.platform = props.platform;
+function filtersFromQuery() {
+  return {
+    versions: toArray(route.query.version),
+    categories: toArray(route.query.category),
+    // the request sends platform as a list, so it can come back off the url as a one-element array
+    platform: props.platform ?? (toArray(route.query.platform)[0] as Platform | undefined),
+    tags: toArray(route.query.tag),
+  };
 }
+const sorterFromQuery = () => (route.query.sort as string) || "-stars";
+const pageFromQuery = () => (route.query.page ? Number(route.query.page) : 0);
+const queryFromQuery = () => (route.query.query as string) || "";
 
-const activeSorter = ref<string>((route.query.sort as string) || "-stars");
-const page = ref(route.query.page ? Number(route.query.page) : 0);
-const query = ref<string>((route.query.query as string) || "");
+const filters = ref(filtersFromQuery());
+const activeSorter = ref<string>(sorterFromQuery());
+const page = ref(pageFromQuery());
+const query = ref<string>(queryFromQuery());
 const versionQuery = ref("");
 const openFilterSections = reactive({
   platforms: true,
@@ -81,7 +86,7 @@ const requestParams = computed(() => {
 
   return params;
 });
-const { projects, refreshProjects } = useProjects(() => requestParams.value, router);
+const { projects } = useProjects(() => requestParams.value, router);
 
 // if somebody set page too high, lets reset it back
 watch(projects, () => {
@@ -89,11 +94,20 @@ watch(projects, () => {
     page.value = 0;
   }
 });
-// for some reason the watch in useProjects doesn't work for filters 🤷‍♂️
+// the route component is reused across query changes, so a link back to "/" has to reset the state it holds
 watch(
-  () => filters.value.versions,
-  () => refreshProjects(),
-  { deep: true }
+  () => route.query,
+  () => {
+    const incoming = filtersFromQuery();
+    if (isEqual(incoming, filters.value) && sorterFromQuery() === activeSorter.value && pageFromQuery() === page.value && queryFromQuery() === query.value) {
+      return;
+    }
+    filters.value = incoming;
+    activeSorter.value = sorterFromQuery();
+    page.value = pageFromQuery();
+    query.value = queryFromQuery();
+    versionQuery.value = "";
+  }
 );
 
 function togglePlatform(platform: Platform) {
@@ -111,8 +125,6 @@ function updatePlatform(platform?: Platform) {
   filters.value.platform = platform;
   versionQuery.value = platform ? versionQuery.value : "";
 
-  // Only reassign when the selection really changes -- the deep watcher below triggers an
-  // undebounced refresh, which would race the debounced params watcher into a second request.
   const allowed = platform ? usePlatformVersions(platform) : [];
   const kept = platform ? filters.value.versions.filter((v) => allowed.some((a) => a.version === v)) : [];
   if (kept.length !== filters.value.versions.length) {
@@ -311,7 +323,7 @@ useSeo(
                     v-if="filteredPlatformVersions.length > 0"
                     v-model="filters.versions"
                     :versions="filteredPlatformVersions"
-                    :open="false"
+                    expand="none"
                     col
                     compact
                   />

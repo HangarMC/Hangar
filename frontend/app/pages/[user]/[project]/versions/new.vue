@@ -46,15 +46,20 @@ const steps: Step[] = [
         return false;
       }
 
-      if (!pendingVersion.value || !dependencyTables.value) {
+      if (!pendingVersion.value || !dependencyEditors.value) {
         await notification.error("No pending version?!");
+        return false;
+      }
+
+      if (dependencyEditors.value.some((editor) => editor?.hasDuplicates)) {
+        await notification.error(t("version.deps.duplicateHint"));
         return false;
       }
 
       for (let i = 0; i < selectedPlatforms.value.length; i++) {
         const platform = selectedPlatforms.value[i];
-        const dependencyTable = dependencyTables.value[i];
-        pendingVersion.value.pluginDependencies[platform as Platform] = dependencyTable!.dependencies;
+        const dependencyEditor = dependencyEditors.value[i];
+        pendingVersion.value.pluginDependencies[platform as Platform] = dependencyEditor!.dependencies;
       }
 
       return true;
@@ -102,7 +107,7 @@ function removePlatformFile(id: number) {
   platformFiles.value.splice(id, 1);
 }
 
-const dependencyTables = useTemplateRef("dependencyTables");
+const dependencyEditors = useTemplateRef("dependencyEditors");
 const pendingVersion = ref<PendingVersion>();
 const { channels } = useProjectChannels(() => route.params.project);
 const selectedChannelColor = computed(() => channels.value?.find((c) => c.name === selectedChannel.value)?.color);
@@ -425,7 +430,7 @@ useSeo(
                   v-model="pendingVersion.platformDependencies[platform.enumName]"
                   :versions="platform.platformVersions"
                   :rules="platformVersionRules"
-                  open
+                  toolbar
                 />
               </div>
             </div>
@@ -438,10 +443,10 @@ useSeo(
                 <span class="mb-2 inline-flex items-center gap-1.5 font-semibold">
                   <PlatformLogo :platform="platform.enumName" :size="20" /> {{ platform.name }}
                 </span>
-                <DependencyTable
+                <DependencyEditor
                   v-if="pendingVersion"
-                  ref="dependencyTables"
-                  :key="`${platform.name}-deps-table`"
+                  ref="dependencyEditors"
+                  :key="`${platform.name}-deps-editor`"
                   :platform="platform.enumName"
                   :plugin-dependencies="pendingVersion.pluginDependencies"
                 />

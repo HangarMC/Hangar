@@ -583,6 +583,32 @@
       },
       "gradle-plugin-info": "Did you know? You can upload a new version to Hangar right from your IDE/CI using the"
     },
+    "deps": {
+      "title": "Dependencies: {0}",
+      "sub": "Plugins and libraries a server needs for this version to run.",
+      "empty": "No dependencies",
+      "emptyHint": "Add anything a server has to install alongside this version.",
+      "add": "Add dependency",
+      "kind": "Dependency source",
+      "hangar": "Hangar",
+      "url": "URL",
+      "openProject": "Open project",
+      "searching": "Searching...",
+      "noProjects": "No projects found",
+      "openLink": "Open link",
+      "makeOptional": "Mark as optional",
+      "makeRequired": "Mark as required",
+      "duplicate": "Another dependency already uses this name.",
+      "duplicateHint": "Each dependency needs its own name."
+    },
+    "platformSelect": {
+      "title": "Platform versions: {0}",
+      "sub": "Pick every {0} version this release runs on.",
+      "filter": "Filter",
+      "clear": "Clear",
+      "none": "No versions selected",
+      "noMatches": "No versions match “{0}”"
+    },
     "edit": {
       "platformVersions": "Edit Platform Versions: {0}",
       "pluginDeps": "Edit Plugin Dependencies: {0}",

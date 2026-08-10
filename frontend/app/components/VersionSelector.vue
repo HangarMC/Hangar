@@ -5,15 +5,22 @@ import type { PlatformVersion } from "#shared/types/backend";
 const props = defineProps<{
   versions: PlatformVersion[];
   modelValue?: string[];
-  open: boolean;
+  /**
+  Force every group open or closed; omit to open only the partially selected ones.
+  */
+  expand?: "all" | "none";
   rules?: ValidationRule<string | undefined>[];
   col?: boolean;
   compact?: boolean;
+  toolbar?: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: "update:modelValue", selected?: string[]): void;
 }>();
+
+const i18n = useI18n();
+
 const selected = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
@@ -31,115 +38,156 @@ watch(selectedSub, (value) => {
   selected.value = [...result];
 });
 
-const openVersions = ref<string[]>(props.open ? props.versions.map((v) => v.version) : []);
-
-function isOpen(version: string): boolean {
-  return openVersions.value.includes(version);
+function leaves(version: PlatformVersion): string[] {
+  return version.subVersions?.length ? version.subVersions : [version.version];
 }
 
-function toggleOpen(version: string) {
-  openVersions.value = isOpen(version) ? openVersions.value.filter((v) => v !== version) : [...openVersions.value, version];
-}
-
-function selectedSubCount(version: PlatformVersion): number {
-  return version.subVersions.filter((s) => selectedSub.value.includes(s)).length;
+function selectedCount(version: PlatformVersion): number {
+  return leaves(version).filter((v) => selectedSub.value.includes(v)).length;
 }
 
 function checkState(version: PlatformVersion): "none" | "some" | "all" {
-  if (!version.subVersions?.length) return selectedSub.value.includes(version.version) ? "all" : "none";
-  const count = selectedSubCount(version);
+  const count = selectedCount(version);
   if (count === 0) return "none";
-  return count === version.subVersions.length ? "all" : "some";
+  return count === leaves(version).length ? "all" : "some";
+}
+
+const filter = ref("");
+const showFilter = computed(() => props.toolbar && props.versions.length > 8);
+const filtered = computed(() => {
+  const query = filter.value.trim().toLowerCase();
+  if (!query) return props.versions;
+  return props.versions.filter((v) => v.version.toLowerCase().includes(query) || v.subVersions?.some((s) => s.toLowerCase().includes(query)));
+});
+
+const pickedCount = computed(() => props.versions.reduce((sum, v) => sum + selectedCount(v), 0));
+const pickedRange = computed(() => versionRange(props.versions.flatMap((v) => leaves(v)).filter((v) => selectedSub.value.includes(v))));
+
+const manuallyToggled = ref(new Map<string, boolean>());
+function isOpen(version: PlatformVersion): boolean {
+  const override = manuallyToggled.value.get(version.version);
+  if (override !== undefined) return override;
+  if (filter.value.trim()) return true;
+  if (props.expand) return props.expand === "all";
+  return checkState(version) === "some";
+}
+
+function toggleOpen(version: PlatformVersion) {
+  manuallyToggled.value.set(version.version, !isOpen(version));
 }
 
 function toggleParent(version: PlatformVersion) {
-  const subs = version.subVersions?.length ? version.subVersions : [version.version];
+  const subs = leaves(version);
   selectedSub.value = checkState(version) === "all" ? selectedSub.value.filter((v) => !subs.includes(v)) : [...new Set([...selectedSub.value, ...subs])];
 }
 
 function toggleSub(subVersion: string) {
   selectedSub.value = selectedSub.value.includes(subVersion) ? selectedSub.value.filter((v) => v !== subVersion) : [...selectedSub.value, subVersion];
 }
+
+function clear() {
+  selectedSub.value = [];
+}
 </script>
 
 <template>
-  <InputGroup v-model="selected" :rules="rules" :silent-errors="false" full-width>
-    <div :class="col || compact ? '' : 'gap-x-3 sm:columns-2'">
-      <div
-        v-for="version in versions"
-        :key="version.version"
-        class="mb-1.5 break-inside-avoid overflow-hidden rounded-md border transition-colors"
-        :class="checkState(version) === 'none' ? 'border-gray-300 dark:border-gray-700' : 'vs-panel-active'"
-      >
-        <div class="flex items-center" :class="{ 'vs-head-all': checkState(version) === 'all' }">
-          <button
-            v-if="version.subVersions?.length"
-            type="button"
-            class="h-8 w-7 flex flex-shrink-0 items-center justify-center text-gray-secondary hover:color-primary"
-            :aria-expanded="isOpen(version.version)"
-            :aria-label="version.version"
-            @click.prevent="toggleOpen(version.version)"
-          >
-            <IconMdiChevronRight class="transition-transform" :class="{ 'rotate-90': isOpen(version.version) }" />
-          </button>
-          <span v-else class="w-2.5 flex-shrink-0" />
-
-          <button
-            type="button"
-            class="min-w-0 h-8 flex flex-1 items-center gap-2 pr-2 text-left transition-colors hover:color-primary"
-            :aria-pressed="checkState(version) === 'all'"
-            @click.prevent="toggleParent(version)"
-          >
-            <span class="truncate tabular-nums" :class="{ 'font-semibold': checkState(version) !== 'none' }">{{ version.version }}</span>
-            <span
-              v-if="version.subVersions?.length"
-              class="ml-auto flex-shrink-0 text-xs tabular-nums"
-              :class="selectedSubCount(version) > 0 ? 'font-semibold color-primary' : 'text-gray-secondary'"
-            >
-              {{ selectedSubCount(version) }}/{{ version.subVersions.length }}
-            </span>
-          </button>
-        </div>
-
-        <div
-          v-if="version.subVersions?.length && isOpen(version.version)"
-          class="flex flex-wrap gap-1 border-t border-gray-300 px-1.5 py-1.5 dark:border-gray-700"
-        >
-          <button
-            v-for="subversion in version.subVersions"
-            :key="subversion"
-            type="button"
-            class="rounded px-1.5 py-0.5 text-xs font-semibold tabular-nums transition-colors"
-            :class="selectedSub.includes(subversion) ? 'vs-chip-on' : 'background-card text-gray-600 dark:text-gray-300 hover:color-primary'"
-            :aria-pressed="selectedSub.includes(subversion)"
-            @click.prevent="toggleSub(subversion)"
-          >
-            {{ subversion }}
-          </button>
-        </div>
+  <div>
+    <div v-if="toolbar" class="mb-2 flex items-center gap-3">
+      <div class="min-w-0 flex flex-1 items-center gap-1 text-sm">
+        <span v-if="pickedCount > 0" class="truncate font-semibold tabular-nums">{{ pickedRange }}</span>
+        <span v-else class="text-gray-secondary">{{ i18n.t("version.platformSelect.none") }}</span>
+        <Button v-if="pickedCount > 0" variant="ghost" tone="neutral" size="sm" @click="clear">{{ i18n.t("version.platformSelect.clear") }}</Button>
+      </div>
+      <div v-if="showFilter" class="relative w-40 flex-shrink-0">
+        <IconMdiMagnify class="pointer-events-none absolute left-2.5 top-2 text-gray-secondary" />
+        <input
+          v-model="filter"
+          type="search"
+          class="w-full rounded-md background-card py-1.5 pl-8 pr-2 text-sm outline-none focus:(ring-2 ring-primary-500)"
+          :placeholder="i18n.t('version.platformSelect.filter')"
+        />
       </div>
     </div>
-  </InputGroup>
+
+    <InputGroup v-model="selected" :rules="rules" :silent-errors="false" full-width>
+      <div :class="col || compact ? 'flex flex-col gap-1.5' : 'grid gap-x-3 gap-y-1.5 sm:grid-cols-2'">
+        <div
+          v-for="version in filtered"
+          :key="version.version"
+          class="h-max overflow-hidden rounded-md border transition-colors"
+          :class="checkState(version) === 'none' ? 'border-gray-300 dark:border-gray-700' : 'border-gray-400 dark:border-gray-600'"
+        >
+          <div class="flex items-center" :class="{ 'background-card': checkState(version) === 'all' }">
+            <button
+              type="button"
+              class="min-w-0 h-8 flex flex-1 items-center gap-2 pl-2 text-left transition-colors hover:text-black dark:hover:text-white"
+              :aria-pressed="checkState(version) === 'all'"
+              @click.prevent="toggleParent(version)"
+            >
+              <span
+                class="h-4 w-4 flex flex-shrink-0 items-center justify-center rounded-sm border transition-colors"
+                :class="checkState(version) === 'none' ? 'border-gray-400 dark:border-gray-500' : 'vs-box-on'"
+              >
+                <IconMdiCheckBold v-if="checkState(version) === 'all'" class="text-[10px]" />
+                <IconMdiMinus v-else-if="checkState(version) === 'some'" class="text-[10px]" />
+              </span>
+              <span class="truncate tabular-nums" :class="{ 'font-semibold': checkState(version) !== 'none' }">{{ version.version }}</span>
+            </button>
+
+            <span
+              v-if="version.subVersions?.length"
+              class="flex-shrink-0 text-xs tabular-nums"
+              :class="selectedCount(version) > 0 ? '' : 'text-gray-secondary'"
+            >
+              {{ selectedCount(version) }}/{{ version.subVersions.length }}
+            </span>
+            <button
+              v-if="version.subVersions?.length"
+              type="button"
+              class="h-8 w-7 flex flex-shrink-0 items-center justify-center text-gray-secondary hover:text-black dark:hover:text-white"
+              :aria-expanded="isOpen(version)"
+              :aria-label="version.version"
+              @click.prevent="toggleOpen(version)"
+            >
+              <IconMdiChevronRight class="transition-transform" :class="{ 'rotate-90': isOpen(version) }" />
+            </button>
+            <span v-else class="w-2 flex-shrink-0" />
+          </div>
+
+          <div v-if="version.subVersions?.length && isOpen(version)" class="flex flex-wrap gap-1 border-t border-gray-300 px-1.5 py-1.5 dark:border-gray-700">
+            <button
+              v-for="subversion in version.subVersions"
+              :key="subversion"
+              type="button"
+              class="rounded border px-1.5 py-0.5 text-xs tabular-nums transition-colors"
+              :class="
+                selectedSub.includes(subversion)
+                  ? 'border-gray-400 background-card font-semibold dark:border-gray-600'
+                  : 'border-transparent text-gray-600 hover:background-card dark:text-gray-300'
+              "
+              :aria-pressed="selectedSub.includes(subversion)"
+              @click.prevent="toggleSub(subversion)"
+            >
+              {{ subversion }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <p v-if="filtered.length === 0" class="py-3 text-sm text-gray-secondary">{{ i18n.t("version.platformSelect.noMatches", [filter]) }}</p>
+    </InputGroup>
+  </div>
 </template>
 
 <style scoped>
-.vs-panel-active {
-  border-color: color-mix(in srgb, var(--primary-500) 55%, transparent);
+.vs-box-on {
+  border-color: var(--gray-500);
+  background-color: var(--gray-500);
+  color: var(--gray-50);
 }
 
-.vs-head-all {
-  background-color: color-mix(in srgb, var(--primary-500) 12%, transparent);
-}
-
-.vs-chip-on {
-  background-color: color-mix(in srgb, var(--primary-500) 7%, #ffffff);
-  color: var(--primary-ink);
-  box-shadow: inset 0 0 0 1px var(--primary-ink);
-}
-
-.dark .vs-chip-on {
-  background-color: color-mix(in srgb, var(--primary-500) 13%, var(--gray-800));
-  color: #f4f4f5;
-  box-shadow: inset 0 0 0 1px var(--primary-300);
+.dark .vs-box-on {
+  border-color: var(--gray-400);
+  background-color: var(--gray-400);
+  color: var(--gray-900);
 }
 </style>

@@ -10,18 +10,14 @@ const props = defineProps<{
 const i18n = useI18n();
 const router = useRouter();
 
-const projectVersion = computed(() => {
-  return props.version;
-});
-
 const loading = ref(false);
-const selectedVersions = ref(projectVersion.value?.platformDependencies[props.platform.name.toUpperCase() as Platform]);
+const selectedVersions = ref(props.version.platformDependencies[props.platform.name.toUpperCase() as Platform]);
 const v = useVuelidate();
 
 async function save() {
   if (!(await v.value.$validate())) return;
   loading.value = true;
-  useInternalApi(`versions/version/${props.project.id}/${projectVersion.value?.id}/savePlatformVersions`, "post", {
+  useInternalApi(`versions/version/${props.project.id}/${props.version.id}/savePlatformVersions`, "post", {
     platform: props.platform.name.toUpperCase(),
     versions: selectedVersions.value,
   })
@@ -36,11 +32,12 @@ async function save() {
 </script>
 
 <template>
-  <Modal :title="i18n.t('version.edit.platformVersions', [platform.name])" window-classes="w-200">
+  <Modal :title="i18n.t('version.platformSelect.title', [platform.name])" window-classes="w-180">
+    <p class="mb-3 text-sm text-gray-secondary">{{ i18n.t("version.platformSelect.sub", [platform.name]) }}</p>
     <VersionSelector
       v-model="selectedVersions"
       :versions="platform.platformVersions"
-      open
+      toolbar
       :rules="[required('Select at least one platform version!'), minLength()(1)]"
     />
     <template #activator="{ on }">
@@ -50,7 +47,7 @@ async function save() {
     </template>
     <template #footer="{ on }">
       <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
-      <Button :disabled="loading" @click="save">{{ i18n.t("general.save") }}</Button>
+      <Button :disabled="loading" :loading @click="save">{{ i18n.t("general.save") }}</Button>
     </template>
   </Modal>
 </template>

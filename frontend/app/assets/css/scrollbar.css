@@ -1,28 +1,45 @@
+/* chrome honours scrollbar-color over every ::-webkit rule below, arrow buttons included,
+   so hand it the pseudo-elements and leave scrollbar-color to firefox */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-color: var(--gray-400) transparent;
+    scrollbar-width: thin;
+  }
+
+  .dark * {
+    scrollbar-color: var(--gray-600) transparent;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
-* {
-  scrollbar-color: var(--primary-400) #f2f5fb;
-  scrollbar-width: thin;
-}
-
 ::-webkit-scrollbar-track {
-  background: #f2f5fb;
-}
-.dark ::-webkit-scrollbar-track {
-  background: #181a1b;
+  background: transparent;
 }
 
+/* transparent border + content-box clip: a 6px thumb that still has a 10px grab area */
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-400);
-  border-radius: 5px;
+  background-color: var(--gray-400);
+  background-clip: content-box;
+  border: 2px solid transparent;
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #181a1b;
+  background-color: var(--gray-500);
 }
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: var(--gray-600);
+}
+
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #f2f5fb;
+  background-color: var(--gray-500);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
