@@ -30,7 +30,7 @@ export const useNotificationStore = defineStore("notification", () => {
     if (error.response?.data?.detail) {
       message = i18n.t(error.response.data.detail);
     } else if (error.response?.data?.message) {
-      message = i18n.t(error.response.data.message, ...error.response.data.messageArgs);
+      message = i18n.t(error.response.data.message, ...(error.response.data.messageArgs || []));
     }
     await show({ message, color: "red", clearable, timeout, addedAt: Date.now() });
   }

@@ -171,20 +171,22 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean
     public RestTemplate restTemplate(final List<HttpMessageConverter<?>> messageConverters, final RestTemplateBuilder builder) {
+        // RestTemplateBuilder is immutable, every call has to be reassigned
+        RestTemplateBuilder result = builder;
         if (interceptorLogger.isDebugEnabled()) {
             final ClientHttpRequestFactory factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
-            builder
+            result = result
                 .requestFactory(() -> factory)
                 .interceptors(new LoggingInterceptor());
         }
 
-        builder.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
-        builder.clientSettings((s) -> s.withConnectTimeout(timeout).withReadTimeout(timeout));
+        result = result.defaultHeader("User-Agent", "Hangar <hangar@papermc.io>");
+        result = result.clientSettings((s) -> s.withConnectTimeout(timeout).withReadTimeout(timeout));
 
         this.addDefaultHttpMessageConverters(messageConverters);
-        builder.messageConverters(messageConverters);
+        result = result.messageConverters(messageConverters);
 
-        return builder.build();
+        return result.build();
     }
 
     @Bean
