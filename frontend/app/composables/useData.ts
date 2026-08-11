@@ -43,14 +43,25 @@ export function useOrganizationVisibility(user: () => string) {
 
 export function usePossibleAlts(user: () => string) {
   const authStore = useAuthStore();
-  const { data: possibleAlts, status: possibleAltsStatus } = useData(
+  const requested = ref(false);
+  const {
+    data: possibleAlts,
+    status: possibleAltsStatus,
+    refresh,
+  } = useData(
     user,
     (u) => "possibleAlts:" + u,
     (u) => useInternalApi<string[]>(`users/${u}/alts`),
     false,
-    () => !hasPermsFor(authStore.routePermissions, NamedPermission.IsStaff)
+    () => !requested.value || !hasPermsFor(authStore.routePermissions, NamedPermission.IsStaff)
   );
-  return { possibleAlts, possibleAltsStatus };
+
+  function loadPossibleAlts() {
+    requested.value = true;
+    return refresh();
+  }
+
+  return { possibleAlts, possibleAltsStatus, loadPossibleAlts };
 }
 
 export function useProjects(
@@ -101,7 +112,8 @@ export function useStarred(user: () => string) {
   const { data: starred, status: starredStatus } = useData(
     user,
     (u) => "starred:" + u,
-    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/starred`)
+    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/starred`),
+    false
   );
   return { starred, starredStatus };
 }
@@ -110,7 +122,8 @@ export function useWatching(user: () => string) {
   const { data: watching, status: watchingStatus } = useData(
     user,
     (u) => "watching:" + u,
-    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/watching`)
+    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/watching`),
+    false
   );
   return { watching, watchingStatus };
 }
@@ -119,7 +132,8 @@ export function usePinned(user: () => string) {
   const { data: pinned, status: pinnedStatus } = useData(
     user,
     (u) => "pinned:" + u,
-    (u) => useApi<ProjectCompact[]>(`users/${u}/pinned`)
+    (u) => useApi<ProjectCompact[]>(`users/${u}/pinned`),
+    false
   );
   return { pinned, pinnedStatus };
 }
@@ -128,7 +142,8 @@ export function useOrganizations(user: () => string) {
   const { data: organizations, status: organizationsStatus } = useData(
     user,
     (u) => "organizations:" + u,
-    (u) => useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${u}/userOrganizations`)
+    (u) => useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${u}/userOrganizations`),
+    false
   );
   return { organizations, organizationsStatus };
 }

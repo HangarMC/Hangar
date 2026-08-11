@@ -46,7 +46,7 @@ const requestParams = computed(() => {
 
 // todo we can skip some of those if user is org
 const { organizationVisibility } = useOrganizationVisibility(() => route.params.user);
-const { possibleAlts } = usePossibleAlts(() => route.params.user);
+const { possibleAlts, possibleAltsStatus, loadPossibleAlts } = usePossibleAlts(() => route.params.user);
 const { projects, projectsStatus } = useProjects(() => ({ member: route.params.user, ...requestParams.value }), router);
 const { starred } = useStarred(() => route.params.user);
 const { watching } = useWatching(() => route.params.user);
@@ -133,8 +133,9 @@ useSeo(
 
     <div class="flex gap-4 flex-basis-full flex-col lg:flex-row">
       <div class="flex-basis-full flex flex-col gap-3 flex-grow lg:max-w-3/4 lg:min-w-7/10">
-        <template v-if="pinned?.length">
+        <template v-if="!pinned || pinned.length > 0">
           <h2 v-if="user" class="text-xl font-bold">{{ i18n.t("author.pinnedPlugins") }}</h2>
+          <Skeleton v-if="!pinned" class="h-25" />
           <ProjectCard v-for="project in pinned" :key="project.namespace.slug" :project pinned :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)" />
           <hr class="my-1 border-gray-300 dark:border-gray-700" />
         </template>
@@ -188,18 +189,23 @@ useSeo(
           </div>
         </Card>
 
-        <Card v-if="possibleAlts?.length">
+        <Card v-if="user && hasPerms(NamedPermission.IsStaff)">
           <template #header>
             <h2>{{ i18n.t("author.sharesAddress") }}</h2>
           </template>
-          <ul class="flex flex-col gap-0.5">
+          <Button v-if="possibleAltsStatus === 'idle'" variant="outline" tone="neutral" size="sm" @click="loadPossibleAlts">
+            {{ i18n.t("general.reveal") }}
+          </Button>
+          <Skeleton v-else-if="possibleAltsStatus === 'loading'" />
+          <ul v-else-if="possibleAlts?.length" class="flex flex-col gap-0.5">
             <li v-for="name in possibleAlts" :key="name">
               <Link :to="'/' + name">{{ name }}</Link>
             </li>
           </ul>
+          <p v-else class="text-sm text-gray-secondary">{{ i18n.t("author.noSharedAddress", [user.name]) }}</p>
         </Card>
 
-        <template v-if="user && !user?.isOrganization && organizations">
+        <template v-if="user && !user?.isOrganization">
           <Card>
             <template #header>
               <div class="flex items-center gap-2">
@@ -208,7 +214,8 @@ useSeo(
               </div>
             </template>
 
-            <ul v-if="organizations && Object.keys(organizations).length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
+            <Skeleton v-if="!organizations" />
+            <ul v-else-if="Object.keys(organizations).length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
               <li v-for="(org, orgName) in organizations" :key="orgName">
                 <NuxtLink :to="'/' + orgName" class="flex items-center gap-2 py-2 transition-colors hover:color-primary">
                   <UserAvatar :username="orgName + ''" :avatar-url="org.avatarUrl" size="xs" disable-link class="flex-shrink-0" />
