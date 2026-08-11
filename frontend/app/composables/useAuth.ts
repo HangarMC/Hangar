@@ -130,6 +130,11 @@ class Auth {
       authLog("no point in updating if we already have a user");
       return;
     }
+    // same short circuit as refreshToken: without the refresh cookie there is no session to load, and the request would come back empty
+    if (import.meta.env.SSR && !useCookie("HangarAuth_REFRESH").value) {
+      authLog("no cookie, no point in fetching the user");
+      return;
+    }
     const user = await useInternalApi<HangarUser>("users/@me").catch((err) => {
       authLog("no user, with err", transformAxiosError(err));
       return this.invalidate(axios, authStore);
