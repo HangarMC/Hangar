@@ -4,7 +4,7 @@ DROP VIEW IF EXISTS pinned_projects CASCADE;
 
 CREATE OR REPLACE VIEW pinned_versions AS
     SELECT *
-    FROM (SELECT DISTINCT ON (version_id) version_id,
+    FROM (SELECT DISTINCT ON (project_id, version_id) version_id,
                                           id,
                                           created_at,
                                           type,
@@ -31,11 +31,13 @@ CREATE OR REPLACE VIEW pinned_versions AS
                  FROM project_channels pc
                      JOIN project_versions pv ON pc.id = pv.channel_id
                  WHERE 2 = ANY (pc.flags)
-                 ORDER BY pv.created_at DESC)) AS pvs) AS t
+                 ORDER BY pv.created_at DESC)) AS pvs
+          -- a version can be both explicitly pinned and the head of a pinned channel; prefer explicit pin
+          ORDER BY project_id, version_id, type DESC) AS t
     ORDER BY t.created_at DESC;
 
 CREATE OR REPLACE VIEW pinned_projects AS
-    SELECT DISTINCT ON (project_id) project_id,
+    SELECT DISTINCT ON (user_id, project_id) project_id,
                                     user_id,
                                     id,
                                     owner_name AS owner,
