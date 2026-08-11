@@ -41,7 +41,13 @@ if (import.meta.client && props.delay) {
   }
 
   &--animated {
-    animation: skeleton 1s infinite;
+    animation: skeleton 2s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &--animated {
+      animation: none;
+    }
   }
 
   &__content {
