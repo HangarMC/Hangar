@@ -73,4 +73,6 @@ Every user-facing string goes through `t("…")`. Add keys to `app/i18n/locales/
 pnpm lint:eslint && pnpm lint:prettier && pnpm lint:typecheck
 ```
 
-No unnecessary or overly verbose code comments.
+## Comments
+
+Unnecessary comments are a defect, not a style preference. The exception is a non-obvious *why* a reader would otherwise get wrong or would have hard time parsing (planner quirk, spec constraint, long runs of code): Do not comment just to describe code, SQL, or a change you just made.

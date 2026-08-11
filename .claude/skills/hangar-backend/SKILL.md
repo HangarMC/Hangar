@@ -44,7 +44,11 @@ Request bodies are validated by `@Valid` on the controller parameter. Per the Be
 
 ## Style
 
-4 spaces, 160 columns, `final` on parameters and locals, braces on every block, explicit `this.` for fields. Errors are `HangarApiException` with an i18n key or an `HttpStatus`. No unnecessary or overly verbose code comments.
+4 spaces, 160 columns, `final` on parameters and locals, braces on every block, explicit `this.` for fields. Errors are `HangarApiException` with an i18n key or an `HttpStatus`.
+
+### Comments
+
+Unnecessary comments are a defect, not a style preference. The exception is a non-obvious *why* a reader would otherwise get wrong or would have hard time parsing (planner quirk, spec constraint, long runs of code): Do not comment just to describe code, SQL, or a change you just made.
 
 ## Building
 

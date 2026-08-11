@@ -70,8 +70,18 @@ public class ProjectPageService extends HangarComponent {
     }
 
     public Map<Long, HangarProjectPage> getProjectPages(final long projectId) {
+        return this.getPages(projectId).pages();
+    }
+
+    public Pages getPages(final long projectId) {
+        final List<ProjectPageTable> pageTables = this.projectPagesDAO.getProjectPages(projectId);
         final Map<Long, HangarProjectPage> hangarProjectPages = new LinkedHashMap<>();
-        for (final ProjectPageTable projectPage : this.projectPagesDAO.getProjectPages(projectId)) {
+        ProjectPageTable homePage = null;
+        for (final ProjectPageTable projectPage : pageTables) {
+            if (projectPage.isHomepage()) {
+                homePage = projectPage;
+            }
+
             if (projectPage.getParentId() == null) {
                 hangarProjectPages.put(projectPage.getId(), new HangarProjectPage(projectPage));
             } else {
@@ -83,7 +93,10 @@ public class ProjectPageService extends HangarComponent {
             }
         }
 
-        return hangarProjectPages;
+        return new Pages(hangarProjectPages, homePage);
+    }
+
+    public record Pages(Map<Long, HangarProjectPage> pages, @Nullable ProjectPageTable homePage) {
     }
 
     private HangarProjectPage findById(final long id, final Map<Long, HangarProjectPage> pageMap) {
@@ -119,10 +132,6 @@ public class ProjectPageService extends HangarComponent {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Page not found");
         }
         return pageTable;
-    }
-
-    public ProjectPageTable getProjectHomePage(final long projectId) {
-        return this.projectPagesDAO.getHomePage(projectId);
     }
 
     @Transactional

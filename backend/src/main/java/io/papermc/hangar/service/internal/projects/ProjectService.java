@@ -18,7 +18,6 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectOwner;
-import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectLinksForm;
@@ -26,14 +25,13 @@ import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsFor
 import io.papermc.hangar.model.internal.logs.LogAction;
 import io.papermc.hangar.model.internal.logs.contexts.ProjectContext;
 import io.papermc.hangar.model.internal.projects.HangarProject;
-import io.papermc.hangar.model.internal.projects.HangarProjectPage;
+import io.papermc.hangar.model.internal.projects.ProjectData;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import io.papermc.hangar.service.PermissionService;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.service.internal.versions.PinnedVersionService;
 import io.papermc.hangar.service.internal.visibility.ProjectVisibilityService;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.LinkedHashSet;
@@ -115,13 +113,15 @@ public class ProjectService extends HangarComponent {
     }
 
     public HangarProject getHangarProject(final ProjectTable projectTable) {
-        // TODO All of this is dumb and needs to be redone into as little queries as possible
+        // TODO Most of this is dumb and needs to be redone into as little queries as possible
         final Long hangarUserId = this.getHangarUserId();
-        final Project project = this.hangarProjectsDAO.getProject(projectTable.getId(), hangarUserId);
-        if (project == null) {
+        final ProjectData projectData = this.hangarProjectsDAO.getProject(projectTable.getId(), hangarUserId);
+        if (projectData == null) {
             // some view hasn't updated yet
-            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project is still creating...");
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Project is still being created...");
         }
+
+        final Project project = projectData.project();
         final long projectId = project.getId();
 
         String lastVisibilityChangeComment = "";
@@ -134,38 +134,25 @@ public class ProjectService extends HangarComponent {
             }
         }
 
-        final CompletableFuture<List<JoinableMember<ProjectRoleTable>>> membersFuture = this.supply(() -> {
-            return this.hangarProjectsDAO.getProjectMembers(projectId, hangarUserId, this.permissionService.getProjectPermissions(hangarUserId, projectId).has(Permission.EditProjectSettings));
-        });
+        // resolved here rather than in the async task below: it reads the security context, which does not follow onto the executor's threads
+        final boolean canSeePending = this.permissionService.getProjectPermissions(hangarUserId, projectId).has(Permission.EditProjectSettings);
 
-        final Map<Platform, Version> mainChannelVersions = new EnumMap<>(Platform.class);
-        CompletableFuture<Void> mainChannelFuture = CompletableFuture.allOf(
-            Arrays.stream(Platform.getValues())
-                .map(platform -> CompletableFuture.runAsync(() -> {
-                    final Version version = this.getLastVersion(projectTable.getProjectId(), platform);
-                    if (version != null) {
-                        mainChannelVersions.put(platform, version);
-                    }
-                }, this.taskExecutor))
-                .toArray(CompletableFuture[]::new)
-        );
-
-        final HangarProject.HangarProjectInfo info = this.hangarProjectsDAO.getHangarProjectInfo(projectId);
-        final Map<Long, HangarProjectPage> pages = this.projectPageService.getProjectPages(projectId);
+        final CompletableFuture<Map<Platform, Version>> mainChannelVersions = this.supply(() -> this.getLastVersions(projectId));
+        final CompletableFuture<List<JoinableMember<ProjectRoleTable>>> members = this.supply(() -> this.hangarProjectsDAO.getProjectMembers(projectId, hangarUserId, canSeePending));
         final CompletableFuture<List<HangarProject.PinnedVersion>> pinnedVersions = this.supply(() -> this.pinnedVersionService.getPinnedVersions(projectId));
-        final ProjectPageTable projectPage = this.projectPageService.getProjectHomePage(projectId);
 
-        mainChannelFuture.join();
+        final ProjectPageService.Pages pages = this.projectPageService.getPages(projectId);
+
         return new HangarProject(
             project,
-            membersFuture.join(),
+            members.join(),
             lastVisibilityChangeComment,
             lastVisibilityChangeUserName,
-            info,
-            pages.values(),
+            projectData.info(),
+            pages.pages().values(),
             pinnedVersions.join(),
-            mainChannelVersions,
-            projectPage
+            mainChannelVersions.join(),
+            pages.homePage()
         );
     }
 
@@ -174,20 +161,26 @@ public class ProjectService extends HangarComponent {
     }
 
     /**
-     * Returns the last release version for the given platform. If no release version exists, the last version of any channel will be returned.
+     * Returns the last version per platform, prioritizing release versions over those of any other channel.
      *
      * @param projectId project id
-     * @param platform platform
-     * @return the last version for the given platform, prioritizing release versions, or null if no version exists
+     * @return the last version per platform, only containing platforms the project has a version for
      */
-    public @Nullable Version getLastVersion(final long projectId, final Platform platform) {
-        final Version version = this.getLastVersion(projectId, platform, this.config.channels().nameDefault());
-        return version != null ? version : this.getLastVersion(projectId, platform, null);
-    }
+    public Map<Platform, Version> getLastVersions(final long projectId) {
+        final Map<Platform, Long> versionIds = this.versionsApiDAO.getLatestVersionIds(projectId, this.config.channels().nameDefault());
+        if (versionIds.isEmpty()) {
+            return Map.of();
+        }
 
-    private @Nullable Version getLastVersion(final long projectId, final Platform platform, final @Nullable String channel) {
-        final Long lastVersion = this.versionsApiDAO.getLatestVersionId(projectId, channel, platform);
-        return lastVersion == null ? null : this.versionsApiDAO.getVersion(lastVersion, false, null);
+        final Map<Long, Version> versions = this.versionsApiDAO.getVersions(Set.copyOf(versionIds.values()), false, null);
+        final Map<Platform, Version> lastVersions = new EnumMap<>(Platform.class);
+        versionIds.forEach((platform, versionId) -> {
+            final Version version = versions.get(versionId);
+            if (version != null) {
+                lastVersions.put(platform, version);
+            }
+        });
+        return lastVersions;
     }
 
     public void validateSettings(final ProjectSettingsForm settingsForm) {

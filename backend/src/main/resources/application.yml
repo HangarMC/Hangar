@@ -21,6 +21,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/hangar
     username: hangar
     password: hangar
+    hikari:
+      maximum-pool-size: 20
   security:
     filter:
       order: 1000

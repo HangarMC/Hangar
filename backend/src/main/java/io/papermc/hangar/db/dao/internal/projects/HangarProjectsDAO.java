@@ -6,6 +6,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.roles.ProjectRoleTable;
 import io.papermc.hangar.model.internal.projects.HangarChannel;
 import io.papermc.hangar.model.internal.projects.HangarProject;
+import io.papermc.hangar.model.internal.projects.ProjectData;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import java.util.List;
 import org.jdbi.v3.spring.JdbiRepository;
@@ -20,6 +21,7 @@ import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
 public interface HangarProjectsDAO {
 
     @RegisterConstructorMapper(Project.class)
+    @RegisterConstructorMapper(ProjectData.class)
     @SqlQuery("""
         SELECT p.id,
                p.created_at,
@@ -51,12 +53,17 @@ public interface HangarProjectsDAO {
                p.sponsors,
                hp.avatar,
                hp.avatar_fallback,
-               hp.supported_platforms
+               hp.supported_platforms,
+               (SELECT count(DISTINCT pv.id) FROM project_versions pv WHERE p.id = pv.project_id AND pv.visibility = 0) AS public_versions,
+               (SELECT count(DISTINCT pf.id) FROM project_flags pf WHERE p.id = pf.project_id)                          AS flag_count,
+               (SELECT count(DISTINCT ps.user_id) FROM project_stars ps WHERE p.id = ps.project_id)                     AS star_count,
+               (SELECT count(DISTINCT pw.user_id) FROM project_watchers pw WHERE p.id = pw.project_id)                  AS watcher_count,
+               (SELECT count(DISTINCT pn.id) FROM project_notes pn WHERE p.id = pn.project_id)                          AS note_count
           FROM projects_extra p
               LEFT JOIN home_projects hp ON hp.id = p.id
                  JOIN users u ON p.owner_id = u.id
                  WHERE p.id = :projectId""")
-    Project getProject(long projectId, Long currentUserId);
+    ProjectData getProject(long projectId, Long currentUserId);
 
     @RegisterRowMapperFactory(JoinableRowMapperFactory.class)
     @RegisterConstructorMapper(UserTable.class)
@@ -75,18 +82,6 @@ public interface HangarProjectsDAO {
         "       JOIN users u ON upr.user_id = u.id" +
         "   WHERE upr.project_id = :projectId <if(!canSeePending)>AND (upr.accepted IS TRUE OR upr.user_id = :userId)<endif>")
     List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId, Long userId, @Define boolean canSeePending);
-
-    @RegisterConstructorMapper(HangarProject.HangarProjectInfo.class)
-    @SqlQuery("""
-        SELECT (SELECT count(DISTINCT pv.id) from project_versions pv where p.id = pv.project_id and pv.visibility = 0)  public_versions,
-               (SELECT count(DISTINCT pf.id) from project_flags pf where p.id = pf.project_id)                           flag_count,
-               (SELECT count(DISTINCT ps.user_id) from project_stars ps where p.id = ps.project_id)                      star_count,
-               (SELECT count(DISTINCT pw.user_id) from project_watchers pw where p.id = pw.project_id)                   watcher_count,
-               (SELECT count(DISTINCT pn.id) from project_notes pn where p.id = pn.project_id)                           note_count
-        FROM projects p
-        WHERE p.id = :projectId
-    """)
-    HangarProject.HangarProjectInfo getHangarProjectInfo(long projectId);
 
     @RegisterConstructorMapper(HangarChannel.class)
     @SqlQuery("SELECT pc.*," +
