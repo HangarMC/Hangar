@@ -5,6 +5,7 @@ const i18n = useI18n();
 
 const SPEED = 20;
 const GAP = 8;
+const COPIES = 2;
 const STOP_EASE = 0.28;
 const RESUME_EASE = 0.22;
 const GLIDE_EASE = 0.12;
@@ -14,15 +15,14 @@ const track = useTemplateRef<HTMLElement>("track");
 const paused = ref(false);
 let frame = 0;
 let reducedMotion = false;
-// our own position, so the auto scroll, the arrows and the wheel all write to one value
 let pos = 0;
 let applied = 0;
 let glide = 0;
+let parked = false;
 
 function period() {
   const element = track.value;
-  // the row is rendered twice, so one copy plus the gap that follows it is a full turn
-  return element ? (element.scrollWidth + GAP) / 2 : 0;
+  return element ? (element.scrollWidth + GAP) / COPIES : 0;
 }
 
 function move(amount: number) {
@@ -52,7 +52,6 @@ function onWheel(event: WheelEvent) {
 onMounted(() => {
   reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // start at full speed
   let velocity = reducedMotion ? 0 : SPEED;
   let last = performance.now();
 
@@ -81,8 +80,14 @@ onMounted(() => {
       }
 
       const turn = period();
-      if (turn > 0) {
-        pos = ((pos % turn) + turn) % turn;
+      // inset the wrap band from both ends, or a native swipe hits the browser's scroll clamp instead of looping
+      const slack = (turn - GAP - element.clientWidth) / 2;
+      if (slack > 0) {
+        if (!parked) {
+          pos = turn;
+          parked = true;
+        }
+        pos = slack + ((((pos - slack) % turn) + turn) % turn);
         element.scrollLeft = pos;
         applied = element.scrollLeft;
       }
@@ -99,8 +104,8 @@ const { data: projects } = await useAsyncData("discovery-daily", () => useIntern
   default: () => [] as ProjectCompact[],
 });
 
-// the row is rendered twice so the scroll can wrap without a visible seam
-const loop = computed(() => [...projects.value, ...projects.value]);
+// the row is repeated so the scroll can wrap without a visible seam
+const loop = computed(() => Array.from({ length: COPIES }, () => projects.value).flat());
 </script>
 
 <template>
