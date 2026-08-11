@@ -49,16 +49,6 @@ public abstract class JoinableNotificationService<RT extends ExtendedRoleTable<?
             new String[]{msgKey, org.getName(), removedFromRoleTable.getTitle(), joinable.getName()}, NotificationType.WARNING));
     }
 
-    public void roleChanged(final RT changedRoleTable, final J joinable, final @Nullable Long byUserId) {
-        this.notificationsDAO.insert(new NotificationTable(changedRoleTable.getUserId(), null, byUserId,
-            new String[]{this.msgPrefix + "roleChanged", changedRoleTable.getTitle(), joinable.getName()}, NotificationType.INFO));
-    }
-
-    public void roleChangedOrg(final RT changedRoleTable, final OrganizationTable org, final J joinable, final @Nullable Long byUserId) {
-        this.notificationsDAO.insert(new NotificationTable(org.getOwnerId(), null, byUserId,
-            new String[]{this.msgPrefix + "roleChangedOrg", org.getName(), changedRoleTable.getTitle(), joinable.getName()}, NotificationType.INFO));
-    }
-
     @Service
     public static class ProjectNotificationService extends JoinableNotificationService<ProjectRoleTable, ProjectTable> {
 

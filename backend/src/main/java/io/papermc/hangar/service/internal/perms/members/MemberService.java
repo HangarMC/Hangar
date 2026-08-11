@@ -155,14 +155,6 @@ public abstract class MemberService<
 
         this.roleService.updateRole(roleTable);
 
-        // notify org owner
-        final OrganizationTable org = this.organizationDAO.getByUserId(roleTable.getUserId());
-        if (org != null) {
-            this.joinableNotificationService.roleChangedOrg(roleTable, org, joinable, this.getHangarUserId());
-        } else {
-            this.joinableNotificationService.roleChanged(roleTable, joinable, this.getHangarUserId());
-        }
-
         this.logMemberUpdate(joinable,
             "Old: " + member.getName() + " (" + oldState + ")",
             "New: " + member.getName() + " (" + title + " " + permissions.toNamed() + ")");
