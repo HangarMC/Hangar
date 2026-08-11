@@ -25,7 +25,7 @@ provide("updateProjectPages", function (pages: HangarProjectPage[]) {
     <router-view v-slot="{ Component }">
       <Suspense>
         <div>
-          <component :is="Component" v-model:project="project" :user="user" />
+          <component :is="Component" v-model:project="project" />
         </div>
         <template #fallback>
           <Delayed> Loading... </Delayed>

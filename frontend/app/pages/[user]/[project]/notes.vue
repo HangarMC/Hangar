@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import type { HangarProject, User } from "#shared/types/backend";
+import type { HangarProject } from "#shared/types/backend";
 
 definePageMeta({
   projectPermsRequired: ["ModNotesAndFlags"],
 });
 
 const props = defineProps<{
-  user?: User;
   project?: HangarProject;
 }>();
 const i18n = useI18n();

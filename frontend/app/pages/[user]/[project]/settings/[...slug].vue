@@ -10,7 +10,7 @@ import IconMdiTagMultiple from "~icons/mdi/tag-multiple";
 import IconMdiShieldAlert from "~icons/mdi/shield-alert";
 import InputText from "~/components/ui/InputText.vue";
 import { NamedPermission, Tag, Visibility } from "#shared/types/backend";
-import type { HangarProject, HangarUser, PaginatedResultUser, ProjectSettings, Category } from "#shared/types/backend";
+import type { HangarProject, PaginatedResultUser, ProjectSettings, Category } from "#shared/types/backend";
 
 definePageMeta({
   projectPermsRequired: ["EditSubjectSettings"],
@@ -23,7 +23,6 @@ const v = useVuelidate();
 const notificationStore = useNotificationStore();
 const props = defineProps<{
   project?: HangarProject;
-  user?: HangarUser;
 }>();
 
 const selectedTab = ref(route.params.slug?.[0] || "general");

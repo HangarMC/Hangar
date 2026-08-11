@@ -10,6 +10,8 @@ import IconMdiShieldAlert from "~icons/mdi/shield-alert";
 
 definePageMeta({
   loginRequired: true,
+  dataLoader_user: true,
+  dataLoader_organization: true,
 });
 
 const props = defineProps<{
@@ -58,9 +60,7 @@ watch(
 // SocialForm drops retired link types on mount, so the baseline is only settled once children have set up
 onMounted(() => (pristine.value = cloneDeep(toRaw(form))));
 
-const isDirty = computed(
-  () => selectedTab.value === "general" && (form.tagline !== pristine.value.tagline || !isEqual(form.socials, pristine.value.socials))
-);
+const isDirty = computed(() => selectedTab.value === "general" && (form.tagline !== pristine.value.tagline || !isEqual(form.socials, pristine.value.socials)));
 
 // SocialForm keeps its own draft of the fields, so it has to be remounted to pick the reverted values back up
 const socialFormKey = ref(0);

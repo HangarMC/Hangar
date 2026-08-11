@@ -2,7 +2,7 @@
 import type { AxiosError } from "axios";
 import { titleCase } from "scule";
 import { ReviewState, PinnedStatus, NamedPermission, Visibility } from "#shared/types/backend";
-import type { Platform, HangarProject, Version, User } from "#shared/types/backend";
+import type { Platform, HangarProject, Version } from "#shared/types/backend";
 
 const route = useRoute("user-project-versions-version");
 const i18n = useI18n();
@@ -14,7 +14,6 @@ const props = defineProps<{
   version?: Version;
   project?: HangarProject;
   versionPlatforms: Set<Platform>;
-  user?: User;
 }>();
 
 const isReviewStateChecked = computed<boolean>(

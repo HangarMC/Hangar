@@ -23,8 +23,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const { loader: userLoader, data: user } = useDataLoader("user");
   const userPromiseIndex = promises.length;
-  const username = userLoader("user", to, from, (username) => useApi<User>("users/" + username + "?resolveId=false"), promises);
+  userLoader("user", to, from, (username) => useApi<User>("users/" + username + "?resolveId=false"), promises);
   const userPromise = promises[userPromiseIndex];
+  // read off the route, not the loader: routes that don't load the user still need it for the canonical redirects below
+  const username = "user" in to.params ? (to.params.user as string) : undefined;
 
   const { loader: projectLoader, data: project } = useDataLoader("project");
   const projectName = projectLoader(

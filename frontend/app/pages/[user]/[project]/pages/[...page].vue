@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { NamedPermission } from "#shared/types/backend";
-import type { HangarProject, User } from "#shared/types/backend";
+import type { HangarProject } from "#shared/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 
 const props = defineProps<{
-  user?: User;
   project?: HangarProject;
 }>();
 

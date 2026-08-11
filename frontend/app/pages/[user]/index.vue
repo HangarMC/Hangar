@@ -12,6 +12,11 @@ const props = defineProps<{
   organization?: HangarOrganization;
 }>();
 
+definePageMeta({
+  dataLoader_user: true,
+  dataLoader_organization: true,
+});
+
 const i18n = useI18n();
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
