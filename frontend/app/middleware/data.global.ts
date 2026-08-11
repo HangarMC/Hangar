@@ -1,6 +1,27 @@
 import { isAxiosError } from "axios";
-import type { HangarOrganization, HangarProject, Version, User, ProjectPageTable } from "#shared/types/backend";
+import type { GlobalData, HangarOrganization, HangarProject, Version, User, ProjectPageTable } from "#shared/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
+
+const GLOBAL_DATA_TTL = 180_000;
+let globalDataCache: { promise: Promise<GlobalData>; expiresAt: number } | undefined;
+
+function loadGlobalData() {
+  // on the client useDataLoader already keeps it for the session, so there is nothing to cache
+  if (!import.meta.server) {
+    return useInternalApi<GlobalData>("globalData/");
+  }
+
+  if (!globalDataCache || globalDataCache.expiresAt <= Date.now()) {
+    globalDataCache = {
+      promise: useInternalApi<GlobalData>("globalData/").catch((err) => {
+        globalDataCache = undefined;
+        throw err;
+      }),
+      expiresAt: Date.now() + GLOBAL_DATA_TTL,
+    };
+  }
+  return globalDataCache.promise;
+}
 
 // this middleware takes care of fetching the "important" data for pages, like user/project/org/version/page, based on route params
 // it also handles 404s and redirects to the proper casing
@@ -19,7 +40,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const promises: Promise<any>[] = [];
 
   const { loader: globalDataLoader } = useDataLoader("globalData");
-  globalDataLoader(undefined, to, from, () => useInternalApi("globalData/"), promises);
+  globalDataLoader(undefined, to, from, () => loadGlobalData(), promises);
 
   const { loader: userLoader, data: user } = useDataLoader("user");
   const userPromiseIndex = promises.length;

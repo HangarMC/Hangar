@@ -53,7 +53,7 @@ async function confirm(close: () => void) {
     </template>
     <template #footer="{ on }">
       <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
-      <Button :disabled="v.$invalid" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
+      <Button :disabled="!comment || v.$invalid" @click="confirm(on.click)">{{ i18n.t("general.confirm") }}</Button>
     </template>
   </Modal>
 </template>
