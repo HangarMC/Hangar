@@ -48,6 +48,24 @@ async function processRole(role: string | undefined, add: boolean) {
   }
 }
 
+const newUsername = ref("");
+const renaming = ref(false);
+const renameModal = useTemplateRef("renameModal");
+
+async function rename() {
+  renaming.value = true;
+  try {
+    await useInternalApi(`admin/user/${route.params.user}/rename`, "POST", { content: newUsername.value });
+    renameModal.value?.close();
+    useNotificationStore().success(i18n.t("userAdmin.renamed", [newUsername.value]));
+    await navigateTo("/admin/user/" + newUsername.value);
+  } catch (err) {
+    handleRequestError(err as AxiosError);
+  } finally {
+    renaming.value = false;
+  }
+}
+
 function visibilityTitle(visibility: string) {
   const value = useBackendData.visibilities.find((v) => v.name === visibility);
   return value ? i18n.t(value.title) : visibility;
@@ -84,6 +102,22 @@ useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.u
             </template>
           </div>
         </div>
+        <Modal ref="renameModal" :title="i18n.t('userAdmin.renameTitle')" @open="newUsername = route.params.user">
+          <template #activator="{ on }">
+            <Button variant="outline" tone="neutral" size="sm" v-on="on">
+              <IconMdiRenameOutline />
+              {{ i18n.t("userAdmin.rename") }}
+            </Button>
+          </template>
+          <p class="mb-3 text-gray-secondary">{{ i18n.t("userAdmin.renameHint") }}</p>
+          <InputText v-model.trim="newUsername" :label="i18n.t('userAdmin.newUsername')" :rules="[required()]" />
+          <template #footer="{ on }">
+            <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+            <Button :disabled="!newUsername || newUsername === route.params.user" :loading="renaming" @click="rename">
+              {{ i18n.t("userAdmin.rename") }}
+            </Button>
+          </template>
+        </Modal>
       </div>
 
       <hr class="my-4 border-gray-300 dark:border-gray-700" />

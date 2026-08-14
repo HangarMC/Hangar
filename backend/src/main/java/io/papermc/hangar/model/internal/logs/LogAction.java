@@ -54,6 +54,7 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
     public static final LogAction<VersionContext> VERSION_PLATFORM_DEPENDENCIES_REMOVED = new LogAction<>(PGLoggedAction.VERSION_PLATFORM_DEPENDENCIES_REMOVED, "Version Platform Dependency Removed");
 
     // Users
+    public static final LogAction<UserContext> USER_RENAMED = new LogAction<>(PGLoggedAction.USER_RENAMED, "User Renamed");
     public static final LogAction<UserContext> USER_TAGLINE_CHANGED = new LogAction<>(PGLoggedAction.USER_TAGLINE_CHANGED, "User Tagline Changed");
     public static final LogAction<UserContext> USER_SOCIALS_CHANGED = new LogAction<>(PGLoggedAction.USER_SOCIALS_CHANGED, "User Socials Changed");
     public static final LogAction<UserContext> USER_LOCKED = new LogAction<>(PGLoggedAction.USER_LOCKED, "User Locked");

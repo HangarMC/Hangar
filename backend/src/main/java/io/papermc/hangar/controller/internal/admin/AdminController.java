@@ -32,9 +32,12 @@ import io.papermc.hangar.model.internal.admin.StatsSummary;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.admin.ChangeRoleForm;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
+import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.stats.StatService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
@@ -76,6 +79,7 @@ public class AdminController extends HangarComponent {
 
     private static final int MAX_STAT_RANGE_DAYS = 366;
 
+    private final AuthService authService;
     private final StatService statService;
     private final UserService userService;
     private final ObjectMapper mapper;
@@ -89,7 +93,8 @@ public class AdminController extends HangarComponent {
     private final AvatarService avatarService;
 
     @Autowired
-    public AdminController(final StatService statService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
+    public AdminController(final AuthService authService, final StatService statService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
+        this.authService = authService;
         this.statService = statService;
         this.userService = userService;
         this.mapper = mapper;
@@ -186,6 +191,15 @@ public class AdminController extends HangarComponent {
                 this.projectAdminService.changeVisibility(projectTable.getProjectId(), Visibility.PUBLIC, comment.getContent());
             }
         }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
+    @PostMapping(value = "/user/{user}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void renameUser(@PathVariable final UserTable user, @RequestBody @Valid final StringContent newName) {
+        final String oldName = user.getName();
+        this.authService.renameUser(user, newName.getContent());
+        this.actionLogger.user(LogAction.USER_RENAMED.create(UserContext.of(user.getUserId()), newName.getContent(), oldName));
     }
 
     @ResponseStatus(HttpStatus.OK)
