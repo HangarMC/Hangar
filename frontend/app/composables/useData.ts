@@ -23,6 +23,7 @@ import type {
   ReviewQueue,
   ScopableProject,
   SettingsResponse,
+  StatsSummary,
   User,
   VersionInfo,
   ProjectPageTable,
@@ -284,6 +285,15 @@ export function useAdminStats(params: () => { from: string; to: string }) {
     (p) => useInternalApi<DayStats[]>("admin/stats", "get", p)
   );
   return { adminStats, adminStatsStatus };
+}
+
+export function useAdminStatsSummary(params: () => { from: string; to: string }) {
+  const { data: adminStatsSummary, status: adminStatsSummaryStatus } = useData(
+    params,
+    (p) => "adminStatsSummary:" + p.from + ":" + p.to,
+    (p) => useInternalApi<StatsSummary>("admin/stats/summary", "get", p)
+  );
+  return { adminStatsSummary, adminStatsSummaryStatus };
 }
 
 export function useHealthReport() {

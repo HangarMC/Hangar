@@ -10,6 +10,7 @@ import io.papermc.hangar.model.db.stats.ProjectViewIndividualTable;
 import io.papermc.hangar.model.identified.ProjectIdentified;
 import io.papermc.hangar.model.identified.VersionIdentified;
 import io.papermc.hangar.model.internal.admin.DayStats;
+import io.papermc.hangar.model.internal.admin.StatsSummary;
 import io.papermc.hangar.util.RequestUtil;
 import jakarta.servlet.http.Cookie;
 import java.net.InetAddress;
@@ -32,6 +33,7 @@ import org.springframework.web.util.WebUtils;
 public class StatService extends HangarComponent {
 
     private static final String STAT_TRACKING_COOKIE = "hangar_stats";
+    private static final int TOP_PROJECT_LIMIT = 10;
 
     private final HangarStatsDAO hangarStatsDAO;
     private final ProjectViewsDAO projectViewsDAO;
@@ -48,6 +50,10 @@ public class StatService extends HangarComponent {
 
     public List<DayStats> getStats(final LocalDate from, final LocalDate to) {
         return this.hangarStatsDAO.getStats(from, to);
+    }
+
+    public StatsSummary getSummary(final LocalDate from, final LocalDate to) {
+        return new StatsSummary(this.hangarStatsDAO.getTotals(), this.hangarStatsDAO.getPlatformDownloads(from, to), this.hangarStatsDAO.getTopProjects(from, to, TOP_PROJECT_LIMIT));
     }
 
     public void addProjectView(final ProjectIdentified projectIdentified) {

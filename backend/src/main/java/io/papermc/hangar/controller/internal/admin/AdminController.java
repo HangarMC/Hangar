@@ -24,6 +24,7 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.model.internal.admin.DayStats;
+import io.papermc.hangar.model.internal.admin.StatsSummary;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.admin.ChangeRoleForm;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
@@ -47,6 +48,7 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -67,6 +69,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RateLimit(path = "admin")
 @RequestMapping("/api/internal/admin")
 public class AdminController extends HangarComponent {
+
+    private static final int MAX_STAT_RANGE_DAYS = 366;
 
     private final StatService statService;
     private final UserService userService;
@@ -134,17 +138,28 @@ public class AdminController extends HangarComponent {
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DayStats.class)))),
     })
-    public ArrayNode getStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        if (from == null) {
-            from = LocalDate.now().minusDays(30);
+    public ArrayNode getStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate to) {
+        final LocalDate[] range = this.statRange(from, to);
+        return this.mapper.valueToTree(this.statService.getStats(range[0], range[1]));
+    }
+
+    @PermissionRequired(NamedPermission.VIEW_STATS)
+    @GetMapping(path = "/stats/summary", produces = MediaType.APPLICATION_JSON_VALUE)
+    public StatsSummary getStatsSummary(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate to) {
+        final LocalDate[] range = this.statRange(from, to);
+        return this.statService.getSummary(range[0], range[1]);
+    }
+
+    private LocalDate[] statRange(final @Nullable LocalDate from, final @Nullable LocalDate to) {
+        LocalDate end = to != null ? to : LocalDate.now();
+        LocalDate start = from != null ? from : end.minusDays(30);
+        if (end.isBefore(start)) {
+            end = start;
         }
-        if (to == null) {
-            to = LocalDate.now();
+        if (start.isBefore(end.minusDays(MAX_STAT_RANGE_DAYS))) {
+            start = end.minusDays(MAX_STAT_RANGE_DAYS);
         }
-        if (to.isBefore(from)) {
-            to = from;
-        }
-        return this.mapper.valueToTree(this.statService.getStats(from, to));
+        return new LocalDate[]{start, end};
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -1631,15 +1631,58 @@ export interface DayStats {
   /** @format date */
   day: string;
   /** @format int64 */
+  downloads: number;
+  /** @format int64 */
   flagsClosed: number;
   /** @format int64 */
   flagsOpened: number;
   /** @format int64 */
+  newProjects: number;
+  /** @format int64 */
+  newUsers: number;
+  /** @format int64 */
   reviews: number;
   /** @format int64 */
-  totalDownloads: number;
-  /** @format int64 */
   uploads: number;
+  /** @format int64 */
+  views: number;
+}
+
+export interface StatsSummary {
+  platformDownloads: PlatformDownloads[];
+  topProjects: TopProject[];
+  totals: StatsTotals;
+}
+
+export interface StatsTotals {
+  /** @format int64 */
+  downloads: number;
+  /** @format int64 */
+  openFlags: number;
+  /** @format int64 */
+  pendingReviews: number;
+  /** @format int64 */
+  projects: number;
+  /** @format int64 */
+  users: number;
+  /** @format int64 */
+  versions: number;
+  /** @format int64 */
+  views: number;
+}
+
+export interface PlatformDownloads {
+  /** @format int64 */
+  downloads: number;
+  platform: Platform;
+}
+
+export interface TopProject {
+  /** @format int64 */
+  downloads: number;
+  namespace: ProjectNamespace;
+  /** @format int64 */
+  views: number;
 }
 
 export interface FlagActivity {
