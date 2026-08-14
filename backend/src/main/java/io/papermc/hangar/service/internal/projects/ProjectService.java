@@ -222,6 +222,7 @@ public class ProjectService extends HangarComponent {
         projectTable.setDescription(settingsForm.getDescription());
         projectTable.setDonationEnabled(settingsForm.getSettings().getDonation().isEnable());
         projectTable.setDonationSubject(settingsForm.getSettings().getDonation().getSubject());
+        projectTable.setUnlisted(settingsForm.getSettings().isUnlisted());
         this.projectsDAO.update(projectTable);
 
         // TODO what settings changed

@@ -21,14 +21,14 @@ public interface ProjectsDAO {
 
     @Timestamped
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO projects (created_at, name, slug, owner_name, owner_id, category, description, visibility, links, tags, keywords, license_type, license_name, license_url, donation_enabled, donation_subject, sponsors) " +
-        "VALUES (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility, :links, :tags, :keywords, :licenseType, :licenseName, :licenseUrl, :donationEnabled, :donationSubject, :sponsors)")
+    @SqlUpdate("INSERT INTO projects (created_at, name, slug, owner_name, owner_id, category, description, visibility, links, tags, keywords, license_type, license_name, license_url, donation_enabled, donation_subject, sponsors, unlisted) " +
+        "VALUES (:now, :name, :slug, :ownerName,:ownerId, :category, :description, :visibility, :links, :tags, :keywords, :licenseType, :licenseName, :licenseUrl, :donationEnabled, :donationSubject, :sponsors, :unlisted)")
     ProjectTable insert(@BindBean ProjectTable project);
 
     @GetGeneratedKeys
     @SqlUpdate("UPDATE projects SET name = :name, slug = :slug, category = :category, keywords = :keywords, links = :links, tags = :tags, " +
         "license_type = :licenseType, license_name = :licenseName, license_url = :licenseUrl, description = :description, visibility = :visibility, " +
-        "donation_enabled = :donationEnabled, donation_subject = :donationSubject, sponsors = :sponsors WHERE id = :id")
+        "donation_enabled = :donationEnabled, donation_subject = :donationSubject, sponsors = :sponsors, unlisted = :unlisted WHERE id = :id")
     ProjectTable update(@BindBean ProjectTable project);
 
     @SqlUpdate("UPDATE projects SET links = :links WHERE id = :id")

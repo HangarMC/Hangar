@@ -51,6 +51,7 @@ public interface HangarProjectsDAO {
                p.donation_enabled,
                p.donation_subject,
                p.sponsors,
+               base.unlisted,
                hp.avatar,
                hp.avatar_fallback,
                hp.supported_platforms,
@@ -60,6 +61,7 @@ public interface HangarProjectsDAO {
                (SELECT count(DISTINCT pw.user_id) FROM project_watchers pw WHERE p.id = pw.project_id)                  AS watcher_count,
                (SELECT count(DISTINCT pn.id) FROM project_notes pn WHERE p.id = pn.project_id)                          AS note_count
           FROM projects_extra p
+              JOIN projects base ON base.id = p.id
               LEFT JOIN home_projects hp ON hp.id = p.id
                  JOIN users u ON p.owner_id = u.id
                  WHERE p.id = :projectId""")

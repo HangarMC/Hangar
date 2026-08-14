@@ -25,6 +25,7 @@ public interface IndexDAO {
                p.category,
                p.description,
                p.sponsors,
+               p.unlisted,
                p.donation_enabled,
                p.donation_subject,
                p.keywords,

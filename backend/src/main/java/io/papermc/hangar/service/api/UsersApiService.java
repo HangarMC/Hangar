@@ -164,6 +164,6 @@ public class UsersApiService extends HangarComponent {
     }
 
     public List<ProjectCompact> getUserPinned(final UserTable user) {
-        return this.pinnedProjectService.getPinnedProjects(user.getId());
+        return this.pinnedProjectService.getPinnedProjects(user.getId(), this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
     }
 }

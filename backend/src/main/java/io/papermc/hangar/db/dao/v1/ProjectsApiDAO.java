@@ -53,11 +53,13 @@ public interface ProjectsApiDAO {
                p.donation_enabled,
                p.donation_subject,
                p.sponsors,
+               base.unlisted,
                hp.avatar,
                hp.avatar_fallback,
                hp.supported_platforms
           FROM home_projects hp
                  JOIN projects_extra p ON hp.id = p.id
+                 JOIN projects base ON base.id = p.id
                  WHERE p.id = :id
                  <if(!canSeeHidden)> AND (p.visibility = 0 <if(requesterId)>OR (:requesterId = ANY(p.project_members) AND p.visibility != 4)<endif>) <endif>
        """)

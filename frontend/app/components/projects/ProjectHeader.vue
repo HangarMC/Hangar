@@ -121,6 +121,7 @@ function requiresConfirmation(): ConfirmationType {
       <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" inline />
     </Alert>
   </div>
+  <Alert v-if="project?.settings?.unlisted" type="info" class="mb-4">{{ i18n.t("project.settings.unlistedNotice") }}</Alert>
   <Card accent>
     <div class="flex lt-sm:flex-col">
       <UserAvatar

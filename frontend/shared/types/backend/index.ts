@@ -1428,6 +1428,7 @@ export interface ProjectSettings {
   links: LinkSection[];
   sponsors: string;
   tags: Tag[];
+  unlisted: boolean;
 }
 
 export interface FileInfo {

@@ -72,7 +72,7 @@ public class MeiliService extends HangarComponent implements ApplicationListener
             "distinctAttribute", "id",
             "searchableAttributes", List.of("name", "namespace.owner", "description", "category", "mainPageContent", "memberNames", "createdAt", "lastUpdated", "stats", "settings.keywords", "settings.tags"),
             "displayedAttributes", List.of("*"),
-            "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type", "supportedPlatforms", "memberNames", "visibility"),
+            "filterableAttributes", List.of("category", "settings.tags", "namespace.owner", "createdAt", "lastUpdated", "settings.license.type", "supportedPlatforms", "memberNames", "visibility", "settings.unlisted"),
             "sortableAttributes", List.of("stats.views", "stats.downloads", "stats.recentDownloads", "stats.recentViews", "stats.stars", "publishedAt", "lastUpdated", "name"),
             "pagination", Map.of("maxTotalHits", 5000)
         );

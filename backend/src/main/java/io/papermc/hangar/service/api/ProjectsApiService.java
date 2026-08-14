@@ -108,6 +108,13 @@ public class ProjectsApiService extends HangarComponent {
                 filters.append(" OR (visibility != softDelete AND memberNames IN [").append(principal.getName().toLowerCase()).append("])");
             });
             filters.append(")");
+
+            // unlisted projects stay reachable by link, they just drop out of every listing
+            filters.append(" AND (settings.unlisted != true");
+            this.getOptionalHangarPrincipal().ifPresent(principal -> {
+                filters.append(" OR memberNames IN [").append(Filter.escapeMeili(principal.getName().toLowerCase())).append("]");
+            });
+            filters.append(")");
         }
 
         // sorters

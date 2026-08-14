@@ -365,6 +365,9 @@ useSeo(
             </div>
           </div>
         </ProjectSettingsSection>
+        <ProjectSettingsSection title="project.settings.unlisted" description="project.settings.unlistedSub">
+          <InputCheckbox v-if="form.settings" v-model="form.settings.unlisted" :label="i18n.t('project.settings.unlistedLabel')" />
+        </ProjectSettingsSection>
       </template>
       <template #links>
         <ProjectSettingsSection title="project.settings.links.title" description="project.settings.links.sub">

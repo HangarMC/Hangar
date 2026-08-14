@@ -38,6 +38,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     private boolean donationEnabled;
     private String donationSubject;
     private String sponsors;
+    private boolean unlisted;
 
     public ProjectTable(final ProjectOwner projectOwner, final NewProjectForm form) {
         this.name = form.getName();
@@ -56,6 +57,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.donationEnabled = form.getSettings().getDonation().isEnable();
         this.donationSubject = form.getSettings().getDonation().getSubject();
         this.sponsors = "";
+        this.unlisted = form.getSettings().isUnlisted();
     }
 
     protected ProjectTable(final ProjectTable other) {
@@ -75,13 +77,14 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.donationEnabled = other.donationEnabled;
         this.donationSubject = other.donationSubject;
         this.sponsors = other.sponsors;
+        this.unlisted = other.unlisted;
     }
 
     @JdbiConstructor
     public ProjectTable(final OffsetDateTime createdAt, final long id, final String name, final String slug, final String ownerName, final long ownerId,
                         @EnumByOrdinal final Category category, final String description, @EnumByOrdinal final Visibility visibility, final Collection<String> tags,
                         final Collection<String> keywords, final JSONB links, final String licenseType, final String licenseName, final String licenseUrl,
-                        final boolean donationEnabled, final String donationSubject, final String sponsors) {
+                        final boolean donationEnabled, final String donationSubject, final String sponsors, final boolean unlisted) {
         super(createdAt, id);
         this.name = name;
         this.slug = slug;
@@ -99,6 +102,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.donationEnabled = donationEnabled;
         this.donationSubject = donationSubject;
         this.sponsors = sponsors;
+        this.unlisted = unlisted;
     }
 
     // TODO remove a bunch of these setters and use a SettingsSave object or smth
@@ -235,6 +239,14 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
 
     public void setSponsors(final String sponsors) {
         this.sponsors = sponsors;
+    }
+
+    public boolean isUnlisted() {
+        return this.unlisted;
+    }
+
+    public void setUnlisted(final boolean unlisted) {
+        this.unlisted = unlisted;
     }
 
     @Override

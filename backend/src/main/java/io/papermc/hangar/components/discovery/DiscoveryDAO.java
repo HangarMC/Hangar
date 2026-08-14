@@ -25,6 +25,7 @@ public interface DiscoveryDAO {
             FROM projects p
                 JOIN home_projects hp ON hp.id = p.id
             WHERE p.visibility = 0
+              AND NOT p.unlisted
               AND length(trim(coalesce(p.description, ''))) > 0
               AND (:maxAgeDays <= 0 OR hp.last_updated > now() - make_interval(days => :maxAgeDays))
               AND EXISTS (SELECT 1 FROM project_versions pv WHERE pv.project_id = p.id AND pv.visibility = 0)
