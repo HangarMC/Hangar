@@ -358,24 +358,29 @@ export function useUsers(params: () => { query?: string; limit?: number; offset?
   return { users, usersStatus };
 }
 
-export function useActionLogs(
-  params: () => { limit: number; offset: number; sort: string[]; user?: string; logAction?: string; authorName?: string; projectSlug?: string },
-  router?: Router
-) {
+export type ActionLogParams = {
+  limit: number;
+  offset: number;
+  sort: string[];
+  user?: string;
+  subjectName?: string;
+  logAction?: string;
+  authorName?: string;
+  projectSlug?: string;
+  dateFrom?: string;
+  dateTo?: string;
+};
+
+export function useActionLogs(params: () => ActionLogParams) {
   const { data: actionLogs, status: actionLogsStatus } = useData(
     params,
-    (p) => "actionLogs:" + p.offset + ":" + p.sort + ":" + p.user + ":" + p.logAction + ":" + p.authorName + ":" + p.projectSlug,
+    (p) => "actionLogs:" + JSON.stringify(p),
     (p) => useInternalApi<PaginatedResultHangarLoggedAction>("admin/log", "get", p),
     true,
     () => false,
-    ({ offset, limit, ...paramsWithoutLimit }) => {
-      if (!router) {
-        return;
-      }
-
-      const oldQuery = router.currentRoute.value.query;
-      router.replace({ query: { ...oldQuery, ...paramsWithoutLimit } });
-    }
+    () => {},
+    undefined,
+    true
   );
   return { actionLogs, actionLogsStatus };
 }

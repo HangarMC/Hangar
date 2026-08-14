@@ -4,9 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.controller.extras.pagination.PaginationType;
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogActionFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.log.LogDateFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogPageFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogProjectFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogSubjectFilter;
@@ -202,9 +206,12 @@ public class AdminController extends HangarComponent {
 
     @GetMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.REVIEWER)
-    @ApplicableFilters({LogActionFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})
-    // TODO add sorters
+    @ApplicableFilters({LogActionFilter.class, LogDateFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})
+    @ApplicableSorters(SorterRegistry.LOG_TIME)
     public PaginatedResult<HangarLoggedAction> getActionLog(@ConfigurePagination(defaultLimit = 50, maxLimit = 100) final @NotNull RequestPagination pagination) {
+        if (pagination.getSorters().isEmpty()) {
+            pagination.getSorters().put("-time", SorterRegistry.LOG_TIME.descending(PaginationType.DB));
+        }
         return this.actionLogger.getLogs(pagination);
     }
 

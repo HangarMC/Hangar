@@ -48,6 +48,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, date, er
     :value="date"
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
+    always-filled
   >
     <template #default="slotProps">
       <!-- todo make fancy -->

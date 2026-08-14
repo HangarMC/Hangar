@@ -6,15 +6,18 @@ const props = defineProps<{
   name?: string;
   errorMessages?: string[];
   exclude?: string[];
+  /**
+  Organization accounts can't hold a membership, so they are left out unless the consumer can act on them.
+  */
+  includeOrganizations?: boolean;
 }>();
 
 const model = defineModel<string | undefined>();
 const { t } = useI18n();
 
-// organization accounts can't hold a membership, so they never belong in the results
 async function search(query: string): Promise<User[]> {
   const users = await useApi<PaginatedResultUser>("users", "get", { query, limit: 25, offset: 0 });
-  return users.result.filter((u) => !u.isOrganization && !props.exclude?.includes(u.name)).slice(0, 10);
+  return users.result.filter((u) => (props.includeOrganizations || !u.isOrganization) && !props.exclude?.includes(u.name)).slice(0, 10);
 }
 </script>
 

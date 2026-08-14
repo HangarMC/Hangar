@@ -14,6 +14,11 @@ const props = defineProps<{
   value: any;
   noErrorTooltip?: boolean;
   readonly?: boolean;
+  /**
+  Keeps the label raised even while empty, for inputs that render their own placeholder (`date` shows
+  `dd.mm.yyyy`) which the resting label would otherwise sit on top of.
+  */
+  alwaysFilled?: boolean;
 }>();
 
 function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
@@ -26,7 +31,7 @@ function getErrorMessage(message: NonNullable<typeof props.errors>[number]) {
     :is="noErrorTooltip ? 'div' : ErrorTooltip"
     :error-messages="(disabled && !readonly) || noErrorTooltip ? null : errors"
     class="w-full"
-    :class="{ filled: value, error: hasError && !disabled }"
+    :class="{ filled: alwaysFilled || value, error: hasError && !disabled }"
   >
     <label
       :class="[

@@ -14,6 +14,9 @@ public enum SorterRegistry implements Sorter {
     USER_ORG("org", simpleSorter("is_organization"), null),
     USER_LOCKED("locked", simpleSorter("locked"), null),
 
+    // For the action log
+    LOG_TIME("time", simpleSorter("la.created_at"), null),
+
     // For Projects
     VIEWS("views", simpleSorter("hp.views"), simpleSorter("stats.views")),
     STARS("stars", simpleSorter("hp.stars"), simpleSorter("stats.stars")),
