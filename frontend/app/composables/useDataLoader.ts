@@ -70,8 +70,8 @@ export function useDataLoader<K extends keyof DataLoaderTypes>(key: K) {
       console.warn("dataLoader " + key + " is miss configured for " + to.path + "! (no param " + param + ")");
     } else {
       requestId.value++;
+      // blanking the data would skeleton the outgoing page; dropping the param already forces a reload later
       loadedParam.value = undefined;
-      data.value = undefined;
     }
     return;
   }
@@ -169,7 +169,7 @@ export function useData<T, P extends Record<string, unknown> | string>(
     }
   }
 
-  // when the key changes, we move the data from the old key to the new key
+  // `state` is shared app-wide, so the old value must never be written under the new key
   watch(
     () => key(params()),
     (newKey, oldKey) => {
@@ -177,9 +177,8 @@ export function useData<T, P extends Record<string, unknown> | string>(
         return;
       }
       const oldState = state.value[oldKey];
-      state.value[newKey] = oldState;
       state.value[oldKey] = undefined;
-      data.value = oldState;
+      data.value = state.value[newKey] ?? (keepPreviousData ? oldState : defaultValue);
       dataLoaderLog("watchKey", newKey, oldKey);
     }
   );

@@ -29,7 +29,8 @@ export default defineNuxtConfig({
   app: {
     pageTransition: {
       name: "page",
-      mode: "in-out",
+      // in-out orphans pages: entering through Suspense never completes, so the old page never leaves
+      mode: "out-in",
     },
   },
   runtimeConfig: {
