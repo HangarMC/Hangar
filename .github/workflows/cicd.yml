@@ -25,7 +25,6 @@ on:
     branches:
       - master
       - staging
-      - beta
     paths-ignore:
       - 'e2e/**'
 
