@@ -859,11 +859,11 @@
     "inviteAccepted": "You have accepted an invitation to the {0}",
     "invitedOrg": "Your organization {0} has been invited to join the {1}",
     "inviteAcceptedOrg": "You have accepted an invitation for {0} to the {1}",
-    "readAll": "Mark all as read",
+    "readAll": "Mark as read",
     "unread": "Unread",
     "read": "Read",
     "all": "All",
-    "viewAll": "View all notifications and invites",
+    "viewAll": "View all",
     "viewMoreUnread": "View {0} more unread notifications",
     "markAsRead": "Mark as read",
     "invite": {

@@ -1,3 +1,4 @@
+-- pinned_projects builds on home_projects, so this file has to be touched alongside R__02 to get re-run after its cascading drop
 DROP VIEW IF EXISTS pinned_versions CASCADE;
 
 DROP VIEW IF EXISTS pinned_projects CASCADE;
@@ -56,6 +57,7 @@ CREATE OR REPLACE VIEW pinned_projects AS
                                     created_at,
                                     license_type,
                                     description,
+                                    unlisted,
                                     last_updated,
                                     published_at,
                                     avatar,
@@ -79,6 +81,7 @@ CREATE OR REPLACE VIEW pinned_projects AS
                  p.created_at,
                  p.license_type,
                  p.description,
+                 p.unlisted,
                  hp.last_updated,
                  hp.published_at,
                  hp.avatar,

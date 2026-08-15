@@ -3,8 +3,8 @@ package io.papermc.hangar.db.dao.internal.table.projects;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import java.util.List;
 import org.jdbi.v3.spring.JdbiRepository;
-import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -21,9 +21,8 @@ public interface PinnedProjectDAO {
     @UseStringTemplateEngine
     @SqlQuery("""
         SELECT pp.* FROM pinned_projects pp
-            JOIN projects base ON base.id = pp.project_id
         WHERE pp.user_id = :userId
-          <if(!canSeeHidden)>AND (NOT base.unlisted <if(requesterId)>OR <requesterId> = ANY(pp.project_members)<endif>)<endif>
+          <if(!canSeeHidden)>AND (NOT pp.unlisted <if(requesterId)>OR <requesterId> = ANY(pp.project_members)<endif>)<endif>
         """)
     @RegisterConstructorMapper(ProjectCompact.class)
     List<ProjectCompact> pinnedProjects(long userId, @Define boolean canSeeHidden, @Define Long requesterId);

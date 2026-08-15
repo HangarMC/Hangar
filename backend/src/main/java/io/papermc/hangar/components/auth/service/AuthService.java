@@ -9,6 +9,7 @@ import io.papermc.hangar.components.auth.model.db.UserCredentialTable;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
 import io.papermc.hangar.components.auth.model.dto.login.LoginResponse;
 import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.components.index.IndexService;
 import io.papermc.hangar.db.customtypes.JSONB;
 import io.papermc.hangar.db.dao.internal.table.UserDAO;
 import io.papermc.hangar.exceptions.HangarApiException;
@@ -54,8 +55,9 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     private final TurnstileService turnstileService;
     private final AvatarService avatarService;
     private final ProjectFiles projectFiles;
+    private final IndexService indexService;
 
-    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService, final BucketService bucketService, final TurnstileService turnstileService, final AvatarService avatarService, final ProjectFiles projectFiles) {
+    public AuthService(final UserDAO userDAO, final UserCredentialDAO userCredentialDAO, final PasswordEncoder passwordEncoder, final ValidationService validationService, final VerificationService verificationService, final CredentialsService credentialsService, final HibpService hibpService, final MailService mailService, final TokenService tokenService, final UsersApiService usersApiService, final BucketService bucketService, final TurnstileService turnstileService, final AvatarService avatarService, final ProjectFiles projectFiles, final IndexService indexService) {
         this.userDAO = userDAO;
         this.userCredentialDAO = userCredentialDAO;
         this.passwordEncoder = passwordEncoder;
@@ -70,6 +72,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.turnstileService = turnstileService;
         this.avatarService = avatarService;
         this.projectFiles = projectFiles;
+        this.indexService = indexService;
     }
 
     @Transactional
@@ -201,6 +204,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         this.projectFiles.renameUser(oldName, newName);
         this.usersApiService.clearAuthorsCache();
         this.usersApiService.clearStaffCache();
+        this.indexService.updateUserProjects(user.getUserId());
         // email
         this.mailService.queueMail(MailService.MailType.USERNAME_CHANGED, user.getEmail(), Map.of("oldName", oldName, "newName", newName));
     }

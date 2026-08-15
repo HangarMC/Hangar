@@ -38,6 +38,19 @@ public class IndexService {
         this.meiliService.sendDocuments(MeiliService.PROJECT_INDEX, projects);
     }
 
+    // a user's name is denormalized into every project and version document they are involved in
+    public void updateUserProjects(long userId) {
+        String memberProjects = "(SELECT pma.id FROM project_members_all pma WHERE pma.user_id = " + userId + ")";
+        List<Project> projects = this.indexDAO.getAllProjects("WHERE p.id IN " + memberProjects);
+        if (!projects.isEmpty()) {
+            this.meiliService.sendDocuments(MeiliService.PROJECT_INDEX, projects);
+        }
+        List<Version> versions = this.indexDAO.getAllVersions("WHERE pv.author_id = " + userId + " OR pv.project_id IN " + memberProjects);
+        if (!versions.isEmpty()) {
+            this.meiliService.sendDocuments(MeiliService.VERSION_INDEX, versions);
+        }
+    }
+
     public void removeProject(long id) {
         this.meiliService.removeDocument(MeiliService.PROJECT_INDEX, id);
     }

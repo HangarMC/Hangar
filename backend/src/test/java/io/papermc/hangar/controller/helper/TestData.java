@@ -141,12 +141,12 @@ public class TestData {
         this.organizationMemberService.addNewAcceptedByDefaultMember(new OrganizationRoleTable(USER_MEMBER.getUserId(), Permission.EditPage.add(Permission.CreateProject).add(MemberPermissions.ORGANIZATION_BASE), "Developer", true, false, ORG.getOrganizationId(), null, null));
 
         logger.info("Creating some test projects...");
-        PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null),
+        PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null, false),
             Category.CHAT, "", ORG.getUserId(), "TestProject", "# Test", null));
         PAGE_PARENT = this.projectPageService.createPage(PROJECT.getProjectId(), "TestParentPage", "testparentpage", "# TestParentPage", true, null, false);
         PAGE_CHILD = this.projectPageService.createPage(PROJECT.getProjectId(), "TestChildPage", "testparentpage/testchild", "# TestChildPage", true, PAGE_PARENT.getId(), false);
 
-        PRIVATE_PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null),
+        PRIVATE_PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null, false),
             Category.CHAT, "", ORG.getUserId(), "PrivateProject", "# PrivateProject", null));
 
         logger.info("Creating some test versions...");

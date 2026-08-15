@@ -41,11 +41,10 @@ public interface UsersApiDAO {
          hp.description
          FROM project_stars ps
              JOIN home_projects hp ON ps.project_id = hp.id
-             JOIN projects base ON base.id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
              <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
-             (NOT base.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
+             (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              ps.user_id = :userId
            <sorters>
            <offsetLimit>""")
@@ -56,11 +55,10 @@ public interface UsersApiDAO {
         SELECT count(*)
          FROM project_stars ps
              JOIN home_projects hp ON ps.project_id = hp.id
-             JOIN projects base ON base.id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
              <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
-             (NOT base.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
+             (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              ps.user_id = :userId""")
     long getUserStarredCount(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
 
@@ -86,11 +84,10 @@ public interface UsersApiDAO {
          hp.description
          FROM project_watchers pw
              JOIN home_projects hp ON pw.project_id = hp.id
-             JOIN projects base ON base.id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
              <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
-             (NOT base.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
+             (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              pw.user_id = :userId
            <sorters>
            <offsetLimit>""")
@@ -101,11 +98,10 @@ public interface UsersApiDAO {
         SELECT count(*)
          FROM project_watchers pw
              JOIN home_projects hp ON pw.project_id = hp.id
-             JOIN projects base ON base.id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
              <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
-             (NOT base.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
+             (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              pw.user_id = :userId""")
     long getUserWatchingCount(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
 

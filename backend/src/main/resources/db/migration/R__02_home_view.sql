@@ -1,4 +1,6 @@
-CREATE OR REPLACE VIEW projects_extra AS
+DROP VIEW IF EXISTS projects_extra CASCADE;
+
+CREATE VIEW projects_extra AS
     SELECT p.*,
            array_agg(DISTINCT pm.user_id)           AS project_members,
            max(lv.created_at)                       AS last_updated,
