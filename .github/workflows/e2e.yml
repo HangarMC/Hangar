@@ -37,7 +37,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 10
+          version: 11
 
       - name: Get pnpm store directory
         id: pnpm-cache
