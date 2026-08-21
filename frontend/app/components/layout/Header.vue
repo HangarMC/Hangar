@@ -293,7 +293,7 @@ function isRecent(date: string): boolean {
 
                   <NuxtLink
                     v-if="unreadCount?.invites"
-                    to="/notifications"
+                    to="/notifications?tab=invites"
                     active-class=""
                     class="flex flex-shrink-0 items-center gap-3 border-b border-gray-300 px-4 py-2.5 transition-colors hover:background-card dark:border-gray-700"
                     @click="close()"
@@ -353,6 +353,8 @@ function isRecent(date: string): boolean {
                           </span>
                           <div class="mt-0.5 text-xs text-gray-secondary">{{ lastUpdated(new Date(notification.createdAt)) }}</div>
                         </div>
+
+                        <IconMdiChevronRight v-if="notification.action" class="mt-2 flex-shrink-0 text-gray-secondary" />
                       </li>
                     </ul>
                   </div>
@@ -368,7 +370,7 @@ function isRecent(date: string): boolean {
                     <button
                       v-if="loadedUnreadNotifications !== 0"
                       type="button"
-                      class="flex-shrink-0 color-primary hover:underline"
+                      class="flex-shrink-0 text-gray-secondary hover:(underline text-black dark:text-white)"
                       @click="markNotificationsRead"
                     >
                       {{ i18n.t("notifications.readAll") }}
@@ -402,17 +404,17 @@ function isRecent(date: string): boolean {
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/flags">
                   <IconMdiFlagOutline class="flex-shrink-0" />
                   {{ t("nav.user.flags") }}
-                  <span v-if="authStore.user.headerData.unresolvedFlags !== 0">{{ "(" + authStore.user?.headerData.unresolvedFlags + ")" }}</span>
+                  <Chip v-if="authStore.user.headerData.unresolvedFlags !== 0" tone="primary">{{ authStore.user.headerData.unresolvedFlags }}</Chip>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ModNotesAndFlags)" to="/admin/approval/projects">
                   <IconMdiFolderCheckOutline class="flex-shrink-0" />
                   {{ t("nav.user.projectApprovals") }}
-                  <span v-if="authStore.user.headerData.projectApprovals !== 0">{{ "(" + authStore.user?.headerData.projectApprovals + ")" }}</span>
+                  <Chip v-if="authStore.user.headerData.projectApprovals !== 0" tone="primary">{{ authStore.user.headerData.projectApprovals }}</Chip>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.Reviewer)" to="/admin/approval/versions">
                   <IconMdiArchiveOutline class="flex-shrink-0" />
                   {{ t("nav.user.versionApprovals") }}
-                  <span v-if="authStore.user.headerData.reviewQueueCount !== 0">{{ "(" + authStore.user?.headerData.reviewQueueCount + ")" }}</span>
+                  <Chip v-if="authStore.user.headerData.reviewQueueCount !== 0" tone="primary">{{ authStore.user.headerData.reviewQueueCount }}</Chip>
                 </DropdownItem>
                 <DropdownItem v-if="hasPerms(NamedPermission.ViewStats)" to="/admin/stats">
                   <IconMdiChartLine class="flex-shrink-0" />{{ t("nav.user.stats") }}

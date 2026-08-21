@@ -10,6 +10,7 @@ type NotificationTab = "unread" | "all" | "invites";
 
 const i18n = useI18n();
 const route = useRoute("notifications");
+const router = useRouter();
 const notificationStore = useNotificationStore();
 
 const LIMIT = 25;
@@ -21,16 +22,29 @@ const { unreadNotifications } = useUnreadNotifications(() => requestParams.value
 const { notifications: allNotifications } = useNotifications(() => requestParams.value);
 const { refreshUnreadCount } = useUnreadCount();
 
-const selectedTab = ref<NotificationTab>("unread");
-watch(selectedTab, () => (page.value = 0));
+function tabFromQuery(): NotificationTab {
+  const tab = route.query.tab;
+  return tab === "all" || tab === "invites" ? tab : "unread";
+}
+
+const selectedTab = ref<NotificationTab>(tabFromQuery());
+watch(selectedTab, (val) => {
+  page.value = 0;
+  router.replace({ query: val === "unread" ? {} : { tab: val } });
+});
+watch(
+  () => route.query.tab,
+  () => (selectedTab.value = tabFromQuery())
+);
 const selectedInvitesTab = ref<"all" | "projects" | "organizations">("all");
 
 const notifications = computed(() => (selectedTab.value === "unread" ? unreadNotifications.value : allNotifications.value));
 const unreadCount = computed(() => unreadNotifications.value?.pagination.count ?? 0);
+const allCount = computed(() => allNotifications.value?.pagination.count ?? 0);
 const inviteCount = computed(() => (invites.value?.project.length ?? 0) + (invites.value?.organization.length ?? 0));
 const tabs = computed<{ value: NotificationTab; label: string; count?: number }[]>(() => [
   { value: "unread", label: i18n.t("notifications.unread"), count: unreadCount.value },
-  { value: "all", label: i18n.t("notifications.all") },
+  { value: "all", label: i18n.t("notifications.all"), count: allCount.value },
   { value: "invites", label: i18n.t("notifications.invites"), count: inviteCount.value },
 ]);
 

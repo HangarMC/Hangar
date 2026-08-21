@@ -96,7 +96,7 @@ useSeo(computed(() => ({ title: "Settings", route })));
     </Alert>
 
     <Card>
-      <Tabs :tabs="tabs" router highlight-selected>
+      <Tabs :tabs="tabs" router highlight-selected divided>
         <router-view v-slot="{ Component }">
           <Suspense>
             <div>
