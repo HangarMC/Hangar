@@ -169,7 +169,7 @@ useSeo(
           <Skeleton class="h-50" />
         </Card>
 
-        <Card v-if="user && (buttons.length > 0 || (organization && hasPerms(NamedPermission.EditSubjectSettings)))">
+        <Card v-if="user && (buttons.length > 0 || hasPerms(NamedPermission.IsStaff) || (organization && hasPerms(NamedPermission.EditSubjectSettings)))">
           <template #header>
             <h2>{{ i18n.t("author.management") }}</h2>
           </template>
@@ -192,22 +192,21 @@ useSeo(
             <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IsStaff)" :user="user" />
             <DeleteUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.ManualValueChanges)" :user="user" />
           </div>
-        </Card>
 
-        <Card v-if="user && hasPerms(NamedPermission.IsStaff)">
-          <template #header>
-            <h2>{{ i18n.t("author.sharesAddress") }}</h2>
-          </template>
-          <Button v-if="possibleAltsStatus === 'idle'" variant="outline" tone="neutral" size="sm" @click="loadPossibleAlts">
-            {{ i18n.t("general.reveal") }}
-          </Button>
-          <Skeleton v-else-if="possibleAltsStatus === 'loading'" />
-          <ul v-else-if="possibleAlts?.length" class="flex flex-col gap-0.5">
-            <li v-for="name in possibleAlts" :key="name">
-              <Link :to="'/' + name">{{ name }}</Link>
-            </li>
-          </ul>
-          <p v-else class="text-sm text-gray-secondary">{{ i18n.t("author.noSharedAddress", [user.name]) }}</p>
+          <div v-if="hasPerms(NamedPermission.IsStaff)" class="mt-3 border-t border-gray-300 pt-3 dark:border-gray-700">
+            <h3 class="mb-1.5 font-semibold">{{ i18n.t("author.sharesAddress") }}</h3>
+            <Button v-if="possibleAltsStatus === 'idle'" variant="outline" tone="neutral" size="sm" @click="loadPossibleAlts">
+              <IconMdiAccountSearchOutline />
+              {{ i18n.t("author.revealSharedAddress") }}
+            </Button>
+            <Skeleton v-else-if="possibleAltsStatus === 'loading'" />
+            <ul v-else-if="possibleAlts?.length" class="flex flex-col gap-0.5">
+              <li v-for="name in possibleAlts" :key="name">
+                <Link :to="'/' + name">{{ name }}</Link>
+              </li>
+            </ul>
+            <p v-else class="text-sm text-gray-secondary">{{ i18n.t("author.noSharedAddress", [user.name]) }}</p>
+          </div>
         </Card>
 
         <template v-if="user && !user?.isOrganization">

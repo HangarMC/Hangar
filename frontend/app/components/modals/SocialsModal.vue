@@ -4,6 +4,7 @@ import type { JsonNode } from "#shared/types/backend";
 const props = defineProps<{
   socials: JsonNode;
   action: string;
+  label?: string;
 }>();
 
 const newSocials = ref(props.socials);
@@ -28,8 +29,17 @@ async function save() {
   <Modal :title="i18n.t('author.editSocials')" window-classes="w-200 text-lg">
     <SocialForm v-model="newSocials" compact />
     <template #activator="{ on }">
-      <Button variant="ghost" tone="neutral" size="sm" icon-only class="ml-2" :title="i18n.t('general.edit')" :aria-label="i18n.t('general.edit')" v-on="on">
+      <Button
+        variant="ghost"
+        tone="neutral"
+        size="sm"
+        :icon-only="!label"
+        :title="label || i18n.t('general.edit')"
+        :aria-label="label || i18n.t('general.edit')"
+        v-on="on"
+      >
         <IconMdiPencil />
+        <span v-if="label">{{ label }}</span>
       </Button>
     </template>
     <template #footer="{ on }">

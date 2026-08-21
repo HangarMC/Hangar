@@ -27,6 +27,8 @@ const socialLinks = computed(() => {
     { key: "website", label: "Website", href: socials.website ? linkout(socials.website) : undefined },
   ].filter((link) => link.href);
 });
+
+const hasSocials = computed(() => socialLinks.value.length > 0 || Boolean(props.viewingUser?.socials?.discord));
 </script>
 
 <template>
@@ -71,6 +73,38 @@ const socialLinks = computed(() => {
                 </DropdownPanel>
               </template>
             </Popper>
+
+            <div v-if="viewingUser.roles?.length" class="flex flex-wrap gap-1">
+              <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
+            </div>
+
+            <div v-if="hasSocials || canEditCurrentUser" class="flex flex-wrap items-center gap-1">
+              <a
+                v-for="link in socialLinks"
+                :key="link.key"
+                :href="link.href"
+                class="inline-flex items-center rounded p-1 text-lg text-gray-secondary transition-colors hover:color-primary"
+                rel="external nofollow"
+                :title="link.label"
+                :aria-label="link.label"
+              >
+                <IconMdiGithub v-if="link.key === 'github'" />
+                <IconMdiTwitter v-else-if="link.key === 'twitter'" />
+                <IconMdiWeb v-else />
+              </a>
+              <Tooltip v-if="viewingUser.socials?.discord">
+                <template #content>
+                  <span class="text-base">{{ viewingUser.socials.discord }}</span>
+                </template>
+                <span class="inline-flex items-center rounded p-1 text-lg text-gray-secondary"><IconMdiDiscord /></span>
+              </Tooltip>
+              <SocialsModal
+                v-if="canEditCurrentUser"
+                :socials="viewingUser.socials"
+                :label="hasSocials ? undefined : i18n.t('author.addSocials')"
+                :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/socials`"
+              />
+            </div>
           </div>
 
           <div class="mt-0.5">
@@ -93,33 +127,6 @@ const socialLinks = computed(() => {
             </TaglineModal>
             <span v-else-if="viewingUser.tagline" class="text-gray-secondary">{{ viewingUser.tagline }}</span>
           </div>
-
-          <div v-if="socialLinks.length > 0 || viewingUser.socials?.discord || canEditCurrentUser" class="mt-2 flex flex-wrap items-center gap-1">
-            <a
-              v-for="link in socialLinks"
-              :key="link.key"
-              :href="link.href"
-              class="inline-flex items-center rounded p-1 text-lg text-gray-secondary transition-colors hover:color-primary"
-              rel="external nofollow"
-              :title="link.label"
-              :aria-label="link.label"
-            >
-              <IconMdiGithub v-if="link.key === 'github'" />
-              <IconMdiTwitter v-else-if="link.key === 'twitter'" />
-              <IconMdiWeb v-else />
-            </a>
-            <Tooltip v-if="viewingUser.socials?.discord">
-              <template #content>
-                <span class="text-base">{{ viewingUser.socials.discord }}</span>
-              </template>
-              <span class="inline-flex items-center rounded p-1 text-lg text-gray-secondary"><IconMdiDiscord /></span>
-            </Tooltip>
-            <SocialsModal
-              v-if="canEditCurrentUser"
-              :socials="viewingUser.socials"
-              :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/socials`"
-            />
-          </div>
         </template>
         <template v-else>
           <Skeleton class="w-50 text-2xl" />
@@ -127,23 +134,18 @@ const socialLinks = computed(() => {
         </template>
       </div>
 
-      <div class="flex flex-col gap-1.5 lt-md:(mt-1 basis-full items-start) md:(ml-auto flex-shrink-0 items-end)">
+      <div class="flex gap-2 lt-md:(mt-1 basis-full) md:(ml-auto w-72 flex-shrink-0)">
         <template v-if="viewingUser">
-          <span class="inline-flex items-center gap-1.5 text-sm text-gray-secondary">
-            <IconMdiCalendar class="flex-shrink-0" />
-            {{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}
-          </span>
-          <span class="inline-flex items-center gap-1.5 text-sm text-gray-secondary tabular-nums">
-            <IconMdiPackageVariantClosed class="flex-shrink-0" />
-            {{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}
-          </span>
-          <div v-if="viewingUser.roles?.length" class="flex flex-wrap gap-1 md:justify-end">
-            <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
-          </div>
+          <StatTile :label="i18n.t('author.memberSinceLabel')" :value="i18n.d(viewingUser.createdAt, 'shortdate')">
+            <template #icon><IconMdiCalendar /></template>
+          </StatTile>
+          <StatTile :label="i18n.t('author.numProjectsLabel')" :value="viewingUser.projectCount">
+            <template #icon><IconMdiPackageVariantClosed /></template>
+          </StatTile>
         </template>
         <template v-else>
-          <Skeleton class="w-40" />
-          <Skeleton class="w-40" />
+          <Skeleton class="h-16 flex-1" />
+          <Skeleton class="h-16 flex-1" />
         </template>
       </div>
     </div>
