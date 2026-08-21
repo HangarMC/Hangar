@@ -20,15 +20,37 @@ const route = useRoute("user-project");
       </div>
     </template>
 
-    <TreeView :items="project?.pages || []" item-key="slug" :open="open">
+    <TreeView v-if="project" :items="project.pages || []" item-key="slug" :open="open">
       <template #item="{ item }">
-        <Link v-if="item.home" :to="`/${route.params.user}/${route.params.project}`" exact class="inline-flex items-center" active-underline>
-          <IconMdiHome class="mr-1" />
-          {{ item.name }}
-        </Link>
-        <Link v-else :to="`/${route.params.user}/${route.params.project}/pages/${item.slug}`" exact active-underline> {{ item.name }}</Link>
+        <NuxtLink
+          :to="item.home ? `/${route.params.user}/${route.params.project}` : `/${route.params.user}/${route.params.project}/pages/${item.slug}`"
+          exact-active-class="page-link-active"
+          class="page-link min-w-0 flex flex-1 items-center gap-2 rounded px-2 py-1.5 transition-colors"
+        >
+          <IconMdiHome v-if="item.home" class="flex-shrink-0 text-gray-secondary" />
+          <IconMdiFileDocumentOutline v-else class="flex-shrink-0 text-gray-secondary" />
+          <span class="min-w-0 truncate">{{ item.name }}</span>
+        </NuxtLink>
       </template>
     </TreeView>
-    <Skeleton v-if="!project" />
+    <div v-else class="flex flex-col gap-2">
+      <Skeleton />
+      <Skeleton />
+    </div>
   </Card>
 </template>
+
+<style scoped>
+.page-link:hover {
+  @apply background-card;
+}
+
+.page-link-active.page-link-active {
+  @apply color-primary font-semibold;
+}
+
+.page-link-active :deep(svg),
+.page-link:hover :deep(svg) {
+  color: inherit;
+}
+</style>
