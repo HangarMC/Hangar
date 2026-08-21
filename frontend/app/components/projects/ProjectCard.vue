@@ -50,36 +50,38 @@ async function togglePin() {
               {{ project.name }}
             </NuxtLink>
           </h3>
-          <span class="flex-shrink-0 text-sm text-gray-secondary">{{ i18n.t("general.by") }}</span>
-          <NuxtLink :to="'/' + project.namespace.owner" class="relative z-1 min-w-0 truncate text-sm font-bold color-primary hover:underline">
-            {{ project.namespace.owner }}
-          </NuxtLink>
+          <div class="flex items-center gap-x-1.5 text-sm">
+            <span class="flex-shrink-0 text-gray-secondary">{{ i18n.t("general.by") }}</span>
+            <NuxtLink :to="'/' + project.namespace.owner" class="relative z-1 min-w-0 truncate font-bold color-primary hover:underline">
+              {{ project.namespace.owner }}
+            </NuxtLink>
 
-          <div class="flex flex-shrink-0 items-center gap-1.5 self-center leading-none">
-            <Tooltip v-if="project.visibility !== Visibility.Public" class="flex-shrink-0">
-              <template #content>{{ visibilityTitle }}</template>
-              <span class="flex items-center text-gray-secondary" :aria-label="visibilityTitle">
-                <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" />
-                <IconMdiEyeOff v-else />
-              </span>
-            </Tooltip>
+            <div class="flex flex-shrink-0 items-center gap-0.5">
+              <Tooltip v-if="project.visibility !== Visibility.Public" class="flex-shrink-0">
+                <template #content>{{ visibilityTitle }}</template>
+                <span class="flex items-center text-gray-secondary" :aria-label="visibilityTitle">
+                  <IconMdiCancel v-if="project.visibility === Visibility.SoftDelete" class="h-4 w-4" />
+                  <IconMdiEyeOff v-else class="h-4 w-4" />
+                </span>
+              </Tooltip>
 
-            <Tooltip v-if="canEdit" class="relative z-1 flex-shrink-0">
-              <template #content>
-                {{ i18n.t(pinned ? "project.pin.unpinTooltip" : "project.pin.pinTooltip", [project.name]) }}
-              </template>
-              <button
-                type="button"
-                class="pin-toggle flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold transition-colors"
-                :class="pinned ? 'background-card color-primary' : 'text-gray-secondary hover:(background-card color-primary)'"
-                :aria-pressed="pinned"
-                @click.prevent="togglePin"
-              >
-                <IconMdiPin v-if="pinned" />
-                <IconMdiPinOutline v-else />
-                {{ i18n.t(pinned ? "project.pin.pinned" : "project.pin.pin") }}
-              </button>
-            </Tooltip>
+              <Tooltip v-if="canEdit" class="relative z-1 flex-shrink-0">
+                <template #content>
+                  {{ i18n.t(pinned ? "project.pin.unpinTooltip" : "project.pin.pinTooltip", [project.name]) }}
+                </template>
+                <button
+                  type="button"
+                  class="pin-toggle flex items-center gap-1 rounded-full px-1.5 py-0.5 text-xs font-semibold transition-colors"
+                  :class="pinned ? 'color-primary' : 'text-gray-secondary hover:color-primary'"
+                  :aria-pressed="pinned"
+                  @click.prevent="togglePin"
+                >
+                  <IconMdiPin v-if="pinned" />
+                  <IconMdiPinOutline v-else />
+                  {{ i18n.t(pinned ? "project.pin.pinned" : "project.pin.pin") }}
+                </button>
+              </Tooltip>
+            </div>
           </div>
         </div>
 
