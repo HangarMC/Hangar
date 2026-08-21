@@ -122,3 +122,60 @@ CREATE MATERIALIZED VIEW home_projects AS
     GROUP BY p.id, ps.stars, pw.watchers, pva.views, pda.downloads, pvr.recent_views, pdr.recent_downloads;
 
 CREATE UNIQUE INDEX home_projects_id_idx ON home_projects (id);
+
+
+-- home_projects drop above cascades to pinned_projects so they always need to run together
+DROP VIEW IF EXISTS pinned_projects CASCADE;
+
+CREATE VIEW pinned_projects AS
+    SELECT DISTINCT ON (user_id, project_id) project_id,
+                                    user_id,
+                                    id,
+                                    owner_name AS owner,
+                                    project_members,
+                                    project_member_names,
+                                    slug,
+                                    visibility,
+                                    views,
+                                    downloads,
+                                    recent_views,
+                                    recent_downloads,
+                                    stars,
+                                    watchers,
+                                    category,
+                                    name,
+                                    created_at,
+                                    license_type,
+                                    description,
+                                    unlisted,
+                                    last_updated,
+                                    published_at,
+                                    avatar,
+                                    avatar_fallback
+    FROM (SELECT pp.id,
+                 pp.user_id,
+                 pp.project_id,
+                 p.owner_name,
+                 hp.project_members,
+                 hp.project_member_names,
+                 p.slug,
+                 p.visibility,
+                 hp.views,
+                 hp.downloads,
+                 hp.recent_views,
+                 hp.recent_downloads,
+                 hp.stars,
+                 hp.watchers,
+                 p.category,
+                 p.name,
+                 p.created_at,
+                 p.license_type,
+                 p.description,
+                 p.unlisted,
+                 hp.last_updated,
+                 hp.published_at,
+                 hp.avatar,
+                 hp.avatar_fallback
+          FROM pinned_user_projects pp
+              JOIN home_projects hp ON hp.id = pp.project_id
+              JOIN projects p ON pp.project_id = p.id) AS pvs;
