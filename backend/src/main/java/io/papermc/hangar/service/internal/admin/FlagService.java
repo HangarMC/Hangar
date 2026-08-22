@@ -27,7 +27,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -128,7 +127,7 @@ public class FlagService extends HangarComponent {
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResult<HangarProjectFlag> getFlags(final @NotNull RequestPagination pagination, final boolean resolved) {
+    public PaginatedResult<HangarProjectFlag> getFlags(final RequestPagination pagination, final boolean resolved) {
         final List<HangarProjectFlag> flags = this.hangarProjectFlagsDAO.getFlags(pagination, resolved);
         final long count = this.hangarProjectFlagsDAO.getFlagsCount(resolved);
         return new PaginatedResult<>(new Pagination(count, pagination), flags);

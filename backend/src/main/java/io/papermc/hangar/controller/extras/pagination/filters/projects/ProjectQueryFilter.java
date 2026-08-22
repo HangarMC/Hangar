@@ -6,7 +6,6 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import java.util.Map;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -41,7 +40,7 @@ public class ProjectQueryFilter implements Filter<ProjectQueryFilterInstance, St
     }
 
     @Override
-    public @NotNull ProjectQueryFilterInstance create(final NativeWebRequest webRequest) {
+    public ProjectQueryFilterInstance create(final NativeWebRequest webRequest) {
         return new ProjectQueryFilterInstance(this.getValue(webRequest));
     }
 

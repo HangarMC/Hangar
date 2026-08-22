@@ -3,7 +3,6 @@ package io.papermc.hangar.controller.extras.pagination;
 import io.papermc.hangar.exceptions.HangarApiException;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 
 public enum SorterRegistry implements Sorter {
 
@@ -59,11 +58,11 @@ public enum SorterRegistry implements Sorter {
         }
     }
 
-    private static Sorter simpleSorter(final @NotNull String columnName) {
+    private static Sorter simpleSorter(final String columnName) {
         return (sb, dir, type) -> sb.append(columnName).append(dir.apply(type));
     }
 
-    public static @NotNull SorterRegistry getSorter(final @NotNull String name) {
+    public static SorterRegistry getSorter(final String name) {
         if (SORTERS.isEmpty()) {
             for (final SorterRegistry value : values()) {
                 SORTERS.put(value.name, value);

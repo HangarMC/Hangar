@@ -7,8 +7,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
 import org.jdbi.v3.core.internal.MemoizingSupplier;
-import org.jetbrains.annotations.NotNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 
 public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
@@ -21,11 +20,11 @@ public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
         this.platform = platform;
     }
 
-    public @NotNull String getFileName() {
+    public String getFileName() {
         return this.fileName;
     }
 
-    public @NotNull Platform getPlatform() {
+    public Platform getPlatform() {
         return this.platform;
     }
 
@@ -54,17 +53,17 @@ public abstract class FileTypeHandler<D extends FileTypeHandler.FileData> {
             return this.description;
         }
 
-        protected abstract @NotNull Set<PluginDependency> createPluginDependencies();
+        protected abstract Set<PluginDependency> createPluginDependencies();
 
-        public final @NotNull Set<PluginDependency> getPluginDependencies() {
+        public final Set<PluginDependency> getPluginDependencies() {
             return this.pluginDependencies.get();
         }
 
-        public @NotNull SortedSet<String> getPlatformDependencies() {
+        public SortedSet<String> getPlatformDependencies() {
             return Collections.emptySortedSet();
         }
 
-        public final @NotNull Set<String> getAuthors() {
+        public final Set<String> getAuthors() {
             if (this.author != null) {
                 return Set.of(this.author);
             }

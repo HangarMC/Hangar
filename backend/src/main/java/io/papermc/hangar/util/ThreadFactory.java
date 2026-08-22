@@ -4,7 +4,6 @@ import io.sentry.Sentry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import org.jetbrains.annotations.NotNull;
 
 public class ThreadFactory implements java.util.concurrent.ThreadFactory {
     private static final AtomicLong POOL_COUNTER = new AtomicLong(0L);
@@ -19,7 +18,7 @@ public class ThreadFactory implements java.util.concurrent.ThreadFactory {
     }
 
     @Override
-    public Thread newThread(final @NotNull Runnable runnable) {
+    public Thread newThread(final Runnable runnable) {
         final Thread thread = this.delegate.newThread(runnable);
         thread.setName(this.name + "-" + this.threadCounter.getAndIncrement());
         thread.setUncaughtExceptionHandler((t, e) -> {

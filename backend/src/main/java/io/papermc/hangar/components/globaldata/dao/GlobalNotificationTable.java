@@ -3,7 +3,7 @@ package io.papermc.hangar.components.globaldata.dao;
 import io.papermc.hangar.model.db.Table;
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class GlobalNotificationTable extends Table {

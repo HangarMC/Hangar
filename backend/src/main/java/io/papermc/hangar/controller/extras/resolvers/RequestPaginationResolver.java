@@ -21,8 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jetbrains.annotations.NotNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.MethodParameter;
@@ -51,7 +50,7 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
     }
 
     @Override
-    public boolean supportsParameter(final @NotNull MethodParameter parameter) {
+    public boolean supportsParameter(final MethodParameter parameter) {
         return RequestPagination.class.isAssignableFrom(parameter.getParameterType());
     }
 
@@ -89,7 +88,7 @@ public class RequestPaginationResolver implements HandlerMethodArgumentResolver 
     }
 
     @Override
-    public RequestPagination resolveArgument(final @NotNull MethodParameter parameter, final ModelAndViewContainer mavContainer, final @NotNull NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
+    public RequestPagination resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final ConfigurePagination settings = parameter.getParameterAnnotation(ConfigurePagination.class);
         final PaginationType paginationType = settings != null ? settings.paginationType() : PaginationType.DB;
         final RequestPagination pagination = this.create(

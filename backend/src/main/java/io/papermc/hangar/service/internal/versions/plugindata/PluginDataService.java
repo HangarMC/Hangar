@@ -17,7 +17,6 @@ import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import io.papermc.hangar.util.CryptoUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,7 @@ public class PluginDataService {
         }
     }
 
-    public @NotNull PluginFileWithData loadMeta(final String fileName, final byte[] bytes, final long userId) throws IOException {
+    public PluginFileWithData loadMeta(final String fileName, final byte[] bytes, final long userId) throws IOException {
         try (final Jar jar = this.openJar(fileName, new ByteArrayInputStream(bytes))) {
             final Map<Platform, FileTypeHandler.FileData> fileDataMap = new EnumMap<>(Platform.class);
 

@@ -5,7 +5,6 @@ import io.papermc.hangar.db.dao.internal.table.roles.IMemberRolesDAO;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import java.util.List;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class RoleService<RT extends ExtendedRoleTable<?>, D extends IMemberRolesDAO<RT>> extends HangarComponent {
@@ -16,7 +15,7 @@ public abstract class RoleService<RT extends ExtendedRoleTable<?>, D extends IMe
         this.roleDao = roleDao;
     }
 
-    public @NotNull RT addRole(final RT newRoleTable) {
+    public RT addRole(final RT newRoleTable) {
         return this.addRole(newRoleTable, false);
     }
 

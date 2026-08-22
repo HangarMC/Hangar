@@ -5,7 +5,6 @@ import io.papermc.hangar.controller.extras.pagination.filters.log.LogVersionFilt
 import io.papermc.hangar.model.common.Platform;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
@@ -42,7 +41,7 @@ public class LogVersionFilter implements Filter<LogVersionFilterInstance, String
     }
 
     @Override
-    public @NotNull LogVersionFilterInstance create(final NativeWebRequest webRequest) {
+    public LogVersionFilterInstance create(final NativeWebRequest webRequest) {
         final String[] value = this.getValue(webRequest);
         return new LogVersionFilterInstance(value[0], this.conversionService.convert(value[1], Platform.class));
     }

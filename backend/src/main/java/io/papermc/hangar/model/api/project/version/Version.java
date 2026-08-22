@@ -10,7 +10,7 @@ import io.papermc.hangar.model.api.project.ProjectChannel;
 import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.ReviewState;
 import io.papermc.hangar.model.common.projects.Visibility;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;

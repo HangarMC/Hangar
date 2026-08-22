@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class ApiKeyTable extends Table implements Named {

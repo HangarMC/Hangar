@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.customizers.ParameterCustomizer;
@@ -127,7 +127,7 @@ public class SwaggerConfig {
                         for (final String key : schema.getProperties().keySet()) {
                             final Field field = ReflectionUtils.findField(clazz, key);
 
-                            if (field != null && (field.getAnnotatedType().isAnnotationPresent(Nullable.class) || field.getAnnotatedType().isAnnotationPresent(jakarta.annotation.Nullable.class))) {
+                            if (field != null && field.getAnnotatedType().isAnnotationPresent(Nullable.class)) {
                                 continue;
                             }
 
@@ -137,7 +137,7 @@ public class SwaggerConfig {
                                 if (method != null) break;
                             }
 
-                            if (method != null && (method.getAnnotatedReturnType().isAnnotationPresent(Nullable.class) || method.getAnnotatedReturnType().isAnnotationPresent(jakarta.annotation.Nullable.class))) {
+                            if (method != null && method.getAnnotatedReturnType().isAnnotationPresent(Nullable.class)) {
                                 continue;
                             }
 

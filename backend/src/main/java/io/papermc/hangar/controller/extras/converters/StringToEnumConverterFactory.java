@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.papermc.hangar.exceptions.HangarApiException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,7 @@ public class StringToEnumConverterFactory implements ConverterFactory<String, En
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Enum> @NotNull Converter<String, T> getConverter(final @NotNull Class<T> targetType) {
+    public <T extends Enum> Converter<String, T> getConverter(final Class<T> targetType) {
         return s -> {
             // search for json creator first
             try {

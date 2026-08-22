@@ -17,7 +17,7 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
     private final UUID userUuid;
 
     @JdbiConstructor
-    public OrganizationTable(final OffsetDateTime createdAt, @PropagateNull final long id, final String name, final long ownerId, final long userId, @org.springframework.lang.Nullable final UUID userUuid) {
+    public OrganizationTable(final OffsetDateTime createdAt, @PropagateNull final long id, final String name, final long ownerId, final long userId, @Nullable final UUID userUuid) {
         super(createdAt, id);
         this.name = name;
         this.ownerId = ownerId;

@@ -30,7 +30,6 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.core5.util.Timeout;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +115,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     public Filter identifyFilter() {
         return new OncePerRequestFilter() {
             @Override
-            protected void doFilterInternal(final @NotNull HttpServletRequest request, final @NotNull HttpServletResponse response, final @NotNull FilterChain filterChain) throws ServletException, IOException {
+            protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
                 response.setHeader("Server", "Hangar");
                 filterChain.doFilter(request, response);
             }
@@ -130,7 +129,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Override
-    public void configureMessageConverters(final @NotNull List<HttpMessageConverter<?>> converters) {
+    public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
         // TODO kinda wack, but idk a better way rn
         final ParameterNamesAnnotationIntrospector sAnnotationIntrospector = (ParameterNamesAnnotationIntrospector) this.mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors().stream().filter(ParameterNamesAnnotationIntrospector.class::isInstance).findFirst().orElseThrow();
         this.mapper.setAnnotationIntrospectors(
@@ -145,7 +144,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     }
 
     @Override
-    protected @NotNull RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
+    protected RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
         return new RequestMappingHandlerAdapter() {
             @Override
             public void afterPropertiesSet() {
@@ -235,7 +234,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     static class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
         @Override
-        public @NotNull ClientHttpResponse intercept(final @NotNull HttpRequest req, final byte @NotNull [] reqBody, final @NotNull ClientHttpRequestExecution ex) throws IOException {
+        public ClientHttpResponse intercept(final HttpRequest req, final byte [] reqBody, final ClientHttpRequestExecution ex) throws IOException {
             if (interceptorLogger.isDebugEnabled()) {
                 interceptorLogger.debug("Request {}, body {}, headers {}", req.getMethod() + " " + req.getURI(), new String(reqBody, StandardCharsets.UTF_8), req.getHeaders());
             }

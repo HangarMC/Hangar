@@ -2,7 +2,7 @@ package io.papermc.hangar.model.common.roles;
 
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.model.common.Permission;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record RoleData(String value,
                        long roleId,

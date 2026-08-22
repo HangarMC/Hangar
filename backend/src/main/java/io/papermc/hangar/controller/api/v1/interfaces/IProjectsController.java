@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.OffsetDateTime;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,7 +77,7 @@ public interface IProjectsController {
     @GetMapping("/projects/{slugOrId}/members")
     ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
         @Parameter(description = "The slug or id of the project to return members for") @PathVariable("slugOrId") ProjectTable project,
-        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+        @Parameter(description = "Pagination information") RequestPagination pagination
     );
 
     @Operation(deprecated = true)
@@ -87,7 +86,7 @@ public interface IProjectsController {
     ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(
         @Parameter(description = "The author of the project to return members for") @PathVariable("author") String author,
         @Parameter(description = "The slug or id of the project to return members for") @PathVariable("slugOrId") ProjectTable project,
-        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+        @Parameter(description = "Pagination information") RequestPagination pagination
     );
 
     @Operation(
@@ -105,7 +104,7 @@ public interface IProjectsController {
     @GetMapping("/projects")
     ResponseEntity<PaginatedResult<Project>> getProjects(
         @Deprecated(forRemoval = true) @Parameter(description = "Whether to prioritize the project with an exact name match if present") @RequestParam(defaultValue = "true", required = false) boolean prioritizeExactMatch,
-        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+        @Parameter(description = "Pagination information") RequestPagination pagination
     );
 
     @Operation(
@@ -122,8 +121,8 @@ public interface IProjectsController {
     })
     @GetMapping("/projects/{slugOrId}/stats")
     ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
-                                                                 @NotNull @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
-                                                                 @NotNull @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
+                                                                 @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
+                                                                 @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
     );
 
     @Operation(deprecated = true)
@@ -131,8 +130,8 @@ public interface IProjectsController {
     @Deprecated(forRemoval = true)
     ResponseEntity<Map<String, DayProjectStats>> getProjectStats(@Parameter(description = "The author of the project to return stats for") @PathVariable String author,
                                                                  @Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
-                                                                 @NotNull @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
-                                                                 @NotNull @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
+                                                                 @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
+                                                                 @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate
     );
 
     @Operation(
@@ -150,7 +149,7 @@ public interface IProjectsController {
     @GetMapping("/projects/{slugOrId}/stargazers")
     ResponseEntity<PaginatedResult<User>> getProjectStargazers(
         @Parameter(description = "The slug or id of the project to return stargazers for") @PathVariable("slugOrId") ProjectTable project,
-        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+        @Parameter(description = "Pagination information") RequestPagination pagination
     );
 
     @Operation(deprecated = true)
@@ -159,7 +158,7 @@ public interface IProjectsController {
     ResponseEntity<PaginatedResult<User>> getProjectStargazers(
         @Parameter(description = "The author of the project to return stargazers for") @PathVariable("author") String author,
         @Parameter(description = "The slug or id of the project to return stargazers for") @PathVariable("slugOrId") ProjectTable project,
-        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+        @Parameter(description = "Pagination information") RequestPagination pagination
     );
 
     @Operation(
@@ -177,7 +176,7 @@ public interface IProjectsController {
     @GetMapping("/projects/{slugOrId}/watchers")
     ResponseEntity<PaginatedResult<User>> getProjectWatchers(
         @Parameter(description = "The slug or id of the project to return watchers for") @PathVariable("slugOrId") ProjectTable project,
-        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+        @Parameter(description = "Pagination information") RequestPagination pagination
     );
 
     @Operation(deprecated = true)
@@ -186,6 +185,6 @@ public interface IProjectsController {
     ResponseEntity<PaginatedResult<User>> getProjectWatchers(
         @Parameter(description = "The author of the project to return watchers for") @PathVariable("author") String author,
         @Parameter(description = "The slug or id of the project to return watchers for") @PathVariable("slugOrId") ProjectTable project,
-        @Parameter(description = "Pagination information") @NotNull RequestPagination pagination
+        @Parameter(description = "Pagination information") RequestPagination pagination
     );
 }

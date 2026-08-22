@@ -9,8 +9,7 @@ import io.papermc.hangar.security.authentication.api.HangarApiPrincipal;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import org.jetbrains.annotations.NotNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +25,7 @@ public class PermissionService extends HangarComponent {
     }
 
     // Global permissions
-    public @NotNull Permission getGlobalPermissions(final @Nullable Long userId) {
+    public Permission getGlobalPermissions(final @Nullable Long userId) {
         return this.getPermissions(userId, this.permissionsDAO::getGlobalPermission);
     }
 
@@ -39,7 +38,7 @@ public class PermissionService extends HangarComponent {
         return this.getPermissions(userId, id -> this.permissionsDAO.getProjectPermission(id, projectId));
     }
 
-    public Permission getProjectPermissions(final @Nullable Long userId, final @NotNull String slug) {
+    public Permission getProjectPermissions(final @Nullable Long userId, final String slug) {
         if (this.outOfKeyScope(key -> key.coversProject(slug))) {
             return DEFAULT_SIGNED_OUT_PERMISSIONS;
         }
@@ -64,7 +63,7 @@ public class PermissionService extends HangarComponent {
         return this.getPermissions(userId, id -> this.permissionsDAO.getOrganizationPermission(id, orgId));
     }
 
-    public Permission getOrganizationPermissions(final @Nullable Long userId, final @NotNull String orgName) {
+    public Permission getOrganizationPermissions(final @Nullable Long userId, final String orgName) {
         return this.getPermissions(userId, id -> this.permissionsDAO.getOrganizationPermission(id, orgName));
     }
 
@@ -81,7 +80,7 @@ public class PermissionService extends HangarComponent {
         return this.getGlobalPermissions(userId).add(this.getPossibleProjectPermissions(userId)).add(this.getPossibleOrganizationPermissions(userId));
     }
 
-    private @NotNull <T> Permission getPermissions(final @Nullable T identifier, final @NotNull Function<T, Permission> permissionSupplier) {
+    private <T> Permission getPermissions(final @Nullable T identifier, final Function<T, Permission> permissionSupplier) {
         if (identifier == null) {
             return DEFAULT_SIGNED_OUT_PERMISSIONS;
         }

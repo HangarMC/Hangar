@@ -20,7 +20,6 @@ import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.service.internal.admin.FlagService;
 import jakarta.validation.Valid;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -70,7 +69,7 @@ public class FlagController extends HangarComponent {
     @GetMapping(path = "/resolved", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @ApplicableSorters({SorterRegistry.FLAG_RESOLVED, SorterRegistry.FLAG_CREATED})
-    public PaginatedResult<HangarProjectFlag> getResolvedFlags(@ConfigurePagination(maxLimit = 100) final @NotNull RequestPagination pagination) {
+    public PaginatedResult<HangarProjectFlag> getResolvedFlags(@ConfigurePagination(maxLimit = 100) final RequestPagination pagination) {
         if (pagination.getSorters().isEmpty()) {
             pagination.getSorters().put("-flagResolved", SorterRegistry.FLAG_RESOLVED.descending(PaginationType.DB));
         }
@@ -80,7 +79,7 @@ public class FlagController extends HangarComponent {
     @GetMapping(path = "/unresolved", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
     @ApplicableSorters(SorterRegistry.FLAG_CREATED)
-    public PaginatedResult<HangarProjectFlag> getUnresolvedFlags(@ConfigurePagination(maxLimit = 100) final @NotNull RequestPagination pagination) {
+    public PaginatedResult<HangarProjectFlag> getUnresolvedFlags(@ConfigurePagination(maxLimit = 100) final RequestPagination pagination) {
         if (pagination.getSorters().isEmpty()) {
             pagination.getSorters().put("-flagCreated", SorterRegistry.FLAG_CREATED.descending(PaginationType.DB));
         }

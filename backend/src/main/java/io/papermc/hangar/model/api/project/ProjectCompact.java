@@ -9,7 +9,7 @@ import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.util.AvatarUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 

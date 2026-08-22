@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.jackson2.JsonComponent;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -85,7 +84,7 @@ public class HangarApiException extends ResponseStatusException {
     }
 
     @Override
-    public @NotNull HttpHeaders getHeaders() {
+    public HttpHeaders getHeaders() {
         return this.httpHeaders;
     }
 

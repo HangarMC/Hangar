@@ -6,8 +6,7 @@ import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.MemberPermissions;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
-import org.jetbrains.annotations.NotNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum GlobalRole implements Role {
@@ -46,7 +45,7 @@ public enum GlobalRole implements Role {
     }
 
     @Override
-    public @NotNull String getValue() {
+    public String getValue() {
         return this.value;
     }
 
@@ -56,22 +55,22 @@ public enum GlobalRole implements Role {
     }
 
     @Override
-    public @NotNull RoleCategory getRoleCategory() {
+    public RoleCategory getRoleCategory() {
         return RoleCategory.GLOBAL;
     }
 
     @Override
-    public @NotNull Permission getPermissions() {
+    public Permission getPermissions() {
         return this.permissions;
     }
 
     @Override
-    public @NotNull String getTitle() {
+    public String getTitle() {
         return this.title;
     }
 
     @Override
-    public @NotNull Color getColor() {
+    public Color getColor() {
         return this.color;
     }
 
@@ -85,7 +84,7 @@ public enum GlobalRole implements Role {
         return this.rank;
     }
 
-    public @NotNull GlobalRoleTable create(final long userId) {
+    public GlobalRoleTable create(final long userId) {
         return new GlobalRoleTable(userId, this);
     }
 

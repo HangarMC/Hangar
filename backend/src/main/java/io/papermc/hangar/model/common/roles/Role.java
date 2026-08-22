@@ -5,8 +5,7 @@ import io.papermc.hangar.model.common.Color;
 import io.papermc.hangar.model.common.Permission;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 // Global only; project and organization membership carries its own permissions, see MemberPermissions
 public interface Role {
@@ -22,21 +21,16 @@ public interface Role {
         VALUE_ROLES.put(roleEnum.getValue(), roleEnum);
     }
 
-    @NotNull
     String getValue();
 
     long getRoleId();
 
-    @NotNull
     RoleCategory getRoleCategory();
 
-    @NotNull
     Permission getPermissions();
 
-    @NotNull
     String getTitle();
 
-    @NotNull
     Color getColor();
 
     boolean isAssignable();

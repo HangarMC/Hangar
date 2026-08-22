@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import java.util.Set;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record CreateAPIKeyForm(@Schema(minimum = "5", maximum = "36", requiredMode = Schema.RequiredMode.REQUIRED) @NotBlank @Size(min = 5, max = 36) String name,
                                @Schema(requiredMode = Schema.RequiredMode.REQUIRED) Set<NamedPermission> permissions,

@@ -2,7 +2,7 @@ package io.papermc.hangar.components.auth.model.credential;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record WebAuthNCredential(@JsonProperty("user_handle") String userHandle, List<WebAuthNDevice> credentials, @Nullable PendingSetup pendingSetup, @Nullable PendingLogin pendingLogin) implements Credential{
     @Override

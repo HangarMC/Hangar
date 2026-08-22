@@ -3,7 +3,6 @@ package io.papermc.hangar.controller.extras.resolvers.path.model;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.service.internal.organizations.OrganizationService;
 import io.papermc.hangar.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,7 +23,7 @@ public class OrganizationTableResolver extends HangarModelResolver<OrganizationT
     }
 
     @Override
-    protected OrganizationTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
+    protected OrganizationTable resolveParameter(final String param, final NativeWebRequest request) {
         OrganizationTable organizationTable = null;
         if (this.supportsId(request) && StringUtils.isLong(param)) {
             organizationTable = this.organizationService.getOrganizationTable(Long.parseLong(param));

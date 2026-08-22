@@ -9,9 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PluginFileData {
 
@@ -51,15 +50,15 @@ public class PluginFileData {
         return this.version;
     }
 
-    public @NotNull Map<Platform, Set<String>> getAuthors() {
+    public Map<Platform, Set<String>> getAuthors() {
         return this.authors;
     }
 
-    public @NotNull Map<Platform, Set<PluginDependency>> getDependencies() {
+    public Map<Platform, Set<PluginDependency>> getDependencies() {
         return this.pluginDependencies;
     }
 
-    public @NotNull Map<Platform, SortedSet<String>> getPlatformDependencies() {
+    public Map<Platform, SortedSet<String>> getPlatformDependencies() {
         return this.platformDependencies;
     }
 

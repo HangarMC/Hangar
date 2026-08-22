@@ -436,14 +436,8 @@
                         <!-- disable all Error Prone checks except NullAway -->
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>--should-stop=ifError=FLOW</arg>
-                        <arg>
-                            -Xplugin:ErrorProne
-                            -XepDisableAllChecks
-                            -Xep:NullAway:ERROR
-                            -XepOpt:NullAway:OnlyNullMarked=true
-                            -XepOpt:NullAway:JSpecifyMode=true
-                        </arg>
-                        <!-- required --add-exports for Error Prone on JDK 16+ (-J forwards to the forked javac JVM) -->
+                        <arg>-Xplugin:ErrorProne -XepDisableAllChecks -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked=true -XepOpt:NullAway:JSpecifyMode=true</arg>
+                        <!-- required add-exports for Error Prone on JDK 16+ (-J forwards to the forked javac JVM) -->
                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
                         <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>

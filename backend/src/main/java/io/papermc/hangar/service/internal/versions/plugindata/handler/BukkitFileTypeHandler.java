@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -40,7 +39,7 @@ public class BukkitFileTypeHandler extends FileTypeHandler<BukkitFileData> {
         private String apiVersion;
 
         @Override
-        public @NotNull SortedSet<String> getPlatformDependencies() {
+        public SortedSet<String> getPlatformDependencies() {
             final SortedSet<String> platformVersions = new TreeSet<>();
             if (this.apiVersion != null) {
                 platformVersions.add(this.apiVersion);
@@ -49,7 +48,7 @@ public class BukkitFileTypeHandler extends FileTypeHandler<BukkitFileData> {
         }
 
         @Override
-        protected @NotNull Set<PluginDependency> createPluginDependencies() {
+        protected Set<PluginDependency> createPluginDependencies() {
             final Set<PluginDependency> dependencies = new HashSet<>();
             if (this.hardDepends != null) {
                 for (final String hardDepend : this.hardDepends) {

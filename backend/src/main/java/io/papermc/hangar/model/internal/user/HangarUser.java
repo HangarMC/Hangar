@@ -5,7 +5,7 @@ import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.common.UnreadCount;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;

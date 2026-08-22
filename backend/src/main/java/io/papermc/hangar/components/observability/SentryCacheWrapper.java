@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.Cache;
 
 public class SentryCacheWrapper implements Cache {
@@ -18,16 +17,16 @@ public class SentryCacheWrapper implements Cache {
     }
 
     @Override
-    public @NotNull String getName() {
+    public String getName() {
         return this.delegate.getName();
     }
 
     @Override
-    public @NotNull Object getNativeCache() {
+    public Object getNativeCache() {
         return this.delegate.getNativeCache();
     }
 
-    private <T> T trace(@NotNull Object key, String operation, Supplier<T> getter) {
+    private <T> T trace(Object key, String operation, Supplier<T> getter) {
         final ISpan parentSpan = Sentry.getSpan();
         if (parentSpan == null) {
             return getter.get();
@@ -53,22 +52,22 @@ public class SentryCacheWrapper implements Cache {
     }
 
     @Override
-    public ValueWrapper get(@NotNull Object key) {
+    public ValueWrapper get(Object key) {
         return this.trace(key, "cache.get", () -> this.delegate.get(key));
     }
 
     @Override
-    public <T> T get(@NotNull Object key, Class<T> type) {
+    public <T> T get(Object key, Class<T> type) {
         return this.trace(key, "cache.get", () -> this.delegate.get(key, type));
     }
 
     @Override
-    public <T> T get(@NotNull Object key, @NotNull Callable<T> valueLoader) {
+    public <T> T get(Object key, Callable<T> valueLoader) {
         return this.trace(key, "cache.get", () -> this.delegate.get(key, valueLoader));
     }
 
     @Override
-    public void put(@NotNull Object key, Object value) {
+    public void put(Object key, Object value) {
         this.trace(key, "cache.put", () -> {
             this.delegate.put(key, value);
             return null;
@@ -76,7 +75,7 @@ public class SentryCacheWrapper implements Cache {
     }
 
     @Override
-    public void evict(@NotNull Object key) {
+    public void evict(Object key) {
         this.trace(key, "cache.evict", () -> {
             this.delegate.evict(key);
             return null;

@@ -2,8 +2,7 @@ package io.papermc.hangar.model.internal.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.papermc.hangar.util.PatternWrapper;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
 @DefaultQualifier(NonNull.class)

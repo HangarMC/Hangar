@@ -4,7 +4,6 @@ import io.papermc.hangar.controller.extras.pagination.Filter;
 import java.util.Locale;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
@@ -27,7 +26,7 @@ public class ProjectMemberFilter implements Filter<ProjectMemberFilter.ProjectMe
     }
 
     @Override
-    public @NotNull ProjectMemberFilterInstance create(final NativeWebRequest webRequest) {
+    public ProjectMemberFilterInstance create(final NativeWebRequest webRequest) {
         return new ProjectMemberFilterInstance(this.getValue(webRequest));
     }
 

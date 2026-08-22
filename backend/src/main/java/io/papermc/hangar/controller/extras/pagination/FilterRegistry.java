@@ -4,7 +4,6 @@ import io.papermc.hangar.exceptions.HangarApiException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ public class FilterRegistry {
         filters.forEach(f -> this.filters.put((Class<? extends Filter<?, ?>>) f.getClass(), f));
     }
 
-    public @NotNull <T extends Filter<? extends Filter.FilterInstance, ?>> T get(final Class<T> filterClass) {
+    public <T extends Filter<? extends Filter.FilterInstance, ?>> T get(final Class<T> filterClass) {
         if (this.filters.containsKey(filterClass)) {
             return (T) this.filters.get(filterClass);
         }

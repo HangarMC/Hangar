@@ -1,6 +1,6 @@
 package io.papermc.hangar.components.images.service;
 
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.Closeable;
 import java.io.IOException;

@@ -8,7 +8,7 @@ import io.papermc.hangar.model.internal.logs.viewmodels.LogSubject;
 import io.papermc.hangar.model.internal.logs.viewmodels.LogVersion;
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.Nested;
 

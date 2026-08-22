@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -298,17 +297,17 @@ public class HangarUserController extends HangarComponent {
     }
 
     @GetMapping(path = "/notifications", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PaginatedResult<HangarNotification>> getNotifications(final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<HangarNotification>> getNotifications(final RequestPagination pagination) {
         return ResponseEntity.ok(this.notificationService.getNotifications(pagination, null));
     }
 
     @GetMapping(path = "/readnotifications", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PaginatedResult<HangarNotification>> getReadNotifications(final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<HangarNotification>> getReadNotifications(final RequestPagination pagination) {
         return ResponseEntity.ok(this.notificationService.getNotifications(pagination, true));
     }
 
     @GetMapping(path = "/unreadnotifications", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PaginatedResult<HangarNotification>> getUnreadNotifications(final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<HangarNotification>> getUnreadNotifications(final RequestPagination pagination) {
         return ResponseEntity.ok(this.notificationService.getNotifications(pagination, false));
     }
 

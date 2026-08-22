@@ -7,7 +7,7 @@ import io.papermc.hangar.model.common.Permission;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ApiKey extends Model {
 

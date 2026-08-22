@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.checkerframework.checker.nullness.qual.PolyNull;
 
 public class CacheWrapper<K, V> implements Cache<K, V> {

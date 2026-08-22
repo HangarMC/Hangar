@@ -31,7 +31,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.servlet.context.ServletComponentScan;
 import org.springframework.http.ResponseEntity;
@@ -96,7 +95,7 @@ public class VersionsController implements IVersionsController {
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionPlatformVersionFilter.class})
     public PaginatedResult<Version> getVersions(final ProjectTable project,
-                                                @ConfigurePagination(defaultLimitString = "@'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.initVersionLoad", maxLimit = 25, paginationType = PaginationType.MEILI) final @NotNull RequestPagination pagination,
+                                                @ConfigurePagination(defaultLimitString = "@'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.initVersionLoad", maxLimit = 25, paginationType = PaginationType.MEILI) final RequestPagination pagination,
                                                 @RequestParam(required = false, defaultValue = "true") final boolean includeHiddenChannels) {
         return this.versionsApiService.getVersions(project, pagination, includeHiddenChannels);
     }
@@ -105,7 +104,7 @@ public class VersionsController implements IVersionsController {
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
     @ApplicableFilters({VersionChannelFilter.class, VersionPlatformFilter.class, VersionPlatformVersionFilter.class})
     public PaginatedResult<Version> getVersions(final String author, final ProjectTable project,
-                                                @ConfigurePagination(defaultLimitString = "@'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.initVersionLoad", maxLimit = 25, paginationType = PaginationType.MEILI) final @NotNull RequestPagination pagination) {
+                                                @ConfigurePagination(defaultLimitString = "@'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.initVersionLoad", maxLimit = 25, paginationType = PaginationType.MEILI) final RequestPagination pagination) {
         return this.versionsApiService.getVersions(project, pagination, true);
     }
 
@@ -123,31 +122,31 @@ public class VersionsController implements IVersionsController {
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    public String getLatestVersion(final ProjectTable project, final @NotNull String channel) {
+    public String getLatestVersion(final ProjectTable project, final String channel) {
         return this.versionsApiService.latestVersion(project, channel);
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    public String getLatestVersion(final String author, final ProjectTable project, final @NotNull String channel) {
+    public String getLatestVersion(final String author, final ProjectTable project, final String channel) {
         return this.versionsApiService.latestVersion(project, channel);
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
-    public Map<String, VersionStats> getVersionStats(final ProjectTable project, final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStats(final ProjectTable project, final ProjectVersionTable version, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
-    public Map<String, VersionStats> getVersionStats(final String author, final ProjectTable project, final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStats(final String author, final ProjectTable project, final ProjectVersionTable version, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.VERSION, args = "{#version}")
-    public Map<String, VersionStats> getVersionStatsById(final ProjectVersionTable version, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+    public Map<String, VersionStats> getVersionStatsById(final ProjectVersionTable version, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         return this.versionsApiService.getVersionStats(version, fromDate, toDate);
     }
 

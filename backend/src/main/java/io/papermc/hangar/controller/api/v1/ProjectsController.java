@@ -31,7 +31,6 @@ import io.papermc.hangar.security.annotations.visibility.VisibilityRequired;
 import io.papermc.hangar.service.api.ProjectsApiService;
 import java.time.OffsetDateTime;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -67,56 +66,56 @@ public class ProjectsController extends HangarComponent implements IProjectsCont
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final ProjectTable project, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final ProjectTable project, final RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectMembers(project, pagination));
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final String author, final ProjectTable project, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<ProjectMember>> getProjectMembers(final String author, final ProjectTable project, final RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectMembers(project, pagination));
     }
 
     @Override
     @ApplicableFilters({ProjectCategoryFilter.class, ProjectPlatformFilter.class, ProjectAuthorFilter.class, ProjectQueryFilter.class, ProjectLicenseFilter.class, ProjectPlatformVersionFilter.class, ProjectTagFilter.class, ProjectMemberFilter.class})
     @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS, SorterRegistry.SLUG})
-    public ResponseEntity<PaginatedResult<Project>> getProjects(final boolean prioritizeExactMatch, final @ConfigurePagination(paginationType = PaginationType.MEILI) @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<Project>> getProjects(final boolean prioritizeExactMatch, final @ConfigurePagination(paginationType = PaginationType.MEILI) RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjects(pagination));
     }
 
     @Override
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#project}")
-    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final ProjectTable project, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final ProjectTable project, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         return ResponseEntity.ok(this.projectsApiService.getProjectStats(project, fromDate, toDate));
     }
 
     @Override
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.IS_SUBJECT_MEMBER, args = "{#project}")
-    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final String author, final ProjectTable project, final @NotNull OffsetDateTime fromDate, final @NotNull OffsetDateTime toDate) {
+    public ResponseEntity<Map<String, DayProjectStats>> getProjectStats(final String author, final ProjectTable project, final OffsetDateTime fromDate, final OffsetDateTime toDate) {
         return ResponseEntity.ok(this.projectsApiService.getProjectStats(project, fromDate, toDate));
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final ProjectTable project, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final ProjectTable project, final RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectStargazers(project, pagination));
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final String author, final ProjectTable project, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<User>> getProjectStargazers(final String author, final ProjectTable project, final RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectStargazers(project, pagination));
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final ProjectTable project, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final ProjectTable project, final RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectWatchers(project, pagination));
     }
 
     @Override
     @VisibilityRequired(type = VisibilityRequired.Type.PROJECT, args = "{#project}")
-    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final String author, final ProjectTable project, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<User>> getProjectWatchers(final String author, final ProjectTable project, final RequestPagination pagination) {
         return ResponseEntity.ok(this.projectsApiService.getProjectWatchers(project, pagination));
     }
 }

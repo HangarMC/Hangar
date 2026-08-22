@@ -6,7 +6,6 @@ import io.papermc.hangar.exceptions.HangarResponseException;
 import io.papermc.hangar.exceptions.MultiHangarApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -70,7 +69,7 @@ public class HangarExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(final @NotNull Exception ex, final Object body, final @NotNull HttpHeaders headers, final @NotNull HttpStatusCode status, final @NotNull WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(final Exception ex, final Object body, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
         if (this.config.dev()) {
             return new ResponseEntity<>(new HangarApiException(ex.getMessage()), status);
         } else {
@@ -79,12 +78,12 @@ public class HangarExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected @NotNull ResponseEntity<Object> handleMethodArgumentNotValid(final @NotNull MethodArgumentNotValidException ex, final @NotNull HttpHeaders headers, final @NotNull HttpStatusCode status, final @NotNull WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
         return new ResponseEntity<>(ex, headers, status);
     }
 
     @Override
-    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(final @NotNull MaxUploadSizeExceededException ex, final @NotNull HttpHeaders headers, final @NotNull HttpStatusCode status, final @NotNull WebRequest request) {
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(final MaxUploadSizeExceededException ex, final HttpHeaders headers, final HttpStatusCode status, final WebRequest request) {
         final HangarApiException apiException = new HangarApiException(HttpStatus.PAYLOAD_TOO_LARGE, "File too large - files have to be less than " + this.config.projects().maxTotalFilesSizeMB() + "MB total");
         return new ResponseEntity<>(apiException, HttpStatus.PAYLOAD_TOO_LARGE);
     }

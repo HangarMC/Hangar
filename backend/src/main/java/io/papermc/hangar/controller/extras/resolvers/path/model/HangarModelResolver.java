@@ -2,8 +2,7 @@ package io.papermc.hangar.controller.extras.resolvers.path.model;
 
 import io.papermc.hangar.exceptions.HangarApiException;
 import java.util.Map;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
@@ -25,7 +24,7 @@ public abstract class HangarModelResolver<M> extends AbstractNamedValueMethodArg
     protected abstract Class<M> modelType();
 
     @Override
-    public boolean supportsParameter(final @NotNull MethodParameter parameter) {
+    public boolean supportsParameter(final MethodParameter parameter) {
         if (!parameter.hasParameterAnnotation(PathVariable.class) && !parameter.hasParameterAnnotation(RequestParam.class)) {
             return false;
         }
@@ -33,7 +32,7 @@ public abstract class HangarModelResolver<M> extends AbstractNamedValueMethodArg
     }
 
     @Override
-    protected @NotNull NamedValueInfo createNamedValueInfo(MethodParameter parameter) {
+    protected NamedValueInfo createNamedValueInfo(MethodParameter parameter) {
         final PathVariable pathVariable = parameter.getParameterAnnotation(PathVariable.class);
         if (pathVariable != null) {
             return new NamedValueInfo(pathVariable.name(), pathVariable.required(), ValueConstants.DEFAULT_NONE);
@@ -46,7 +45,7 @@ public abstract class HangarModelResolver<M> extends AbstractNamedValueMethodArg
     }
 
     @Override
-    protected final @Nullable M resolveName(final @NotNull String name, final @NotNull MethodParameter parameter, final @NotNull NativeWebRequest request) throws Exception {
+    protected final @Nullable M resolveName(final String name, final MethodParameter parameter, final NativeWebRequest request) throws Exception {
         final PathVariable pathVariable = parameter.getParameterAnnotation(PathVariable.class);
         if (pathVariable != null) {
             @SuppressWarnings("unchecked") final Map<String, String> uriTemplateVars = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
@@ -85,5 +84,5 @@ public abstract class HangarModelResolver<M> extends AbstractNamedValueMethodArg
         return !"false".equals(request.getParameter("resolveId"));
     }
 
-    protected abstract M resolveParameter(@NotNull String param, NativeWebRequest request);
+    protected abstract M resolveParameter(String param, NativeWebRequest request);
 }

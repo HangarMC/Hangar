@@ -10,7 +10,7 @@ import java.util.*;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.model.api.project.version.PluginDependency;
 import io.papermc.hangar.model.common.Platform;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Schema(description = "Model for a version upload")
 public class VersionUpload {

@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.jdbi.v3.core.annotation.JdbiProperty;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class OrganizationRoleTable extends ExtendedRoleTable<OrganizationContext> implements OrganizationLoggable {
 

@@ -3,7 +3,7 @@ package io.papermc.hangar.model.internal.user.notifications;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.time.OffsetDateTime;
 import java.util.Locale;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class HangarInvite {
 

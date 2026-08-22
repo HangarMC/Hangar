@@ -2,8 +2,7 @@ package io.papermc.hangar.controller.extras;
 
 import io.papermc.hangar.exceptions.HangarApiException;
 import java.util.function.Function;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;

@@ -13,7 +13,6 @@ import io.papermc.hangar.security.annotations.Anyone;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.service.api.UsersApiService;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,19 +36,19 @@ public class UsersController extends HangarComponent implements IUsersController
 
     @Override
     @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_PROJECT_COUNT, SorterRegistry.USER_LOCKED, SorterRegistry.USER_ORG, SorterRegistry.USER_ROLES})
-    public ResponseEntity<PaginatedResult<User>> getUsers(final String query, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<User>> getUsers(final String query, final RequestPagination pagination) {
         return ResponseEntity.ok(this.usersApiService.getUsers(query, pagination, User.class));
     }
 
     @Override
     @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS, SorterRegistry.SLUG})
-    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(final UserTable user, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(final UserTable user, final RequestPagination pagination) {
         return ResponseEntity.ok(this.usersApiService.getUserStarred(user, pagination));
     }
 
     @Override
     @ApplicableSorters({SorterRegistry.VIEWS, SorterRegistry.DOWNLOADS, SorterRegistry.NEWEST, SorterRegistry.STARS, SorterRegistry.UPDATED, SorterRegistry.RECENT_DOWNLOADS, SorterRegistry.RECENT_VIEWS, SorterRegistry.SLUG})
-    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(final UserTable user, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(final UserTable user, final RequestPagination pagination) {
         return ResponseEntity.ok(this.usersApiService.getUserWatching(user, pagination));
     }
 
@@ -60,13 +59,13 @@ public class UsersController extends HangarComponent implements IUsersController
 
     @Override
     @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_PROJECT_COUNT})
-    public ResponseEntity<PaginatedResult<User>> getAuthors(final String query, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<User>> getAuthors(final String query, final RequestPagination pagination) {
         return ResponseEntity.ok(this.usersApiService.getAuthors(query, pagination));
     }
 
     @Override
     @ApplicableSorters({SorterRegistry.USER_NAME, SorterRegistry.USER_JOIN_DATE, SorterRegistry.USER_ROLES})
-    public ResponseEntity<PaginatedResult<User>> getStaff(final String query, final @NotNull RequestPagination pagination) {
+    public ResponseEntity<PaginatedResult<User>> getStaff(final String query, final RequestPagination pagination) {
         return ResponseEntity.ok(this.usersApiService.getStaff(query, pagination));
     }
 }

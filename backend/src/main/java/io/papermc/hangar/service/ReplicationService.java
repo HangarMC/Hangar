@@ -2,7 +2,7 @@ package io.papermc.hangar.service;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.util.CacheWrapper;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import jakarta.annotation.PreDestroy;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

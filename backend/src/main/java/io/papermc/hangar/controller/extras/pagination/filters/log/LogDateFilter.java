@@ -7,9 +7,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -36,7 +35,7 @@ public class LogDateFilter implements Filter<LogDateFilterInstance, String[]> {
     }
 
     @Override
-    public @NotNull LogDateFilterInstance create(final NativeWebRequest webRequest) {
+    public LogDateFilterInstance create(final NativeWebRequest webRequest) {
         final String[] value = this.getValue(webRequest);
         return new LogDateFilterInstance(parseDate(value[0], FROM), parseDate(value[1], TO));
     }

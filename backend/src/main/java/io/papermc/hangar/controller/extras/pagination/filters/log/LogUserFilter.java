@@ -5,7 +5,6 @@ import io.papermc.hangar.controller.extras.pagination.filters.log.LogUserFilter.
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 
@@ -28,7 +27,7 @@ public class LogUserFilter implements Filter<LogUserFilterInstance, String> {
     }
 
     @Override
-    public @NotNull LogUserFilterInstance create(final NativeWebRequest webRequest) {
+    public LogUserFilterInstance create(final NativeWebRequest webRequest) {
         return new LogUserFilterInstance(this.getValue(webRequest));
     }
 

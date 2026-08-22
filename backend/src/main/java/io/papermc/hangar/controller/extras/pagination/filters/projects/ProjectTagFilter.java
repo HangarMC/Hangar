@@ -5,7 +5,6 @@ import io.papermc.hangar.model.api.project.settings.Tag;
 import java.util.Arrays;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
@@ -37,7 +36,7 @@ public class ProjectTagFilter implements Filter<ProjectTagFilter.ProjectTagFilte
     }
 
     @Override
-    public @NotNull ProjectTagFilter.ProjectTagFilterInstance create(final NativeWebRequest webRequest) {
+    public ProjectTagFilter.ProjectTagFilterInstance create(final NativeWebRequest webRequest) {
         return new ProjectTagFilter.ProjectTagFilterInstance(this.conversionService.convert(this.getValue(webRequest), Tag[].class));
     }
 

@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.ParameterizedTypeReference;
@@ -41,12 +40,12 @@ public class MeiliService extends HangarComponent implements ApplicationListener
             .baseUrl(config.meili().url())
             .defaultStatusHandler(new ResponseErrorHandler() {
                 @Override
-                public boolean hasError(final @NotNull ClientHttpResponse response) throws IOException {
+                public boolean hasError(final ClientHttpResponse response) throws IOException {
                     return response.getStatusCode().isError();
                 }
 
                 @Override
-                public void handleError(final @NotNull URI url, final @NotNull HttpMethod method, final @NotNull ClientHttpResponse response) throws IOException {
+                public void handleError(final URI url, final HttpMethod method, final ClientHttpResponse response) throws IOException {
                     throw new HangarApiException("Error communicating with MeiliSearch: " + method.name() + " " + url + " -> " + response.getStatusCode(), new String(response.getBody().readAllBytes()));
                 }
             });
@@ -57,7 +56,7 @@ public class MeiliService extends HangarComponent implements ApplicationListener
     }
 
     @Override
-    public void onApplicationEvent(@NotNull ContextRefreshedEvent event) {
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         this.setupProjectIndex("");
         this.setupVersionIndex("");
     }

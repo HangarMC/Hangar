@@ -1,7 +1,6 @@
 package io.papermc.hangar.model.internal.api.responses;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
 @DefaultQualifier(NonNull.class)

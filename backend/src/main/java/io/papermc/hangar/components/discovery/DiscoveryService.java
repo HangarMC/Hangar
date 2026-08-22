@@ -4,7 +4,7 @@ import io.papermc.hangar.config.hangar.DiscoveryConfig;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import java.time.LocalDate;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service

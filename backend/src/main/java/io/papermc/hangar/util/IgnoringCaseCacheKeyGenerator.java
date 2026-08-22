@@ -2,7 +2,6 @@ package io.papermc.hangar.util;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class IgnoringCaseCacheKeyGenerator implements KeyGenerator {
 
     @Override
-    public @NotNull Object generate(final @NotNull Object target, final @NotNull Method method, final Object... params) {
+    public Object generate(final Object target, final Method method, final Object... params) {
         if (params.length == 0) {
             return SimpleKey.EMPTY;
         }

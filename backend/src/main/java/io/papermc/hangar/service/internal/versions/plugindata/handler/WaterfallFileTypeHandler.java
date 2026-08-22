@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -36,7 +35,7 @@ public class WaterfallFileTypeHandler extends FileTypeHandler<WaterfallFileData>
         private List<String> softDepends;
 
         @Override
-        protected @NotNull Set<PluginDependency> createPluginDependencies() {
+        protected Set<PluginDependency> createPluginDependencies() {
             final Set<PluginDependency> dependencies = new HashSet<>();
             if (this.hardDepends != null) {
                 for (final String hardDepend : this.hardDepends) {

@@ -44,8 +44,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.task.TaskExecutor;
@@ -295,7 +294,7 @@ public class ProjectService extends HangarComponent {
         return this.projectsDAO.getProjectWatchers(projectId);
     }
 
-    private @Nullable <T> ProjectTable getProjectTable(final @Nullable T identifier, final @NotNull Function<T, ProjectTable> projectTableFunction) {
+    private @Nullable <T> ProjectTable getProjectTable(final @Nullable T identifier, final Function<T, ProjectTable> projectTableFunction) {
         if (identifier == null) {
             return null;
         }

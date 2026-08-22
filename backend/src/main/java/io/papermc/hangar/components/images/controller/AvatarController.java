@@ -5,7 +5,6 @@ import io.papermc.hangar.components.images.service.AvatarService;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.CacheControl;
@@ -31,7 +30,7 @@ public class AvatarController extends HangarComponent {
 
     // only really called if storage = local
     @GetMapping("/{type}/{subject}.webp")
-    public ResponseEntity<ByteArrayResource> getAvatar(@PathVariable final @NotNull String type, @PathVariable final @NotNull String subject) throws IOException {
+    public ResponseEntity<ByteArrayResource> getAvatar(@PathVariable final String type, @PathVariable final String subject) throws IOException {
         final byte[] image = this.avatarService.getAvatarForLocal(type, subject);
         return ResponseEntity.ok()
             .contentLength(image.length)

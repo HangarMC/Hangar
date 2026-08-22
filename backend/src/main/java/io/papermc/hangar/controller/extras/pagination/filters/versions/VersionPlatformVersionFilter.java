@@ -6,7 +6,6 @@ import io.papermc.hangar.model.common.Platform;
 import java.util.Arrays;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
@@ -38,7 +37,7 @@ public class VersionPlatformVersionFilter implements Filter<VersionPlatformVersi
     }
 
     @Override
-    public @NotNull VersionPlatformVersionFilterInstance create(final NativeWebRequest webRequest) {
+    public VersionPlatformVersionFilterInstance create(final NativeWebRequest webRequest) {
         if (!webRequest.getParameterMap().containsKey("platform")) {
             throw new HangarApiException("Platform parameter is required for platform version filter");
         }

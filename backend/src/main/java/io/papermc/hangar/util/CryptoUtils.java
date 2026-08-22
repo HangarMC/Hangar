@@ -6,7 +6,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import org.jetbrains.annotations.NotNull;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 
 public final class CryptoUtils {
@@ -64,7 +63,7 @@ public final class CryptoUtils {
         }
     }
 
-    public static @NotNull String md5ToHex(final byte[] bytes) {
+    public static String md5ToHex(final byte[] bytes) {
         try {
             return bytesToHex(MessageDigest.getInstance("MD5").digest(bytes));
         } catch (final NoSuchAlgorithmException e) {

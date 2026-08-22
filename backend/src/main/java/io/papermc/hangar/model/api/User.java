@@ -6,7 +6,7 @@ import io.papermc.hangar.model.Identified;
 import io.papermc.hangar.model.Model;
 import io.papermc.hangar.model.Named;
 import io.papermc.hangar.model.common.roles.GlobalRole;
-import jakarta.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import java.time.OffsetDateTime;
 import java.util.List;

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class UserTable extends Table implements ProjectOwner {
 

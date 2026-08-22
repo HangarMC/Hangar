@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -121,7 +120,7 @@ public interface IVersionsController {
     })
     @GetMapping("/projects/{slugOrId}/versions")
     PaginatedResult<Version> getVersions(@Parameter(description = "The slug or id of the project to return versions for") @PathVariable("slugOrId") ProjectTable project,
-                                         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination,
+                                         @Parameter(description = "Pagination information") RequestPagination pagination,
                                          @Parameter(description = "Whether to include hidden-by-default channels in the result, defaults to true") boolean includeHiddenChannels);
 
     @Operation(deprecated = true)
@@ -129,7 +128,7 @@ public interface IVersionsController {
     @Deprecated(forRemoval = true)
     PaginatedResult<Version> getVersions(@Parameter(description = "The author of the project to return versions for") @PathVariable String author,
                                          @Parameter(description = "The slug or id of the project to return versions for") @PathVariable("slugOrId") ProjectTable project,
-                                         @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+                                         @Parameter(description = "Pagination information") RequestPagination pagination);
 
     @Operation(
         summary = "Returns the latest release version of a project",
@@ -166,14 +165,14 @@ public interface IVersionsController {
     })
     @GetMapping(value = "/projects/{slugOrId}/latest", produces = MediaType.TEXT_PLAIN_VALUE)
     String getLatestVersion(@Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project,
-                            @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel);
+                            @Parameter(description = "The channel to return the latest version for", required = true) String channel);
 
     @Operation(deprecated = true)
     @GetMapping(value = "/projects/{author}/{slugOrId}/latest", produces = MediaType.TEXT_PLAIN_VALUE)
     @Deprecated(forRemoval = true)
     String getLatestVersion(@Parameter(description = "The author of the project to return the latest version for") @PathVariable String author,
                             @Parameter(description = "The slug or id of the project to return the latest version for") @PathVariable("slugOrId") ProjectTable project,
-                            @Parameter(description = "The channel to return the latest version for", required = true) @NotNull String channel);
+                            @Parameter(description = "The channel to return the latest version for", required = true) String channel);
 
     @Operation(
         summary = "Returns the stats for a version",
@@ -190,8 +189,8 @@ public interface IVersionsController {
     @GetMapping("/projects/{slugOrId}/versions/{nameOrId}/stats")
     Map<String, VersionStats> getVersionStats(@Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
                                               @Parameter(description = "The version to return the stats for") @PathVariable("nameOrId") ProjectVersionTable version,
-                                              @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
-                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
+                                              @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
+                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate);
 
     @Operation(deprecated = true)
     @GetMapping("/projects/{author}/{slugOrId}/versions/{nameOrId}/stats")
@@ -199,8 +198,8 @@ public interface IVersionsController {
     Map<String, VersionStats> getVersionStats(@Parameter(description = "The author of the version to return the stats for") @PathVariable String author,
                                               @Parameter(description = "The slug or id of the project to return stats for") @PathVariable("slugOrId") ProjectTable project,
                                               @Parameter(description = "The name or id of the version to return the stats for") @PathVariable("nameOrId") ProjectVersionTable version,
-                                              @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
-                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
+                                              @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
+                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate);
 
     @Operation(
         summary = "Returns the stats for a version by its ID",
@@ -216,8 +215,8 @@ public interface IVersionsController {
     })
     @GetMapping("/versions/{id}/stats")
     Map<String, VersionStats> getVersionStatsById(@Parameter(description = "The id of version to return the stats for") @PathVariable("id") ProjectVersionTable version,
-                                              @Parameter(description = "The first date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime fromDate,
-                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam @NotNull OffsetDateTime toDate);
+                                              @Parameter(description = "The first date to include in the result", required = true) @RequestParam OffsetDateTime fromDate,
+                                              @Parameter(description = "The last date to include in the result", required = true) @RequestParam OffsetDateTime toDate);
 
     @Operation(
         summary = "Downloads a version",

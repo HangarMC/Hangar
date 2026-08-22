@@ -3,7 +3,6 @@ package io.papermc.hangar.controller.extras.resolvers.path.model;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.service.internal.users.UserService;
 import io.papermc.hangar.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,7 +23,7 @@ public class UserTableResolver extends HangarModelResolver<UserTable> {
     }
 
     @Override
-    protected UserTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
+    protected UserTable resolveParameter(final String param, final NativeWebRequest request) {
         UserTable userTable = null;
         if (this.supportsId(request) && StringUtils.isLong(param)) {
             userTable = this.userService.getUserTable(Long.parseLong(param));

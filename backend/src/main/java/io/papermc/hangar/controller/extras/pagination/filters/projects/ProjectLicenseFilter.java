@@ -4,7 +4,6 @@ import io.papermc.hangar.controller.extras.pagination.Filter;
 import java.util.Arrays;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
@@ -36,7 +35,7 @@ public class ProjectLicenseFilter implements Filter<ProjectLicenseFilter.Project
     }
 
     @Override
-    public @NotNull ProjectLicenseFilterInstance create(final NativeWebRequest webRequest) {
+    public ProjectLicenseFilterInstance create(final NativeWebRequest webRequest) {
         return new ProjectLicenseFilterInstance(this.conversionService.convert(this.getValue(webRequest), String[].class));
     }
 

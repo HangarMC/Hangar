@@ -14,7 +14,6 @@ import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
-import org.jetbrains.annotations.NotNull;
 
 @JdbiRepository
 public interface UsersApiDAO {
@@ -175,5 +174,5 @@ public interface UsersApiDAO {
             WHERE lower(u.name) = lower(:name) AND uh.date >= :date
             ORDER BY date DESC
         """)
-    List<UserNameChange> getUserNameHistory(@NotNull String name, @NotNull OffsetDateTime date);
+    List<UserNameChange> getUserNameHistory(String name, OffsetDateTime date);
 }

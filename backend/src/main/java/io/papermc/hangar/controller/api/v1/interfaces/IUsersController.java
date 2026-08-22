@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +53,7 @@ public interface IUsersController {
     })
     @GetMapping("/users")
     ResponseEntity<PaginatedResult<User>> getUsers(@Parameter(description = "The search query", required = true) @RequestParam(required = false) String query,
-                                                   @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+                                                   @Parameter(description = "Pagination information") RequestPagination pagination);
 
     @Operation(
         summary = "Returns the starred projects for a specific user",
@@ -70,7 +69,7 @@ public interface IUsersController {
     })
     @GetMapping("/users/{user}/starred")
     ResponseEntity<PaginatedResult<ProjectCompact>> getUserStarred(@Parameter(description = "The name or id of the user to return starred projects for") @PathVariable UserTable user,
-                                                                   @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+                                                                   @Parameter(description = "Pagination information") RequestPagination pagination);
 
     @Operation(
         summary = "Returns the watched projects for a specific user",
@@ -86,7 +85,7 @@ public interface IUsersController {
     })
     @GetMapping("/users/{user}/watching")
     ResponseEntity<PaginatedResult<ProjectCompact>> getUserWatching(@Parameter(description = "The name or id of the user to return watched projects for") @PathVariable UserTable user,
-                                                                    @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+                                                                    @Parameter(description = "Pagination information") RequestPagination pagination);
 
     @Operation(
         summary = "Returns the pinned projects for a specific user",
@@ -117,7 +116,7 @@ public interface IUsersController {
     })
     @GetMapping("/authors")
     ResponseEntity<PaginatedResult<User>> getAuthors(@Parameter(description = "The search query", required = true) @RequestParam(required = false) String query,
-                                                     @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+                                                     @Parameter(description = "Pagination information") RequestPagination pagination);
 
     @Operation(
         summary = "Returns Hangar staff",
@@ -133,5 +132,5 @@ public interface IUsersController {
     })
     @GetMapping("/staff")
     ResponseEntity<PaginatedResult<User>> getStaff(@Parameter(description = "The search query", required = true) @RequestParam(required = false) String query,
-                                                   @Parameter(description = "Pagination information") @NotNull RequestPagination pagination);
+                                                   @Parameter(description = "Pagination information") RequestPagination pagination);
 }

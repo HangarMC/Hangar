@@ -2,12 +2,10 @@ package io.papermc.hangar.util;
 
 
 import io.papermc.hangar.components.images.service.AvatarService;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class AvatarUtil {
 
-    @NonNull
     public static String avatarUrl(@Nullable String avatar, @Nullable String fallback) {
         String prefix = AvatarService.getInstance().getAvatarUrlPrefix();
 

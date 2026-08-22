@@ -5,7 +5,6 @@ import io.papermc.hangar.model.common.Platform;
 import java.util.Arrays;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
@@ -37,7 +36,7 @@ public class ProjectPlatformFilter implements Filter<ProjectPlatformFilter.Proje
     }
 
     @Override
-    public @NotNull ProjectPlatformFilterInstance create(final NativeWebRequest webRequest) {
+    public ProjectPlatformFilterInstance create(final NativeWebRequest webRequest) {
         return new ProjectPlatformFilterInstance(this.conversionService.convert(this.getValue(webRequest), Platform[].class));
     }
 

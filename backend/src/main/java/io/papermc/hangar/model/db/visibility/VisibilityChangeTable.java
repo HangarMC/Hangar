@@ -3,7 +3,7 @@ package io.papermc.hangar.model.db.visibility;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.db.Table;
 import java.time.OffsetDateTime;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public abstract class VisibilityChangeTable extends Table {

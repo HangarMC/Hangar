@@ -6,7 +6,6 @@ import io.papermc.hangar.components.index.IndexService;
 import io.papermc.hangar.components.jobs.JobService;
 import io.papermc.hangar.components.jobs.model.ScheduledTaskJob;
 import io.papermc.hangar.components.stats.StatService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
@@ -58,7 +57,7 @@ public class SchedulerService extends HangarComponent implements ApplicationList
     }
 
     @Override
-    public void onApplicationEvent(@NotNull ContextRefreshedEvent event) {
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateVersionDownloads", this.config.updateTasks().versionDownloads().toMillis()));
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectViews", this.config.updateTasks().projectViews().toMillis()));
         this.jobService.scheduleIfNotExists(new ScheduledTaskJob("updateProjectIndex", this.config.updateTasks().projectIndex().toMillis()));

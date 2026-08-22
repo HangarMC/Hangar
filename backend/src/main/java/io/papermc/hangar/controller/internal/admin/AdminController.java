@@ -54,8 +54,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -222,7 +221,7 @@ public class AdminController extends HangarComponent {
     @PermissionRequired(NamedPermission.REVIEWER)
     @ApplicableFilters({LogActionFilter.class, LogDateFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})
     @ApplicableSorters(SorterRegistry.LOG_TIME)
-    public PaginatedResult<HangarLoggedAction> getActionLog(@ConfigurePagination(defaultLimit = 50, maxLimit = 100) final @NotNull RequestPagination pagination) {
+    public PaginatedResult<HangarLoggedAction> getActionLog(@ConfigurePagination(defaultLimit = 50, maxLimit = 100) final RequestPagination pagination) {
         if (pagination.getSorters().isEmpty()) {
             pagination.getSorters().put("-time", SorterRegistry.LOG_TIME.descending(PaginationType.DB));
         }

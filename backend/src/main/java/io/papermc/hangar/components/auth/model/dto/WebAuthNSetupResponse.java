@@ -2,7 +2,7 @@ package io.papermc.hangar.components.auth.model.dto;
 
 import com.yubico.webauthn.data.ByteArray;
 import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record WebAuthNSetupResponse(
     String username,

@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -29,12 +28,12 @@ public class WebhookMessageConverter extends AbstractHttpMessageConverter<List<W
     }
 
     @Override
-    protected boolean supports(@NotNull Class<?> clazz) {
+    protected boolean supports(Class<?> clazz) {
         return List.class.isAssignableFrom(clazz);
     }
 
     @Override
-    protected @NotNull List<Webhook> readInternal(final @NotNull Class<? extends List<Webhook>> clazz, final HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+    protected List<Webhook> readInternal(final Class<? extends List<Webhook>> clazz, final HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
         String encoding = inputMessage.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING);
 
         InputStream body = inputMessage.getBody();
@@ -54,7 +53,7 @@ public class WebhookMessageConverter extends AbstractHttpMessageConverter<List<W
     }
 
     @Override
-    protected void writeInternal(final @NotNull List<Webhook> webhooks, final @NotNull HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+    protected void writeInternal(final List<Webhook> webhooks, final HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         throw new HttpMessageNotWritableException("Not supported");
     }
 }

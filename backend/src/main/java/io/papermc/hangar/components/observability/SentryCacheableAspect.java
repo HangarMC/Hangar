@@ -1,6 +1,6 @@
 package io.papermc.hangar.components.observability;
 
-import io.micrometer.common.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.sentry.ISpan;
 import io.sentry.Sentry;
 import java.lang.reflect.Method;

@@ -2,7 +2,6 @@ package io.papermc.hangar.security.authentication;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -54,7 +53,7 @@ public class HangarAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public @NotNull HangarPrincipal getPrincipal() {
+    public HangarPrincipal getPrincipal() {
         if (this.user == null) {
             throw new AuthenticationServiceException("This authentication token is not authenticated, so it doesn't have a user");
         }

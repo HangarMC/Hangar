@@ -10,7 +10,6 @@ import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.model.internal.logs.contexts.VersionContext;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 
 public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
 
@@ -95,7 +94,7 @@ public class LogAction<LC extends LogContext<? extends LoggedActionTable, LC>> {
         return "userActionLog.types." + this.name.replaceAll("\\s+", "");
     }
 
-    public LoggedAction<LC> create(final LC context, final @NotNull String newState, final @NotNull String oldState) {
+    public LoggedAction<LC> create(final LC context, final String newState, final String oldState) {
         return new LoggedAction<>(this, context, newState, oldState);
     }
 }

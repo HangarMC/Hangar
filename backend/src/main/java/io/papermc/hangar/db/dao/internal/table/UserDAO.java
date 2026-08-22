@@ -12,7 +12,6 @@ import org.jdbi.v3.sqlobject.customizer.Timestamped;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.jetbrains.annotations.NotNull;
 
 @JdbiRepository
 @RegisterConstructorMapper(UserTable.class)
@@ -54,11 +53,11 @@ public interface UserDAO {
         return this._getUserTable(id, null, null);
     }
 
-    default UserTable getUserTable(final @NotNull String name) {
+    default UserTable getUserTable(final String name) {
         return this._getUserTable(null, name, null);
     }
 
-    default UserTable getUserTable(final @NotNull UUID uuid) {
+    default UserTable getUserTable(final UUID uuid) {
         return this._getUserTable(null, null, uuid);
     }
 
@@ -72,11 +71,11 @@ public interface UserDAO {
 
     @RegisterConstructorMapper(UserNameChange.class)
     @SqlQuery("SELECT old_name, new_name, date FROM users_history WHERE uuid = :uuid ORDER BY date ASC")
-    List<UserNameChange> getUserNameHistory(final @NotNull UUID uuid);
+    List<UserNameChange> getUserNameHistory(final UUID uuid);
 
     @Timestamped
     @SqlUpdate("INSERT INTO users_history(uuid, old_name, new_name, date) VALUES (:uuid, :oldName, :newName, :now)")
-    void recordNameChange(final @NotNull UUID uuid, final @NotNull String oldName, final @NotNull String newName);
+    void recordNameChange(final UUID uuid, final String oldName, final String newName);
 
     @SqlQuery("SELECT * FROM users")
     List<UserTable> getUsers();

@@ -7,7 +7,7 @@ import io.papermc.hangar.model.common.ReviewAction;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 
 public class HangarReview extends Model {

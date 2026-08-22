@@ -3,7 +3,6 @@ package io.papermc.hangar.controller.extras.resolvers.path.model;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.service.internal.projects.ProjectService;
 import io.papermc.hangar.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,7 +23,7 @@ public class ProjectTableResolver extends HangarModelResolver<ProjectTable> {
     }
 
     @Override
-    protected ProjectTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
+    protected ProjectTable resolveParameter(final String param, final NativeWebRequest request) {
         ProjectTable projectTable = null;
         if (this.supportsId(request) && StringUtils.isLong(param)) {
             projectTable = this.projectService.getProjectTable(Long.parseLong(param));

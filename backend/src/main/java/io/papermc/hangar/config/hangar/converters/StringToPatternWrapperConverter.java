@@ -2,8 +2,7 @@ package io.papermc.hangar.config.hangar.converters;
 
 import io.papermc.hangar.util.PatternWrapper;
 import java.util.regex.Pattern;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.core.convert.converter.Converter;

@@ -4,7 +4,6 @@ import io.papermc.hangar.controller.extras.pagination.Filter.FilterInstance;
 import java.util.Map;
 import java.util.Set;
 import org.jdbi.v3.core.statement.SqlStatement;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.web.context.request.NativeWebRequest;
 
 public interface Filter<F extends FilterInstance, V> {
@@ -15,7 +14,7 @@ public interface Filter<F extends FilterInstance, V> {
         return Map.of();
     }
 
-    default @NotNull String getSingleQueryParam() {
+    default String getSingleQueryParam() {
         return this.getQueryParamNames().stream().findFirst().orElseThrow();
     }
 
@@ -27,7 +26,6 @@ public interface Filter<F extends FilterInstance, V> {
         return this.getQueryParamNames().stream().anyMatch(webRequest.getParameterMap()::containsKey);
     }
 
-    @NotNull
     F create(NativeWebRequest webRequest);
 
     /**

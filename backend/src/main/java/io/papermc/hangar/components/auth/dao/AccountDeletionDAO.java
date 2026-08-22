@@ -4,7 +4,7 @@ import io.papermc.hangar.components.auth.model.AccountDeletionStatus;
 import io.papermc.hangar.components.auth.model.PendingAccountDeletion;
 import java.time.OffsetDateTime;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;

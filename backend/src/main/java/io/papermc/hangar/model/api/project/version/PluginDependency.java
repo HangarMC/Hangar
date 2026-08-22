@@ -8,10 +8,9 @@ import io.papermc.hangar.model.api.project.ProjectNamespace;
 import io.papermc.hangar.model.common.Platform;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-import org.jetbrains.annotations.NotNull;
 
 @AtLeastOneNotNull(fieldNames = {"name", "namespace"}, includeBlankStrings = true, message = "Must specify a name or namespace for a dependency")
 public class PluginDependency implements Named, Comparable<PluginDependency> {
@@ -99,7 +98,7 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
     }
 
     @Override
-    public int compareTo(final @NotNull PluginDependency o) {
+    public int compareTo(final PluginDependency o) {
         return this.name.compareTo(o.name);
     }
 }

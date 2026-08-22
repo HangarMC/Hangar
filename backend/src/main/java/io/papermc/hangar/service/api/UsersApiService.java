@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -124,7 +123,7 @@ public class UsersApiService extends HangarComponent {
         return new PaginatedResult<>(new Pagination(count, pagination), users);
     }
 
-    private @NotNull <T, U extends User> U getUserRequired(final @Nullable T identifier, final @NotNull BiFunction<T, Class<U>, U> function, final @NotNull Class<U> type) {
+    private <T, U extends User> U getUserRequired(final @Nullable T identifier, final BiFunction<T, Class<U>, U> function, final Class<U> type) {
         if (identifier == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);
         }

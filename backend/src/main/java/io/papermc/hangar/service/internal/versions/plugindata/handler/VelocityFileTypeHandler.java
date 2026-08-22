@@ -6,7 +6,6 @@ import io.papermc.hangar.service.internal.versions.plugindata.handler.VelocityFi
 import java.io.BufferedReader;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.jackson.JacksonConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -30,7 +29,7 @@ public class VelocityFileTypeHandler extends FileTypeHandler<VelocityFileData> {
         private Set<Dependency> dependencies;
 
         @Override
-        protected @NotNull Set<PluginDependency> createPluginDependencies() {
+        protected Set<PluginDependency> createPluginDependencies() {
             return this.dependencies.stream().map(dependency -> PluginDependency.of(dependency.id, !dependency.optional, Platform.VELOCITY)).collect(Collectors.toSet());
         }
 

@@ -1,7 +1,7 @@
 package io.papermc.hangar.model.api.project.version;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record PlatformVersionDownload(
     @Nullable FileInfo fileInfo,

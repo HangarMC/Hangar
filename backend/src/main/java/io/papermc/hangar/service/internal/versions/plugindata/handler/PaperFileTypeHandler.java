@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -39,7 +38,7 @@ public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {
         private String apiVersion;
 
         @Override
-        public @NotNull SortedSet<String> getPlatformDependencies() {
+        public SortedSet<String> getPlatformDependencies() {
             final SortedSet<String> platformVersions = new TreeSet<>();
             if (this.apiVersion != null) {
                 platformVersions.add(this.apiVersion);
@@ -48,7 +47,7 @@ public class PaperFileTypeHandler extends FileTypeHandler<PaperFileData> {
         }
 
         @Override
-        protected @NotNull Set<PluginDependency> createPluginDependencies() {
+        protected Set<PluginDependency> createPluginDependencies() {
             final Set<PluginDependency> dependencies = new HashSet<>();
             if (this.dependencies != null) {
                 for (final Map.Entry<String, Map<String, Dependency>> entry : this.dependencies.entrySet()) {

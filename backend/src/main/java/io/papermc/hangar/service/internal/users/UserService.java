@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import org.jetbrains.annotations.NotNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,7 +108,7 @@ public class UserService extends HangarComponent {
         }
     }
 
-    private @Nullable <T> UserTable getUserTable(final @Nullable T identifier, final @NotNull Function<T, UserTable> userTableFunction) {
+    private @Nullable <T> UserTable getUserTable(final @Nullable T identifier, final Function<T, UserTable> userTableFunction) {
         if (identifier == null) {
             return null;
         }

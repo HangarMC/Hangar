@@ -7,7 +7,6 @@ import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.jetbrains.annotations.NotNull;
 
 @JdbiRepository
 public interface PermissionsDAO {
@@ -22,7 +21,7 @@ public interface PermissionsDAO {
         return this._getGlobalPermission(userId, null);
     }
 
-    default Permission getGlobalPermission(final @NotNull String userName) {
+    default Permission getGlobalPermission(final String userName) {
         return this._getGlobalPermission(null, userName);
     }
 

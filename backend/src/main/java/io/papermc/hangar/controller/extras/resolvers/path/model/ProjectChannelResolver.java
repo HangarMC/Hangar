@@ -3,7 +3,6 @@ package io.papermc.hangar.controller.extras.resolvers.path.model;
 import io.papermc.hangar.model.db.projects.ProjectChannelTable;
 import io.papermc.hangar.service.internal.projects.ChannelService;
 import io.papermc.hangar.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,7 +23,7 @@ public class ProjectChannelResolver extends HangarModelResolver<ProjectChannelTa
     }
 
     @Override
-    protected ProjectChannelTable resolveParameter(final @NotNull String param, final NativeWebRequest request) {
+    protected ProjectChannelTable resolveParameter(final String param, final NativeWebRequest request) {
         if (!StringUtils.isLong(param)) {
             final Object projectId = request.getAttribute("projectId", NativeWebRequest.SCOPE_REQUEST);
             if (!(projectId instanceof final Long projectIdLong)) {
