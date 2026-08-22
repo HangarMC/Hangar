@@ -1150,6 +1150,45 @@
       "severity": "{0} severity"
     }
   },
+  "scan": {
+    "title": "Jar scan",
+    "headline": "Automated analysis of {0}",
+    "reviewLogs": "Review logs",
+    "scanAll": "Scan all",
+    "rescanAll": "Rescan all",
+    "scanNow": "Scan now",
+    "rescan": "Rescan",
+    "lastScanned": "Scanned",
+    "highestSeverity": "{0} severity",
+    "findings": "No findings | {0} finding | {0} findings",
+    "occurrences": "{0}x",
+    "search": "Search findings",
+    "clean": "No findings — this file came back clean.",
+    "noResults": "No findings match the current filter.",
+    "notScanned": "Not scanned",
+    "notScannedHint": "This file has not been scanned yet.",
+    "noFile": "No file was uploaded for this platform.",
+    "noPlatforms": "This version has no platforms to scan.",
+    "external": "External",
+    "externalHint": "Files hosted outside of Hangar cannot be scanned.",
+    "showMore": "Show 1 more location | Show {0} more locations",
+    "showLess": "Show less",
+    "filter": {
+      "label": "Filter findings by severity",
+      "all": "All"
+    },
+    "severity": {
+      "HIGHEST": "Highest",
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low",
+      "LOWEST": "Lowest",
+      "UNKNOWN": "Unknown"
+    },
+    "notify": {
+      "done": "Scanned {0}"
+    }
+  },
   "apiKeys": {
     "title": "API Keys",
     "createNew": "Create new key",

@@ -2,6 +2,7 @@
 import { titleCase } from "scule";
 import { ReviewAction, ReviewState } from "#shared/types/backend";
 import type { Platform, HangarProject, HangarReview, Version } from "#shared/types/backend";
+import type { VersionArtifact } from "~/composables/useVersionArtifacts";
 import { useJarScans, useReviews } from "~/composables/useData";
 
 definePageMeta({
@@ -63,14 +64,7 @@ const isReviewStateChecked = computed<boolean>(() => {
 
 const scanPath = computed<string>(() => route.path.replace("/reviews", "/scan"));
 
-const artifacts = computed(() =>
-  [...props.versionPlatforms].map((platform) => ({
-    platform,
-    externalUrl: props.version?.downloads?.[platform]?.externalUrl,
-    fileInfo: props.version?.downloads?.[platform]?.fileInfo,
-    scan: jarScans.value?.find((s) => s.platform === platform),
-  }))
-);
+const artifacts = computed(() => versionArtifacts(props.version, props.versionPlatforms, jarScans.value));
 
 const externalCount = computed<number>(() => artifacts.value.filter((a) => a.externalUrl).length);
 const unscannedCount = computed<number>(() => artifacts.value.filter((a) => !a.externalUrl && !a.scan).length);
@@ -88,6 +82,10 @@ function severityTone(severity: string): "neutral" | "amber" | "green" | "red" {
     default:
       return "neutral";
   }
+}
+
+function platformNames(artifact: VersionArtifact): string {
+  return artifact.platforms.map((platform) => usePlatformName(platform)).join(", ");
 }
 
 function externalHost(url: string): string {
@@ -375,10 +373,12 @@ useSeo(computed(() => ({ title: "Reviews | " + props.project?.name, route, descr
       </div>
 
       <ul class="divide-y divide-gray-300 dark:divide-gray-700">
-        <li v-for="artifact in artifacts" :key="artifact.platform" class="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-3">
-          <div class="flex flex-shrink-0 items-center gap-2 sm:w-32">
-            <PlatformLogo :platform="artifact.platform" :size="20" class="flex-shrink-0" />
-            <span class="font-semibold">{{ usePlatformName(artifact.platform) }}</span>
+        <li v-for="artifact in artifacts" :key="artifact.key" class="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-3">
+          <div class="flex flex-shrink-0 items-center gap-2 sm:min-w-32">
+            <span class="flex flex-shrink-0 items-center gap-1">
+              <PlatformLogo v-for="platform in artifact.platforms" :key="platform" :platform="platform" :size="20" />
+            </span>
+            <span class="font-semibold">{{ platformNames(artifact) }}</span>
           </div>
 
           <div class="min-w-0 flex flex-1 items-center gap-2">

@@ -2267,10 +2267,17 @@ export interface Review {
   reviewerName: string;
 }
 
+export interface JarScanEntry {
+  checkName?: string;
+  location: string;
+  message: string;
+  severity: string;
+}
+
 export interface JarScanResult {
   /** @format date-time */
   createdAt: string;
-  entries: string[];
+  entries: JarScanEntry[];
   highestSeverity: string;
   /** @format int64 */
   id: number;

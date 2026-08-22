@@ -4,5 +4,5 @@ import io.papermc.hangar.model.common.Platform;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public record JarScanResult(long id, Platform platform, OffsetDateTime createdAt, String highestSeverity, List<String> entries) {
+public record JarScanResult(long id, Platform platform, OffsetDateTime createdAt, String highestSeverity, List<JarScanEntry> entries) {
 }

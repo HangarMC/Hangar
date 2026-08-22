@@ -24,7 +24,7 @@ public interface JarScanResultDAO {
     @SqlUpdate("INSERT INTO jar_scan_result(version_id, scanner_version, platform, highest_severity, created_at) VALUES (:versionId, :scannerVersion, :platform, :highestSeverity, :now)")
     JarScanResultTable save(@BindBean JarScanResultTable table);
 
-    @SqlUpdate("INSERT INTO jar_scan_result_entry(result_id, location, message, severity) VALUES (:resultId, :location, :message, :severity)")
+    @SqlUpdate("INSERT INTO jar_scan_result_entry(result_id, location, message, severity, check_name) VALUES (:resultId, :location, :message, :severity, :checkName)")
     void save(@BindBean JarScanResultEntryTable table);
 
     @SqlQuery("SELECT * FROM jar_scan_result WHERE version_id = :versionId AND platform = :platform ORDER BY created_at DESC LIMIT 1")
