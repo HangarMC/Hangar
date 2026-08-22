@@ -39,6 +39,9 @@
         <datafaker.version>2.7.0</datafaker.version>
         <jwt.version>4.6.0</jwt.version>
         <jetbrains-annotations.version>26.1.0</jetbrains-annotations.version>
+        <jspecify.version>1.0.1</jspecify.version>
+        <error-prone.version>2.50.0</error-prone.version>
+        <nullaway.version>0.14.0</nullaway.version>
         <jarscanner.version>1.0-SNAPSHOT</jarscanner.version>
         <jgroups-kube.version>3.0.0.Final</jgroups-kube.version>
         <totp.version>1.8.0</totp.version>
@@ -143,6 +146,11 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>${jetbrains-annotations.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>${jspecify.version}</version>
         </dependency>
 
         <dependency>
@@ -422,6 +430,46 @@
                     <testTarget>${java.version}</testTarget>
                     <encoding>${encoding}</encoding>
                     <parameters>true</parameters>
+                    <!-- fork is required so the -J flags below reach the JVM running javac -->
+                    <fork>true</fork>
+                    <compilerArgs>
+                        <!-- disable all Error Prone checks except NullAway -->
+                        <arg>-XDcompilePolicy=simple</arg>
+                        <arg>--should-stop=ifError=FLOW</arg>
+                        <arg>
+                            -Xplugin:ErrorProne
+                            -XepDisableAllChecks
+                            -Xep:NullAway:ERROR
+                            -XepOpt:NullAway:OnlyNullMarked=true
+                            -XepOpt:NullAway:JSpecifyMode=true
+                        </arg>
+                        <!-- required --add-exports for Error Prone on JDK 16+ (-J forwards to the forked javac JVM) -->
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+                        <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+                        <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+                        <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+                    </compilerArgs>
+                    <annotationProcessorPaths>
+                        <!-- Error Prone must come before NullAway -->
+                        <path>
+                            <groupId>com.google.errorprone</groupId>
+                            <artifactId>error_prone_core</artifactId>
+                            <version>${error-prone.version}</version>
+                        </path>
+                        <path>
+                            <groupId>com.uber.nullaway</groupId>
+                            <artifactId>nullaway</artifactId>
+                            <version>${nullaway.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
