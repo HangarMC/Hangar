@@ -15,7 +15,7 @@ public class UserTable extends Table implements ProjectOwner {
     private UUID uuid;
     private String name;
     private String email;
-    private String tagline;
+    private @Nullable String tagline;
     private List<Integer> readPrompts;
     private boolean locked;
     private String language;
@@ -25,7 +25,7 @@ public class UserTable extends Table implements ProjectOwner {
     private JSONB socials;
 
     @JdbiConstructor
-    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final String tagline, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final String avatarUrl, final JSONB socials) {
+    public UserTable(final OffsetDateTime createdAt, @PropagateNull final long id, final UUID uuid, final String name, final String email, final @Nullable String tagline, final List<Integer> readPrompts, final boolean locked, final String language, final String theme, final boolean emailVerified, final String avatarUrl, final JSONB socials) {
         super(createdAt, id);
         this.uuid = uuid;
         this.name = name;
@@ -84,7 +84,7 @@ public class UserTable extends Table implements ProjectOwner {
         return this.tagline;
     }
 
-    public void setTagline(final String tagline) {
+    public void setTagline(final @Nullable String tagline) {
         this.tagline = tagline;
     }
 

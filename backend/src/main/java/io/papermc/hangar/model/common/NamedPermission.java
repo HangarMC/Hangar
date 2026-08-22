@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum NamedPermission {
@@ -75,7 +76,7 @@ public enum NamedPermission {
     }
 
     @JsonCreator
-    public static NamedPermission fromValue(final String text) {
+    public static @Nullable NamedPermission fromValue(final String text) {
         for (final NamedPermission b : values()) {
             if (b.value.equals(text)) {
                 return b;

@@ -22,6 +22,7 @@ import io.papermc.hangar.service.internal.perms.roles.RoleService;
 import io.papermc.hangar.service.internal.users.notifications.JoinableNotificationService;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -105,7 +106,10 @@ public abstract class MemberService<
 
     @Transactional
     public void leave(final J joinable) {
-        final RT role = this.roleService.getRole(joinable.getId(), this.getHangarUserId());
+        final @Nullable RT role = this.roleService.getRole(joinable.getId(), this.getHangarUserId());
+        if (role == null) {
+            throw new HangarApiException(HttpStatus.NOT_FOUND, "Could not find role");
+        }
         if (role.isOwner()) {
             throw new HangarApiException(this.errorPrefix + "ownerCannotLeave");
         }

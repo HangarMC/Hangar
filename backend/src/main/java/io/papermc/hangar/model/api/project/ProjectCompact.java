@@ -30,7 +30,7 @@ public class ProjectCompact extends Model implements Named, Visible, Identified 
     @Schema(description = "The visibility of the project")
     protected final Visibility visibility;
     @Schema(description = "The url to the project's icon")
-    protected String avatarUrl;
+    protected @Nullable String avatarUrl;
     @Schema(description = "The short description of the project")
     protected final String description;
 
@@ -82,11 +82,11 @@ public class ProjectCompact extends Model implements Named, Visible, Identified 
         return this.visibility;
     }
 
-    public String getAvatarUrl() {
+    public @Nullable String getAvatarUrl() {
         return this.avatarUrl;
     }
 
-    public void setAvatarUrl(final String avatarUrl) {
+    public void setAvatarUrl(final @Nullable String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 

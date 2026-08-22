@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jspecify.annotations.Nullable;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @EnumByOrdinal
@@ -63,7 +64,7 @@ public enum Platform {
 
         private final String name;
         private final String tagName;
-        private Set<Platform> platforms;
+        private @Nullable Set<Platform> platforms;
 
         Category(final String name, final String tagName) {
             this.name = name;
@@ -79,7 +80,7 @@ public enum Platform {
             return this.tagName;
         }
 
-        public Set<Platform> getPlatforms() {
+        public @Nullable Set<Platform> getPlatforms() {
             if (this.platforms != null) {
                 this.platforms = Arrays.stream(VALUES).filter(p -> p.category == this).collect(Collectors.toSet());
             }

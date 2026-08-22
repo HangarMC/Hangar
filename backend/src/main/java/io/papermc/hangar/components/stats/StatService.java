@@ -57,7 +57,7 @@ public class StatService extends HangarComponent {
     }
 
     public void addProjectView(final ProjectIdentified projectIdentified) {
-        final Long userId = this.getHangarUserId();
+        final @Nullable Long userId = this.getHangarUserId();
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
         final UUID cookie = this.getStatsCookie(this.projectViewsDAO.getIndividualView(userId, address).map(ProjectViewIndividualTable::getCookie));
         this.setCookie(cookie);
@@ -66,7 +66,7 @@ public class StatService extends HangarComponent {
 
     @Transactional
     public <T extends VersionIdentified & ProjectIdentified> void addVersionDownload(final T versionIdentified, final Platform platform) {
-        final Long userId = this.getHangarUserId();
+        final @Nullable Long userId = this.getHangarUserId();
         final InetAddress address = RequestUtil.getRemoteInetAddress(this.request);
         final UUID cookie = this.getStatsCookie(this.projectVersionDownloadStatsDAO.getIndividualDownload(userId, address).map(ProjectVersionDownloadIndividualTable::getCookie));
         this.projectVersionDownloadStatsDAO.insert(new ProjectVersionDownloadIndividualTable(address, cookie, userId, versionIdentified.getProjectId(), versionIdentified.getVersionId(), platform));

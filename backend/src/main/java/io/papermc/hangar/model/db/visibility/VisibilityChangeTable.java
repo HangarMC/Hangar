@@ -11,10 +11,10 @@ public abstract class VisibilityChangeTable extends Table {
     private final @Nullable Long createdBy;
     private final String comment;
     private final Visibility visibility;
-    private Long resolvedBy;
-    private OffsetDateTime resolvedAt;
+    private @Nullable Long resolvedBy;
+    private @Nullable OffsetDateTime resolvedAt;
 
-    protected VisibilityChangeTable(final OffsetDateTime createdAt, final long id, final @Nullable Long createdBy, final String comment, final Visibility visibility, final Long resolvedBy, final OffsetDateTime resolvedAt) {
+    protected VisibilityChangeTable(final OffsetDateTime createdAt, final long id, final @Nullable Long createdBy, final String comment, final Visibility visibility, final @Nullable Long resolvedBy, final @Nullable OffsetDateTime resolvedAt) {
         super(createdAt, id);
         this.createdBy = createdBy;
         this.comment = comment;
@@ -42,11 +42,11 @@ public abstract class VisibilityChangeTable extends Table {
         return this.visibility;
     }
 
-    public Long getResolvedBy() {
+    public @Nullable Long getResolvedBy() {
         return this.resolvedBy;
     }
 
-    public OffsetDateTime getResolvedAt() {
+    public @Nullable OffsetDateTime getResolvedAt() {
         return this.resolvedAt;
     }
 

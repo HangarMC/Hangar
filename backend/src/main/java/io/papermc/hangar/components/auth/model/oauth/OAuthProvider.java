@@ -1,6 +1,7 @@
 package io.papermc.hangar.components.auth.model.oauth;
 
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 public final class OAuthProvider {
 
@@ -17,9 +18,9 @@ public final class OAuthProvider {
     private final String wellKnown;
     private final String unlinkLink;
 
-    private String authorizationEndpoint;
-    private String tokenEndpoint;
-    private String userInfoEndpoint;
+    private @Nullable String authorizationEndpoint;
+    private @Nullable String tokenEndpoint;
+    private @Nullable String userInfoEndpoint;
 
     public OAuthProvider(final String name, final String clientId, final String clientSecret, final String[] scopes, final Mode mode, final String wellKnown, String unlinkLink) {
         this.name = name;
@@ -59,7 +60,7 @@ public final class OAuthProvider {
         return this.unlinkLink;
     }
 
-    public String authorizationEndpoint() {
+    public @Nullable String authorizationEndpoint() {
         return this.authorizationEndpoint;
     }
 
@@ -67,7 +68,7 @@ public final class OAuthProvider {
         this.authorizationEndpoint = authorizationEndpoint;
     }
 
-    public String tokenEndpoint() {
+    public @Nullable String tokenEndpoint() {
         return this.tokenEndpoint;
     }
 
@@ -75,7 +76,7 @@ public final class OAuthProvider {
         this.tokenEndpoint = tokenEndpoint;
     }
 
-    public String userInfoEndpoint() {
+    public @Nullable String userInfoEndpoint() {
         return this.userInfoEndpoint;
     }
 

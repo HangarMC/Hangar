@@ -24,7 +24,7 @@ public class HangarLoggedAction extends Model {
     private final LogVersion version;
     private final LogPage page;
     private final LogSubject subject;
-    private InetAddress address;
+    private @Nullable InetAddress address;
 
     public HangarLoggedAction(final OffsetDateTime createdAt, final Long userId, final String userName, final InetAddress address, final LogAction<?> action, @EnumByOrdinal final Context contextType, final String newState, final String oldState, @Nested("p_") final LogProject project, @Nested("pv_") final LogVersion version, @Nested("pp_") final LogPage page, @Nested("s_") final LogSubject subject) {
         super(createdAt);

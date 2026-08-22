@@ -11,6 +11,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.BeanUtils;
 
 @Target(ElementType.TYPE)
@@ -31,7 +32,7 @@ public @interface AtLeastOneNotNull {
 
     class Validator implements ConstraintValidator<AtLeastOneNotNull, Object> {
 
-        private String[] fieldNames;
+        private String @Nullable [] fieldNames;
 
         @Override
         public void initialize(final AtLeastOneNotNull constraintAnnotation) {
@@ -44,8 +45,13 @@ public @interface AtLeastOneNotNull {
                 return true;
             }
 
+            final String[] fieldNames = this.fieldNames;
+            if (fieldNames == null) {
+                return false;
+            }
+
             try {
-                for (final String fieldName : this.fieldNames) {
+                for (final String fieldName : fieldNames) {
                     final PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(value.getClass(), fieldName);
                     if (propertyDescriptor != null) {
                         final Object property = propertyDescriptor.getReadMethod().invoke(value);

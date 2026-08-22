@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import org.jdbi.v3.core.enums.EnumByName;
 import org.jdbi.v3.core.mapper.Nested;
+import org.jspecify.annotations.Nullable;
 
 public class HangarProject extends Project implements Joinable<ProjectRoleTable>, ProjectIdentified {
 
@@ -28,11 +29,11 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
     private final String lastVisibilityChangeUserName;
     private final HangarProjectInfo info;
     private final Collection<HangarProjectPage> pages;
-    private final ProjectPageTable mainPage;
+    private final @Nullable ProjectPageTable mainPage;
     private final List<PinnedVersion> pinnedVersions;
     private final Map<Platform, Version> mainChannelVersions;
 
-    public HangarProject(final Project project, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, Version> mainChannelVersions, final ProjectPageTable mainPage) {
+    public HangarProject(final Project project, final List<JoinableMember<ProjectRoleTable>> members, final String lastVisibilityChangeComment, final String lastVisibilityChangeUserName, final HangarProjectInfo info, final Collection<HangarProjectPage> pages, final List<PinnedVersion> pinnedVersions, final Map<Platform, Version> mainChannelVersions, final @Nullable ProjectPageTable mainPage) {
         super(project);
         this.members = members;
         this.lastVisibilityChangeComment = lastVisibilityChangeComment;
@@ -83,7 +84,7 @@ public class HangarProject extends Project implements Joinable<ProjectRoleTable>
         return this.mainChannelVersions;
     }
 
-    public ProjectPageTable getMainPage() {
+    public @Nullable ProjectPageTable getMainPage() {
         return this.mainPage;
     }
 

@@ -3,6 +3,7 @@ package io.papermc.hangar.model.api.project.settings;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 public enum Tag {
 
@@ -18,7 +19,7 @@ public enum Tag {
         }
     }
 
-    public static Tag byName(final String name) {
+    public static @Nullable Tag byName(final String name) {
         return TAGS.get(name.toUpperCase(Locale.ROOT));
     }
 }

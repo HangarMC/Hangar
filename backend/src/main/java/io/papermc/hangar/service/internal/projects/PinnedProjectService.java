@@ -4,6 +4,7 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.internal.table.projects.PinnedProjectDAO;
 import io.papermc.hangar.model.api.project.ProjectCompact;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class PinnedProjectService extends HangarComponent {
         this.pinnedProjectDAO.delete(userId, projectId);
     }
 
-    public List<ProjectCompact> getPinnedProjects(final long userid, final boolean canSeeHidden, final Long requesterId) {
+    public List<ProjectCompact> getPinnedProjects(final long userid, final boolean canSeeHidden, final @Nullable Long requesterId) {
         return this.pinnedProjectDAO.pinnedProjects(userid, canSeeHidden, requesterId);
     }
 }

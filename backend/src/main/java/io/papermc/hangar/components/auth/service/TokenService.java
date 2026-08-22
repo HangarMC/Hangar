@@ -110,8 +110,8 @@ public class TokenService extends HangarComponent {
         if (refreshToken != null) {
             this.userRefreshTokenDAO.delete(UUID.fromString(refreshToken));
         }
-        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, null, 0, true, this.response);
-        this.addCookie(SecurityConfig.AUTH_NAME, null, 0, false, this.response);
+        this.addCookie(SecurityConfig.REFRESH_COOKIE_NAME, (String) null, 0, true, this.response);
+        this.addCookie(SecurityConfig.AUTH_NAME, (String) null, 0, false, this.response);
     }
 
     public String newPrivilegedToken(final UserTable userTable) {
@@ -190,7 +190,7 @@ public class TokenService extends HangarComponent {
             }
             return new HangarApiPrincipal(userId, subject, email, locked, globalPermission, apiKeyTable, aal);
         } else {
-            return new HangarPrincipal(userId, subject, email, locked, globalPermission, null, aal, privileged);
+            return new HangarPrincipal(userId, subject, email, locked, globalPermission, (String) null, aal, privileged);
         }
     }
 }

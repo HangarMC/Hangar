@@ -99,7 +99,7 @@ public class ProjectPageService extends HangarComponent {
     public record Pages(Map<Long, HangarProjectPage> pages, @Nullable ProjectPageTable homePage) {
     }
 
-    private HangarProjectPage findById(final long id, final Map<Long, HangarProjectPage> pageMap) {
+    private @Nullable HangarProjectPage findById(final long id, final Map<Long, HangarProjectPage> pageMap) {
         if (pageMap.containsKey(id)) {
             return pageMap.get(id);
         }

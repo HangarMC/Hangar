@@ -97,7 +97,7 @@ public class AuthService extends HangarComponent implements UserDetailsService {
             }
         }
 
-        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), null, "en", List.of(), false, "light", emailVerified, avatarService.getDefaultAvatarUrl(), new JSONB(Map.of()));
+        final UserTable userTable = this.userDAO.create(UUID.randomUUID(), form.username(), form.email(), (String) null, "en", List.of(), false, "light", emailVerified, avatarService.getDefaultAvatarUrl(), new JSONB(Map.of()));
         this.credentialsService.registerCredential(userTable.getUserId(), new PasswordCredential(this.passwordEncoder.encode(form.password())));
         if (!emailVerified) {
             this.verificationService.sendVerificationCode(userTable.getUserId(), userTable.getEmail(), userTable.getName());
@@ -250,6 +250,6 @@ public class AuthService extends HangarComponent implements UserDetailsService {
         user.setAccessToken(token);
         user.setAal(aal);
         // return
-        return new LoginResponse(aal, null, user);
+        return new LoginResponse(aal, (List<CredentialType>) null, user);
     }
 }

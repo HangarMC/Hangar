@@ -20,15 +20,15 @@ public class Project extends ProjectCompact {
     @Schema(description = "The time the project's first version was published")
     private final @Nullable OffsetDateTime publishedAt;
     @Schema(description = "Information about your interactions with the project")
-    private final UserActions userActions;
+    private final @Nullable UserActions userActions;
     @Schema(description = "The settings of the project")
     private final ProjectSettings settings;
     @Schema(description = "The platforms and versions the project supports")
     private final Map<Platform, SortedSet<String>> supportedPlatforms;
     @Schema(description = "The content of the main page")
-    private final String mainPageContent;
+    private final @Nullable String mainPageContent;
     @Schema(description = "The names of the members of the project")
-    private final List<String> memberNames;
+    private final @Nullable List<String> memberNames;
 
     @JsonCreator
     @JdbiConstructor
@@ -53,7 +53,7 @@ public class Project extends ProjectCompact {
         this.supportedPlatforms = other.supportedPlatforms;
     }
 
-    public UserActions getUserActions() {
+    public @Nullable UserActions getUserActions() {
         return this.userActions;
     }
 
@@ -69,11 +69,11 @@ public class Project extends ProjectCompact {
         return supportedPlatforms;
     }
 
-    public String getMainPageContent() {
+    public @Nullable String getMainPageContent() {
         return mainPageContent;
     }
 
-    public List<String> getMemberNames() {
+    public @Nullable List<String> getMemberNames() {
         return memberNames;
     }
 

@@ -18,7 +18,7 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
     @Schema(description = "Name of the plugin dependency. For non-external dependencies, this should be the Hangar project name", example = "Maintenance")
     private final String name;
     @Schema(description = "Project ID of the dependency. Only for non-external dependencies", example = "1")
-    private final Long projectId;
+    private final @Nullable Long projectId;
     @Schema(description = "Whether the dependency is required for the plugin to function")
     private final boolean required;
     @Schema(description = "External url to download the dependency from if not a Hangar project, else null", example = "https://papermc.io/downloads")
@@ -28,12 +28,12 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
 
     @JdbiConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PluginDependency(final String name, final Long projectId, final boolean required, @Nested("pn") @Deprecated(forRemoval = true) final @Nullable ProjectNamespace namespace, final @Nullable String externalUrl, final Platform platform) {
+    public PluginDependency(final @Nullable String name, final @Nullable Long projectId, final boolean required, @Nested("pn") @Deprecated(forRemoval = true) final @Nullable ProjectNamespace namespace, final @Nullable String externalUrl, final Platform platform) {
         // TODO Remove ProjectNamespace and always require name
         if (name == null && namespace == null) {
             throw new IllegalArgumentException("Must specify a name for a dependency");
         }
-        this.name = name != null ? name : namespace.getSlug();
+        this.name = name != null ? name : Objects.requireNonNull(namespace).getSlug();
         this.projectId = projectId;
         this.required = required;
         this.externalUrl = externalUrl;
@@ -48,7 +48,7 @@ public class PluginDependency implements Named, Comparable<PluginDependency> {
         this.platform = platform;
     }
 
-    public Long getProjectId() {
+    public @Nullable Long getProjectId() {
         return this.projectId;
     }
 

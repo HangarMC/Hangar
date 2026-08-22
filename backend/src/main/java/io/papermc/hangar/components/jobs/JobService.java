@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class JobService extends HangarComponent {
     private final WebhookService webhookService;
     private final SchedulerService schedulerService;
 
-    private ExecutorService executorService;
+    private @Nullable ExecutorService executorService;
 
     @Autowired
     public JobService(final JobsDAO jobsDAO, @Lazy final MailService mailService, @Lazy final WebhookService webhookService, @Lazy final SchedulerService schedulerService) {
@@ -142,7 +143,7 @@ public class JobService extends HangarComponent {
                 final ScheduledTaskJob scheduledTaskJob = ScheduledTaskJob.loadFromTable(job);
                 try {
                     this.schedulerService.runScheduledTask(scheduledTaskJob.getTaskName());
-                    this.jobsDAO.retryIn(job.getId(), OffsetDateTime.now().plus(scheduledTaskJob.getInterval(), ChronoUnit.MILLIS), null, null);
+                    this.jobsDAO.retryIn(job.getId(), OffsetDateTime.now().plus(scheduledTaskJob.getInterval(), ChronoUnit.MILLIS), (String) null, (String) null);
                 } catch (final Exception ex) {
                     // scheduled tasks get special error handling
                     this.logger.warn("scheduled job failed to process: {} {}", ex.getMessage(), job, ex);
@@ -162,7 +163,7 @@ public class JobService extends HangarComponent {
         if (job == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND, "Job not found");
         }
-        this.jobsDAO.retryIn(jobId, OffsetDateTime.now(), null, null);
+        this.jobsDAO.retryIn(jobId, OffsetDateTime.now(), (String) null, (String) null);
     }
 
     public static class JobAuthentication extends PreAuthenticatedAuthenticationToken {

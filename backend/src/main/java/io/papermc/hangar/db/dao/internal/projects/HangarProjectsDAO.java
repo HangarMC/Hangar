@@ -16,6 +16,7 @@ import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
+import org.jspecify.annotations.Nullable;
 
 @JdbiRepository
 public interface HangarProjectsDAO {
@@ -64,7 +65,7 @@ public interface HangarProjectsDAO {
               LEFT JOIN home_projects hp ON hp.id = p.id
                  JOIN users u ON p.owner_id = u.id
                  WHERE p.id = :projectId""")
-    ProjectData getProject(long projectId, Long currentUserId);
+    ProjectData getProject(long projectId, @Nullable Long currentUserId);
 
     @RegisterRowMapperFactory(JoinableRowMapperFactory.class)
     @RegisterConstructorMapper(UserTable.class)
@@ -82,7 +83,7 @@ public interface HangarProjectsDAO {
         "   FROM user_project_roles upr" +
         "       JOIN users u ON upr.user_id = u.id" +
         "   WHERE upr.project_id = :projectId <if(!canSeePending)>AND (upr.accepted IS TRUE OR upr.user_id = :userId)<endif>")
-    List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId, Long userId, @Define boolean canSeePending);
+    List<JoinableMember<ProjectRoleTable>> getProjectMembers(long projectId, @Nullable Long userId, @Define boolean canSeePending);
 
     @RegisterConstructorMapper(HangarChannel.class)
     @SqlQuery("SELECT pc.*," +

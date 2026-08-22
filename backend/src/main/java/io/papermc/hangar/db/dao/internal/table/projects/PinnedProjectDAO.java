@@ -8,6 +8,7 @@ import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
+import org.jspecify.annotations.Nullable;
 
 @JdbiRepository
 public interface PinnedProjectDAO {
@@ -25,5 +26,5 @@ public interface PinnedProjectDAO {
           <if(!canSeeHidden)>AND (NOT pp.unlisted <if(requesterId)>OR <requesterId> = ANY(pp.project_members)<endif>)<endif>
         """)
     @RegisterConstructorMapper(ProjectCompact.class)
-    List<ProjectCompact> pinnedProjects(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
+    List<ProjectCompact> pinnedProjects(long userId, @Define boolean canSeeHidden, @Define @Nullable Long requesterId);
 }

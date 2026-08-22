@@ -15,7 +15,7 @@ public abstract class Table extends Model implements Identified {
 
     // for creating fake users
     protected Table(final long id) {
-        super(null);
+        super(OffsetDateTime.MIN);
         this.id = id;
     }
 

@@ -5,6 +5,7 @@ import io.papermc.hangar.model.api.UserNameChange;
 import io.papermc.hangar.model.db.UserTable;
 import java.util.List;
 import java.util.UUID;
+import org.jspecify.annotations.Nullable;
 import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -47,7 +48,7 @@ public interface UserDAO {
     void markChangelogSeen(long id);
 
     @SqlQuery("SELECT * FROM users WHERE id = :id OR lower(name) = lower(:name) OR lower(email) = lower(:name) OR uuid = :uuid")
-    UserTable _getUserTable(Long id, String name, UUID uuid);
+    UserTable _getUserTable(@Nullable Long id, @Nullable String name, @Nullable UUID uuid);
 
     default UserTable getUserTable(final long id) {
         return this._getUserTable(id, null, null);

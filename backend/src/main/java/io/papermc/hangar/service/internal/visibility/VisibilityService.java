@@ -56,7 +56,7 @@ abstract class VisibilityService<LC extends LogContext<?, LC>, M extends Table &
         return model;
     }
 
-    public final M checkVisibility(final @Nullable M model) {
+    public final @Nullable M checkVisibility(final @Nullable M model) {
         if (model == null) {
             return null;
         }

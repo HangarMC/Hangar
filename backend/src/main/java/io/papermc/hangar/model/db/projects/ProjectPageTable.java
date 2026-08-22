@@ -6,6 +6,7 @@ import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.identified.ProjectIdentified;
 import java.time.OffsetDateTime;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+import org.jspecify.annotations.Nullable;
 
 public class ProjectPageTable extends Table implements Named, ProjectIdentified {
 
@@ -14,11 +15,11 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
     private final String slug;
     private String contents;
     private final boolean deletable;
-    private Long parentId;
+    private @Nullable Long parentId;
     private final boolean homepage;
 
     @JdbiConstructor
-    public ProjectPageTable(final OffsetDateTime createdAt, final long id, final long projectId, final String name, final String slug, final String contents, final boolean deletable, final Long parentId, final boolean homepage) {
+    public ProjectPageTable(final OffsetDateTime createdAt, final long id, final long projectId, final String name, final String slug, final String contents, final boolean deletable, final @Nullable Long parentId, final boolean homepage) {
         super(createdAt, id);
         this.projectId = projectId;
         this.name = name;
@@ -29,7 +30,7 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
         this.homepage = homepage;
     }
 
-    public ProjectPageTable(final long projectId, final String name, final String slug, final String contents, final boolean deletable, final Long parentId, final boolean homepage) {
+    public ProjectPageTable(final long projectId, final String name, final String slug, final String contents, final boolean deletable, final @Nullable Long parentId, final boolean homepage) {
         this.projectId = projectId;
         this.name = name;
         this.slug = slug;
@@ -67,11 +68,11 @@ public class ProjectPageTable extends Table implements Named, ProjectIdentified 
     }
 
     @JsonIgnore
-    public Long getParentId() {
+    public @Nullable Long getParentId() {
         return this.parentId;
     }
 
-    public void setParentId(final Long parentId) {
+    public void setParentId(final @Nullable Long parentId) {
         this.parentId = parentId;
     }
 

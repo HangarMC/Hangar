@@ -18,6 +18,7 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+import org.jspecify.annotations.Nullable;
 
 public class ProjectTable extends Table implements Visitable, ModelVisible, Owned, ProjectLoggable {
 
@@ -32,9 +33,9 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     private Collection<String> keywords;
     @ArraySchema(schema = @Schema(implementation = LinkSection.class))
     private JSONB links;
-    private String licenseType;
-    private String licenseName;
-    private String licenseUrl;
+    private @Nullable String licenseType;
+    private @Nullable String licenseName;
+    private @Nullable String licenseUrl;
     private boolean donationEnabled;
     private String donationSubject;
     private String sponsors;
@@ -83,7 +84,7 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
     @JdbiConstructor
     public ProjectTable(final OffsetDateTime createdAt, final long id, final String name, final String slug, final String ownerName, final long ownerId,
                         @EnumByOrdinal final Category category, final String description, @EnumByOrdinal final Visibility visibility, final Collection<String> tags,
-                        final Collection<String> keywords, final JSONB links, final String licenseType, final String licenseName, final String licenseUrl,
+                        final Collection<String> keywords, final JSONB links, final @Nullable String licenseType, final @Nullable String licenseName, final @Nullable String licenseUrl,
                         final boolean donationEnabled, final String donationSubject, final String sponsors, final boolean unlisted) {
         super(createdAt, id);
         this.name = name;
@@ -193,27 +194,27 @@ public class ProjectTable extends Table implements Visitable, ModelVisible, Owne
         this.links = links;
     }
 
-    public String getLicenseType() {
+    public @Nullable String getLicenseType() {
         return this.licenseType;
     }
 
-    public void setLicenseType(final String licenseType) {
+    public void setLicenseType(final @Nullable String licenseType) {
         this.licenseType = licenseType;
     }
 
-    public String getLicenseName() {
+    public @Nullable String getLicenseName() {
         return this.licenseName;
     }
 
-    public void setLicenseName(final String licenseName) {
+    public void setLicenseName(final @Nullable String licenseName) {
         this.licenseName = licenseName;
     }
 
-    public String getLicenseUrl() {
+    public @Nullable String getLicenseUrl() {
         return this.licenseUrl;
     }
 
-    public void setLicenseUrl(final String licenseUrl) {
+    public void setLicenseUrl(final @Nullable String licenseUrl) {
         this.licenseUrl = licenseUrl;
     }
 

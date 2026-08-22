@@ -2,13 +2,14 @@ package io.papermc.hangar.model.internal.api.requests;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Request body for simple strings
  */
 public class StringContent {
 
-    private @NotBlank(message = "general.error.fieldEmpty") @Schema(description = "A non-null, non-empty string") String content;
+    private @NotBlank(message = "general.error.fieldEmpty") @Schema(description = "A non-null, non-empty string") @Nullable String content;
 
     public StringContent() {
     }
@@ -17,7 +18,7 @@ public class StringContent {
         this.content = content;
     }
 
-    public String getContent() {
+    public @Nullable String getContent() {
         return this.content;
     }
 

@@ -23,6 +23,7 @@ public class SendWebhookJob extends Job {
         this.payload = payload;
     }
 
+    @SuppressWarnings("NullAway.Init")
     public SendWebhookJob() {
         super(JobType.SEND_WEBHOOK);
     }

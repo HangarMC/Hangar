@@ -80,7 +80,7 @@ public class UsersApiService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<ProjectCompact> getUserStarred(final UserTable user, final RequestPagination pagination) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final Long requesterId = this.getHangarUserId();
+        final @Nullable Long requesterId = this.getHangarUserId();
         final List<ProjectCompact> projects = this.usersApiDAO.getUserStarred(user.getId(), canSeeHidden, requesterId, pagination);
         final long count = this.usersApiDAO.getUserStarredCount(user.getId(), canSeeHidden, requesterId);
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
@@ -89,7 +89,7 @@ public class UsersApiService extends HangarComponent {
     @Transactional(readOnly = true)
     public PaginatedResult<ProjectCompact> getUserWatching(final UserTable user,  final RequestPagination pagination) {
         final boolean canSeeHidden = this.getGlobalPermissions().has(Permission.SeeHidden);
-        final Long requesterId = this.getHangarUserId();
+        final @Nullable Long requesterId = this.getHangarUserId();
         final List<ProjectCompact> projects = this.usersApiDAO.getUserWatching(user.getId(), canSeeHidden, requesterId, pagination);
         final long count = this.usersApiDAO.getUserWatchingCount(user.getId(), canSeeHidden, requesterId);
         return new PaginatedResult<>(new Pagination(count, pagination), projects);
@@ -163,6 +163,7 @@ public class UsersApiService extends HangarComponent {
     }
 
     public List<ProjectCompact> getUserPinned(final UserTable user) {
-        return this.pinnedProjectService.getPinnedProjects(user.getId(), this.getGlobalPermissions().has(Permission.SeeHidden), this.getHangarUserId());
+        final @Nullable Long requesterId = this.getHangarUserId();
+        return this.pinnedProjectService.getPinnedProjects(user.getId(), this.getGlobalPermissions().has(Permission.SeeHidden), requesterId);
     }
 }

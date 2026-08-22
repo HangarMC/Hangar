@@ -16,6 +16,7 @@ public class ScheduledTaskJob extends Job {
         this.interval = interval;
     }
 
+    @SuppressWarnings("NullAway.Init")
     ScheduledTaskJob() {
         super(JobType.SCHEDULED_TASK);
     }

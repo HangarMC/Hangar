@@ -14,6 +14,7 @@ import org.jspecify.annotations.Nullable;
  */
 public record ProjectLicense(@Validate(SpEL = "@validations.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.licenseNameRegex)", message = "project.new.error.invalidLicense")
                              @Validate(SpEL = "@validations.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.maxLicenseNameLen)", message = "project.new.error.tooLongLicense")
+                             @Nullable
                              String name,
                              @Validate(SpEL = "@validate.regex(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.urlRegex)", message = "fieldError.url")
                              @Nullable
@@ -30,7 +31,7 @@ public record ProjectLicense(@Validate(SpEL = "@validations.regex(#root, @'hanga
     public ProjectLicense(final @Nullable String name, final @Nullable String url, final @Nullable String type) {
         this.name = name;
         this.url = url;
-        if (config.licenses().contains(type)) {
+        if (type != null && config.licenses().contains(type)) {
             this.type = type;
         } else {
             this.type = "(custom)";

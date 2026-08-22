@@ -3,12 +3,10 @@ package io.papermc.hangar.controller.extras;
 import io.papermc.hangar.exceptions.HangarApiException;
 import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.NativeWebRequest;
 
-@DefaultQualifier(NonNull.class)
 public final class ApiUtils {
 
     public static final int DEFAULT_MAX_LIMIT = 50;

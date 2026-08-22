@@ -14,6 +14,7 @@ import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
+import org.jspecify.annotations.Nullable;
 
 @JdbiRepository
 public interface UsersApiDAO {
@@ -47,7 +48,7 @@ public interface UsersApiDAO {
              ps.user_id = :userId
            <sorters>
            <offsetLimit>""")
-    List<ProjectCompact> getUserStarred(long userId, @Define boolean canSeeHidden, @Define Long requesterId, @BindPagination RequestPagination pagination);
+    List<ProjectCompact> getUserStarred(long userId, @Define boolean canSeeHidden, @Define @Nullable Long requesterId, @BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
     @SqlQuery("""
@@ -59,7 +60,7 @@ public interface UsersApiDAO {
              <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
              (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              ps.user_id = :userId""")
-    long getUserStarredCount(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
+    long getUserStarredCount(long userId, @Define boolean canSeeHidden, @Define @Nullable Long requesterId);
 
     @RegisterConstructorMapper(ProjectCompact.class)
     @UseStringTemplateEngine
@@ -90,7 +91,7 @@ public interface UsersApiDAO {
              pw.user_id = :userId
            <sorters>
            <offsetLimit>""")
-    List<ProjectCompact> getUserWatching(long userId, @Define boolean canSeeHidden, @Define Long requesterId, @BindPagination RequestPagination pagination);
+    List<ProjectCompact> getUserWatching(long userId, @Define boolean canSeeHidden, @Define @Nullable Long requesterId, @BindPagination RequestPagination pagination);
 
     @UseStringTemplateEngine
     @SqlQuery("""
@@ -102,7 +103,7 @@ public interface UsersApiDAO {
              <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
              (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              pw.user_id = :userId""")
-    long getUserWatchingCount(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
+    long getUserWatchingCount(long userId, @Define boolean canSeeHidden, @Define @Nullable Long requesterId);
 
     @UseStringTemplateEngine
     @RegisterConstructorMapper(User.class)

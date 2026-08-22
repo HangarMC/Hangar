@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 
 public enum Color {
 
@@ -41,7 +42,7 @@ public enum Color {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-    public static Color getByHex(final String hex) {
+    public static @Nullable Color getByHex(final String hex) {
         for (final Color color : VALUES) {
             if (color.hex.equalsIgnoreCase(hex)) {
                 return color;

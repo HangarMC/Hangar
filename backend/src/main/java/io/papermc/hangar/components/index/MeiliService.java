@@ -14,10 +14,12 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
@@ -103,7 +105,7 @@ public class MeiliService extends HangarComponent implements ApplicationListener
         return restClient.delete().uri("/indexes/" + this.config.meili().prefix() + index + "/documents/" + id).retrieve().toEntity(Task.class);
     }
 
-    public SearchResult<Project> searchProjects(final String query, final String filter, final List<String> sort, final long offset, final long limit) {
+    public @Nullable SearchResult<Project> searchProjects(final String query, final String filter, final List<String> sort, final long offset, final long limit) {
         var searchBody = Map.of(
             "q", query,
             "filter", filter,
@@ -123,7 +125,7 @@ public class MeiliService extends HangarComponent implements ApplicationListener
         throw new HangarApiException("Error searching projects", entity.getStatusCode());
     }
 
-    public SearchResult<Version> searchVersions(final String query, final String filter, final List<String> sort, final long offset, final long limit) {
+    public @Nullable SearchResult<Version> searchVersions(final String query, final String filter, final List<String> sort, final long offset, final long limit) {
         var searchBody = Map.of(
             "q", query,
             "filter", filter,
@@ -153,7 +155,7 @@ public class MeiliService extends HangarComponent implements ApplicationListener
         waitForTask(restClient.delete().uri("/indexes/" + this.config.meili().prefix() + newIndex).retrieve().toEntity(Task.class));
     }
 
-    public Task getTask(String id) {
+    public @Nullable Task getTask(String id) {
         var entity = restClient.get().uri("/tasks/" + id).retrieve().toEntity(Task.class);
         if (entity.getStatusCode().is2xxSuccessful()) {
             return entity.getBody();
@@ -178,6 +180,9 @@ public class MeiliService extends HangarComponent implements ApplicationListener
                 throw new RuntimeException("Timeout waiting for meili task " + task);
             }
             task = this.getTask(task.uid() != null ? task.uid() : task.taskUid());
+            if (task == null) {
+                throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Error getting meili task");
+            }
             try {
                 //noinspection BusyWait - blocking is ok
                 Thread.sleep(50);

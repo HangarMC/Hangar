@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class AvatarService extends HangarComponent {
     // imported avatars are loaded into memory, so cap them (the image proxy itself only streams)
     private static final int MAX_IMPORT_BYTES = 16 * 1024 * 1024;
 
-    private static AvatarService instance;
+    private static @Nullable AvatarService instance;
 
     private final FileService fileService;
     private final ImageService imageService;
@@ -42,7 +43,9 @@ public class AvatarService extends HangarComponent {
     private final UserDAO userDAO;
     private final ImageProxyService imageProxyService;
 
+    @SuppressWarnings("NullAway.Init") // set in @PostConstruct
     private String defaultAvatarUrl;
+    @SuppressWarnings("NullAway.Init") // set in @PostConstruct
     private String defaultAvatarPath;
 
     public AvatarService(final FileService fileService, final ImageService imageService, final AvatarDAO avatarDAO, final UserService userService, final UserDAO userDAO, final ImageProxyService imageProxyService) {
@@ -72,7 +75,11 @@ public class AvatarService extends HangarComponent {
     }
 
     public static AvatarService getInstance() {
-        return instance;
+        final AvatarService avatarService = instance;
+        if (avatarService == null) {
+            throw new IllegalStateException("AvatarService not initialized yet");
+        }
+        return avatarService;
     }
 
     public String getDefaultAvatarUrl() {
@@ -88,7 +95,7 @@ public class AvatarService extends HangarComponent {
      */
     @Deprecated(forRemoval = true)
     private String getUserAvatarUrl(final UserTable userTable) {
-        return this.getAvatarUrl(USER, userTable.getUuid().toString(), null);
+        return this.getAvatarUrl(USER, userTable.getUuid().toString(), (Supplier<String>) null);
     }
 
     @Deprecated(forRemoval = true)
@@ -103,7 +110,7 @@ public class AvatarService extends HangarComponent {
     }
 
     @Deprecated(forRemoval = true)
-    private String getAvatarUrl(final String type, final String subject, final Supplier<String> fallbackSupplier) {
+    private String getAvatarUrl(final String type, final String subject, final @Nullable Supplier<String> fallbackSupplier) {
         if (type.equals("default") && subject.equals("default")) {
             return this.defaultAvatarUrl;
         }

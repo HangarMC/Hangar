@@ -3,6 +3,7 @@ package io.papermc.hangar.model.common.projects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.jspecify.annotations.Nullable;
 
 @Schema(description = "The visibility of a project or version", example = "PUBLIC")
 public enum Visibility {
@@ -57,7 +58,7 @@ public enum Visibility {
     }
 
     @JsonCreator
-    public static Visibility fromValue(final String text) {
+    public static @Nullable Visibility fromValue(final String text) {
         for (final Visibility b : values()) {
             if (b.name.equals(text)) {
                 return b;
@@ -66,7 +67,7 @@ public enum Visibility {
         return null;
     }
 
-    public static Visibility fromId(final long visibility) {
+    public static @Nullable Visibility fromId(final long visibility) {
         for (final Visibility b : values()) {
             if (b.ordinal() == visibility) {
                 return b;

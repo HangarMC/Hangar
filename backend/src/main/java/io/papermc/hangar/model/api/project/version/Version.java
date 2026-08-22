@@ -37,7 +37,7 @@ public class Version extends Model implements Named, Visible, Identified {
     private final Map<Platform, Set<PluginDependency>> pluginDependencies;
     private final Map<Platform, SortedSet<String>> platformDependencies;
     private final Map<Platform, List<String>> platformDependenciesFormatted;
-    private final List<String> memberNames;
+    private final @Nullable List<String> memberNames;
 
     @JsonCreator
     public Version(final OffsetDateTime createdAt,
@@ -132,7 +132,7 @@ public class Version extends Model implements Named, Visible, Identified {
         return this.platformDependenciesFormatted;
     }
 
-    public List<String> getMemberNames() {
+    public @Nullable List<String> getMemberNames() {
         return memberNames;
     }
 

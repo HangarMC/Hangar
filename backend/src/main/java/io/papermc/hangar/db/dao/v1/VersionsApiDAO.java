@@ -88,7 +88,7 @@ public interface VersionsApiDAO {
          pv.id IN (<versionIds>)
     """)
     @KeyColumn("id")
-    Map<Long, Version> getVersions(@BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) Collection<Long> versionIds, @Define boolean canSeeHidden, @Define Long userId);
+    Map<Long, Version> getVersions(@BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) Collection<Long> versionIds, @Define boolean canSeeHidden, @Define @Nullable Long userId);
 
     default @Nullable Version getVersion(final long versionId, final boolean canSeeHidden, final @Nullable Long userId) {
         return this.getVersions(List.of(versionId), canSeeHidden, userId).get(versionId);

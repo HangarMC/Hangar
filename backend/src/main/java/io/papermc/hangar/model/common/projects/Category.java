@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jdbi.v3.core.enums.EnumByOrdinal;
+import org.jspecify.annotations.Nullable;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @EnumByOrdinal
@@ -68,7 +69,7 @@ public enum Category {
     }
 
     @JsonCreator
-    public static Category fromValue(final String text) {
+    public static @Nullable Category fromValue(final String text) {
         for (final Category b : values()) {
             if (b.apiName.equalsIgnoreCase(text)) {
                 return b;

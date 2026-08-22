@@ -156,7 +156,7 @@ public class ImageProxyService {
         }
     }
 
-    private URI parseAndValidate(final String url) {
+    private @Nullable URI parseAndValidate(final String url) {
         try {
             final URI parsedUrl = new URI(url);
             // valid proto

@@ -5,6 +5,7 @@ import io.papermc.hangar.db.dao.internal.table.roles.IMemberRolesDAO;
 import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import java.util.List;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class RoleService<RT extends ExtendedRoleTable<?>, D extends IMemberRolesDAO<RT>> extends HangarComponent {
@@ -49,11 +50,11 @@ public abstract class RoleService<RT extends ExtendedRoleTable<?>, D extends IMe
         this.roleDao.delete(roleTable);
     }
 
-    public RT getRole(final long id) {
+    public @Nullable RT getRole(final long id) {
         return this.roleDao.getTable(id);
     }
 
-    public RT getRole(final long principalId, final long userId) {
+    public @Nullable RT getRole(final long principalId, final long userId) {
         return this.roleDao.getTableByPrincipal(principalId, userId);
     }
 

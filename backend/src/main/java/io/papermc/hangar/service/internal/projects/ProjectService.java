@@ -88,7 +88,7 @@ public class ProjectService extends HangarComponent {
         return this.getProjectTable(projectId, this.projectsDAO::getById);
     }
 
-    public ProjectTable getProjectTable(final String slug) {
+    public @Nullable ProjectTable getProjectTable(final String slug) {
         return this.getProjectTable(slug, this.projectsDAO::getBySlug);
     }
 
@@ -113,7 +113,7 @@ public class ProjectService extends HangarComponent {
 
     public HangarProject getHangarProject(final ProjectTable projectTable) {
         // TODO Most of this is dumb and needs to be redone into as little queries as possible
-        final Long hangarUserId = this.getHangarUserId();
+        final @Nullable Long hangarUserId = this.getHangarUserId();
         final ProjectData projectData = this.hangarProjectsDAO.getProject(projectTable.getId(), hangarUserId);
         if (projectData == null) {
             // some view hasn't updated yet

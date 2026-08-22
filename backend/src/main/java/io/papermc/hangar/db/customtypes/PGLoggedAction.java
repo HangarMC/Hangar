@@ -2,6 +2,7 @@ package io.papermc.hangar.db.customtypes;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 import org.postgresql.util.PGobject;
 
 public class PGLoggedAction extends PGobject {
@@ -68,7 +69,7 @@ public class PGLoggedAction extends PGobject {
     }
 
     @Override
-    public void setValue(final String value) {
+    public void setValue(final @Nullable String value) {
         this.value = value;
     }
 
@@ -79,7 +80,7 @@ public class PGLoggedAction extends PGobject {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         if (this == obj) return true;
         if (obj == null || this.getClass() != obj.getClass()) return false;
         if (!super.equals(obj)) return false;

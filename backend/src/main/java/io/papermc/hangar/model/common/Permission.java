@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 import org.jdbi.v3.core.statement.StatementContext;
+import org.jspecify.annotations.Nullable;
 
 public class Permission implements Comparable<Permission>, Argument {
 
@@ -145,7 +146,7 @@ public class Permission implements Comparable<Permission>, Argument {
         return new Permission(value);
     }
 
-    public static Permission fromBinString(final String binString) {
+    public static @Nullable Permission fromBinString(final @Nullable String binString) {
         if (binString == null) return null;
         return new Permission(Long.parseLong(binString, 2));
     }

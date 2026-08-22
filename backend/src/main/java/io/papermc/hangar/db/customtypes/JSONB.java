@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.postgresql.util.PGobject;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -15,8 +16,8 @@ public class JSONB extends PGobject {
     private static final String TYPE_STRING = "jsonb";
     private static final ObjectMapper objectMapper = new Jackson2ObjectMapperBuilder().build();
 
-    private transient JsonNode json;
-    private transient Map<String, String> map;
+    private transient @Nullable JsonNode json;
+    private transient @Nullable Map<String, String> map;
 
     public JSONB(final String value) {
         this.setType(TYPE_STRING);
@@ -46,11 +47,11 @@ public class JSONB extends PGobject {
     }
 
     @JsonValue
-    public JsonNode getJson() {
+    public @Nullable JsonNode getJson() {
         return this.json;
     }
 
-    public Map<String, String> getMap() {
+    public @Nullable Map<String, String> getMap() {
         if (this.map == null) {
             try {
                 this.map = objectMapper.readValue(this.value, new TypeReference<>() {
@@ -62,7 +63,7 @@ public class JSONB extends PGobject {
         return this.map;
     }
 
-    public <T> T get(final TypeReference<T> ref) {
+    public <T> @Nullable T get(final TypeReference<T> ref) {
         try {
             return objectMapper.readValue(this.value, ref);
         } catch (final JsonProcessingException | ClassCastException e) {
@@ -71,7 +72,7 @@ public class JSONB extends PGobject {
         return null;
     }
 
-    public <T> T get(final Class<T> ref) {
+    public <T> @Nullable T get(final Class<T> ref) {
         try {
             return objectMapper.readValue(this.value, ref);
         } catch (final JsonProcessingException | ClassCastException e) {
@@ -81,7 +82,7 @@ public class JSONB extends PGobject {
     }
 
     @Override
-    public void setValue(final String value) {
+    public void setValue(final @Nullable String value) {
         this.value = value;
         this.parseJson();
     }
@@ -98,7 +99,7 @@ public class JSONB extends PGobject {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(final @Nullable Object obj) {
         return super.equals(obj);
     }
 

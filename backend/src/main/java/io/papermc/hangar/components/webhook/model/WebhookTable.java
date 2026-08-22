@@ -4,6 +4,7 @@ import io.papermc.hangar.model.db.Table;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
+import org.jspecify.annotations.Nullable;
 
 public class WebhookTable extends Table {
 
@@ -13,7 +14,7 @@ public class WebhookTable extends Table {
     private boolean active;
     // TODO rename type to template and link it to a template table
     private String type;
-    private String[] events;
+    private String @Nullable [] events;
     private String scope;
 
     public WebhookTable(final OffsetDateTime createdAt, final long id, final String name, final String url, final String secret, final boolean active, final String type, final String[] events, final String scope) {
@@ -66,11 +67,11 @@ public class WebhookTable extends Table {
         this.type = type;
     }
 
-    public String[] getEvents() {
+    public String @Nullable [] getEvents() {
         return this.events;
     }
 
-    public void setEvents(final String[] events) {
+    public void setEvents(final String @Nullable [] events) {
         this.events = events;
     }
 

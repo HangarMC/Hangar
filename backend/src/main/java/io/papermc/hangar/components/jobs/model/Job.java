@@ -37,35 +37,35 @@ public abstract class Job extends Model {
         this.jobProperties = jobProperties;
     }
 
-    public OffsetDateTime getLastUpdated() {
+    public @Nullable OffsetDateTime getLastUpdated() {
         return this.lastUpdated;
     }
 
-    public void setLastUpdated(final OffsetDateTime lastUpdated) {
+    public void setLastUpdated(final @Nullable OffsetDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
-    public OffsetDateTime getRetryAt() {
+    public @Nullable OffsetDateTime getRetryAt() {
         return this.retryAt;
     }
 
-    public void setRetryAt(final OffsetDateTime retryAt) {
+    public void setRetryAt(final @Nullable OffsetDateTime retryAt) {
         this.retryAt = retryAt;
     }
 
-    public String getLastError() {
+    public @Nullable String getLastError() {
         return this.lastError;
     }
 
-    public void setLastError(final String lastError) {
+    public void setLastError(final @Nullable String lastError) {
         this.lastError = lastError;
     }
 
-    public String getLastErrorDescriptor() {
+    public @Nullable String getLastErrorDescriptor() {
         return this.lastErrorDescriptor;
     }
 
-    public void setLastErrorDescriptor(final String lastErrorDescriptor) {
+    public void setLastErrorDescriptor(final @Nullable String lastErrorDescriptor) {
         this.lastErrorDescriptor = lastErrorDescriptor;
     }
 

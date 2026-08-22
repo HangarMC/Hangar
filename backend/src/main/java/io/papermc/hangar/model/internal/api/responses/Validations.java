@@ -1,9 +1,7 @@
 package io.papermc.hangar.model.internal.api.responses;
 
 import io.papermc.hangar.config.hangar.HangarConfig;
-import org.checkerframework.framework.qual.DefaultQualifier;
 
-@DefaultQualifier(NonNull.class)
 public record Validations(
     ProjectValidations project,
     Validation userTagline,

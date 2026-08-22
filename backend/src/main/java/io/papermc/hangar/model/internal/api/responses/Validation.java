@@ -3,9 +3,7 @@ package io.papermc.hangar.model.internal.api.responses;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.papermc.hangar.util.PatternWrapper;
 import org.jspecify.annotations.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
 
-@DefaultQualifier(NonNull.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record Validation(@Nullable String regex, @Nullable Integer max, @Nullable Integer min) {
 

@@ -2,6 +2,7 @@ package io.papermc.hangar.model.common.projects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.jspecify.annotations.Nullable;
 
 public enum ReviewState {
     UNREVIEWED("unreviewed", "Unreviewed"),
@@ -39,7 +40,7 @@ public enum ReviewState {
     }
 
     @JsonCreator
-    public static ReviewState fromValue(final String text) {
+    public static @Nullable ReviewState fromValue(final String text) {
         for (final ReviewState b : values()) {
             if (String.valueOf(b.apiName).equals(text)) {
                 return b;

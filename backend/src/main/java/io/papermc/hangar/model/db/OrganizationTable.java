@@ -6,6 +6,7 @@ import io.papermc.hangar.model.db.projects.ProjectOwner;
 import io.papermc.hangar.model.loggable.OrganizationLoggable;
 import org.jdbi.v3.core.mapper.PropagateNull;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
+import org.jspecify.annotations.Nullable;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
     private final String name;
     private long ownerId;
     private final long userId;
-    private final UUID userUuid;
+    private final @Nullable UUID userUuid;
 
     @JdbiConstructor
     public OrganizationTable(final OffsetDateTime createdAt, @PropagateNull final long id, final String name, final long ownerId, final long userId, @Nullable final UUID userUuid) {
@@ -25,7 +26,7 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
         this.userUuid = userUuid;
     }
 
-    public OrganizationTable(final long id, final String name, final long ownerId, final long userId, final UUID userUuid) {
+    public OrganizationTable(final long id, final String name, final long ownerId, final long userId, final @Nullable UUID userUuid) {
         super(id);
         this.name = name;
         this.ownerId = ownerId;
@@ -67,7 +68,7 @@ public class OrganizationTable extends Table implements Visitable, ProjectOwner,
         return this.id;
     }
 
-    public UUID getUserUuid() {
+    public @Nullable UUID getUserUuid() {
         return this.userUuid;
     }
 
