@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1</version>
         <relativePath/>
     </parent>
 
@@ -31,7 +31,7 @@
         <spring-cloud-aws.version>4.1.0</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>8.52.0</sentry.version>
+        <sentry.version>8.53.0</sentry.version>
         <springdoc.version>3.1.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
         <org-json.version>20260719</org-json.version>
