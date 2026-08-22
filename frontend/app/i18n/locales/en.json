@@ -1472,7 +1472,15 @@
     "projectVisibility": "Visibility: {0}",
     "resolvedBy": "Resolved by {0}",
     "loadNotifications": "Load notifications",
-    "noNotifications": "No notifications have been sent for this report."
+    "noNotifications": "No notifications have been sent for this report.",
+    "sortLabel": "Sort reports",
+    "sortNewest": "Newest",
+    "sortOldest": "Oldest",
+    "sortRecentlyResolved": "Recently resolved",
+    "sortLeastRecentlyResolved": "Oldest resolved",
+    "perPage": "Reports per page",
+    "reportedAt": "Reported {0}",
+    "resolvedAtBy": "Resolved {0} by {1}"
   },
   "userActivity": {
     "title": "{0}'s Activity",
@@ -1603,7 +1611,13 @@
     "subtitle": "Versions waiting on a reviewer before they go public.",
     "queueClear": "Nothing is waiting for review.",
     "noneInReview": "No reviews are in progress.",
-    "toggleReviewers": "Toggle reviewers"
+    "toggleReviewers": "Toggle reviewers",
+    "search": "Search project, version or author",
+    "sortLabel": "Sort versions",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "perPage": "Versions per page",
+    "noResults": "No versions match your search."
   },
   "projectApproval": {
     "title": "Project Approvals",

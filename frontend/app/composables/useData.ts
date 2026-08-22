@@ -309,22 +309,34 @@ export function useHealthReport() {
   return { healthReport, healthReportStatus, healthReportRefresh };
 }
 
-export function useResolvedFlags() {
-  const { data: flags, status: flagsStatus } = useData(
-    () => ({}),
-    () => "resolvedFlags",
-    () => useInternalApi<PaginatedResultHangarProjectFlag>("flags/resolved")
-  );
-  return { flags, flagsStatus };
+export interface FlagParams extends Record<string, unknown> {
+  resolved: boolean;
+  limit: number;
+  offset: number;
+  sort: string;
 }
 
-export function useUnresolvedFlags() {
-  const { data: flags, status: flagsStatus } = useData(
-    () => ({}),
-    () => "unresolvedFlags",
-    () => useInternalApi<PaginatedResultHangarProjectFlag>("flags/unresolved")
+export function useFlags(params: () => FlagParams, skip: () => boolean = () => false) {
+  const {
+    data: flags,
+    status: flagsStatus,
+    refresh: refreshFlags,
+  } = useData(
+    params,
+    (p) => "flags:" + JSON.stringify(p),
+    (p) =>
+      useInternalApi<PaginatedResultHangarProjectFlag>("flags/" + (p.resolved ? "resolved" : "unresolved"), "get", {
+        limit: p.limit,
+        offset: p.offset,
+        sort: p.sort,
+      }),
+    true,
+    skip,
+    () => {},
+    undefined,
+    true
   );
-  return { flags, flagsStatus };
+  return { flags, flagsStatus, refreshFlags };
 }
 
 export function useVersionApprovals() {

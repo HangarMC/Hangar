@@ -1,6 +1,10 @@
 package io.papermc.hangar.controller.internal.projects;
 
 import io.papermc.hangar.HangarComponent;
+import io.papermc.hangar.controller.extras.pagination.PaginationType;
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.model.api.PaginatedResult;
 import io.papermc.hangar.model.api.requests.FlagForm;
 import io.papermc.hangar.model.api.requests.RequestPagination;
@@ -65,13 +69,21 @@ public class FlagController extends HangarComponent {
 
     @GetMapping(path = "/resolved", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public PaginatedResult<HangarProjectFlag> getResolvedFlags(final @NotNull RequestPagination pagination) {
+    @ApplicableSorters({SorterRegistry.FLAG_RESOLVED, SorterRegistry.FLAG_CREATED})
+    public PaginatedResult<HangarProjectFlag> getResolvedFlags(@ConfigurePagination(maxLimit = 100) final @NotNull RequestPagination pagination) {
+        if (pagination.getSorters().isEmpty()) {
+            pagination.getSorters().put("-flagResolved", SorterRegistry.FLAG_RESOLVED.descending(PaginationType.DB));
+        }
         return this.flagService.getFlags(pagination, true);
     }
 
     @GetMapping(path = "/unresolved", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.MOD_NOTES_AND_FLAGS)
-    public PaginatedResult<HangarProjectFlag> getUnresolvedFlags(final @NotNull RequestPagination pagination) {
+    @ApplicableSorters(SorterRegistry.FLAG_CREATED)
+    public PaginatedResult<HangarProjectFlag> getUnresolvedFlags(@ConfigurePagination(maxLimit = 100) final @NotNull RequestPagination pagination) {
+        if (pagination.getSorters().isEmpty()) {
+            pagination.getSorters().put("-flagCreated", SorterRegistry.FLAG_CREATED.descending(PaginationType.DB));
+        }
         return this.flagService.getFlags(pagination, false);
     }
 

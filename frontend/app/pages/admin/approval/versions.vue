@@ -16,8 +16,32 @@ const actions = {
   approved: [ReviewAction.APPROVE, ReviewAction.PARTIALLY_APPROVE],
 };
 
-const notStarted = computed(() => versionApprovals.value?.notStarted ?? []);
-const underReview = computed(() => versionApprovals.value?.underReview ?? []);
+const PAGE_SIZES = ["10", "25", "50"];
+const search = ref("");
+const order = ref<"oldest" | "newest">("newest");
+const perPage = ref(10);
+const perPageModel = computed({
+  get: () => String(perPage.value),
+  set: (value: string) => (perPage.value = Number(value)),
+});
+
+function arrange(entries: HangarReviewQueueEntry[]) {
+  const term = search.value.trim().toLowerCase();
+  const matches = term
+    ? entries.filter((entry) =>
+        `${entry.namespace.owner}/${entry.namespace.slug} ${entry.versionString} ${entry.versionAuthor} ${entry.channelName}`.toLowerCase().includes(term)
+      )
+    : [...entries];
+  return matches.sort((a, b) => {
+    const diff = new Date(a.versionCreatedAt).getTime() - new Date(b.versionCreatedAt).getTime();
+    return order.value === "oldest" ? diff : -diff;
+  });
+}
+
+const notStarted = computed(() => arrange(versionApprovals.value?.notStarted ?? []));
+const underReview = computed(() => arrange(versionApprovals.value?.underReview ?? []));
+const totals = computed(() => ({ notStarted: versionApprovals.value?.notStarted?.length ?? 0, underReview: versionApprovals.value?.underReview?.length ?? 0 }));
+const filtering = computed(() => search.value.trim().length > 0);
 const expanded = ref<Record<string, boolean>>({});
 
 useSeo(computed(() => ({ title: i18n.t("versionApproval.title"), route })));
@@ -94,15 +118,36 @@ function reviewUrl(entry: HangarReviewQueueEntry) {
       </div>
     </div>
 
+    <div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
+      <InputText v-model="search" :label="i18n.t('versionApproval.search')" class="lg:max-w-80 lg:flex-grow">
+        <template #append><IconMdiMagnify /></template>
+      </InputText>
+      <div class="flex flex-wrap gap-2 lg:ml-auto">
+        <SegmentedControl
+          v-model="order"
+          :options="[
+            { value: 'oldest', label: i18n.t('versionApproval.sortOldest') },
+            { value: 'newest', label: i18n.t('versionApproval.sortNewest') },
+          ]"
+          :aria-label="i18n.t('versionApproval.sortLabel')"
+        />
+        <SegmentedControl
+          v-model="perPageModel"
+          :options="PAGE_SIZES.map((size) => ({ value: size, label: size }))"
+          :aria-label="i18n.t('versionApproval.perPage')"
+        />
+      </div>
+    </div>
+
     <div class="flex flex-col gap-4">
       <Card flat padding="none">
         <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
           <h2 class="flex-grow text-lg font-bold">{{ i18n.t("versionApproval.approvalQueue") }}</h2>
-          <span class="text-sm text-gray-secondary tabular-nums">{{ notStarted.length }}</span>
+          <span class="text-sm text-gray-secondary tabular-nums">{{ filtering ? `${notStarted.length} / ${totals.notStarted}` : totals.notStarted }}</span>
         </div>
 
         <ul v-if="notStarted.length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
-          <Pagination :items="notStarted" :items-per-page="15">
+          <Pagination :key="perPage" :items="notStarted" :items-per-page="perPage">
             <template #default="{ item }">
               <li class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center">
                 <div class="h-9 w-9 flex flex-shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-lg text-amber-500">
@@ -137,18 +182,18 @@ function reviewUrl(entry: HangarReviewQueueEntry) {
           <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full background-card text-xl text-gray-secondary">
             <IconMdiCheckDecagramOutline />
           </div>
-          <p class="text-gray-secondary">{{ i18n.t("versionApproval.queueClear") }}</p>
+          <p class="text-gray-secondary">{{ filtering ? i18n.t("versionApproval.noResults") : i18n.t("versionApproval.queueClear") }}</p>
         </div>
       </Card>
 
       <Card flat padding="none">
         <div class="flex items-center gap-2 border-b border-gray-300 px-4 py-3 dark:border-gray-700">
           <h2 class="flex-grow text-lg font-bold">{{ i18n.t("versionApproval.inReview") }}</h2>
-          <span class="text-sm text-gray-secondary tabular-nums">{{ underReview.length }}</span>
+          <span class="text-sm text-gray-secondary tabular-nums">{{ filtering ? `${underReview.length} / ${totals.underReview}` : totals.underReview }}</span>
         </div>
 
         <ul v-if="underReview.length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
-          <Pagination :items="underReview" :items-per-page="15">
+          <Pagination :key="perPage" :items="underReview" :items-per-page="perPage">
             <template #default="{ item }">
               <li class="px-4 py-3">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -218,7 +263,7 @@ function reviewUrl(entry: HangarReviewQueueEntry) {
           <div class="mb-3 h-12 w-12 flex items-center justify-center rounded-full background-card text-xl text-gray-secondary">
             <IconMdiEyeOutline />
           </div>
-          <p class="text-gray-secondary">{{ i18n.t("versionApproval.noneInReview") }}</p>
+          <p class="text-gray-secondary">{{ filtering ? i18n.t("versionApproval.noResults") : i18n.t("versionApproval.noneInReview") }}</p>
         </div>
       </Card>
     </div>
