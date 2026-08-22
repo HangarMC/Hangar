@@ -29,6 +29,8 @@ const socialLinks = computed(() => {
 });
 
 const hasSocials = computed(() => socialLinks.value.length > 0 || Boolean(props.viewingUser?.socials?.discord));
+
+const roles = computed(() => displayRoles(props.viewingUser?.roles));
 </script>
 
 <template>
@@ -49,6 +51,11 @@ const hasSocials = computed(() => socialLinks.value.length > 0 || Boolean(props.
         <template v-if="viewingUser">
           <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
             <h1 class="min-w-0 truncate text-2xl text-strong">{{ viewingUser.name }}</h1>
+
+            <Chip v-if="viewingUser.isOrganization">
+              <IconMdiAccountGroupOutline />
+              {{ i18n.t("author.organizationLabel") }}
+            </Chip>
 
             <Tooltip v-if="viewingUser.locked">
               <template #content>{{ i18n.t("author.tooltips.lock") }}</template>
@@ -74,8 +81,8 @@ const hasSocials = computed(() => socialLinks.value.length > 0 || Boolean(props.
               </template>
             </Popper>
 
-            <div v-if="viewingUser.roles?.length" class="flex flex-wrap gap-1">
-              <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
+            <div v-if="roles.length > 0" class="flex flex-wrap gap-1">
+              <Tag v-for="role in roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
             </div>
 
             <div v-if="hasSocials || canEditCurrentUser" class="flex flex-wrap items-center gap-1">
@@ -136,7 +143,10 @@ const hasSocials = computed(() => socialLinks.value.length > 0 || Boolean(props.
 
       <div class="flex gap-2 lt-md:(mt-1 basis-full) md:(ml-auto w-72 flex-shrink-0)">
         <template v-if="viewingUser">
-          <StatTile :label="i18n.t('author.memberSinceLabel')" :value="i18n.d(viewingUser.createdAt, 'shortdate')">
+          <StatTile
+            :label="viewingUser.isOrganization ? i18n.t('author.createdLabel') : i18n.t('author.memberSinceLabel')"
+            :value="i18n.d(viewingUser.createdAt, 'shortdate')"
+          >
             <template #icon><IconMdiCalendar /></template>
           </StatTile>
           <StatTile :label="i18n.t('author.numProjectsLabel')" :value="viewingUser.projectCount">

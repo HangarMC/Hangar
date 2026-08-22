@@ -1020,7 +1020,10 @@
     "pinnedPlugins": "Pinned plugins",
     "sharesAddress": "Shares address with",
     "noSharedAddress": "No other accounts share an address with {0}.",
-    "nameHistory": "Previous names"
+    "nameHistory": "Previous names",
+    "organizationLabel": "Organization",
+    "createdLabel": "Created",
+    "createdOn": "Created {0}"
   },
   "linkout": {
     "title": "External Link Warning",

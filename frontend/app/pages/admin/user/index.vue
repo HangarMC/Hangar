@@ -76,7 +76,7 @@ useSeo(computed(() => ({ title: i18n.t("userList.title"), route })));
       </template>
       <template #roles="{ item }">
         <div class="space-x-1">
-          <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
+          <Tag v-for="role in displayRoles(item.roles)" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
         </div>
       </template>
     </SortableTable>

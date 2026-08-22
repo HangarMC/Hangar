@@ -103,6 +103,10 @@ useSeo(
         <NuxtLink :to="'/' + item.name" class="inline-flex min-w-0 items-center gap-2.5 hover:color-primary">
           <UserAvatar :username="item.name" :avatar-url="item.avatarUrl" size="xs" disable-link class="flex-shrink-0" />
           <span class="truncate font-semibold">{{ item.name }}</span>
+          <Tooltip v-if="item.isOrganization">
+            <template #content>{{ i18n.t("author.organizationLabel") }}</template>
+            <IconMdiAccountGroupOutline class="flex-shrink-0 text-gray-secondary" />
+          </Tooltip>
         </NuxtLink>
       </template>
 
@@ -115,7 +119,7 @@ useSeo(
 
       <template #roles="{ item }">
         <div class="flex flex-wrap gap-1">
-          <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
+          <Tag v-for="role in displayRoles(item.roles)" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
         </div>
       </template>
 

@@ -33,8 +33,9 @@ const orgConfig = [
 const orgList = computed(() => (orgs ? Object.keys(orgs).map((name) => ({ name })) : []));
 
 const selectedRole = ref();
+const roles = computed(() => displayRoles(user.value?.roles));
 const assignableRoles = computed(() =>
-  useBackendData.globalRoles.filter((r) => r.value !== "Organization" && !user.value?.roles.some((roleId) => getRole(roleId)?.value === r.value))
+  useBackendData.globalRoles.filter((r) => r.value !== ORGANIZATION_ROLE && !user.value?.roles.some((roleId) => getRole(roleId)?.value === r.value))
 );
 
 async function processRole(role: string | undefined, add: boolean) {
@@ -97,7 +98,7 @@ useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.u
           <NuxtLink :to="'/' + route.params.user" class="text-lg font-bold">{{ route.params.user }}</NuxtLink>
           <div class="text-sm text-gray-secondary">
             <template v-if="user">
-              {{ i18n.t("author.memberSince", [i18n.d(user.createdAt, "date")]) }} &middot;
+              {{ i18n.t(user.isOrganization ? "author.createdOn" : "author.memberSince", [i18n.d(user.createdAt, "date")]) }} &middot;
               {{ i18n.t("author.numProjects", [user.projectCount], user.projectCount) }}
             </template>
           </div>
@@ -123,9 +124,9 @@ useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.u
       <hr class="my-4 border-gray-300 dark:border-gray-700" />
 
       <h2 class="mb-2 font-bold">{{ i18n.t("userAdmin.roles") }}</h2>
-      <div v-if="user?.roles.length" class="flex flex-wrap items-center gap-1.5">
-        <span v-for="roleId in user.roles" :key="roleId" class="inline-flex items-center gap-1 rounded background-card py-0.5 pl-0.5 pr-1">
-          <Tag :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
+      <div v-if="roles.length > 0" class="flex flex-wrap items-center gap-1.5">
+        <span v-for="role in roles" :key="role.roleId" class="inline-flex items-center gap-1 rounded background-card py-0.5 pl-0.5 pr-1">
+          <Tag :color="{ background: role.color }" :name="role.title" />
           <Button
             variant="ghost"
             tone="danger"
@@ -134,7 +135,7 @@ useSeo(computed(() => ({ title: i18n.t("userAdmin.title") + " " + route.params.u
             class="!h-5 !w-5"
             :title="i18n.t('general.delete')"
             :aria-label="i18n.t('general.delete')"
-            @click="processRole(getRole(roleId)?.value, false)"
+            @click="processRole(role.value, false)"
           >
             <IconMdiClose />
           </Button>

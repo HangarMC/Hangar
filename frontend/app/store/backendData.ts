@@ -40,9 +40,16 @@ typedBackendData.prompts = convertToMap(serverBackendData.prompts, (value) => va
 // main export
 export const useBackendData = typedBackendData;
 
+export const ORGANIZATION_ROLE = "Organization";
+
 export function getRole(id?: number): RoleData | undefined {
   if (!id) return undefined;
   return getRoleFromRoles(id, typedBackendData.globalRoles);
+}
+
+// the organization role marks the account type rather than a granted role, so it never belongs in a role tag list
+export function displayRoles(roleIds?: number[]): RoleData[] {
+  return (roleIds ?? []).map((roleId) => getRole(roleId)).filter((role): role is RoleData => role !== undefined && role.value !== ORGANIZATION_ROLE);
 }
 
 export function getRoleByValue(id: string): RoleData | undefined {
