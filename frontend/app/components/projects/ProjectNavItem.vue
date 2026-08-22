@@ -1,33 +1,22 @@
 <script setup lang="ts">
 const props = defineProps<{
   to?: string;
-  href?: string;
   label: string;
+  active?: boolean;
 }>();
 
-const route = useRoute();
-
-const selected = computed(() => {
-  const routerPath = route.path.endsWith("/") ? route.path.slice(0, Math.max(0, route.path.length - 1)) : route.path;
-  return routerPath === props.to;
-});
-
 const clazz = computed(() => {
-  return "nav-underline py-1 inline-flex items-center gap-1.5 border-b-2 border-transparent " + (selected.value ? "nav-underline-active font-semibold " : "");
+  return "nav-underline py-1 inline-flex items-center gap-1.5 border-b-2 border-transparent " + (props.active ? "nav-underline-active font-semibold " : "");
 });
 </script>
 
 <template>
-  <div v-if="to || href" class="mb-[-2px] mr-1">
+  <div v-if="to" class="mb-[-2px] mr-1">
     <!-- icons carry ~2px of transparent margin in their box, so the padding is trimmed on whichever side one sits -->
-    <NuxtLink v-if="to" :to="to" class="pl-1.5 pr-2" :class="clazz">
+    <NuxtLink :to="to" class="pl-1.5 pr-2" :class="clazz">
       <slot />
       <span class="nav-label" :data-label="label">{{ label }}</span>
     </NuxtLink>
-    <a v-if="href" :href="linkout(href)" class="pl-2 pr-1.5" :class="clazz" target="_blank">
-      {{ label }}
-      <IconMdiOpenInNew class="text-xs" />
-    </a>
   </div>
 </template>
 
