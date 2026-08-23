@@ -1174,6 +1174,7 @@
     "noPlatforms": "This version has no platforms to scan.",
     "external": "External",
     "externalHint": "Files hosted outside of Hangar cannot be scanned.",
+    "decompile": "Decompile with slicer.run",
     "showMore": "Show 1 more location | Show {0} more locations",
     "showLess": "Show less",
     "filter": {

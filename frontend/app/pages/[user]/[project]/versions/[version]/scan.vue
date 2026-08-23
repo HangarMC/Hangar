@@ -28,6 +28,9 @@ const expanded = ref<Record<string, boolean>>({});
 interface Occurrence {
   location: string;
   count: number;
+  owner: string;
+  member: string;
+  href?: string;
 }
 
 interface Finding {
@@ -41,7 +44,7 @@ interface Finding {
 
 const sections = computed(() =>
   versionArtifacts(props.version, props.versionPlatforms, jarScans.value).map((artifact) => {
-    const findings = artifact.scan ? groupEntries(artifact.scan.entries) : [];
+    const findings = artifact.scan ? groupEntries(artifact.scan.entries, artifact) : [];
     return {
       ...artifact,
       findings,
@@ -84,7 +87,7 @@ const severityOptions = computed(() => [
   })),
 ]);
 
-function groupEntries(entries: JarScanEntry[]): Finding[] {
+function groupEntries(entries: JarScanEntry[], artifact: VersionArtifact): Finding[] {
   const grouped = new Map<string, { severity: string; checkName?: string; message: string; locations: Map<string, number> }>();
   for (const entry of entries) {
     const key = `${entry.severity} ${entry.checkName ?? ""} ${entry.message}`;
@@ -100,7 +103,7 @@ function groupEntries(entries: JarScanEntry[]): Finding[] {
     .map(([key, finding]) => {
       const occurrences = finding.locations
         .entries()
-        .map(([location, count]) => ({ location, count }))
+        .map(([location, count]) => ({ location, count, ...parseLocation(location, artifact) }))
         .toArray();
       return {
         key,
@@ -164,10 +167,22 @@ function severityLabel(severity?: string): string {
   return t(`scan.severity.${severity && SEVERITIES.includes(severity as (typeof SEVERITIES)[number]) ? severity : "UNKNOWN"}`);
 }
 
-function splitLocation(location: string): { owner: string; member: string } {
+function parseLocation(location: string, artifact: VersionArtifact): { owner: string; member: string; href?: string } {
   const separator = location.lastIndexOf(" @ ");
-  if (separator === -1) return { owner: location, member: "" };
-  return { owner: location.slice(separator + 3).replaceAll("/", "."), member: location.slice(0, separator) };
+  const owner = separator === -1 ? location : location.slice(separator + 3);
+  const member = separator === -1 ? "" : location.slice(0, separator);
+  // method checks report the jvm internal name, the scanner's own checks report the jar entry as-is
+  const named = /\.[a-z0-9]+$/i.test(owner);
+  return { owner: named ? owner : owner.replaceAll("/", "."), member, href: slicerLink(artifact, named ? owner : owner + ".class") };
+}
+
+// slicer decompiles entirely in the browser, so it only needs the jar url and the entry to open.
+// it names a remote archive after the last url segment - or input.jar if that has no extension - and prefixes the entries it unpacks with it
+function slicerLink(artifact: VersionArtifact, entry: string): string | undefined {
+  if (!artifact.downloadUrl || /\s/.test(entry)) return;
+  const segment = new URL(artifact.downloadUrl).pathname.split("/").pop() ?? "";
+  const file = (segment.includes(".") ? segment : "input.jar") + "/" + entry;
+  return `https://slicer.run/?url=${encodeURIComponent(artifact.downloadUrl)}&file=${encodeURIComponent(file)}`;
 }
 
 function externalHost(url: string): string {
@@ -359,10 +374,19 @@ useSeo(
             <ul class="mt-1.5 flex flex-col gap-1">
               <li v-for="occurrence in visibleOccurrences(section.key, finding)" :key="occurrence.location" class="min-w-0 flex items-baseline gap-2">
                 <span class="min-w-0 flex flex-wrap items-baseline gap-x-2 font-mono text-xs">
-                  <span class="break-all">{{ splitLocation(occurrence.location).owner }}</span>
-                  <span v-if="splitLocation(occurrence.location).member" class="break-all text-gray-secondary">
-                    {{ splitLocation(occurrence.location).member }}
-                  </span>
+                  <a
+                    v-if="occurrence.href"
+                    :href="occurrence.href"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="break-all hover:(color-primary underline)"
+                    :title="t('scan.decompile')"
+                  >
+                    {{ occurrence.owner }}
+                    <IconMdiOpenInNew class="inline-block text-2.5 opacity-70" />
+                  </a>
+                  <span v-else class="break-all">{{ occurrence.owner }}</span>
+                  <span v-if="occurrence.member" class="break-all text-gray-secondary">{{ occurrence.member }}</span>
                 </span>
                 <span v-if="occurrence.count > 1" class="flex-shrink-0 text-xs text-gray-secondary tabular-nums">
                   {{ t("scan.occurrences", [occurrence.count]) }}

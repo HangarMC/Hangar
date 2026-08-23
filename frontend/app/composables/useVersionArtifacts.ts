@@ -4,6 +4,7 @@ export interface VersionArtifact {
   key: string;
   platforms: Platform[];
   externalUrl?: string;
+  downloadUrl?: string;
   fileInfo?: FileInfo;
   scan?: JarScanResult;
 }
@@ -22,7 +23,7 @@ export function versionArtifacts(version: Version | undefined, versionPlatforms:
       continue;
     }
 
-    artifacts.set(key, { key, platforms: [platform], externalUrl: download?.externalUrl, fileInfo: download?.fileInfo });
+    artifacts.set(key, { key, platforms: [platform], externalUrl: download?.externalUrl, downloadUrl: download?.downloadUrl, fileInfo: download?.fileInfo });
   }
 
   for (const artifact of artifacts.values()) {
