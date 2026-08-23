@@ -19,7 +19,7 @@ class Auth {
     if (redirectUrl?.startsWith("/auth") && !redirectUrl.startsWith("/auth/settings")) {
       redirectUrl = undefined;
     }
-    return redirectUrl ? `${url}?returnUrl=${redirectUrl}` : url;
+    return redirectUrl ? `${url}?returnUrl=${encodeURIComponent(redirectUrl)}` : url;
   }
 
   async logout() {

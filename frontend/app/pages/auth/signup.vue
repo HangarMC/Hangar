@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute("auth-signup");
+const oauthReturnUrl = computed(() => encodeURIComponent((route.query.returnUrl as string) || "/"));
 const v = useVuelidate();
 const backendData = useBackendData;
 
@@ -65,7 +66,7 @@ useSeo(computed(() => ({ title: "Sign up", route })));
           variant="outline"
           tone="neutral"
           :disabled="loading"
-          :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + (route.query.returnUrl ? route.query.returnUrl : '/')"
+          :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + oauthReturnUrl"
         >
           <template v-if="provider === 'github'">
             <IconMdiGithub />

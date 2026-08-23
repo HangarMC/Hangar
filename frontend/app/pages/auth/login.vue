@@ -13,6 +13,7 @@ const loading = ref(false);
 const supportedMethods = ref<string[]>([]);
 
 const returnUrl = computed(() => (route.query.returnUrl as string) || "/auth/settings/profile");
+const oauthReturnUrl = computed(() => encodeURIComponent(returnUrl.value));
 
 // aal1
 const username = ref("");
@@ -175,7 +176,7 @@ useSeo(computed(() => ({ title: "Login", route })));
               variant="outline"
               tone="neutral"
               :disabled="loading"
-              :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + returnUrl"
+              :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + oauthReturnUrl"
             >
               <template v-if="provider === 'github'">
                 <IconMdiGithub />
