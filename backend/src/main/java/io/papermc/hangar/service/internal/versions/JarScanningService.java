@@ -18,9 +18,10 @@ import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable
 import io.papermc.hangar.model.internal.versions.JarScanEntry;
 import io.papermc.hangar.model.internal.versions.JarScanResult;
 import io.papermc.hangar.scanner.HangarJarScanner;
-import io.papermc.hangar.scanner.check.Check;
+import io.papermc.hangar.scanner.check.CheckResult;
 import io.papermc.hangar.scanner.model.ScanResult;
 import io.papermc.hangar.scanner.model.Severity;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.UserService;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -194,8 +196,13 @@ public class JarScanningService {
 
         // Stored against the download's own platform, so that all platforms sharing the jar share its result
         final JarScanResultTable table = this.dao.save(new JarScanResultTable(versionToScan.versionId(), this.scanner.version(), download.getDownloadPlatform(), scanResult.highestSeverity().name()));
-        for (final Check.CheckResult result : scanResult.results()) {
-            this.dao.save(new JarScanResultEntryTable(table.getId(), result.location(), result.message(), result.severity().name(), result.name()));
+        for (final CheckResult result : scanResult.results()) {
+            JarScanResultEntryTable existingEntry = this.dao.getCheckedByHash(result.hash());
+            if (existingEntry != null) {
+                this.dao.save(new JarScanResultEntryTable(table.getId(), result.location(), result.message(), result.severity().name(), result.name(), result.hash(), existingEntry.isChecked(), existingEntry.getCheckedAt(), existingEntry.getCheckedBy()));
+            } else {
+                this.dao.save(new JarScanResultEntryTable(table.getId(), result.location(), result.message(), result.severity().name(), result.name(), result.hash(), false, null, null));
+            }
         }
         return scanResult.highestSeverity();
     }
@@ -234,11 +241,26 @@ public class JarScanningService {
     private List<JarScanEntry> entries(final long resultId) {
         return this.dao.getEntries(resultId).stream()
             .sorted(Comparator.comparing(entry -> Severity.valueOf(entry.getSeverity())))
-            .map(entry -> new JarScanEntry(entry.getSeverity(), entry.getCheckName(), entry.getMessage(), entry.getLocation()))
+            .map(entry -> new JarScanEntry(entry.getId(), entry.getSeverity(), entry.getCheckName(), entry.getMessage(), entry.getLocation(), entry.isChecked(), entry.getCheckedBy(), entry.getCheckedAt()))
             .toList();
     }
 
     public UserTable getJarScannerUser() {
         return this.jarScannerUser;
+    }
+
+    public void markSafe(long entryId, HangarPrincipal user) {
+        final JarScanResultEntryTable entry = this.dao.getEntry(entryId);
+        if (entry == null) {
+            throw new HangarApiException("Entry not found");
+        }
+        entry.setChecked(true);
+        entry.setCheckedBy(user.getUserId());
+        entry.setCheckedAt(OffsetDateTime.now());
+        this.dao.update(entry);
+    }
+
+    public void markAllSafe(long resultId, HangarPrincipal user) {
+        this.dao.markAllSafe(resultId, user.getUserId());
     }
 }

@@ -1,6 +1,8 @@
 package io.papermc.hangar.model.internal.versions;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-public record JarScanEntry(String severity, @Nullable String checkName, String message, String location) {
+import java.time.OffsetDateTime;
+import org.jspecify.annotations.Nullable;
+
+public record JarScanEntry(long id, String severity, @Nullable String checkName, String message, String location, boolean checked, @Nullable Long checkedBy, @Nullable OffsetDateTime checkedAt) {
 }

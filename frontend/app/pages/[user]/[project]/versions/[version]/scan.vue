@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Platform, HangarProject, Version, JarScanEntry } from "#shared/types/backend";
+import type { Platform, HangarProject, Version, JarScanEntry, JarScanResult } from "#shared/types/backend";
 import type { VersionArtifact } from "~/composables/useVersionArtifacts";
 import { useJarScans } from "~/composables/useData";
 
@@ -31,6 +31,7 @@ interface Occurrence {
   owner: string;
   member: string;
   href?: string;
+  entry: JarScanEntry;
 }
 
 interface Finding {
@@ -88,30 +89,31 @@ const severityOptions = computed(() => [
 ]);
 
 function groupEntries(entries: JarScanEntry[], artifact: VersionArtifact): Finding[] {
-  const grouped = new Map<string, { severity: string; checkName?: string; message: string; locations: Map<string, number> }>();
+  const grouped = new Map<string, { severity: string; checkName?: string; message: string; occurrences: Map<string, Occurrence> }>();
   for (const entry of entries) {
     const key = `${entry.severity} ${entry.checkName ?? ""} ${entry.message}`;
     let finding = grouped.get(key);
     if (!finding) {
-      finding = { severity: entry.severity, checkName: entry.checkName, message: entry.message, locations: new Map() };
+      finding = { severity: entry.severity, checkName: entry.checkName, message: entry.message, occurrences: new Map() };
       grouped.set(key, finding);
     }
-    finding.locations.set(entry.location, (finding.locations.get(entry.location) ?? 0) + 1);
+    finding.occurrences.set(entry.location, {
+      location: entry.location,
+      count: (finding.occurrences.get(entry.location)?.count ?? 0) + 1,
+      ...parseLocation(entry.location, artifact),
+      entry,
+    });
   }
 
   return [...grouped]
     .map(([key, finding]) => {
-      const occurrences = finding.locations
-        .entries()
-        .map(([location, count]) => ({ location, count, ...parseLocation(location, artifact) }))
-        .toArray();
       return {
         key,
         severity: finding.severity,
         checkName: finding.checkName,
         message: finding.message,
-        total: occurrences.reduce((sum, occurrence) => sum + occurrence.count, 0),
-        occurrences,
+        total: finding.occurrences.values().reduce((sum, occurrence) => sum + occurrence.count, 0),
+        occurrences: finding.occurrences.values().toArray(),
       };
     })
     .sort((a, b) => severityRank(a.severity) - severityRank(b.severity) || b.total - a.total || a.message.localeCompare(b.message));
@@ -228,6 +230,26 @@ async function scanAll() {
   await Promise.all(scannableSections.value.map((section) => scanArtifact(section)));
 }
 
+async function markSafe(occurrence: Occurrence) {
+  try {
+    await useInternalApi(`jarscanning/mark-safe/${occurrence.entry.id}`, "POST");
+    occurrence.entry.checked = true;
+    useNotificationStore().success(t("scan.notify.markedSafe", [occurrence.location]));
+  } catch (err) {
+    handleRequestError(err);
+  }
+}
+
+async function markAllSafe(result: JarScanResult) {
+  try {
+    await useInternalApi(`jarscanning/mark-all-safe/${result.id}`, "POST");
+    await refreshJarScans();
+    useNotificationStore().success(t("scan.notify.markedAllSafe"));
+  } catch (err) {
+    handleRequestError(err);
+  }
+}
+
 useSeo(
   computed(() => ({
     title: "Scan | " + props.project?.name,
@@ -315,6 +337,7 @@ useSeo(
           <IconMdiRadar />
           {{ section.scan ? t("scan.rescan") : t("scan.scanNow") }}
         </Button>
+        <Button size="sm" v-if="section.scan" @click="markAllSafe(section.scan)">{{ t("scan.markAllSafe") }}</Button>
       </div>
 
       <div v-if="section.externalUrl" class="flex flex-col items-center px-4 py-10 text-center">
@@ -373,7 +396,7 @@ useSeo(
 
             <ul class="mt-1.5 flex flex-col gap-1">
               <li v-for="occurrence in visibleOccurrences(section.key, finding)" :key="occurrence.location" class="min-w-0 flex items-baseline gap-2">
-                <span class="min-w-0 flex flex-wrap items-baseline gap-x-2 font-mono text-xs">
+                <span class="min-w-0 flex flex-wrap flex-grow items-baseline gap-x-2 font-mono text-xs">
                   <a
                     v-if="occurrence.href"
                     :href="occurrence.href"
@@ -391,6 +414,8 @@ useSeo(
                 <span v-if="occurrence.count > 1" class="flex-shrink-0 text-xs text-gray-secondary tabular-nums">
                   {{ t("scan.occurrences", [occurrence.count]) }}
                 </span>
+                {{ occurrence.entry.checked }}
+                <Button size="sm" :disabled="occurrence.entry.checked" @click="markSafe(occurrence)">{{ t("scan.markSafe") }}</Button>
               </li>
             </ul>
 

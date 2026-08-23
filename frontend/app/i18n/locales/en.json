@@ -1177,6 +1177,8 @@
     "decompile": "Decompile with slicer.run",
     "showMore": "Show 1 more location | Show {0} more locations",
     "showLess": "Show less",
+    "markSafe": "Mark safe",
+    "markAllSafe": "Mark all safe",
     "filter": {
       "label": "Filter findings by severity",
       "all": "All"
@@ -1190,7 +1192,9 @@
       "UNKNOWN": "Unknown"
     },
     "notify": {
-      "done": "Scanned {0}"
+      "done": "Scanned {0}",
+      "markedSafe": "Marked {0} as safe",
+      "markedAllSafe": "Marked all as safe"
     }
   },
   "apiKeys": {

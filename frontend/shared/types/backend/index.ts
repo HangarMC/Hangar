@@ -2268,10 +2268,15 @@ export interface Review {
 }
 
 export interface JarScanEntry {
+  id: number;
   checkName?: string;
   location: string;
   message: string;
   severity: string;
+  checkedBy?: number;
+  /** @format date-time */
+  checkedAt?: string;
+  checked: boolean;
 }
 
 export interface JarScanResult {

@@ -1,5 +1,6 @@
 package io.papermc.hangar.controller.internal;
 
+import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.common.Platform;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RateLimit(path = "jarscanning")
 @PermissionRequired(NamedPermission.REVIEWER)
 @RequestMapping(value = "/api/internal/jarscanning", produces = MediaType.APPLICATION_JSON_VALUE)
-public class JarScanningController {
+public class JarScanningController extends HangarComponent {
 
     private final JarScanningService jarScanningService;
 
@@ -32,21 +33,31 @@ public class JarScanningController {
     }
 
     @GetMapping("/result/{versionId}")
-    public @Nullable List<JarScanResult> getResults(@PathVariable final long versionId)  {
+    public @Nullable List<JarScanResult> getResults(@PathVariable final long versionId) {
         return this.jarScanningService.getLastResults(versionId);
     }
 
     @GetMapping("/result/{versionId}/{platform}")
-    public @Nullable JarScanResult getResult(@PathVariable final long versionId, @PathVariable final Platform platform)  {
+    public @Nullable JarScanResult getResult(@PathVariable final long versionId, @PathVariable final Platform platform) {
         return this.jarScanningService.getLastResult(versionId, platform);
     }
 
     @PostMapping("/scan/{versionId}/{platform}")
-    public void scan(@PathVariable final long versionId, @PathVariable final Platform platform)  {
+    public void scan(@PathVariable final long versionId, @PathVariable final Platform platform) {
         try {
             this.jarScanningService.scanPlatform(versionId, platform);
         } catch (final Exception e) {
             throw new HangarApiException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    @PostMapping("/mark-safe/{entryId}")
+    public void markSafe(@PathVariable final long entryId) {
+        this.jarScanningService.markSafe(entryId, this.getHangarPrincipal());
+    }
+
+    @PostMapping("/mark-all-safe/{resultId}")
+    public void markSafeAll(@PathVariable final long resultId) {
+        this.jarScanningService.markAllSafe(resultId, this.getHangarPrincipal());
     }
 }
