@@ -80,7 +80,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     from,
     (versionName) => {
       if ("project" in to.params) {
-        return useApi<Version>(`projects/${to.params.project}/versions/${versionName}?resolveId=false"`);
+        return useApi<Version>(`projects/${to.params.project}/versions/${versionName}?resolveId=false`);
       }
       throw createError({ statusCode: 500, statusMessage: "No project param?!" });
     },
