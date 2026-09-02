@@ -111,6 +111,7 @@ async function cancelDeletion() {
           name="new-password"
           autofill="new-password"
           autocomplete="new-password"
+          :rules="[maxLength()(72)]"
         />
       </template>
       <div v-if="error" class="text-red">{{ error }}</div>

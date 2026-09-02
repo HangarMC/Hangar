@@ -64,7 +64,7 @@ useSeo(computed(() => ({ title: "Reset your password", route })));
     <form v-else-if="!passwordUpdated" class="flex flex-col gap-2">
       <p>Enter your new password</p>
       <input id="email" v-model="email" type="hidden" name="email" />
-      <InputPassword v-model="password" label="New password" name="new-password" autocomplete="new-password" :rules="[required()]" />
+      <InputPassword v-model="password" label="New password" name="new-password" autocomplete="new-password" :rules="[required(), maxLength()(72)]" />
       <Button class="w-max" @click.prevent="sendNewPassword">Update password</Button>
     </form>
     <div v-else class="flex flex-col gap-2">

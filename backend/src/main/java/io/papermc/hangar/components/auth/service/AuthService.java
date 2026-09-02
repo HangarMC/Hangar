@@ -25,6 +25,7 @@ import io.papermc.hangar.service.internal.BucketService;
 import io.papermc.hangar.service.internal.MailService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import jakarta.validation.constraints.NotEmpty;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -124,6 +125,8 @@ public class AuthService extends HangarComponent implements UserDetailsService {
     public boolean validPassword(final String password, final String username) {
         if (!StringUtils.hasText(password) || password.length() < 8) {
             throw new HangarApiException("The password needs to be at least 8 characters long");
+        } else if (password.getBytes(StandardCharsets.UTF_8).length > 72) {
+            throw new HangarApiException("The password needs to be at most 72 bytes long");
         }
 
         // https://github.com/ory/kratos/blob/40ab76af4f36c671fc1d1108c3b6a15adcdb6125/selfservice/strategy/password/validator.go#L185
