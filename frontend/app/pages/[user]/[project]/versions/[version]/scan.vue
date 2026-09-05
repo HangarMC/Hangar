@@ -30,6 +30,7 @@ interface Occurrence {
   count: number;
   owner: string;
   member: string;
+  methodInsn?: string;
   href?: string;
   entry: JarScanEntry;
 }
@@ -169,13 +170,20 @@ function severityLabel(severity?: string): string {
   return t(`scan.severity.${severity && SEVERITIES.includes(severity as (typeof SEVERITIES)[number]) ? severity : "UNKNOWN"}`);
 }
 
-function parseLocation(location: string, artifact: VersionArtifact): { owner: string; member: string; href?: string } {
+function parseLocation(location: string, artifact: VersionArtifact): { owner: string; member: string; href?: string; methodInsn?: string } {
+  // possible formats:
+  // CheckResult.Class: classNode.name
+  // CheckResult.Field: classNode.name + "#" + fieldNode.name
+  // CheckResult.Method: classNode.name + "#" + methodNode.name + "(" + methodNode.desc + ")"
+  // CheckResult.MethodCall: methodInsnNode.owner + "#" + methodInsnNode.name + "(" + methodInsnNode.desc + ")" + " @ " + classNode.name  + "#" + methodNode.name + "(" + methodNode.desc + ")"
   const separator = location.lastIndexOf(" @ ");
-  const owner = separator === -1 ? location : location.slice(separator + 3);
-  const member = separator === -1 ? "" : location.slice(0, separator);
+  const ownerAndMember = (separator === -1 ? location : location.slice(separator + 3)).split("#");
+  const owner = ownerAndMember[0] ?? "";
+  const member = ownerAndMember[1] ?? "";
+  const methodInsn = location.slice(0, separator);
   // method checks report the jvm internal name, the scanner's own checks report the jar entry as-is
   const named = /\.[a-z0-9]+$/i.test(owner);
-  return { owner: named ? owner : owner.replaceAll("/", "."), member, href: slicerLink(artifact, named ? owner : owner + ".class") };
+  return { owner: named ? owner : owner.replaceAll("/", "."), member, methodInsn, href: slicerLink(artifact, named ? owner : owner + ".class") };
 }
 
 // slicer decompiles entirely in the browser, so it only needs the jar url and the entry to open.
@@ -397,6 +405,8 @@ useSeo(
             <ul class="mt-1.5 flex flex-col gap-1">
               <li v-for="occurrence in visibleOccurrences(section.key, finding)" :key="occurrence.location" class="min-w-0 flex items-baseline gap-2">
                 <span class="min-w-0 flex flex-wrap flex-grow items-baseline gap-x-2 font-mono text-xs">
+                  <span class="break-all text-gray-secondary">{{ occurrence.methodInsn }}</span>
+                  @
                   <a
                     v-if="occurrence.href"
                     :href="occurrence.href"
