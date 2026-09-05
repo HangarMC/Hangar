@@ -10,5 +10,3 @@ allowBuilds:
   tree-sitter-json: true
   unrs-resolver: true
   vue-demi: true
-minimumReleaseAgeExclude:
-  - eslint@10.8.1

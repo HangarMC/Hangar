@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1</version>
         <relativePath/>
     </parent>
 
@@ -28,13 +28,13 @@
         <!-- dependency management -->
         <jdbi3-bom.version>3.54.0</jdbi3-bom.version>
         <configurate.version>4.2.0</configurate.version>
-        <spring-cloud-aws.version>4.1.0</spring-cloud-aws.version>
+        <spring-cloud-aws.version>4.1.1</spring-cloud-aws.version>
 
         <!-- dependencies -->
-        <sentry.version>8.52.0</sentry.version>
+        <sentry.version>8.55.0</sentry.version>
         <springdoc.version>3.1.0</springdoc.version>
         <jsitemapgenerator.version>4.5</jsitemapgenerator.version>
-        <org-json.version>20260719</org-json.version>
+        <org-json.version>20260814</org-json.version>
         <bucket4j.version>8.19.0</bucket4j.version>
         <datafaker.version>2.7.0</datafaker.version>
         <jwt.version>4.6.0</jwt.version>
@@ -50,11 +50,8 @@
 
         <!-- test -->
         <testcontainer.version>1.21.4</testcontainer.version>
-        <openapi-generator.version>7.24.0</openapi-generator.version>
+        <openapi-generator.version>7.25.0</openapi-generator.version>
         <argLine/>
-
-        <!-- plugins -->
-        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     </properties>
 
     <repositories>
@@ -414,7 +411,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

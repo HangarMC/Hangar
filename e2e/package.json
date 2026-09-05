@@ -11,13 +11,13 @@
     },
     "dependencies": {
         "@types/chai": "5.2.3",
-        "browserstack-node-sdk": "1.65.5",
+        "browserstack-node-sdk": "1.68.2",
         "chai": "6.2.2",
         "codeceptjs": "4.1.0",
         "jwt-decode": "4.0.0",
         "totp-generator": "2.0.1",
-        "tsx": "4.23.11",
-        "webdriverio": "9.30.1"
+        "tsx": "4.23.13",
+        "webdriverio": "9.31.5"
     },
-    "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621"
+    "packageManager": "pnpm@11.25.0+sha512.5cde925b4f075f725eb71fbae18a42ffe784524789f19b61c731cb8721ec28aaee160e01a8d5af4fedb2a42cdbf300efe23db356b0d4a17b4d63e11f8ab7c956"
 }
