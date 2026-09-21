@@ -24,14 +24,14 @@ importers:
         specifier: 2.0.4
         version: 2.0.4(vue@3.5.42(typescript@6.0.3))
       '@vueuse/components':
-        specifier: 14.4.0
-        version: 14.4.0(vue@3.5.42(typescript@6.0.3))
+        specifier: 15.0.0
+        version: 15.0.0(vue@3.5.42(typescript@6.0.3))
       '@vueuse/core':
-        specifier: 14.4.0
-        version: 14.4.0(vue@3.5.42(typescript@6.0.3))
+        specifier: 15.0.0
+        version: 15.0.0(vue@3.5.42(typescript@6.0.3))
       '@vueuse/nuxt':
-        specifier: 14.4.0
-        version: 14.4.0(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.2(fcf7e76bb438c8e39ed1d461062d0328))(oxc-parser@0.131.0)(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0))(webpack@5.110.3(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)))(vue@3.5.42(typescript@6.0.3))
+        specifier: 15.0.0
+        version: 15.0.0(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.2(fcf7e76bb438c8e39ed1d461062d0328))(oxc-parser@0.131.0)(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0))(webpack@5.110.3(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)))(vue@3.5.42(typescript@6.0.3))
       accept-language-parser:
         specifier: 1.5.0
         version: 1.5.0
@@ -3469,8 +3469,9 @@ packages:
       '@vue/composition-api':
         optional: true
 
-  '@vueuse/components@14.4.0':
-    resolution: {integrity: sha512-USgxljmrGUTjtMJcOCbjU7SlRP6K1i5inM6JgMD8bOBn/oL4dK0XYTtNfWyuo0FgUhtCftIKXi+4vJ8ml+tmqw==}
+  '@vueuse/components@15.0.0':
+    resolution: {integrity: sha512-gX6FE9oVef+HUKhfUx9OTxJ+XGFjDEMi5p+Y7Pr2gYgxumSnfsfA/J0BgoI0GTK6x/x0Iu8AYbl1KM2w4g/T2g==}
+    engines: {node: '>=22'}
     peerDependencies:
       vue: ^3.5.0
 
@@ -3479,17 +3480,34 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
+  '@vueuse/core@15.0.0':
+    resolution: {integrity: sha512-Zv67h5mrk7YHDJsRObx+DXaCBz6RKBUpxqLesJ+3xZNPG6yuQs7ja7kg3veFrrouYLWAqydQ7CwGEbLVxB43Ng==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      vue: ^3.5.0
+
   '@vueuse/metadata@14.4.0':
     resolution: {integrity: sha512-swx/255R6JyHZFJhx845iz5CRWDZdCfvkZOpACWc5+c5WHcG24mv8gUT1WIdFQaHt6dq79rvILd9QnCWiyVm9g==}
 
-  '@vueuse/nuxt@14.4.0':
-    resolution: {integrity: sha512-97At9ad6UvEB73vH1/h2yYTRZM7uPchzo7s2jRLwKWWHRZXGdzTn8AtpSwZVIAaXJTDcpiqzo9Inhd8v50mkMg==}
+  '@vueuse/metadata@15.0.0':
+    resolution: {integrity: sha512-sfWE5LADAKJ0KnjtGliMdSN8Ij/L7uP6rXIZlgPloAI4zvvefbw6H5Lt7KJA6RqQOYgVqWF5Guj50HHMIzygBg==}
+    engines: {node: '>=22'}
+
+  '@vueuse/nuxt@15.0.0':
+    resolution: {integrity: sha512-qiFrJ9WX6wI/LkUL7R2nsepjMLRfugR39WIsEHis1EkPOCA+qVRIwNEBui+yJ/BD1xblBIPXgD77wBX/SkcnJw==}
+    engines: {node: '>=22'}
     peerDependencies:
       nuxt: ^3.0.0 || ^4.0.0-0 || ^5.0.0-0
       vue: ^3.5.0
 
   '@vueuse/shared@14.4.0':
     resolution: {integrity: sha512-JRgY90Sz8DDtPMsaDflvPMp9xYk69JZAmbuDvAquUVXKr2gEjqtzGNTTthLfckH0BzBqvnu31gb4a8TGLRe79g==}
+    peerDependencies:
+      vue: ^3.5.0
+
+  '@vueuse/shared@15.0.0':
+    resolution: {integrity: sha512-vbNXhGrbV53xPOMSyOzMHQRvhMgZf7oNDw2RChUetVxwTIEkInQ1joZ9JbT0G3z2n2AJNjvmCWeM9ySYrnvogA==}
+    engines: {node: '>=22'}
     peerDependencies:
       vue: ^3.5.0
 
@@ -11655,10 +11673,10 @@ snapshots:
       vue: 3.5.42(typescript@6.0.3)
       vue-demi: 0.13.11(vue@3.5.42(typescript@6.0.3))
 
-  '@vueuse/components@14.4.0(vue@3.5.42(typescript@6.0.3))':
+  '@vueuse/components@15.0.0(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@vueuse/core': 14.4.0(vue@3.5.42(typescript@6.0.3))
-      '@vueuse/shared': 14.4.0(vue@3.5.42(typescript@6.0.3))
+      '@vueuse/core': 15.0.0(vue@3.5.42(typescript@6.0.3))
+      '@vueuse/shared': 15.0.0(vue@3.5.42(typescript@6.0.3))
       vue: 3.5.42(typescript@6.0.3)
 
   '@vueuse/core@14.4.0(vue@3.5.42(typescript@6.0.3))':
@@ -11668,13 +11686,22 @@ snapshots:
       '@vueuse/shared': 14.4.0(vue@3.5.42(typescript@6.0.3))
       vue: 3.5.42(typescript@6.0.3)
 
+  '@vueuse/core@15.0.0(vue@3.5.42(typescript@6.0.3))':
+    dependencies:
+      '@types/web-bluetooth': 0.0.21
+      '@vueuse/metadata': 15.0.0
+      '@vueuse/shared': 15.0.0(vue@3.5.42(typescript@6.0.3))
+      vue: 3.5.42(typescript@6.0.3)
+
   '@vueuse/metadata@14.4.0': {}
 
-  '@vueuse/nuxt@14.4.0(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.2(fcf7e76bb438c8e39ed1d461062d0328))(oxc-parser@0.131.0)(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0))(webpack@5.110.3(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)))(vue@3.5.42(typescript@6.0.3))':
+  '@vueuse/metadata@15.0.0': {}
+
+  '@vueuse/nuxt@15.0.0(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.2(fcf7e76bb438c8e39ed1d461062d0328))(oxc-parser@0.131.0)(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0))(webpack@5.110.3(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
       '@nuxt/kit': 4.5.2(magic-string@1.2.3)(magicast@0.5.4)(oxc-parser@0.131.0)(rolldown@1.2.7)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1)(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.104.0)(terser@5.51.2)(yaml@2.9.0))(webpack@5.110.3(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)))
-      '@vueuse/core': 14.4.0(vue@3.5.42(typescript@6.0.3))
-      '@vueuse/metadata': 14.4.0
+      '@vueuse/core': 15.0.0(vue@3.5.42(typescript@6.0.3))
+      '@vueuse/metadata': 15.0.0
       local-pkg: 1.2.1
       nuxt: 4.5.2(fcf7e76bb438c8e39ed1d461062d0328)
       vue: 3.5.42(typescript@6.0.3)
@@ -11686,6 +11713,10 @@ snapshots:
       - unplugin
 
   '@vueuse/shared@14.4.0(vue@3.5.42(typescript@6.0.3))':
+    dependencies:
+      vue: 3.5.42(typescript@6.0.3)
+
+  '@vueuse/shared@15.0.0(vue@3.5.42(typescript@6.0.3))':
     dependencies:
       vue: 3.5.42(typescript@6.0.3)
 
