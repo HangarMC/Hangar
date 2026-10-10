@@ -103,7 +103,7 @@
     "lint-staged": "17.4.1",
     "nuxt": "4.5.2",
     "oxlint": "1.81.0",
-    "pnpm": "11.25.0",
+    "pnpm": "12.11.2",
     "prettier": "3.9.6",
     "sass": "1.104.0",
     "typescript": "6.0.3",
@@ -113,5 +113,5 @@
     "vite-plugin-devtools-json": "1.1.0",
     "vue-tsc": "3.3.11"
   },
-  "packageManager": "pnpm@11.25.0+sha512.5cde925b4f075f725eb71fbae18a42ffe784524789f19b61c731cb8721ec28aaee160e01a8d5af4fedb2a42cdbf300efe23db356b0d4a17b4d63e11f8ab7c956"
+  "packageManager": "pnpm@12.11.2+sha512.25a51652a196785af5f28bda6dfe8dc582ebefa4ac1d180221ce1390231c5fb76637822ea4b6e4633ce74acdcb0a77f725af11bad38177fdeddaee818a955cb9"
 }
