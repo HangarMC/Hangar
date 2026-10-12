@@ -90,11 +90,13 @@ export function useProjects(
     (p) => useApi<PaginatedResultProject>("projects", "get", { ...p }),
     true,
     () => false,
-    ({ offset, limit, member, ...paramsWithoutLimit }) => {
+    () => {
       if (!router) {
         return;
       }
 
+      // use the current params, not the finished request's, so the url doesn't lags behind input typed during the fetch
+      const { offset, limit, member, ...paramsWithoutLimit } = params();
       const oldQuery = router.currentRoute.value.query;
       router.replace({
         query: {
