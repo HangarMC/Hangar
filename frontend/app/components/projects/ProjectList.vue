@@ -37,6 +37,8 @@ defineExpose({ updatePage });
       <ProjectCard :project="item" :can-edit :pinned="pinned?.some((p) => p.namespace.slug === item.namespace.slug)" />
     </template>
   </Pagination>
-  <div v-if="projects?.result?.length === 0">{{ i18n.t("hangar.projectSearch.noProjects") }}</div>
+  <div v-if="projects?.result?.length === 0" class="absolute inset-x-0 text-center">
+    {{ i18n.t("hangar.projectSearch.noProjects") }}
+  </div>
   <Skeleton v-if="loading" class="h-100" />
 </template>
