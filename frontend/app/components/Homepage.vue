@@ -284,7 +284,7 @@ useSeo(
     <Container class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start lg:gap-6">
       <!-- Projects -->
       <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0 lg:order-first">
-        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
+        <ProjectList screen-center :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
       <aside class="order-first flex flex-col gap-3 lg:order-last lg:min-w-300px lg:max-w-300px">
