@@ -96,7 +96,7 @@ You might want to set the env var `TRANSLATION_MODE` to true in order to get war
 
 ## Contributing
 
-Most of our current and future plans can be found in the [**Hangar Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1). Your best bet is joining
+Most of our current and future plans can be found in the [**Hangar Roadmap Project**](https://github.com/orgs/HangarMC/projects/1/). Your best bet is joining
 the #development channel on the [Hangar Discord](https://discord.gg/zvrAEbvJ4a) to start discussing potential contributions and ideas. With Hangar being such a
 massive project, any contributions are welcome!
 
