@@ -33,9 +33,9 @@ const requestParams = computed(() => {
 const { users } = useUsers(() => requestParams.value);
 
 function updateSort(col: string, sorter: Record<string, number>) {
-  sort.value = Object.keys(sorter)
-    .map((k) => {
-      const val = sorter[k];
+  sort.value = Object.entries(sorter)
+    .map(([k, value]) => {
+      const val = value;
       if (val === -1) return "-" + k;
       if (val === 1) return k;
       return;
@@ -76,7 +76,7 @@ useSeo(computed(() => ({ title: i18n.t("userList.title"), route })));
       </template>
       <template #roles="{ item }">
         <div class="space-x-1">
-          <Tag v-for="roleId in item.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
+          <Tag v-for="role in displayRoles(item.roles)" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
         </div>
       </template>
     </SortableTable>

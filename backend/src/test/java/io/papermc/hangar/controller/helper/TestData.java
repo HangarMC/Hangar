@@ -16,12 +16,13 @@ import io.papermc.hangar.model.common.Platform;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.Visibility;
 import io.papermc.hangar.model.common.roles.GlobalRole;
-import io.papermc.hangar.model.common.roles.OrganizationRole;
 import io.papermc.hangar.model.db.OrganizationTable;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectPageTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
+import io.papermc.hangar.model.common.MemberPermissions;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
+import io.papermc.hangar.model.db.roles.OrganizationRoleTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
@@ -65,6 +66,7 @@ public class TestData {
     public static UserTable USER_PROJECT_OWNER;
 
     public static String KEY_ADMIN;
+    public static String KEY_ADMIN_SCOPED;
     public static String KEY_PROJECT_ONLY;
     public static String KEY_SEE_HIDDEN;
     public static String KEY_PROJECT_OWNER;
@@ -136,15 +138,15 @@ public class TestData {
 
         logger.info("Creating some test orgs...");
         ORG = this.organizationFactory.createOrganization("PaperMC");
-        this.organizationMemberService.addNewAcceptedByDefaultMember(OrganizationRole.ORGANIZATION_DEVELOPER.create(ORG.getOrganizationId(), null, USER_MEMBER.getUserId(), true));
+        this.organizationMemberService.addNewAcceptedByDefaultMember(new OrganizationRoleTable(USER_MEMBER.getUserId(), Permission.EditPage.add(Permission.CreateProject).add(MemberPermissions.ORGANIZATION_BASE), "Developer", true, false, ORG.getOrganizationId(), null, null));
 
         logger.info("Creating some test projects...");
-        PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null),
+        PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null, false),
             Category.CHAT, "", ORG.getUserId(), "TestProject", "# Test", null));
         PAGE_PARENT = this.projectPageService.createPage(PROJECT.getProjectId(), "TestParentPage", "testparentpage", "# TestParentPage", true, null, false);
         PAGE_CHILD = this.projectPageService.createPage(PROJECT.getProjectId(), "TestChildPage", "testparentpage/testchild", "# TestChildPage", true, PAGE_PARENT.getId(), false);
 
-        PRIVATE_PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null),
+        PRIVATE_PROJECT = this.projectFactory.createProject(new NewProjectForm(new ProjectSettings(List.of(), List.of(), new ProjectLicense(null, null, "MIT"), List.of(), null, false),
             Category.CHAT, "", ORG.getUserId(), "PrivateProject", "# PrivateProject", null));
 
         logger.info("Creating some test versions...");
@@ -154,12 +156,13 @@ public class TestData {
         this.projectVersionsDAO.update(VERSION_HIDDEN);
 
         logger.info("Creating test api keys...");
-        KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values())), Permission.All);
-        KEY_PROJECT_ONLY = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("Project Only", Set.of(NamedPermission.CREATE_PROJECT)), Permission.All);
-        KEY_SEE_HIDDEN = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("See Hidden", Set.of(NamedPermission.SEE_HIDDEN)), Permission.All);
-        KEY_PROJECT_OWNER = this.apiKeyService.createApiKey(USER_PROJECT_OWNER, new CreateAPIKeyForm("Project Owner", Set.of(NamedPermission.values())), Permission.All);
-        KEY_NO_PERMISSIONS = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("No Permissions", Set.of()), Permission.None);
-        KEY_BANNED = this.apiKeyService.createApiKey(USER_BANNED, new CreateAPIKeyForm("No Permissions", Set.of(NamedPermission.VIEW_PUBLIC_INFO, NamedPermission.EDIT_OWN_USER_SETTINGS, NamedPermission.EDIT_API_KEYS)), Permission.All);
+        KEY_ADMIN = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin", Set.of(NamedPermission.values()), null, null), Permission.All);
+        KEY_PROJECT_ONLY = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("Project Only", Set.of(NamedPermission.CREATE_PROJECT), null, null), Permission.All);
+        KEY_SEE_HIDDEN = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("See Hidden", Set.of(NamedPermission.SEE_HIDDEN), null, null), Permission.All);
+        KEY_PROJECT_OWNER = this.apiKeyService.createApiKey(USER_PROJECT_OWNER, new CreateAPIKeyForm("Project Owner", Set.of(NamedPermission.values()), null, null), Permission.All);
+        KEY_NO_PERMISSIONS = this.apiKeyService.createApiKey(USER_NORMAL, new CreateAPIKeyForm("No Permissions", Set.of(), null, null), Permission.None);
+        KEY_BANNED = this.apiKeyService.createApiKey(USER_BANNED, new CreateAPIKeyForm("No Permissions", Set.of(NamedPermission.VIEW_PUBLIC_INFO, NamedPermission.EDIT_OWN_USER_SETTINGS, NamedPermission.EDIT_API_KEYS), null, null), Permission.All);
+        KEY_ADMIN_SCOPED = this.apiKeyService.createApiKey(USER_ADMIN, new CreateAPIKeyForm("Admin Scoped", Set.of(NamedPermission.values()), Set.of(PRIVATE_PROJECT.getSlug()), null), Permission.All);
 
         this.userService.toggleStarred(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);
         this.userService.toggleWatching(USER_NORMAL.getUserId(), PROJECT.getProjectId(), true);

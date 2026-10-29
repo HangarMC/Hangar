@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { cloneDeep, isEqual } from "lodash-es";
 import type { SettingsResponse } from "#shared/types/backend";
 import SocialForm from "~/components/form/SocialForm.vue";
 
@@ -18,13 +19,30 @@ const profileForm = reactive({
   tagline: auth.user?.tagline,
   socials: auth.user?.socials,
 });
+const pristine = ref(cloneDeep(toRaw(profileForm)));
+
+// SocialForm drops retired link types on mount, so the baseline is only settled once children have set up
+onMounted(() => (pristine.value = cloneDeep(toRaw(profileForm))));
+
+const isDirty = computed(() => profileForm.tagline !== pristine.value.tagline || !isEqual(profileForm.socials, pristine.value.socials));
+
+// SocialForm keeps its own draft of the fields, so it has to be remounted to pick the reverted values back up
+const socialFormKey = ref(0);
+
+function discard() {
+  profileForm.tagline = pristine.value.tagline;
+  profileForm.socials = cloneDeep(pristine.value.socials);
+  socialFormKey.value++;
+  v.value.$reset();
+}
 
 async function saveProfile() {
   if (!(await v.value.$validate())) return;
   loading.value = true;
   try {
     await useInternalApi("users/" + auth.user?.name + "/settings/profile", "POST", profileForm);
-    notification.success("Saved!");
+    pristine.value = cloneDeep(toRaw(profileForm));
+    notification.success(t("general.saved"));
   } catch (err) {
     notification.fromError(i18n, err);
   }
@@ -37,21 +55,13 @@ async function saveProfile() {
     <PageTitle>{{ t("auth.settings.profile.header") }}</PageTitle>
 
     <h3 class="text-lg font-bold mb-2">{{ t("auth.settings.profile.avatar") }}</h3>
-    <div class="relative">
-      <UserAvatar :username="auth.user.name" :avatar-url="auth.user.avatarUrl" />
-      <AvatarChangeModal :avatar="auth.user.avatarUrl" :action="`users/${auth.user.name}/settings/avatar`">
-        <template #activator="{ on }">
-          <Button class="absolute bottom-0" @click.prevent="on.click"><IconMdiPencil /></Button>
-        </template>
-      </AvatarChangeModal>
-    </div>
+    <EditableAvatar :username="auth.user.name" :avatar-url="auth.user.avatarUrl" :action="`users/${auth.user.name}/settings/avatar`" size="xl" />
 
     <h3 class="text-lg font-bold mt-4 mb-2">{{ t("auth.settings.profile.tagline") }}</h3>
     <InputText v-model="profileForm.tagline" :label="t('auth.settings.profile.tagline')" counter :maxlength="useBackendData.validations.userTagline.max" />
 
-    <h3 class="text-lg font-bold mt-4">{{ t("auth.settings.profile.social") }}</h3>
-    <SocialForm v-model="profileForm.socials!" />
+    <SocialForm :key="socialFormKey" v-model="profileForm.socials!" />
 
-    <Button type="submit" class="w-max mt-2" :disabled="loading" @click.prevent="saveProfile">{{ t("general.save") }}</Button>
+    <UnsavedChanges :show="isDirty" :loading="loading" :disabled="v.$error" @save="saveProfile" @discard="discard" />
   </div>
 </template>

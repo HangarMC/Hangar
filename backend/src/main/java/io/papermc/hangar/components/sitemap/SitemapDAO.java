@@ -20,7 +20,7 @@ public interface SitemapDAO {
     @SqlQuery("SELECT name, id FROM users WHERE lower(name) = lower(:username)")
     SitemapUser getUser(String username);
 
-    @SqlQuery("SELECT slug, id FROM projects WHERE owner_id = :id AND visibility = 0")
+    @SqlQuery("SELECT slug, id FROM projects WHERE owner_id = :id AND visibility = 0 AND NOT unlisted")
     List<SitemapProject> getProjects(long id);
 
     @SqlQuery("""

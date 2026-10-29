@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
+import { isEqual } from "lodash-es";
 import { Platform, Tag } from "#shared/types/backend";
 import type { Category } from "#shared/types/backend";
 import type { LocationQueryValue } from "#vue-router";
@@ -24,20 +25,47 @@ const sorters = [
 
 const toArray = (input: LocationQueryValue | LocationQueryValue[] | undefined): string[] =>
   Array.isArray(input) ? (input as string[]) : input ? [input!] : [];
-const filters = ref({
-  versions: toArray(route.query.version),
-  categories: toArray(route.query.category),
-  platform: (route.query.platform || undefined) as Platform | undefined,
-  tags: toArray(route.query.tag),
-});
 
-if (props.platform) {
-  filters.value.platform = props.platform;
+function filtersFromQuery() {
+  return {
+    versions: toArray(route.query.version),
+    categories: toArray(route.query.category),
+    // the request sends platform as a list, so it can come back off the url as a one-element array
+    platform: props.platform ?? (toArray(route.query.platform)[0] as Platform | undefined),
+    tags: toArray(route.query.tag),
+  };
 }
+const sorterFromQuery = () => (route.query.sort as string) || "-stars";
+const pageFromQuery = () => (route.query.page ? Number(route.query.page) : 0);
+const queryFromQuery = () => (route.query.query as string) || "";
 
-const activeSorter = ref<string>((route.query.sort as string) || "-stars");
-const page = ref(route.query.page ? Number(route.query.page) : 0);
-const query = ref<string>((route.query.query as string) || "");
+const filters = ref(filtersFromQuery());
+const activeSorter = ref<string>(sorterFromQuery());
+const page = ref(pageFromQuery());
+const query = ref<string>(queryFromQuery());
+const versionQuery = ref("");
+const openFilterSections = reactive({
+  platforms: true,
+  tags: true,
+  categories: true,
+});
+// Mobile only: the sidebar sits above the results, so it starts collapsed behind a "Filters" toggle.
+const mobileFiltersOpen = ref(false);
+const activeFilterCount = computed(
+  () => (filters.value.platform ? 1 : 0) + filters.value.versions.length + filters.value.tags.length + filters.value.categories.length
+);
+
+const filteredPlatformVersions = computed(() => {
+  if (!filters.value.platform) return [];
+  const versions = usePlatformVersions(filters.value.platform);
+  const search = versionQuery.value.trim().toLowerCase();
+  if (!search) return versions;
+  return versions.flatMap((version) => {
+    if (version.version.toLowerCase().includes(search)) return [version];
+    const subVersions = version.subVersions.filter((subVersion) => subVersion.toLowerCase().includes(search));
+    return subVersions.length > 0 ? [{ ...version, subVersions }] : [];
+  });
+});
 
 const requestParams = computed(() => {
   const limit = 10;
@@ -58,7 +86,10 @@ const requestParams = computed(() => {
 
   return params;
 });
-const { projects, refreshProjects } = useProjects(() => requestParams.value, router);
+const { projects } = useProjects(() => requestParams.value, router);
+
+// somebody with a query or a filter set is looking for something specific, so don't push results down for a suggestion
+const browsing = computed(() => !query.value && page.value === 0 && activeFilterCount.value === 0);
 
 // if somebody set page too high, lets reset it back
 watch(projects, () => {
@@ -66,20 +97,42 @@ watch(projects, () => {
     page.value = 0;
   }
 });
-// for some reason the watch in useProjects doesn't work for filters 🤷‍♂️
+// the route component is reused across query changes, so a link back to "/" has to reset the state it holds
 watch(
-  () => filters.value.versions,
-  () => refreshProjects(),
-  { deep: true }
+  () => route.query,
+  () => {
+    const incoming = filtersFromQuery();
+    if (isEqual(incoming, filters.value) && sorterFromQuery() === activeSorter.value && pageFromQuery() === page.value && queryFromQuery() === query.value) {
+      return;
+    }
+    filters.value = incoming;
+    activeSorter.value = sorterFromQuery();
+    page.value = pageFromQuery();
+    query.value = queryFromQuery();
+    versionQuery.value = "";
+  }
 );
 
-function updatePlatform(platform: any) {
-  filters.value.platform = platform;
+function togglePlatform(platform: Platform) {
+  updatePlatform(filters.value.platform === platform ? undefined : platform);
+}
 
-  const allowedVersion = usePlatformVersions(platform);
-  filters.value.versions = filters.value.versions.filter((existingVersion) => {
-    return allowedVersion.find((allowedNewVersion) => allowedNewVersion.version === existingVersion);
-  });
+// Reassign, don't mutate: `requestParams` only reads `filters.value.<key>`, so an in-place
+// push/splice leaves that property unchanged and the (non-deep) params watcher never refetches.
+function toggleFilter(key: "tags" | "categories", value: string) {
+  const list = filters.value[key];
+  filters.value[key] = list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
+}
+
+function updatePlatform(platform?: Platform) {
+  filters.value.platform = platform;
+  versionQuery.value = platform ? versionQuery.value : "";
+
+  const allowed = platform ? usePlatformVersions(platform) : [];
+  const kept = platform ? filters.value.versions.filter((v) => allowed.some((a) => a.version === v)) : [];
+  if (kept.length !== filters.value.versions.length) {
+    filters.value.versions = kept;
+  }
 }
 
 const config = useRuntimeConfig();
@@ -142,31 +195,38 @@ useSeo(
         </h1>
         <div class="text-1xl text-center mb-2">Hangar allows you to find and download the best {{ platformName }} plugins for your Minecraft server</div>
       </template>
-      <div v-if="!index" class="text-center -mt-2">
-        Looking for other platforms?
-        <div class="flex gap-3 mt-2 mb-2">
-          <Button v-if="platform != Platform.PAPER" to="/paper">
-            Download Paper plugins <PlatformLogo :platform="Platform.PAPER" :size="24" class="ml-1" />
+      <div v-if="!index" class="flex flex-col items-center gap-2 text-center">
+        <span class="text-sm text-gray-secondary">Looking for other platforms?</span>
+        <div class="flex flex-wrap justify-center gap-2">
+          <Button v-if="platform != Platform.PAPER" variant="outline" tone="neutral" to="/paper">
+            <PlatformLogo :platform="Platform.PAPER" :size="20" class="flex-shrink-0" />
+            Paper plugins
           </Button>
-          <Button v-if="platform != Platform.VELOCITY" to="/velocity">
-            Download Velocity Plugins <PlatformLogo :platform="Platform.VELOCITY" :size="24" class="ml-1" />
+          <Button v-if="platform != Platform.VELOCITY" variant="outline" tone="neutral" to="/velocity">
+            <PlatformLogo :platform="Platform.VELOCITY" :size="20" class="flex-shrink-0" />
+            Velocity plugins
           </Button>
-          <Button v-if="platform != Platform.WATERFALL" to="/waterfall">
-            Download Waterfall plugins <PlatformLogo :platform="Platform.WATERFALL" :size="24" class="ml-1" />
+          <Button v-if="platform != Platform.WATERFALL" variant="outline" tone="neutral" to="/waterfall">
+            <PlatformLogo :platform="Platform.WATERFALL" :size="20" class="flex-shrink-0" />
+            Waterfall plugins
           </Button>
         </div>
       </div>
       <!-- Search Bar -->
-      <div class="relative rounded-md flex shadow-md w-full max-w-screen-md">
+      <div class="hero-search">
         <!-- Text Input -->
-        <input
-          v-model="query"
-          name="query"
-          class="rounded-l-md md:rounded-md p-4 basis-full min-w-0 dark:bg-gray-700"
-          type="text"
-          :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
-          v-on="useTracking('homepage-search', { platformName })"
-        />
+        <div class="relative flex basis-full items-center min-w-0">
+          <IconMdiMagnify class="pointer-events-none absolute left-4 text-xl text-gray-500 dark:text-gray-400" />
+          <input
+            v-model="query"
+            name="query"
+            class="w-full min-w-0 rounded-md bg-transparent p-4 pl-11 outline-none"
+            type="text"
+            autocomplete="off"
+            :placeholder="i18n.t('hangar.projectSearch.query', [projects?.pagination.count])"
+            v-on="useTracking('homepage-search', { platformName })"
+          />
+        </div>
         <div class="md:hidden flex">
           <Menu as="div">
             <MenuButton
@@ -204,88 +264,144 @@ useSeo(
           </Menu>
         </div>
       </div>
-      <div class="justify-center inline-flex gap-1 lt-md:hidden">
-        <div v-for="sorter in sorters" :key="sorter.id">
-          <button
-            :class="{ 'bg-gradient-to-r from-primary-500 to-primary-400 text-white': activeSorter === sorter.id }"
-            class="rounded-lg py-2 px-4 hover:(bg-gray-300 dark:bg-gray-700)"
-            @click="activeSorter = sorter.id"
-          >
-            {{ sorter.label }}
-          </button>
-        </div>
+      <div class="flex flex-wrap justify-center gap-1 lt-md:hidden" role="group" :aria-label="i18n.t('hangar.projectSearch.sortBy')">
+        <button
+          v-for="sorter in sorters"
+          :key="sorter.id"
+          type="button"
+          class="sorter"
+          :class="{ 'sorter-active': activeSorter === sorter.id }"
+          :aria-pressed="activeSorter === sorter.id"
+          @click="activeSorter = sorter.id"
+        >
+          {{ sorter.label }}
+        </button>
       </div>
     </Container>
-    <Container lg="flex items-start gap-6">
+    <Container v-if="browsing" class="!pt-0 !pb-2">
+      <DiscoveryStrip />
+    </Container>
+    <Container class="flex flex-col items-stretch gap-4 lg:flex-row lg:items-start lg:gap-6">
       <!-- Projects -->
-      <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0">
-        <h2 class="font-bold text-2xl lg:(absolute -mt-11)">Projects</h2>
-        <ProjectList :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
+      <div class="w-full min-w-0 mb-5 flex flex-col gap-2 lg:mb-0 lg:order-first">
+        <ProjectList screen-center :projects="projects" :loading="!projects" :reset-anchor="pageChangeScrollAnchor" @update:page="(newPage: number) => (page = newPage)" />
       </div>
       <!-- Sidebar -->
-      <Card accent class="min-w-300px flex flex-col gap-4">
-        <h2 class="font-bold text-xl -mb-2">Filters</h2>
-        <div v-if="!platform" class="platforms">
-          <h3 class="font-bold mb-1">
-            {{ i18n.t("hangar.projectSearch.platforms") }}
-            <span
-              v-if="filters.platform"
-              class="font-normal text-sm hover:(underline) text-gray-600 dark:text-gray-400"
-              cursor="pointer"
-              @click="filters.platform = undefined"
+      <aside class="order-first flex flex-col gap-3 lg:order-last lg:min-w-300px lg:max-w-300px">
+        <Button variant="outline" tone="neutral" class="lg:hidden" @click="mobileFiltersOpen = !mobileFiltersOpen">
+          <IconMdiFilterVariant />
+          {{ i18n.t("hangar.projectSearch.filters") }}
+          <span v-if="activeFilterCount" class="rounded-full bg-primary-500 px-1.5 text-xs text-white">{{ activeFilterCount }}</span>
+        </Button>
+
+        <div :class="['flex flex-col gap-3', mobileFiltersOpen ? '' : 'lt-lg:hidden']">
+          <Card class="!p-3">
+            <button
+              type="button"
+              class="mb-1 flex w-full items-center gap-2 text-left font-bold text-lg"
+              :aria-expanded="openFilterSections.platforms"
+              @click="openFilterSections.platforms = !openFilterSections.platforms"
             >
-              {{ i18n.t("hangar.projectSearch.clear") }}
-            </span>
-          </h3>
-          <div class="flex flex-col gap-1">
-            <ul>
-              <li v-for="visiblePlatform in useVisiblePlatforms" :key="visiblePlatform.enumName" class="inline-flex w-full">
-                <InputRadio
+              {{ platform ? i18n.t("hangar.projectSearch.versions." + filters.platform) : i18n.t("hangar.projectSearch.platforms") }}
+              <IconMdiChevronDown
+                class="ml-auto flex-shrink-0 text-gray-secondary transition-transform"
+                :class="{ '-rotate-90': !openFilterSections.platforms }"
+              />
+            </button>
+
+            <div v-show="openFilterSections.platforms">
+              <div v-if="!platform" class="flex flex-col gap-0.5">
+                <FilterOption
+                  v-for="visiblePlatform in useVisiblePlatforms"
+                  :key="visiblePlatform.enumName"
                   :label="visiblePlatform.name"
-                  :model-value="filters.platform"
-                  :value="visiblePlatform.enumName"
-                  @update:model-value="updatePlatform"
+                  :selected="filters.platform === visiblePlatform.enumName"
+                  @toggle="togglePlatform(visiblePlatform.enumName)"
                 >
-                  <PlatformLogo :platform="visiblePlatform.enumName" :size="24" class="mr-1" />
-                </InputRadio>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-if="filters.platform" class="versions">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h3>
-          <div class="max-h-40 overflow-auto">
-            <VersionSelector v-model="filters.versions" :versions="usePlatformVersions(filters.platform)" :open="false" col />
-          </div>
-        </div>
-        <div class="tags">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.tags") }}</h3>
-          <div class="flex flex-col gap-1">
-            <InputCheckbox v-for="tag in Object.values(Tag)" :key="tag" v-model="filters.tags" :value="tag">
-              <template #label>
-                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" />
-                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" />
-                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" />
-                <span class="ml-1">{{ i18n.t("project.settings.tags." + tag + ".title") }}</span>
-              </template>
-            </InputCheckbox>
-          </div>
-        </div>
-        <div class="categories">
-          <h3 class="font-bold mb-1">{{ i18n.t("hangar.projectSearch.categories") }}</h3>
-          <div class="flex flex-col gap-1">
-            <InputCheckbox
-              v-for="category in useVisibleCategories"
-              :key="category.apiName"
-              v-model="filters.categories"
-              :value="category.apiName"
-              :label="i18n.t(category.title)"
+                  <PlatformLogo :platform="visiblePlatform.enumName" :size="18" class="flex-shrink-0" />
+                </FilterOption>
+              </div>
+
+              <div v-if="filters.platform" :class="{ 'mt-4 border-t border-gray-300 pt-4 dark:border-gray-700': !platform }">
+                <h4 v-if="!platform" class="mb-2 font-semibold">{{ i18n.t("hangar.projectSearch.versions." + filters.platform) }}</h4>
+                <div class="relative mb-2">
+                  <IconMdiMagnify class="pointer-events-none absolute left-2.5 top-2.5 text-gray-secondary" />
+                  <input
+                    v-model="versionQuery"
+                    type="search"
+                    class="w-full rounded-md background-card py-2 pl-8 pr-3 text-sm outline-none focus:(ring-2 ring-primary-500)"
+                    :placeholder="i18n.t('hangar.projectSearch.searchVersions')"
+                  />
+                </div>
+                <div class="max-h-52 overflow-auto pr-1">
+                  <VersionSelector
+                    v-if="filteredPlatformVersions.length > 0"
+                    v-model="filters.versions"
+                    :versions="filteredPlatformVersions"
+                    expand="none"
+                    col
+                    compact
+                  />
+                  <p v-else class="py-2 text-sm text-gray-secondary">{{ i18n.t("hangar.projectSearch.noFilterResults") }}</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card class="!p-3">
+            <button
+              type="button"
+              class="mb-1 flex w-full items-center gap-2 text-left font-bold text-lg"
+              :aria-expanded="openFilterSections.tags"
+              @click="openFilterSections.tags = !openFilterSections.tags"
             >
-              <CategoryLogo :category="category.apiName as Category" :size="22" class="mr-1" />
-            </InputCheckbox>
-          </div>
+              {{ i18n.t("hangar.projectSearch.tags") }}
+              <IconMdiChevronDown class="ml-auto flex-shrink-0 text-gray-secondary transition-transform" :class="{ '-rotate-90': !openFilterSections.tags }" />
+            </button>
+            <div v-show="openFilterSections.tags" class="flex flex-col gap-0.5">
+              <FilterOption
+                v-for="tag in Object.values(Tag)"
+                :key="tag"
+                :label="i18n.t('project.settings.tags.' + tag + '.title')"
+                :selected="filters.tags.includes(tag)"
+                @toggle="toggleFilter('tags', tag)"
+              >
+                <IconMdiPuzzleOutline v-if="tag === Tag.ADDON" class="flex-shrink-0" />
+                <IconMdiBookshelf v-else-if="tag === Tag.LIBRARY" class="flex-shrink-0" />
+                <IconMdiLeaf v-else-if="tag === Tag.SUPPORTS_FOLIA" class="flex-shrink-0" />
+              </FilterOption>
+            </div>
+          </Card>
+
+          <Card class="!p-3">
+            <button
+              type="button"
+              class="mb-1 flex w-full items-center gap-2 text-left font-bold text-lg"
+              :aria-expanded="openFilterSections.categories"
+              @click="openFilterSections.categories = !openFilterSections.categories"
+            >
+              {{ i18n.t("hangar.projectSearch.categories") }}
+              <IconMdiChevronDown
+                class="ml-auto flex-shrink-0 text-gray-secondary transition-transform"
+                :class="{ '-rotate-90': !openFilterSections.categories }"
+              />
+            </button>
+            <div v-show="openFilterSections.categories">
+              <div class="flex flex-col gap-0.5">
+                <FilterOption
+                  v-for="category in useVisibleCategories"
+                  :key="category.apiName"
+                  :label="i18n.t(category.title)"
+                  :selected="filters.categories.includes(category.apiName)"
+                  @toggle="toggleFilter('categories', category.apiName)"
+                >
+                  <CategoryLogo :category="category.apiName as Category" :size="18" class="flex-shrink-0" />
+                </FilterOption>
+              </div>
+            </div>
+          </Card>
         </div>
-      </Card>
+      </aside>
     </Container>
     <h2 class="text-2xl text-center font-bold mt-8">Frequently asked Questions about Hangar (FAQ)</h2>
     <div class="md:(ml-15 mr-15)">
@@ -341,5 +457,37 @@ useSeo(
   100% {
     top: 0;
   }
+}
+
+.hero-search {
+  @apply relative w-full max-w-screen-md flex overflow-hidden rounded-md border-1px border-gray-300 shadow-sm transition duration-200 ease dark:border-gray-600;
+  background-color: var(--input-surface);
+}
+
+.hero-search:hover {
+  @apply border-gray-400 dark:border-gray-500;
+}
+
+.hero-search:focus-within {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-500) 12%, transparent);
+}
+
+.dark .hero-search:focus-within {
+  border-color: var(--primary-300);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-300) 12%, transparent);
+}
+
+.sorter {
+  @apply rounded-lg px-4 py-2 transition-colors hover:background-card;
+}
+
+.sorter-active {
+  @apply bg-gradient-to-r from-primary-500 to-primary-400 text-white;
+}
+
+.sorter:focus-visible {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
 }
 </style>

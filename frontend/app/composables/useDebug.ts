@@ -1,6 +1,7 @@
 import type { NamedPermission } from "#shared/types/backend";
 
 export function useDebug() {
+  // eslint-disable-next-line unicorn/no-global-object-property-assignment
   window.hangarDebug = {};
   window.hangarDebug.debugPerms = () => {
     console.log(useAuthStore().routePermissions);

@@ -8,7 +8,8 @@ export interface Notification {
   paused?: boolean;
 }
 
-const defaultTimeout = 7000;
+const defaultTimeout = 3500;
+const errorTimeout = 6000;
 export const useNotificationStore = defineStore("notification", () => {
   const notifications = ref<Set<Notification>>(new Set<Notification>());
 
@@ -20,17 +21,16 @@ export const useNotificationStore = defineStore("notification", () => {
     await show({ message, color: "green", clearable, timeout, addedAt: Date.now() });
   }
 
-  async function error(message: string, clearable = true, timeout = defaultTimeout) {
+  async function error(message: string, clearable = true, timeout = errorTimeout) {
     await show({ message, color: "red", clearable, timeout, addedAt: Date.now() });
   }
 
-  async function fromError(i18n: any, error: any, clearable = true, timeout = defaultTimeout) {
+  async function fromError(i18n: any, error: any, clearable = true, timeout = errorTimeout) {
     let message = error;
     if (error.response?.data?.detail) {
       message = i18n.t(error.response.data.detail);
-    }
-    if (error.response?.data?.message) {
-      message = i18n.t(error.response.data.message, ...error.response.data.messageArgs);
+    } else if (error.response?.data?.message) {
+      message = i18n.t(error.response.data.message, ...(error.response.data.messageArgs || []));
     }
     await show({ message, color: "red", clearable, timeout, addedAt: Date.now() });
   }

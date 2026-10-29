@@ -1,32 +1,39 @@
 package io.papermc.hangar.model.db.roles;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.papermc.hangar.model.common.roles.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.Table;
 import io.papermc.hangar.model.internal.logs.contexts.LogContext;
 import io.papermc.hangar.model.loggable.Loggable;
 import java.time.OffsetDateTime;
+import java.util.List;
 import org.jdbi.v3.core.annotation.JdbiProperty;
 
-public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>, LC extends LogContext<?, LC>> extends Table implements IRoleTable<R>, Loggable<LC> {
+public abstract class ExtendedRoleTable<LC extends LogContext<?, LC>> extends Table implements IRoleTable, Loggable<LC> {
 
     protected final long userId;
-    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-    protected R role;
+    protected Permission permissions;
+    protected String title;
     protected boolean accepted;
+    protected boolean owner;
 
-    protected ExtendedRoleTable(final OffsetDateTime createdAt, final long id, final long userId, final R role, final boolean accepted) {
+    protected ExtendedRoleTable(final OffsetDateTime createdAt, final long id, final long userId, final Permission permissions, final String title, final boolean accepted, final boolean owner) {
         super(createdAt, id);
         this.userId = userId;
-        this.role = role;
+        this.permissions = permissions;
+        this.title = title;
         this.accepted = accepted;
+        this.owner = owner;
     }
 
-    protected ExtendedRoleTable(final long userId, final R role, final boolean accepted) {
+    protected ExtendedRoleTable(final long userId, final Permission permissions, final String title, final boolean accepted, final boolean owner) {
         this.userId = userId;
-        this.role = role;
+        this.permissions = permissions;
+        this.title = title;
         this.accepted = accepted;
+        this.owner = owner;
     }
 
     @Override
@@ -34,26 +41,27 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>,
         return this.userId;
     }
 
-    @Override
     @JsonIgnore
-    public R getRole() {
-        return this.role;
+    public Permission getPermissions() {
+        return this.permissions;
     }
 
-    @Override
-    public void setRole(final R role) {
-        this.role = role;
+    public void setPermissions(final Permission permissions) {
+        this.permissions = permissions;
     }
 
-    @Override
-    public long getRoleId() {
-        return this.role.getRoleId();
+    @JsonProperty("permissions")
+    @JdbiProperty(map = false)
+    public List<NamedPermission> getNamedPermissions() {
+        return this.permissions.toNamed();
     }
 
-    @Override
-    @JsonIgnore
-    public String getRoleType() {
-        return this.role.getValue();
+    public String getTitle() {
+        return this.title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
     }
 
     @Override
@@ -66,6 +74,14 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>,
         this.accepted = accepted;
     }
 
+    public boolean isOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(final boolean owner) {
+        this.owner = owner;
+    }
+
     @JdbiProperty(map = false)
     public abstract long getPrincipalId();
 
@@ -73,8 +89,10 @@ public abstract class ExtendedRoleTable<R extends Role<? extends IRoleTable<R>>,
     public String toString() {
         return "ExtendedRoleTable{" +
             "userId=" + this.userId +
-            ", role=" + this.role +
+            ", permissions=" + this.permissions +
+            ", title='" + this.title + '\'' +
             ", accepted=" + this.accepted +
+            ", owner=" + this.owner +
             "} " + super.toString();
     }
 }

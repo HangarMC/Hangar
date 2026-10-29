@@ -17,6 +17,7 @@ const stopProgressBar = () => {
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
+  const authStore = useAuthStore();
   const options: AxiosRequestConfig = {
     baseURL: import.meta.client ? config.public.host : config.backendHost,
     timeout: 10_000,
@@ -26,7 +27,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   axiosInstance.interceptors.request.use(
     (config) => {
-      const authStore = useAuthStore();
       // forward auth token
       addAuthHeader(config, authStore.token);
       // forward other headers for ssr
@@ -50,7 +50,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       return res;
     },
     async (err) => {
-      const authStore = useAuthStore();
       const originalConfig = err.config as AxiosRequestConfig & { _retry: boolean };
 
       if (originalConfig?.url !== "/refresh" && originalConfig?.url !== "/invalidate" && err.response) {

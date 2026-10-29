@@ -1,25 +1,13 @@
 {
-    "ts-node": {
-        "files": true
-    },
     "compilerOptions": {
-        "target": "es2018",
-        "lib": [
-            "es2018",
-            "DOM"
-        ],
+        "target": "es2022",
+        "lib": ["es2022", "DOM"],
         "esModuleInterop": true,
-        "module": "commonjs",
+        "module": "es2022",
         "strictNullChecks": false,
-        "types": [
-            "codeceptjs",
-            "chai",
-            "node"
-        ],
+        "types": ["codeceptjs", "chai", "node"],
         "declaration": true,
         "skipLibCheck": true
     },
-    "exclude": [
-        "node_modules"
-    ]
+    "exclude": ["node_modules"]
 }

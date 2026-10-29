@@ -3,6 +3,7 @@ import type {
   Category,
   Prompt,
   RoleData,
+  PermissionGroup,
   Security,
   Validations,
   CategoryData,
@@ -20,8 +21,8 @@ export interface BackendData {
   prompts: Map<Prompt, PromptData>;
   visibilities: VisibilityData[];
   licenses: string[];
-  orgRoles: RoleData[];
-  projectRoles: RoleData[];
+  organizationPermissions: PermissionGroup[];
+  projectPermissions: PermissionGroup[];
   globalRoles: RoleData[];
   channelColors: ColorData[];
   flagReasons: FlagReasonData[];
@@ -36,8 +37,8 @@ export interface ServerBackendData {
   prompts: PromptData[];
   visibilities: VisibilityData[];
   licenses: string[];
-  orgRoles: RoleData[];
-  projectRoles: RoleData[];
+  organizationPermissions: PermissionGroup[];
+  projectPermissions: PermissionGroup[];
   globalRoles: RoleData[];
   channelColors: ColorData[];
   flagReasons: FlagReasonData[];

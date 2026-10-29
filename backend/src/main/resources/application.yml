@@ -4,10 +4,6 @@
 server:
   address: 0.0.0.0
   port: 8080
-  servlet:
-    encoding:
-      charset: "UTF-8"
-
   tomcat:
     mbeanregistry:
       enabled: true
@@ -25,6 +21,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/hangar
     username: hangar
     password: hangar
+    hikari:
+      maximum-pool-size: 20
   security:
     filter:
       order: 1000
@@ -32,11 +30,13 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
+    encoding:
+      charset: "UTF-8"
   devtools:
     restart:
       additional-exclude: work/**
       quiet-period: 900
-  jackson:
+  jackson2:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
     date-format: com.fasterxml.jackson.databind.util.StdDateFormat
@@ -95,6 +95,7 @@ hangar:
     project-views: 10m
     project-index: 10m
     version-index: 10m
+    account-deletion: 1h
 
   channels:
     max-name-len: 15
@@ -141,6 +142,10 @@ hangar:
     version-name-regex: "^[a-zA-Z0-9-_.+]+$"
     license-name-regex: "^[a-zA-Z0-9-_.() +]*$"
 
+  discovery:
+    max-age-days: 365
+    per-bucket: 2
+
   orgs:
     create-limit: 5
     dummy-email-domain: "org.papermc.io"
@@ -167,7 +172,7 @@ hangar:
     refresh-token-expiry: 30 # days
     rp-name: "Hangar"
     rp-id: "localhost"
-    turnstileSecret: ""
+    turnstile-secret: ""
     safe-download-hosts:
       - "dev.bukkit.org"
       - "github.com"

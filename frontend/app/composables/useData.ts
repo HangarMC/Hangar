@@ -21,7 +21,9 @@ import type {
   ProjectCompact,
   ProjectOwner,
   ReviewQueue,
+  ScopableProject,
   SettingsResponse,
+  StatsSummary,
   User,
   VersionInfo,
   ProjectPageTable,
@@ -29,25 +31,38 @@ import type {
 } from "#shared/types/backend";
 
 export function useOrganizationVisibility(user: () => string) {
+  const authStore = useAuthStore();
   const { data: organizationVisibility, status: organizationVisibilityStatus } = useData(
     user,
     (u) => "organizationVisibility:" + u,
     (u) => useInternalApi<{ [key: string]: boolean }>(`organizations/${u}/userOrganizationsVisibility`),
     false,
-    (u) => u !== useAuthStore().user?.name
+    (u) => u !== authStore.user?.name
   );
   return { organizationVisibility, organizationVisibilityStatus };
 }
 
 export function usePossibleAlts(user: () => string) {
-  const { data: possibleAlts, status: possibleAltsStatus } = useData(
+  const authStore = useAuthStore();
+  const requested = ref(false);
+  const {
+    data: possibleAlts,
+    status: possibleAltsStatus,
+    refresh,
+  } = useData(
     user,
     (u) => "possibleAlts:" + u,
     (u) => useInternalApi<string[]>(`users/${u}/alts`),
     false,
-    () => !hasPerms(NamedPermission.IsStaff)
+    () => !requested.value || !hasPermsFor(authStore.routePermissions, NamedPermission.IsStaff)
   );
-  return { possibleAlts, possibleAltsStatus };
+
+  function loadPossibleAlts() {
+    requested.value = true;
+    return refresh();
+  }
+
+  return { possibleAlts, possibleAltsStatus, loadPossibleAlts };
 }
 
 export function useProjects(
@@ -71,15 +86,26 @@ export function useProjects(
     refresh: refreshProjects,
   } = useData(
     params,
-    (p) => "projects:" + (p.member || p.owner || "main") + ":" + p.offset,
+    (p) => "projects:" + JSON.stringify(p),
     (p) => useApi<PaginatedResultProject>("projects", "get", { ...p }),
     true,
     () => false,
-    ({ offset, limit, member, ...paramsWithoutLimit }) => {
-      if (router) {
-        const oldQuery = router.currentRoute.value.query;
-        router.replace({ query: { ...oldQuery, page: offset && limit ? Math.floor(offset / limit) : undefined, ...paramsWithoutLimit } });
+    () => {
+      if (!router) {
+        return;
       }
+
+      // use the current params, not the finished request's, so the url doesn't lags behind input typed during the fetch
+      const { offset, limit, member, ...paramsWithoutLimit } = params();
+      const oldQuery = router.currentRoute.value.query;
+      router.replace({
+        query: {
+          ...oldQuery,
+          page: offset && limit ? Math.floor(offset / limit) : undefined,
+          ...paramsWithoutLimit,
+          query: paramsWithoutLimit.query || undefined,
+        },
+      });
     }
   );
   return { projects, projectsStatus, refreshProjects };
@@ -89,7 +115,8 @@ export function useStarred(user: () => string) {
   const { data: starred, status: starredStatus } = useData(
     user,
     (u) => "starred:" + u,
-    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/starred`)
+    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/starred`),
+    false
   );
   return { starred, starredStatus };
 }
@@ -98,7 +125,8 @@ export function useWatching(user: () => string) {
   const { data: watching, status: watchingStatus } = useData(
     user,
     (u) => "watching:" + u,
-    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/watching`)
+    (u) => useApi<PaginatedResultProjectCompact>(`users/${u}/watching`),
+    false
   );
   return { watching, watchingStatus };
 }
@@ -107,7 +135,8 @@ export function usePinned(user: () => string) {
   const { data: pinned, status: pinnedStatus } = useData(
     user,
     (u) => "pinned:" + u,
-    (u) => useApi<ProjectCompact[]>(`users/${u}/pinned`)
+    (u) => useApi<ProjectCompact[]>(`users/${u}/pinned`),
+    false
   );
   return { pinned, pinnedStatus };
 }
@@ -116,7 +145,8 @@ export function useOrganizations(user: () => string) {
   const { data: organizations, status: organizationsStatus } = useData(
     user,
     (u) => "organizations:" + u,
-    (u) => useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${u}/userOrganizations`)
+    (u) => useInternalApi<{ [key: string]: OrganizationRoleTable }>(`organizations/${u}/userOrganizations`),
+    false
   );
   return { organizations, organizationsStatus };
 }
@@ -130,11 +160,16 @@ export function useVersionInfo() {
   return { version, versionStatus };
 }
 
-export function useUnreadNotifications() {
+export function useUnreadNotifications(params: () => { limit: number; offset: number } = () => ({ limit: 25, offset: 0 })) {
   const { data: unreadNotifications, status: unreadNotificationsStatus } = useData(
-    () => ({}),
-    () => "unreadNotifications",
-    () => useInternalApi<PaginatedResultHangarNotification>("unreadnotifications")
+    params,
+    (p) => "unreadNotifications:" + JSON.stringify(p),
+    (p) => useInternalApi<PaginatedResultHangarNotification>("unreadnotifications", "get", { ...p }),
+    true,
+    () => false,
+    () => {},
+    undefined,
+    true
   );
   return { unreadNotifications, unreadNotificationsStatus };
 }
@@ -161,17 +196,23 @@ export function useUnreadCount() {
     false,
     () => !authStore.user,
     () => {},
-    authStore.user?.headerData?.unreadCount
+    authStore.user?.headerData?.unreadCount,
+    true
   );
   // TODO a default value should change the type so that this cast isnt needed
   return { unreadCount: unreadCount as Ref<{ notifications: number; invites: number }> | undefined, unreadCountStatus, refreshUnreadCount };
 }
 
-export function useNotifications() {
+export function useNotifications(params: () => { limit: number; offset: number } = () => ({ limit: 25, offset: 0 })) {
   const { data: notifications, status: notificationsStatus } = useData(
-    () => ({}),
-    () => "notifications",
-    () => useInternalApi<PaginatedResultHangarNotification>("notifications")
+    params,
+    (p) => "notifications:" + JSON.stringify(p),
+    (p) => useInternalApi<PaginatedResultHangarNotification>("notifications", "get", { ...p }),
+    true,
+    () => false,
+    () => {},
+    undefined,
+    true
   );
   return { notifications, notificationsStatus };
 }
@@ -230,6 +271,15 @@ export function usePossiblePerms(user: () => string) {
   return { possiblePerms, possiblePermsStatus };
 }
 
+export function useScopableProjects(user: () => string) {
+  const { data: scopableProjects, status: scopableProjectsStatus } = useData(
+    user,
+    (u) => "scopableProjects:" + u,
+    (u) => useInternalApi<ScopableProject[]>("api-keys/possible-projects/" + u)
+  );
+  return { scopableProjects, scopableProjectsStatus };
+}
+
 export function useAdminStats(params: () => { from: string; to: string }) {
   const { data: adminStats, status: adminStatsStatus } = useData(
     params,
@@ -237,6 +287,15 @@ export function useAdminStats(params: () => { from: string; to: string }) {
     (p) => useInternalApi<DayStats[]>("admin/stats", "get", p)
   );
   return { adminStats, adminStatsStatus };
+}
+
+export function useAdminStatsSummary(params: () => { from: string; to: string }) {
+  const { data: adminStatsSummary, status: adminStatsSummaryStatus } = useData(
+    params,
+    (p) => "adminStatsSummary:" + p.from + ":" + p.to,
+    (p) => useInternalApi<StatsSummary>("admin/stats/summary", "get", p)
+  );
+  return { adminStatsSummary, adminStatsSummaryStatus };
 }
 
 export function useHealthReport() {
@@ -252,22 +311,34 @@ export function useHealthReport() {
   return { healthReport, healthReportStatus, healthReportRefresh };
 }
 
-export function useResolvedFlags() {
-  const { data: flags, status: flagsStatus } = useData(
-    () => ({}),
-    () => "resolvedFlags",
-    () => useInternalApi<PaginatedResultHangarProjectFlag>("flags/resolved")
-  );
-  return { flags, flagsStatus };
+export interface FlagParams extends Record<string, unknown> {
+  resolved: boolean;
+  limit: number;
+  offset: number;
+  sort: string;
 }
 
-export function useUnresolvedFlags() {
-  const { data: flags, status: flagsStatus } = useData(
-    () => ({}),
-    () => "unresolvedFlags",
-    () => useInternalApi<PaginatedResultHangarProjectFlag>("flags/unresolved")
+export function useFlags(params: () => FlagParams, skip: () => boolean = () => false) {
+  const {
+    data: flags,
+    status: flagsStatus,
+    refresh: refreshFlags,
+  } = useData(
+    params,
+    (p) => "flags:" + JSON.stringify(p),
+    (p) =>
+      useInternalApi<PaginatedResultHangarProjectFlag>("flags/" + (p.resolved ? "resolved" : "unresolved"), "get", {
+        limit: p.limit,
+        offset: p.offset,
+        sort: p.sort,
+      }),
+    true,
+    skip,
+    () => {},
+    undefined,
+    true
   );
-  return { flags, flagsStatus };
+  return { flags, flagsStatus, refreshFlags };
 }
 
 export function useVersionApprovals() {
@@ -279,13 +350,13 @@ export function useVersionApprovals() {
   return { versionApprovals, versionApprovalsStatus };
 }
 
-export function useUser(userName: () => string) {
+export function useUser(username: () => string) {
   const {
     data: user,
     status: userStatus,
     refresh: refreshUser,
   } = useData(
-    userName,
+    username,
     (u) => "user:" + u,
     (u) => useApi<User>("users/" + u)
   );
@@ -301,42 +372,45 @@ export function useUsers(params: () => { query?: string; limit?: number; offset?
   return { users, usersStatus };
 }
 
-export function useActionLogs(
-  params: () => { limit: number; offset: number; sort: string[]; user?: string; logAction?: string; authorName?: string; projectSlug?: string },
-  router?: Router
-) {
+export type ActionLogParams = {
+  limit: number;
+  offset: number;
+  sort: string[];
+  user?: string;
+  subjectName?: string;
+  logAction?: string;
+  authorName?: string;
+  projectSlug?: string;
+  dateFrom?: string;
+  dateTo?: string;
+};
+
+export function useActionLogs(params: () => ActionLogParams) {
   const { data: actionLogs, status: actionLogsStatus } = useData(
     params,
-    (p) => "actionLogs:" + p.offset + ":" + p.sort + ":" + p.user + ":" + p.logAction + ":" + p.authorName + ":" + p.projectSlug,
+    (p) => "actionLogs:" + JSON.stringify(p),
     (p) => useInternalApi<PaginatedResultHangarLoggedAction>("admin/log", "get", p),
     true,
     () => false,
-    ({ offset, limit, ...paramsWithoutLimit }) => {
-      if (router) {
-        const oldQuery = router.currentRoute.value.query;
-        router.replace({ query: { ...oldQuery, ...paramsWithoutLimit } });
-      }
-    }
+    () => {},
+    undefined,
+    true
   );
   return { actionLogs, actionLogsStatus };
 }
 
-export function useStaff(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
-  const { data: staff, status: staffStatus } = useData(
-    params,
-    (p) => "staff:" + p.offset + ":" + p.sort + ":" + p.query,
-    (p) => useApi<PaginatedResultUser>("staff", "GET", p)
+export function useUserDirectory(directory: () => "authors" | "staff", params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
+  const { data: users, status: usersStatus } = useData(
+    () => ({ directory: directory(), ...params() }),
+    (p) => p.directory + ":" + p.offset + ":" + p.sort + ":" + p.query,
+    ({ directory, ...query }) => useApi<PaginatedResultUser>(directory, "GET", query),
+    true,
+    () => false,
+    () => {},
+    undefined,
+    true
   );
-  return { staff, staffStatus };
-}
-
-export function useAuthors(params: () => { offset?: number; limit?: number; sort?: string[]; query?: string }) {
-  const { data: authors, status: authorStatus } = useData(
-    params,
-    (p) => "authors:" + p.offset + ":" + p.sort + ":" + p.query,
-    (p) => useApi<PaginatedResultUser>("authors", "GET", p)
-  );
-  return { authors, authorStatus };
+  return { users, usersStatus };
 }
 
 export function useWatchers(project: () => string) {
@@ -409,7 +483,9 @@ export function useProjectVersions(
         const oldQuery = router.currentRoute.value.query;
         router.replace({ query: { ...oldQuery, page: offset && limit ? Math.floor(offset / limit) : undefined, channel, platform } });
       }
-    }
+    },
+    undefined,
+    true
   );
   return { versions, versionsStatus };
 }

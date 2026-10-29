@@ -70,16 +70,30 @@ function formatVersionRange(versions?: string[]): string {
   // In download buttons, only show the latest version/version range + the remaining amount
   return versions.length > 1 ? i18n.t("version.page.shortVersions", [versions.at(-1), versions.length - 1]) : versions[0]!;
 }
+
+// joined here rather than in the template so a missing part can't leave a dangling separator
+function downloadDetails(versionRange?: string[], sizeBytes?: number): string {
+  const parts: string[] = [];
+  if (props.showVersions) {
+    const range = formatVersionRange(versionRange);
+    if (range) parts.push(range);
+  }
+  if (sizeBytes) {
+    parts.push(formatSize(sizeBytes));
+  }
+  return parts.join(" · ");
+}
 </script>
 
 <template>
   <div class="flex items-center">
     <div v-if="pinnedVersion">
       <div v-if="pinnedVersion && Object.keys(pinnedVersion.downloads).length === 1">
-        <a
+        <Button
           v-for="(_, p) in pinnedVersion.platformDependenciesFormatted"
           :key="p"
-          class="flex items-center"
+          class="download-btn"
+          :size="small ? 'sm' : 'lg'"
           :href="downloadLink(p, pinnedVersion)"
           target="_blank"
           rel="noopener noreferrer"
@@ -87,25 +101,23 @@ function formatVersionRange(versions?: string[]): string {
           @click.middle="trackDownload(p, pinnedVersion)"
           v-on="useTracking('download-link', { pinned: true, dropdown: false, mainchannel: false, platform: p, project: project.name })"
         >
-          <Button :size="small ? 'medium' : 'large'">
-            <IconMdiDownloadOutline />
-            <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
-            <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" :class="{ 'text-lg pb-1.75': !small }" />
-          </Button>
-        </a>
+          <IconMdiDownloadOutline class="download-icon" />
+          <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
+          <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" />
+        </Button>
       </div>
 
-      <DropdownButton v-else :button-size="small ? 'medium' : 'large'">
+      <DropdownButton v-else class="download-btn" :button-size="small ? 'sm' : 'lg'">
         <template #button-label>
-          <span class="items-center inline-flex">
-            <IconMdiDownloadOutline />
-            <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+          <span class="items-center inline-flex gap-1.5">
+            <IconMdiDownloadOutline class="download-icon" />
+            <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
           </span>
+          <span v-if="!small" class="download-divider" aria-hidden="true" />
         </template>
         <DropdownItem
           v-for="(v, p) in pinnedVersion.platformDependenciesFormatted"
           :key="p"
-          class="flex items-center"
           :href="downloadLink(p, pinnedVersion)"
           target="_blank"
           rel="noopener noreferrer"
@@ -113,16 +125,21 @@ function formatVersionRange(versions?: string[]): string {
           @click.middle="trackDownload(p, pinnedVersion)"
           v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: false, platform: p, project: project.name })"
         >
-          <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-          {{ usePlatformName(p) }}
-          <span v-if="showVersions" class="ml-1">({{ formatVersionRange(v) }})</span>
-          <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="ml-0.5 text-sm pb-0.5" />
+          <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
+          <span class="min-w-0 flex-1">
+            <span class="block leading-tight">{{ usePlatformName(p) }}</span>
+            <span v-if="downloadDetails(v)" class="block text-xs font-normal leading-tight text-gray-secondary">{{ downloadDetails(v) }}</span>
+          </span>
+          <IconMdiOpenInNew v-if="isExternal(p, pinnedVersion)" class="flex-shrink-0 text-sm text-gray-secondary" />
         </DropdownItem>
       </DropdownButton>
     </div>
 
-    <a
+    <Button
       v-else-if="singlePlatform && singleVersion"
+      :size="small ? 'sm' : 'lg'"
+      class="download-btn"
+      :class="{ '!h-auto py-1.5': showSinglePlatform }"
       :href="platformDownloadLink"
       target="_blank"
       rel="noopener noreferrer"
@@ -130,61 +147,69 @@ function formatVersionRange(versions?: string[]): string {
       @click.middle="trackDownload(singlePlatform, singleVersion)"
       v-on="useTracking('download-link', { pinned: false, dropdown: false, mainchannel: false, platform: singlePlatform, project: project.name })"
     >
-      <Button :size="small ? 'medium' : 'large'">
-        <div class="flex flex-col" :class="{ '-mb-0.5': showSinglePlatform }">
-          <div class="inline-flex items-center">
-            <IconMdiDownloadOutline />
-            <span v-if="!small" class="ml-1">
-              {{ !!singleVersion.downloads[singlePlatform]?.externalUrl ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
-            </span>
-          </div>
-          <div v-if="showSinglePlatform" class="inline-flex justify-center items-center font-normal text-0.75rem">
-            <PlatformLogo :platform="singlePlatform" :size="15" class="mr-1 flex-shrink-0" />
-            <span v-if="singleVersion?.platformDependencies && showVersions">
-              {{ formatVersionRange(singleVersion?.platformDependenciesFormatted[singlePlatform]) }}
-            </span>
-          </div>
+      <div class="flex flex-col items-center" :class="{ '-mb-0.5': showSinglePlatform }">
+        <div class="inline-flex items-center gap-1.5">
+          <IconMdiDownloadOutline class="download-icon" />
+          <span v-if="!small">
+            {{ !!singleVersion.downloads[singlePlatform]?.externalUrl ? i18n.t("version.page.downloadExternal") : i18n.t("version.page.download") }}
+          </span>
         </div>
-      </Button>
-    </a>
+        <div v-if="showSinglePlatform" class="inline-flex items-center gap-1 font-normal text-0.75rem">
+          <PlatformLogo :platform="singlePlatform" :size="15" class="flex-shrink-0" />
+          <span v-if="singleVersion?.platformDependencies && showVersions">
+            {{ formatVersionRange(singleVersion?.platformDependenciesFormatted[singlePlatform]) }}
+          </span>
+        </div>
+      </div>
+    </Button>
 
-    <DropdownButton v-else-if="version" :button-size="small ? 'medium' : 'large'">
+    <DropdownButton v-else-if="version" class="download-btn" :button-size="small ? 'sm' : 'lg'">
       <template #button-label>
-        <span class="items-center inline-flex">
-          <IconMdiDownloadOutline />
-          <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+        <span class="items-center inline-flex gap-1.5">
+          <IconMdiDownloadOutline class="download-icon" />
+          <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
         </span>
+        <span v-if="!small" class="download-divider" aria-hidden="true" />
       </template>
       <DropdownItem
         v-for="(v, p) in version.downloads"
         :key="p"
         :href="downloadLink(p, version)"
-        class="flex items-center"
         target="_blank"
         rel="noopener noreferrer"
         @click="trackDownload(p, version)"
         @click.middle="trackDownload(p, version)"
         v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: false, platform: p, project: project.name })"
       >
-        <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-        {{ usePlatformName(p) }}
-        <span v-if="showVersions && version.platformDependencies" class="ml-1">({{ formatVersionRange(version.platformDependenciesFormatted[p]) }})</span>
-        <span v-if="v.fileInfo?.sizeBytes" class="ml-1"> ({{ formatSize(v.fileInfo.sizeBytes) }}) </span>
-        <IconMdiOpenInNew v-if="v.externalUrl" class="ml-0.5 text-sm pb-0.5" />
+        <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
+        <span class="min-w-0 flex-1">
+          <span class="block leading-tight">{{ usePlatformName(p) }}</span>
+          <span
+            v-if="downloadDetails(version.platformDependenciesFormatted[p], v.fileInfo?.sizeBytes)"
+            class="block text-xs font-normal leading-tight text-gray-secondary"
+          >
+            {{ downloadDetails(version.platformDependenciesFormatted[p], v.fileInfo?.sizeBytes) }}
+          </span>
+        </span>
+        <IconMdiOpenInNew v-if="v.externalUrl" class="flex-shrink-0 text-sm text-gray-secondary" />
       </DropdownItem>
     </DropdownButton>
 
-    <DropdownButton v-else-if="project.mainChannelVersions && Object.keys(project.mainChannelVersions).length > 0" :button-size="small ? 'medium' : 'large'">
+    <DropdownButton
+      v-else-if="project.mainChannelVersions && Object.keys(project.mainChannelVersions).length > 0"
+      class="download-btn"
+      :button-size="small ? 'sm' : 'lg'"
+    >
       <template #button-label>
-        <span class="items-center inline-flex">
-          <IconMdiDownloadOutline />
-          <span v-if="!small" class="ml-1">{{ i18n.t("version.page.download") }}</span>
+        <span class="items-center inline-flex gap-1.5">
+          <IconMdiDownloadOutline class="download-icon" />
+          <span v-if="!small">{{ i18n.t("version.page.download") }}</span>
         </span>
+        <span v-if="!small" class="download-divider" aria-hidden="true" />
       </template>
       <DropdownItem
         v-for="(v, p) in project.mainChannelVersions"
         :key="p"
-        class="flex items-center"
         :href="downloadLink(p, v)"
         target="_blank"
         rel="noopener noreferrer"
@@ -192,10 +217,14 @@ function formatVersionRange(versions?: string[]): string {
         @click.middle="trackDownload(p, v)"
         v-on="useTracking('download-link', { pinned: false, dropdown: true, mainchannel: true, platform: p, project: project.name })"
       >
-        <PlatformLogo :platform="p as Platform" :size="24" class="mr-1 flex-shrink-0" />
-        {{ usePlatformName(p) }}
-        <span v-if="v.platformDependencies && showVersions" class="ml-1">({{ formatVersionRange(v.platformDependenciesFormatted[p]) }})</span>
-        <IconMdiOpenInNew v-if="v.downloads[p]?.externalUrl" class="ml-0.5 text-sm pb-0.5" />
+        <PlatformLogo :platform="p as Platform" :size="20" class="flex-shrink-0" />
+        <span class="min-w-0 flex-1">
+          <span class="block leading-tight">{{ usePlatformName(p) }}</span>
+          <span v-if="downloadDetails(v.platformDependenciesFormatted[p])" class="block text-xs font-normal leading-tight text-gray-secondary">
+            {{ downloadDetails(v.platformDependenciesFormatted[p]) }}
+          </span>
+        </span>
+        <IconMdiOpenInNew v-if="v.downloads[p]?.externalUrl" class="flex-shrink-0 text-sm text-gray-secondary" />
       </DropdownItem>
     </DropdownButton>
   </div>

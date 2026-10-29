@@ -48,14 +48,16 @@ async function submit(): Promise<void> {
         <span class="text-sm">This will send the project owner a notification with the provided reason!</span>
         <br />
       </div>
-
-      <Button class="mt-3" @click="submit">{{ i18n.t("general.submit") }}</Button>
     </template>
     <template #activator="{ on }">
       <Button v-bind="$attrs" class="mr-1" v-on="on">
-        <IconMdiEye class="mr-1" />
+        <IconMdiEye />
         {{ i18n.t("visibility.modal.activatorBtn") }}
       </Button>
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button @click="submit">{{ i18n.t("general.submit") }}</Button>
     </template>
   </Modal>
 </template>

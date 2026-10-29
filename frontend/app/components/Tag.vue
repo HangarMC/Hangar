@@ -10,75 +10,25 @@ const props = defineProps<{
   tooltip?: string;
 }>();
 
-const ccColor = computed(() => {
-  if (props.color?.foreground) {
-    return props.color;
-  } else {
-    // https://stackoverflow.com/a/3943023
-    const background = props.color?.background;
-    let colors: number[] = [];
-    if (background?.startsWith("rgb")) {
-      colors = background
-        ?.replace("rgb(", "")
-        .replace(")", "")
-        .split(",")
-        .map((c) => Number.parseInt(c));
-    } else if (background?.startsWith("#")) {
-      const bg = background?.slice(1, 7);
-      colors = [Number.parseInt(bg?.slice(0, 2), 16), Number.parseInt(bg?.slice(2, 4), 16), Number.parseInt(bg?.slice(4, 6), 16)];
-    } else {
-      console.error("Can't figure out color value for", background);
-      return props.color;
-    }
-    colors = colors
-      .map((col) => col / 255)
-      .map((col) => {
-        if (col <= 0.039_28) {
-          return col / 12.92;
-        }
-        return Math.pow((col + 0.055) / 1.055, 2.4);
-      });
-    const L = 0.2126 * colors[0]! + 0.7152 * colors[1]! + 0.0722 * colors[2]!;
-    return {
-      foreground: L > 0.179 ? "black" : "white",
-      background: props.color?.background,
-    } as Color;
-  }
-});
+const settingsStore = useSettingsStore();
+
+const label = computed(() => props.color?.foreground ?? readableAccent(props.color?.background, settingsStore.darkMode ?? false));
 </script>
 
 <template>
-  <div class="tags inline-flex flex-wrap items-center justify-start" :title="tooltip">
-    <span
-      :style="{
-        color: ccColor?.foreground,
-        background: ccColor?.background,
-        'border-color': ccColor?.background,
-      }"
-      class="flex rounded px-2 py-0.5 text-0.8em"
-    >
-      {{ name }}
-    </span>
-  </div>
+  <span
+    class="role-tag inline-flex flex-shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold leading-5"
+    :class="color?.background ? 'border-tinted' : 'border-gray-300 text-gray-secondary dark:border-gray-600'"
+    :style="color?.background ? { '--tag-color': color.background, color: label } : undefined"
+    :title="tooltip"
+  >
+    {{ name }}
+  </span>
 </template>
 
-<style lang="scss" scoped>
-.tags {
-  &.has-addons {
-    .tag:first-child {
-      border-bottom-right-radius: 0;
-      border-top-right-radius: 0;
-    }
-
-    .tag:nth-child(2) {
-      border-bottom-left-radius: 0;
-      border-top-left-radius: 0;
-      border-left: none;
-    }
-  }
-
-  .tag {
-    border: 1px solid #dcdcdc;
-  }
+<style scoped>
+.border-tinted {
+  background-color: color-mix(in srgb, var(--tag-color) 15%, transparent);
+  border-color: color-mix(in srgb, var(--tag-color) 40%, transparent);
 }
 </style>

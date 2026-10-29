@@ -48,8 +48,7 @@ public interface LoggedActionsDAO {
     @RegisterConstructorMapper(HangarLoggedAction.class)
     @SqlQuery("SELECT * FROM v_logged_actions la " +
         " WHERE TRUE <filters>" +
-        " ORDER BY la.created_at DESC <offsetLimit>")
-    // TODO add <sorters>
+        " <sorters> <offsetLimit>")
     @DefineNamedBindings
     List<HangarLoggedAction> getLog(@BindPagination RequestPagination pagination);
 

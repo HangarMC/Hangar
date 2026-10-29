@@ -2,38 +2,62 @@
 const props = withDefaults(
   defineProps<{
     name?: string;
-    buttonSize?: "small" | "medium" | "large";
-    buttonType?: "primary" | "red" | "transparent";
+    buttonSize?: "sm" | "md" | "lg";
+    buttonVariant?: "solid" | "outline" | "ghost";
+    buttonTone?: "primary" | "neutral" | "danger";
     buttonArrow?: boolean;
     placement?: "bottom" | "top" | "left" | "right" | "bottom-end" | "bottom-start";
+    /**
+    `false` renders the popper next to its trigger instead of teleporting to `body`, needed inside a native `<dialog>`.
+    */
+    container?: string | false;
+    /**
+    Positioning strategy passed through to floating-vue; use `"fixed"` alongside `container: false` inside a `<dialog>`.
+    */
+    strategy?: "absolute" | "fixed";
   }>(),
   {
     name: "Dropdown",
-    buttonSize: "medium",
-    buttonType: "primary",
+    buttonSize: "md",
+    buttonVariant: "solid",
+    buttonTone: "primary",
     buttonArrow: true,
     placement: "bottom-end",
+    container: "body",
+    strategy: "absolute",
   }
 );
 </script>
 
 <template>
-  <Popper :placement="placement">
+  <Popper :placement="placement" :container="container" :strategy="strategy">
     <template #default="{ shown }">
-      <Button :button-type="props.buttonType" :size="props.buttonSize">
+      <Button
+        :variant="props.buttonVariant"
+        :tone="props.buttonTone"
+        :size="props.buttonSize"
+        :class="{ 'dropdown-trigger': props.buttonVariant === 'outline' && props.buttonTone === 'neutral' }"
+      >
         <slot name="button-label">
-          <span class="mx-1">{{ props.name }}</span>
+          {{ props.name }}
         </slot>
-        <template v-if="props.buttonArrow">
-          <IconMdiMenu v-if="shown" class="text-lg" />
-          <IconMdiMenuDown v-else class="text-lg" />
-        </template>
+        <IconMdiChevronDown v-if="props.buttonArrow" class="transition-transform" :class="{ 'rotate-180': shown }" />
       </Button>
     </template>
     <template #content="{ close }">
-      <div class="flex flex-col z-10 py-1 rounded border-t-2 border-primary-500 background-default shadow-default">
+      <DropdownPanel>
         <slot :close="close" />
-      </div>
+      </DropdownPanel>
     </template>
   </Popper>
 </template>
+
+<style>
+.dropdown-trigger.dropdown-trigger {
+  background-color: var(--input-surface);
+}
+
+.dropdown-trigger.dropdown-trigger:hover {
+  background-color: var(--input-surface-hover);
+}
+</style>

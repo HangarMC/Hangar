@@ -39,6 +39,7 @@ public interface UsersDAO {
                    u.theme,
                    u.socials,
                    u.avatar_url,
+                   u.last_seen_changelog_at,
                    exists(SELECT 1 FROM organizations o WHERE u.id = o.user_id) AS is_organization
                FROM users u
                WHERE u.id = :id

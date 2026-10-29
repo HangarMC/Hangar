@@ -5,6 +5,8 @@ import io.papermc.hangar.model.api.project.version.Version;
 import io.papermc.hangar.model.api.project.version.VersionStats;
 import io.papermc.hangar.model.common.Platform;
 import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -15,6 +17,7 @@ import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
 import org.jdbi.v3.sqlobject.config.ValueColumn;
+import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.stringtemplate4.UseStringTemplateEngine;
@@ -82,10 +85,14 @@ public interface VersionsApiDAO {
              <endif>)
              AND
          <endif>
-         pv.id = :versionId
-     ORDER BY pv.created_at DESC
+         pv.id IN (<versionIds>)
     """)
-    @Nullable Version getVersion(long versionId, @Define boolean canSeeHidden, @Define Long userId);
+    @KeyColumn("id")
+    Map<Long, Version> getVersions(@BindList(onEmpty = BindList.EmptyHandling.NULL_STRING) Collection<Long> versionIds, @Define boolean canSeeHidden, @Define Long userId);
+
+    default @Nullable Version getVersion(final long versionId, final boolean canSeeHidden, final @Nullable Long userId) {
+        return this.getVersions(List.of(versionId), canSeeHidden, userId).get(versionId);
+    }
 
     @SqlQuery("SELECT " +
         "       pvd.name," +
@@ -144,4 +151,16 @@ public interface VersionsApiDAO {
            LIMIT 1
     """)
     Long getLatestVersionId(long projectId, @Nullable String channel, @EnumByOrdinal Platform platform);
+
+    @KeyColumn("platform")
+    @ValueColumn("version_id")
+    @SqlQuery("""
+        SELECT DISTINCT ON (p.platform) p.platform, pv.id AS version_id
+           FROM project_versions pv
+               JOIN project_channels pc ON pv.channel_id = pc.id
+               CROSS JOIN LATERAL (SELECT (elem->>'platform')::int AS platform FROM jsonb_array_elements(pv.platforms) elem) p
+           WHERE pv.visibility = 0 AND pv.project_id = :projectId
+           ORDER BY p.platform, (lower(pc.name) = lower(:channel)) DESC, pv.created_at DESC
+    """)
+    Map<Platform, Long> getLatestVersionIds(long projectId, String channel);
 }

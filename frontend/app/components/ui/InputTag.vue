@@ -86,13 +86,15 @@ function remove(t: string) {
 }
 
 function add() {
-  if (tag.value && (!props.maxlength || tags.value.length < props.maxlength)) {
-    if (props.options && !filteredOptions.value?.includes(tag.value)) {
-      return;
-    }
-    tags.value.push(tag.value);
-    tag.value = "";
+  if (!(tag.value && (!props.maxlength || tags.value.length < props.maxlength))) {
+    return;
   }
+
+  if (props.options && !filteredOptions.value?.includes(tag.value)) {
+    return;
+  }
+  tags.value.push(tag.value);
+  tag.value = "";
 }
 
 const filteredOptions = computed(() => {
@@ -130,7 +132,7 @@ const filteredOptions = computed(() => {
           v-bind="$attrs"
           :class="slotProps.class"
           :list="id"
-          class="pointer-events-auto flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
+          class="pointer-events-auto flex-grow rounded !bg-gray-200 px-2 dark:!bg-gray-800"
           @blur="v.$touch()"
           @keydown.enter="add"
           @change="add"
@@ -143,7 +145,7 @@ const filteredOptions = computed(() => {
       </template>
       <div
         v-else
-        class="pointer-events-auto relative flex flex-column items-center flex-grow !bg-gray-100 rounded-xl px-2 dark:(!bg-gray-500 text-white)"
+        class="pointer-events-auto relative flex flex-column items-center flex-grow rounded !bg-gray-200 px-2 dark:!bg-gray-800"
         :class="slotProps.class"
       >
         <IconMdiSubdirectoryArrowLeft class="absolute right-2" />

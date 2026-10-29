@@ -26,7 +26,10 @@ public class MailService extends HangarComponent {
         USERNAME_CHANGED("Hangar Username Changed", "username-changed.html"),
         PASSWORD_CHANGED("Hangar Password Changed", "password-changed.html"),
         PASSWORD_RESET("Hangar Password Reset", "password-reset.html"),
-        EMAIL_CONFIRMATION("Hangar Email Verification", "email-verification.html");
+        EMAIL_CONFIRMATION("Hangar Email Verification", "email-verification.html"),
+        ACCOUNT_DELETION_REQUESTED("Hangar Account Deletion Requested", "account-deletion-requested.html"),
+        ACCOUNT_DELETION_CANCELLED("Hangar Account Deletion Cancelled", "account-deletion-cancelled.html"),
+        ACCOUNT_DELETED("Hangar Account Deleted", "account-deleted.html");
 
         final String subject;
         final String text;

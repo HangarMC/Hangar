@@ -32,9 +32,8 @@ const steps: Step[] = [
       if (spigotAuthor.value) {
         spigotResources.value = await getAllSpigotResourcesByAuthor(spigotAuthor.value.id);
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
   },
   {
@@ -53,9 +52,8 @@ const steps: Step[] = [
         const selected = spigotResources.value.filter((r) => selectedSpigotResources.value.includes(r.id));
         hangarResources.value = (await convertSpigotProjects(selected, ownerId)) as ImportedProject[];
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
   },
   {
@@ -133,6 +131,7 @@ function createProject(project: ImportedProject) {
   if (project.util.licenseUnset) {
     project.settings.license.url = undefined;
   }
+  project.settings.links = stripUnfilledSuggestions(project.settings.links);
   useInternalApi<string>("projects/create", "post", project, { timeout: 10_000 })
     .then((u) => {
       status[project.name]!.success = true;
@@ -154,7 +153,7 @@ function createProject(project: ImportedProject) {
     });
 }
 
-const loggedIn = useAuthStore().user !== null;
+const loggedIn = auth.user !== null;
 
 useSeo(computed(() => ({ title: t("importer.title"), route })));
 </script>
@@ -208,12 +207,12 @@ useSeo(computed(() => ({ title: t("importer.title"), route })));
             <div class="text-sm mt-4 w-min"><Button @click="remove(project)">Remove from conversion</Button></div>
           </div>
           <div class="ml-4 flex-grow">
-            <div class="text-xl flex">
-              <div class="basis-full md:basis-6/12">
-                <InputSelect v-model="project.ownerId" :values="projectOwners" item-value="id" item-text="name" label="Create as" :rules="[required()]" />
+            <div class="flex flex-wrap items-start gap-2">
+              <div class="flex-shrink-0">
+                <InputDropdown v-model="project.ownerId" :values="projectOwners" item-value="id" item-text="name" label="Create as" :rules="[required()]" />
               </div>
-              <span class="text-3xl lt-md:hidden ml-2 mr-2">/</span>
-              <div class="basis-full">
+              <span class="pt-3 text-xl text-gray-secondary lt-md:hidden">/</span>
+              <div class="min-w-50 flex-1">
                 <InputText
                   v-model="project.name"
                   label="Name"
@@ -238,13 +237,18 @@ useSeo(computed(() => ({ title: t("importer.title"), route })));
               />
             </div>
             <div class="mt-2">
-              <InputSelect
+              <InputDropdown
                 v-model="project.category"
                 :values="useCategoryOptions"
                 label="Category"
                 :rules="[required(), (category) => category !== Category.Undefined]"
                 i18n-text-values
-              />
+              >
+                <template #option="{ value, text }">
+                  <CategoryLogo :category="value as Category" :size="18" class="flex-shrink-0" />
+                  <span class="truncate">{{ text }}</span>
+                </template>
+              </InputDropdown>
             </div>
             <Spoiler title="Description" :open="false" class="!max-w-full mt-2">
               <template #content>
@@ -290,16 +294,16 @@ useSeo(computed(() => ({ title: t("importer.title"), route })));
                   {{ t("project.new.step3.license") }}
                   <hr />
                 </div>
-                <div class="flex md:gap-2 lt-md:flex-wrap">
-                  <div class="basis-full mt-4" :md="project.util.isCustomLicense ? 'basis-4/12' : 'basis-6/12'">
-                    <InputSelect
+                <div class="flex flex-wrap items-start gap-2">
+                  <div class="mt-4 flex-shrink-0">
+                    <InputDropdown
                       v-model="project.settings.license.type"
                       :values="useLicenseOptions"
                       :label="t('project.new.step3.type')"
                       :rules="[required()]"
                     />
                   </div>
-                  <div v-if="project.util.isCustomLicense" class="basis-full md:basis-8/12 mt-4">
+                  <div v-if="project.util.isCustomLicense" class="mt-4 min-w-60 flex-1">
                     <InputText
                       v-model.trim="project.settings.license.name"
                       :label="t('project.new.step3.customName')"

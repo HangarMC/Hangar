@@ -3,11 +3,6 @@ import { useDataLoader } from "~/composables/useDataLoader";
 
 const { data: user } = useDataLoader("user");
 const { data: org } = useDataLoader("organization");
-
-definePageMeta({
-  dataLoader_user: true,
-  dataLoader_organization: true,
-});
 </script>
 
 <template>

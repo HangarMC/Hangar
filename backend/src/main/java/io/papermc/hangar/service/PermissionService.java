@@ -4,8 +4,11 @@ import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.db.dao.PermissionsDAO;
 import io.papermc.hangar.model.common.Permission;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.db.auth.ApiKeyTable;
+import io.papermc.hangar.security.authentication.api.HangarApiPrincipal;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Service;
@@ -30,11 +33,26 @@ public class PermissionService extends HangarComponent {
     // Project permissions
     public Permission getProjectPermissions(final @Nullable Long userId, final long projectId) {
         //TODO still leaks not listed projects (e.g. via pages api) as the perm is technically given
+        if (this.outOfKeyScope(key -> key.coversProject(projectId))) {
+            return DEFAULT_SIGNED_OUT_PERMISSIONS;
+        }
         return this.getPermissions(userId, id -> this.permissionsDAO.getProjectPermission(id, projectId));
     }
 
     public Permission getProjectPermissions(final @Nullable Long userId, final @NotNull String slug) {
+        if (this.outOfKeyScope(key -> key.coversProject(slug))) {
+            return DEFAULT_SIGNED_OUT_PERMISSIONS;
+        }
         return this.getPermissions(userId, id -> this.permissionsDAO.getProjectPermission(id, slug));
+    }
+
+    // A project scoped api key acts like a signed out visitor on every project it wasn't created for
+    private boolean outOfKeyScope(final Predicate<ApiKeyTable> covered) {
+        return this.getOptionalHangarPrincipal()
+            .filter(HangarApiPrincipal.class::isInstance)
+            .map(principal -> ((HangarApiPrincipal) principal).getApiKeyTable())
+            .map(key -> !covered.test(key))
+            .orElse(false);
     }
 
     public Map<UserTable, Permission> getProjectMemberPermissions(final long projectId) {

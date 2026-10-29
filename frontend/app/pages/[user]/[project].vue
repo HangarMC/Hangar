@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import type { HangarProjectPage, User } from "#shared/types/backend";
+import type { HangarOrganization, HangarProjectPage, User } from "#shared/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
 
 defineProps<{
   user?: User;
+  organization?: HangarOrganization;
 }>();
 
 const { data: project } = useDataLoader("project");
@@ -18,17 +19,18 @@ provide("updateProjectPages", function (pages: HangarProjectPage[]) {
 </script>
 
 <template>
-  <ProjectHeader :project="project" />
-  <ProjectNav :project="project" />
-  <!-- eslint-disable-next-line vue/no-multiple-template-root ?????? -->
-  <router-view v-slot="{ Component }">
-    <Suspense>
-      <div>
-        <component :is="Component" v-model:project="project" :user="user" />
-      </div>
-      <template #fallback>
-        <Delayed> Loading... </Delayed>
-      </template>
-    </Suspense>
-  </router-view>
+  <div>
+    <ProjectHeader :project="project" />
+    <ProjectNav :project="project" />
+    <router-view v-slot="{ Component }">
+      <Suspense>
+        <div>
+          <component :is="Component" v-model:project="project" />
+        </div>
+        <template #fallback>
+          <Delayed> Loading... </Delayed>
+        </template>
+      </Suspense>
+    </router-view>
+  </div>
 </template>

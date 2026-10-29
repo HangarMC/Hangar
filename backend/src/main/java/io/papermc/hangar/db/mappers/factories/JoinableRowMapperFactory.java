@@ -27,10 +27,10 @@ public class JoinableRowMapperFactory implements RowMapperFactory {
         if (!ExtendedRoleTable.class.isAssignableFrom(GenericTypes.getErasedType(tableType))) {
             return Optional.empty();
         }
-        final Class<? extends ExtendedRoleTable<?, ?>> extendedRoleTableType = (Class<? extends ExtendedRoleTable<?, ?>>) tableType;
+        final Class<? extends ExtendedRoleTable<?>> extendedRoleTableType = (Class<? extends ExtendedRoleTable<?>>) tableType;
 
         final RowMappers rowMappers = config.get(RowMappers.class);
-        final RowMapper<? extends ExtendedRoleTable<?, ?>> tableMapper = rowMappers.findFor(extendedRoleTableType).orElseThrow(() -> new NoSuchMapperException("Could not find mapper for " + tableType.getTypeName()));
+        final RowMapper<? extends ExtendedRoleTable<?>> tableMapper = rowMappers.findFor(extendedRoleTableType).orElseThrow(() -> new NoSuchMapperException("Could not find mapper for " + tableType.getTypeName()));
         final RowMapper<UserTable> userTableMapper = rowMappers.findFor(UserTable.class).orElseThrow(() -> new NoSuchMapperException("Could not find mapper for " + UserTable.class.getTypeName()));
 
         final RowMapper<JoinableMember<?>> mapper = (rs, ctx) -> new JoinableMember<>(tableMapper.map(rs, ctx), userTableMapper.map(rs, ctx), this.getOrFalse(rs, "hidden"));

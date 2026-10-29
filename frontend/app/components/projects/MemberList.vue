@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { NamedPermission } from "#shared/types/backend";
-import type { JoinableMemberOrganizationRoleTable, JoinableMemberProjectRoleTable, PaginatedResultUser, RoleData } from "#shared/types/backend";
+import Card from "~/components/design/Card.vue";
+import type { JoinableMemberOrganizationRoleTable, JoinableMemberProjectRoleTable, PermissionGroup } from "#shared/types/backend";
 
-interface EditableMember {
-  name: string;
-  roleId: number;
-}
+type Member = JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable;
 
 const props = withDefaults(
   defineProps<{
@@ -15,62 +13,126 @@ const props = withDefaults(
     organization?: boolean;
     author?: string;
     slug?: string;
+    bare?: boolean;
+    manage?: boolean;
+    settingsLink?: string;
+    title?: string;
+    description?: string;
   }>(),
   {
     organization: false,
     class: "",
     author: undefined,
     slug: undefined,
+    bare: false,
+    manage: true,
+    settingsLink: undefined,
+    title: undefined,
+    description: undefined,
   }
 );
-
-const sortedMembers = props.members.toSorted((r1, r2) => {
-  const role1 = getRole(r1.role.roleId);
-  const role2 = getRole(r2.role.roleId);
-  if (role1?.rank) {
-    if (role2?.rank) {
-      return role1.rank - role2.rank;
-    }
-    return 1;
-  }
-  return role2?.rank ? -1 : 1;
-});
 
 const i18n = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
-const roles: RoleData[] = (props.organization ? useBackendData.orgRoles : useBackendData.projectRoles).filter((role) => role.assignable);
 
+const groups: PermissionGroup[] = (props.organization ? useBackendData.organizationPermissions : useBackendData.projectPermissions) ?? [];
+const defaultInvitePermissions = props.organization
+  ? [NamedPermission.CreateProject, NamedPermission.CreateVersion]
+  : [NamedPermission.CreateVersion, NamedPermission.EditPage];
+const grantedCount = (member: Member) => member.role.permissions.filter((p) => p !== NamedPermission.IsSubjectMember).length;
+
+const sortedMembers = computed(() =>
+  [...props.members].sort((r1, r2) => {
+    if (r1.role.owner !== r2.role.owner) return r1.role.owner ? -1 : 1;
+    const diff = grantedCount(r2) - grantedCount(r1);
+    return diff === 0 ? r1.user.name.localeCompare(r2.user.name) : diff;
+  })
+);
+
+const canEdit = computed<boolean>(() => hasPerms(NamedPermission.EditSubjectSettings));
 const canLeave = computed<boolean>(() => {
-  if (!authStore.user) {
-    return false;
-  }
-
+  if (!authStore.user) return false;
   return props.members.some((member) => member.user.id === authStore.user?.id && member.user.name !== props.author);
 });
-const canEdit = computed<boolean>(() => hasPerms(NamedPermission.EditSubjectSettings));
+
 const saving = ref<boolean>(false);
-const search = ref<string>("");
+const search = ref<string>();
 const addErrors = ref<string[]>([]);
-const result = ref<string[]>([]);
+const memberNames = computed(() => props.members.map((m) => m.user.name));
 
 watch(search, () => {
   addErrors.value = [];
 });
 
-function filteredRoles(currentRole: number): RoleData[] {
-  return roles.filter((r) => r.roleId !== currentRole);
+const editing = ref<Member>();
+const inviting = ref(false);
+const draftTitle = ref("");
+const draftPerms = ref<NamedPermission[]>([]);
+
+function isPending(member: Member): boolean {
+  return !member.role.accepted;
 }
 
-function removeMember(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable) {
-  post(convertMember(member), "remove");
+function isPendingTransfer(member: Member): boolean {
+  return isPending(member) && member.role.owner;
+}
+
+function canEditMember(member: Member): boolean {
+  return props.manage && canEdit.value && !isPendingTransfer(member);
+}
+
+function openInvite() {
+  editing.value = undefined;
+  inviting.value = true;
+  search.value = undefined;
+  draftTitle.value = "";
+  draftPerms.value = [...defaultInvitePermissions];
+}
+
+function openEdit(member: Member) {
+  inviting.value = false;
+  editing.value = member;
+  draftTitle.value = member.role.title;
+  draftPerms.value = [...member.role.permissions];
+}
+
+function closeEditor() {
+  editing.value = undefined;
+  inviting.value = false;
+  addErrors.value = [];
+}
+
+function toggleGroup(group: PermissionGroup) {
+  const all = group.permissions.every((p) => draftPerms.value.includes(p));
+  draftPerms.value = all ? draftPerms.value.filter((p) => !group.permissions.includes(p)) : [...new Set([...draftPerms.value, ...group.permissions])];
+}
+
+function groupState(group: PermissionGroup): "all" | "some" | "none" {
+  const picked = group.permissions.filter((p) => draftPerms.value.includes(p)).length;
+  if (picked === 0) return "none";
+  return picked === group.permissions.length ? "all" : "some";
+}
+
+const editingOwner = computed(() => editing.value?.role.owner === true);
+const draftValid = computed(() => draftTitle.value.trim().length > 0 && draftTitle.value.length <= 32);
+
+function save() {
+  if (!draftValid.value) return;
+  const name = editing.value ? editing.value.user.name : search.value?.trim();
+  if (!name) {
+    addErrors.value.push(i18n.t("general.error.nameEmpty"));
+    return;
+  }
+  post({ name, title: draftTitle.value.trim(), permissions: draftPerms.value }, editing.value ? "edit" : "add");
+}
+
+function removeMember(member: Member) {
+  post({ name: member.user.name }, "remove");
 }
 
 function cancelTransfer() {
-  if (saving.value) {
-    return;
-  }
-
+  if (saving.value) return;
   saving.value = true;
   const url = props.organization ? `organizations/org/${props.author}/canceltransfer` : `projects/project/${props.slug}/canceltransfer`;
   useInternalApi(url, "post")
@@ -79,130 +141,155 @@ function cancelTransfer() {
     .finally(() => (saving.value = false));
 }
 
-function setRole(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable, role: RoleData) {
-  const editableMember: EditableMember = convertMember(member);
-  editableMember.roleId = role.roleId;
-  post(editableMember, "edit");
-}
-
-function invite(member: string, role: RoleData) {
-  const editableMember: EditableMember = { name: member, roleId: role.roleId };
-  post(editableMember, "add");
-  return "";
-}
-
-function post(member: EditableMember, action: "edit" | "add" | "remove") {
+function post(member: { name: string; title?: string; permissions?: NamedPermission[] }, action: "edit" | "add" | "remove") {
   addErrors.value = [];
-  if (member.name.length === 0) {
-    addErrors.value.push(i18n.t("general.error.nameEmpty"));
-    return;
-  }
-  if (saving.value) {
-    return;
-  }
+  if (saving.value) return;
 
   saving.value = true;
   const url = props.organization ? `organizations/org/${props.author}/members/${action}` : `projects/project/${props.slug}/members/${action}`;
   useInternalApi(url, "post", member)
-    .then(() => {
-      router.go(0);
-    })
-    .catch((err) => {
-      handleRequestError(err);
-      // addErrors.value.push(i18n.te(e.response?.data.message) ? i18n.t(e.response?.data.message, e.response?.data.messageArgs) : e.response?.data.message);
-    })
-    .finally(() => {
-      saving.value = false;
-    });
-}
-
-function convertMember(member: JoinableMemberProjectRoleTable | JoinableMemberOrganizationRoleTable): EditableMember {
-  return {
-    name: member.user.name,
-    roleId: member.role.roleId,
-  };
-}
-
-async function doSearch(val?: string) {
-  result.value = [];
-  const users = await useApi<PaginatedResultUser>("users", "get", {
-    query: val,
-    limit: 25,
-    offset: 0,
-  });
-  result.value = users.result.filter((u) => !props.members.some((m) => m.user.name === u.name)).map((u) => u.name);
+    .then(() => router.go(0))
+    .catch((err) => handleRequestError(err))
+    .finally(() => (saving.value = false));
 }
 </script>
 
 <template>
-  <Card v-if="sortedMembers.length > 0 || canEdit" :class="props.class">
-    <template #header>
-      <div class="inline-flex w-full flex-cols space-between items-center">
+  <component :is="bare ? 'div' : Card" v-if="sortedMembers.length > 0 || canEdit" :class="props.class">
+    <template v-if="!bare" #header>
+      <div class="flex items-center gap-2">
         <h2>{{ i18n.t("project.members") }}</h2>
-        <Tooltip v-if="canEdit" class="text-base font-normal">
-          <template #content>
-            {{ i18n.t("form.memberList.info") }}
-          </template>
-          <IconMdiHelpCircleOutline class="ml-1 text-gray-400" />
-        </Tooltip>
+        <span class="text-sm font-normal text-gray-secondary tabular-nums">{{ sortedMembers.length }}</span>
         <div class="flex-grow" />
         <MemberLeaveModal v-if="canLeave && author" :author="author" :organization="organization" :slug="slug" />
+        <Button
+          v-if="settingsLink && canEdit"
+          :to="settingsLink"
+          variant="ghost"
+          tone="neutral"
+          size="sm"
+          icon-only
+          :title="i18n.t('general.edit')"
+          :aria-label="i18n.t('general.edit')"
+        >
+          <IconMdiPencil />
+        </Button>
       </div>
     </template>
 
-    <div
-      v-for="member in sortedMembers"
-      :key="member.user.name"
-      class="p-2 w-full border border-gray-100 dark:border-gray-800 rounded inline-flex flex-row space-x-4"
-    >
-      <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="sm" class="flex-shrink-0" />
-      <div class="flex-grow truncate">
-        <p class="font-semibold">
-          <Link :to="'/' + member.user.name">{{ member.user.name }}</Link>
-        </p>
-        <Tooltip v-if="!member.role.accepted">
-          <template #content>
-            {{ i18n.t("form.memberList.invitedAs", [getRole(member.role.roleId)?.title]) }}
-          </template>
-          <span class="items-center inline-flex"> {{ getRole(member.role.roleId)?.title }} <IconMdiClock class="ml-1" /> </span>
-        </Tooltip>
-        <span v-else class="items-center inline-flex"> {{ getRole(member.role.roleId)?.title }}</span>
+    <div v-if="bare" class="flex flex-wrap items-start gap-x-3 gap-y-2 border-b border-gray-300 pb-3 dark:border-gray-700">
+      <div class="min-w-50 flex-1">
+        <h2 v-if="title" class="flex items-center gap-2 text-lg font-semibold">
+          {{ i18n.t(title) }}
+          <span class="text-sm font-normal text-gray-secondary tabular-nums">{{ sortedMembers.length }}</span>
+        </h2>
+        <p v-if="description" class="mt-0.5 text-sm text-gray-secondary">{{ i18n.t(description) }}</p>
       </div>
-      <!-- todo confirmation modal -->
-      <DropdownButton v-if="canEdit && getRole(member.role.roleId)?.assignable" :name="i18n.t('general.edit')">
-        <template #button-label>
-          <IconMdiPencil />
-        </template>
-        <DropdownItem v-for="role of filteredRoles(member.role.roleId)" :key="role.title" :disabled="saving" @click="setRole(member, role)">
-          {{ role.title }}
-        </DropdownItem>
-        <hr />
-        <DropdownItem @click="removeMember(member)">{{ i18n.t("form.memberList.remove") }}</DropdownItem>
-      </DropdownButton>
-      <DropdownButton v-if="canEdit && !getRole(member.role.roleId)?.assignable && !member.role.accepted" :name="i18n.t('general.edit')">
-        <template #button-label>
-          <IconMdiPencil />
-        </template>
-        <DropdownItem @click="cancelTransfer()">{{ i18n.t("form.memberList.cancelTransfer") }}</DropdownItem>
-      </DropdownButton>
+      <div v-if="canLeave && author" class="flex-shrink-0">
+        <MemberLeaveModal :author="author" :organization="organization" :slug="slug" />
+      </div>
     </div>
-    <div v-if="canEdit" class="items-center inline-flex mt-3 w-full">
-      <InputAutocomplete
-        id="membersearch"
-        v-model="search"
-        :values="result"
-        :label="i18n.t('form.memberList.addUser')"
-        :error-messages="addErrors"
-        @search="doSearch"
-      />
-      <DropdownButton :name="i18n.t('general.add')" class="ml-2">
-        <template #button-label>
-          <IconMdiAccountPlus class="ml-1" />
-        </template>
-        <DropdownItem v-for="role of roles" :key="role.value" :disabled="saving" @click="invite(search, role)">
-          {{ role.title }}
-        </DropdownItem>
-      </DropdownButton>
+
+    <p v-if="sortedMembers.length === 0" class="py-3 text-sm text-gray-secondary">{{ i18n.t("form.memberList.noMembers") }}</p>
+    <ul v-else class="divide-y divide-gray-300 dark:divide-gray-700">
+      <li v-for="member in sortedMembers" :key="member.user.name" class="py-2">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <UserAvatar :username="member.user.name" :avatar-url="member.user.avatarUrl" size="xs" class="flex-shrink-0" />
+
+          <div class="min-w-30 flex-1">
+            <p class="min-w-0 flex items-center gap-x-2">
+              <Link :to="'/' + member.user.name" class="min-w-0 truncate font-semibold">{{ member.user.name }}</Link>
+              <Chip v-if="isPending(member)" tone="amber" class="flex-shrink-0" :title="i18n.t('form.memberList.invitedAs', [member.role.title])">
+                <IconMdiClockOutline />
+                {{ i18n.t("form.memberList.pending") }}
+              </Chip>
+            </p>
+            <p class="truncate text-sm text-gray-secondary">{{ member.role.title }}</p>
+          </div>
+
+          <!-- edit stays last so it lines up down the column, whether or not the row can be removed -->
+          <div class="ml-auto flex flex-shrink-0 items-center gap-2">
+            <Button
+              v-if="canEditMember(member) && !member.role.owner"
+              variant="ghost"
+              tone="danger"
+              size="sm"
+              icon-only
+              :disabled="saving"
+              :title="isPending(member) ? i18n.t('form.memberList.cancelInvite') : i18n.t('form.memberList.remove')"
+              :aria-label="isPending(member) ? i18n.t('form.memberList.cancelInvite') : i18n.t('form.memberList.remove')"
+              @click="removeMember(member)"
+            >
+              <IconMdiAccountRemove />
+            </Button>
+            <Button
+              v-else-if="manage && canEdit && isPendingTransfer(member)"
+              variant="outline"
+              tone="danger"
+              size="sm"
+              :disabled="saving"
+              @click="cancelTransfer()"
+            >
+              {{ i18n.t("form.memberList.cancelTransfer") }}
+            </Button>
+            <Button
+              v-if="canEditMember(member)"
+              variant="outline"
+              tone="neutral"
+              size="sm"
+              :disabled="saving"
+              @click="editing === member ? closeEditor() : openEdit(member)"
+            >
+              <IconMdiPencil />
+              {{ i18n.t("general.edit") }}
+            </Button>
+          </div>
+        </div>
+
+        <MemberPermissionEditor
+          v-if="editing === member"
+          v-model:title="draftTitle"
+          v-model:permissions="draftPerms"
+          class="mt-3"
+          :groups="groups"
+          :locked="editingOwner"
+          :locked-hint="i18n.t('form.memberList.ownerLocked')"
+          :saving="saving"
+          :valid="draftValid"
+          :group-state="groupState"
+          @toggle-group="toggleGroup"
+          @save="save"
+          @cancel="closeEditor"
+        />
+      </li>
+    </ul>
+
+    <div v-if="canEdit && manage" class="mt-3 border-t border-gray-300 pt-4 dark:border-gray-700">
+      <div v-if="!inviting" class="flex">
+        <Button variant="outline" tone="neutral" @click="openInvite">
+          <IconMdiAccountPlus />
+          {{ i18n.t("form.memberList.invite") }}
+        </Button>
+      </div>
+
+      <div v-else>
+        <div class="max-w-md">
+          <UserSearchInput v-model="search" name="membersearch" :label="i18n.t('form.memberList.addUser')" :error-messages="addErrors" :exclude="memberNames" />
+        </div>
+        <MemberPermissionEditor
+          v-model:title="draftTitle"
+          v-model:permissions="draftPerms"
+          class="mt-3"
+          :groups="groups"
+          :saving="saving"
+          :valid="draftValid && !!search"
+          :save-label="i18n.t('form.memberList.invite')"
+          :group-state="groupState"
+          @toggle-group="toggleGroup"
+          @save="save"
+          @cancel="closeEditor"
+        />
+      </div>
     </div>
-  </Card>
+  </component>
 </template>

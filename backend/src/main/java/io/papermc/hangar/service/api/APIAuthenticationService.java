@@ -53,6 +53,9 @@ public class APIAuthenticationService extends HangarComponent {
         if (apiKeyTable == null) {
             throw new HangarApiException("No valid API Key found");
         }
+        if (apiKeyTable.isExpired()) {
+            throw new HangarApiException("API Key has expired");
+        }
         apiKeyTable.setLastUsed(OffsetDateTime.now());
         this.apiKeyDAO.update(apiKeyTable);
 

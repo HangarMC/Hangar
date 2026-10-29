@@ -10,18 +10,23 @@ import io.papermc.hangar.components.auth.model.db.VerificationCodeTable;
 import io.papermc.hangar.components.auth.model.dto.AccountForm;
 import io.papermc.hangar.components.auth.model.dto.SettingsResponse;
 import io.papermc.hangar.components.auth.model.dto.SignupForm;
+import io.papermc.hangar.components.auth.service.AccountDeletionService;
 import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.auth.service.CredentialsService;
 import io.papermc.hangar.components.auth.service.TokenService;
 import io.papermc.hangar.components.auth.service.VerificationService;
 import io.papermc.hangar.exceptions.HangarApiException;
 import io.papermc.hangar.model.db.UserTable;
+import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.security.annotations.Anyone;
+import io.papermc.hangar.security.annotations.aal.RequireAal;
+import io.papermc.hangar.security.annotations.privileged.Privileged;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
 import io.papermc.hangar.security.configs.SecurityConfig;
 import io.papermc.hangar.service.internal.users.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.http.HttpStatus;
@@ -47,13 +52,15 @@ public class AuthController extends HangarComponent {
     private final VerificationService verificationService;
     private final CredentialsService credentialsService;
     private final UserService userService;
+    private final AccountDeletionService accountDeletionService;
 
-    public AuthController(final AuthService authService, final TokenService tokenService, final VerificationService verificationService, final CredentialsService credentialsService, final UserService userService) {
+    public AuthController(final AuthService authService, final TokenService tokenService, final VerificationService verificationService, final CredentialsService credentialsService, final UserService userService, final AccountDeletionService accountDeletionService) {
         this.authService = authService;
         this.tokenService = tokenService;
         this.verificationService = verificationService;
         this.credentialsService = credentialsService;
         this.userService = userService;
+        this.accountDeletionService = accountDeletionService;
     }
 
     @Anyone
@@ -123,7 +130,9 @@ public class AuthController extends HangarComponent {
         final VerificationCodeTable verificationCode = this.verificationService.getVerificationCode(userId, VerificationCodeTable.VerificationCodeType.EMAIL_VERIFICATION);
         final boolean emailPending = verificationCode != null && !this.verificationService.expired(verificationCode);
 
-        return new SettingsResponse(authenticators, oauth, hasBackupCodes, hasTotp, emailVerified, emailPending, hasPassword);
+        final var deletionStatus = this.accountDeletionService.getStatus(userId);
+        final var deletionScheduledFor = deletionStatus.deletionRequestedAt() == null ? null : deletionStatus.deletionRequestedAt().plus(AccountDeletionService.DELETION_DELAY);
+        return new SettingsResponse(authenticators, oauth, hasBackupCodes, hasTotp, emailVerified, emailPending, hasPassword, deletionScheduledFor, deletionStatus.ownedProjectCount(), deletionStatus.ownedOrganizationCount());
     }
 
     private List<SettingsResponse.Authenticator> getAuthenticators(final long userId) {
@@ -175,5 +184,23 @@ public class AuthController extends HangarComponent {
         if (StringUtils.hasText(form.newPassword())) {
             this.authService.handlePasswordChange(userTable, form.newPassword());
         }
+    }
+
+    @Unlocked
+    @RequireAal(1)
+    @Privileged
+    @RateLimit(path = "account-delete-request", overdraft = 2, refillTokens = 1, refillSeconds = RateLimit.MAX_REFILL_DELAY)
+    @PostMapping(value = "/account/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void requestAccountDeletion(@RequestBody @Valid final StringContent confirmation) {
+        final UserTable user = Objects.requireNonNull(this.userService.getUserTable(this.getHangarPrincipal().getUserId()));
+        this.accountDeletionService.requestDeletion(user, confirmation.getContent());
+    }
+
+    @Unlocked
+    @RequireAal(1)
+    @PostMapping("/account/delete/cancel")
+    public void cancelAccountDeletion() {
+        final UserTable user = Objects.requireNonNull(this.userService.getUserTable(this.getHangarPrincipal().getUserId()));
+        this.accountDeletionService.cancelDeletion(user);
     }
 }

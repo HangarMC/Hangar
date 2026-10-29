@@ -10,7 +10,7 @@ const props = defineProps<{
   project?: HangarProject;
 }>();
 
-const user = useAuthStore().user;
+const authStore = useAuthStore();
 
 const starred = computed(() => props.project?.userActions?.starred);
 const watching = computed(() => props.project?.userActions?.watching);
@@ -18,7 +18,8 @@ const starredCount = computed(() => props.project?.stats?.stars);
 const watchingCount = computed(() => props.project?.stats?.watchers);
 const reported = computed(() => props.project?.userActions?.flagged);
 
-const isOwn = computed(() => !user || user.name === props.project?.namespace?.owner);
+const loggedIn = computed(() => Boolean(authStore.user));
+const isOwn = computed(() => Boolean(authStore.user && authStore.user.name === props.project?.namespace?.owner));
 
 const starredChanged = ref(false);
 const watchingChanged = ref(false);
@@ -55,9 +56,8 @@ function getStarredCount() {
   }
   if (starredChanged.value) {
     return starred.value ? starredCount.value - 1 : starredCount.value + 1;
-  } else {
-    return starredCount.value;
   }
+  return starredCount.value;
 }
 
 function getWatchingCount() {
@@ -66,9 +66,8 @@ function getWatchingCount() {
   }
   if (watchingChanged.value) {
     return watching.value ? watchingCount.value - 1 : watchingCount.value + 1;
-  } else {
-    return watchingCount.value;
   }
+  return watchingCount.value;
 }
 
 async function sendForApproval() {
@@ -122,12 +121,14 @@ function requiresConfirmation(): ConfirmationType {
       <Markdown v-if="project.lastVisibilityChangeComment" :raw="project.lastVisibilityChangeComment" inline />
     </Alert>
   </div>
+  <Alert v-if="project?.settings?.unlisted" type="info" class="mb-4">{{ i18n.t("project.settings.unlistedNotice") }}</Alert>
   <Card accent>
     <div class="flex lt-sm:flex-col">
       <UserAvatar
         class="flex-shrink-0 mr-3 lt-sm:hidden"
         :loading="!project"
         :username="project?.namespace?.owner"
+        :monogram-name="project?.name"
         :to="'/' + project?.namespace?.owner + '/' + project?.name"
         :img-src="project?.avatarUrl"
       />
@@ -137,15 +138,16 @@ function requiresConfirmation(): ConfirmationType {
             class="!w-8 !h-8 sm:hidden"
             :loading="!project"
             :username="project?.namespace?.owner"
+            :monogram-name="project?.name"
             :to="'/' + project?.namespace?.owner + '/' + project?.name"
             :img-src="project?.avatarUrl"
           />
           <template v-if="project">
-            <NuxtLink class="!sm:ml-0 px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner">
+            <NuxtLink class="!sm:ml-0 px-1 rounded breadcrumb-link" :to="'/' + project.namespace.owner">
               {{ project.namespace.owner }}
             </NuxtLink>
             <span class="text-gray-500 dark:text-gray-400"> / </span>
-            <NuxtLink class="px-1 rounded hover:bg-gray-400/25 hover:dark:bg-gray-500/25" :to="'/' + project.namespace.owner + '/' + project.name">
+            <NuxtLink class="px-1 rounded breadcrumb-link" :to="'/' + project.namespace.owner + '/' + project.name">
               <h1 class="font-semibold">{{ project.name }}</h1>
             </NuxtLink>
           </template>
@@ -167,37 +169,42 @@ function requiresConfirmation(): ConfirmationType {
           </Tooltip>
           <DownloadButton :project="project" />
         </span>
-        <div class="flex">
+        <div class="flex gap-1.5">
           <Tooltip>
             <template #content>
-              <span v-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
+              <span v-if="!loggedIn">{{ i18n.t("project.actions.starLoggedOut") }}</span>
+              <span v-else-if="isOwn">{{ i18n.t("project.info.stars", 0) }}</span>
               <span v-else-if="hasStarred()">{{ i18n.t("project.actions.unstar") }}</span>
               <span v-else>{{ i18n.t("project.actions.star") }}</span>
             </template>
-            <Button button-type="secondary" size="small" @click="toggleStar">
+            <Button variant="outline" tone="neutral" size="sm" class="!px-2" :disabled="!loggedIn" @click="toggleStar">
               <IconMdiStar v-if="hasStarred()" />
               <IconMdiStarOutline v-else />
-              <span class="ml-2">{{ getStarredCount()?.toLocaleString("en-US") }}</span>
+              <span class="tabular-nums">{{ getStarredCount()?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
-          <!-- Tooltips mess with normal margins so this is a workaround -->
-          <div class="px-1" />
           <Tooltip>
             <template #content>
-              <span v-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
+              <span v-if="!loggedIn">{{ i18n.t("project.actions.watchLoggedOut") }}</span>
+              <span v-else-if="isOwn">{{ i18n.t("project.info.watchers", 0) }}</span>
               <span v-else-if="isWatching()">{{ i18n.t("project.actions.unwatch") }}</span>
               <span v-else>{{ i18n.t("project.actions.watch") }}</span>
             </template>
-            <Button button-type="secondary" size="small" @click="toggleWatch">
+            <Button variant="outline" tone="neutral" size="sm" class="!px-2" :disabled="!loggedIn" @click="toggleWatch">
               <IconMdiBell v-if="isWatching()" />
               <IconMdiBellOutline v-else />
-              <span class="ml-2">{{ getWatchingCount()?.toLocaleString("en-US") }}</span>
+              <span class="tabular-nums">{{ getWatchingCount()?.toLocaleString("en-US") }}</span>
             </Button>
           </Tooltip>
-          <div class="px-1" />
-          <FlagModal v-if="project" :project="project" :disabled="isOwn" :open-report="reported" @reported="reported = true" />
+          <FlagModal v-if="project" :project="project" :disabled="!loggedIn || isOwn" :open-report="reported" @reported="reported = true" />
         </div>
       </div>
     </div>
   </Card>
 </template>
+
+<style scoped>
+.breadcrumb-link:hover {
+  background-color: color-mix(in srgb, var(--gray-400) 25%, transparent);
+}
+</style>

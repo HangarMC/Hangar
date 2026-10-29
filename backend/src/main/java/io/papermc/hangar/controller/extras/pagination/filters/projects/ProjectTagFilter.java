@@ -74,7 +74,7 @@ public class ProjectTagFilter implements Filter<ProjectTagFilter.ProjectTagFilte
                 } else {
                     sb.append(',');
                 }
-                sb.append(tag);
+                sb.append(Filter.escapeMeili(String.valueOf(tag)));
             }
             sb.append(']');
         }

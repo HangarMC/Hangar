@@ -1,7 +1,6 @@
 package io.papermc.hangar.db.dao.v1;
 
 import io.papermc.hangar.db.extras.BindPagination;
-import io.papermc.hangar.db.mappers.factories.CompactRoleColumnMapperFactory;
 import io.papermc.hangar.model.api.User;
 import io.papermc.hangar.model.api.project.DayProjectStats;
 import io.papermc.hangar.model.api.project.Project;
@@ -28,6 +27,7 @@ public interface ProjectsApiDAO {
     @SqlQuery("""
         SELECT p.id,
                p.created_at,
+               hp.published_at,
                p.name,
                p.owner_name "owner",
                p.slug,
@@ -53,6 +53,7 @@ public interface ProjectsApiDAO {
                p.donation_enabled,
                p.donation_subject,
                p.sponsors,
+               p.unlisted,
                hp.avatar,
                hp.avatar_fallback,
                hp.supported_platforms
@@ -77,21 +78,18 @@ public interface ProjectsApiDAO {
     @Nullable Long getProjectIdFromVersionHash(String hash, @Define boolean canSeeHidden, @Define @Bind Long requesterId);
 
     @RegisterConstructorMapper(ProjectMember.class)
-    @RegisterColumnMapperFactory(CompactRoleColumnMapperFactory.class)
-    @SqlQuery("SELECT u.name AS \"user\", u.id AS \"userId\", array_agg(r.name) roles " +
+    @SqlQuery("SELECT u.name AS \"user\", u.id AS \"userId\", upr.title, upr.permissions::bigint AS permissions " +
         "   FROM user_project_roles upr" +
         "       JOIN users u ON upr.user_id = u.id " +
-        "       JOIN roles r ON upr.role_type = r.name " +
         "   WHERE upr.project_id = :id " +
-        "   GROUP BY u.name, u.id ORDER BY max(r.permission::bigint) DESC " +
+        "   ORDER BY upr.is_owner DESC, upr.permissions::bigint DESC, u.name " +
         "   <offsetLimit>")
     List<ProjectMember> getProjectMembers(long id, @BindPagination RequestPagination pagination);
 
     @SqlQuery("SELECT count(*) " +
         "   FROM user_project_roles upr " +
         "       JOIN users u ON upr.user_id = u.id " +
-        "   WHERE upr.project_id = :id " +
-        "   GROUP BY u.name")
+        "   WHERE upr.project_id = :id")
     long getProjectMembersCount(long id);
 
     @RegisterConstructorMapper(User.class)

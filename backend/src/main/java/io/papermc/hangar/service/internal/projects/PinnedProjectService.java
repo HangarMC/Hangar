@@ -25,7 +25,7 @@ public class PinnedProjectService extends HangarComponent {
         this.pinnedProjectDAO.delete(userId, projectId);
     }
 
-    public List<ProjectCompact> getPinnedProjects(final long userid) {
-        return this.pinnedProjectDAO.pinnedProjects(userid);
+    public List<ProjectCompact> getPinnedProjects(final long userid, final boolean canSeeHidden, final Long requesterId) {
+        return this.pinnedProjectDAO.pinnedProjects(userid, canSeeHidden, requesterId);
     }
 }

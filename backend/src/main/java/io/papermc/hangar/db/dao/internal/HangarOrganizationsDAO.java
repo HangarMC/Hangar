@@ -23,7 +23,9 @@ public interface HangarOrganizationsDAO {
         "       uor.id uor_id," +
         "       uor.created_at uor_created_at," +
         "       uor.user_id uor_user_id," +
-        "       uor.role_type uor_role_type," +
+        "       uor.permissions::bigint uor_permissions," +
+        "       uor.title uor_title," +
+        "       uor.is_owner uor_is_owner," +
         "       uor.organization_id uor_organization_id," +
         "       uor.accepted uor_accepted," +
         "       om.hidden hidden" +

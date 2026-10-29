@@ -6884,11 +6884,21 @@
         },
         "required": ["reviewerName", "reviewStarted", "reviewEnded", "lastAction"]
       },
+      "io.papermc.hangar.model.internal.versions.JarScanEntry": {
+        "type": "object",
+        "properties": {
+          "checkName": { "type": "string" },
+          "location": { "type": "string" },
+          "message": { "type": "string" },
+          "severity": { "type": "string" }
+        },
+        "required": ["location", "message", "severity"]
+      },
       "io.papermc.hangar.model.internal.versions.JarScanResult": {
         "type": "object",
         "properties": {
           "createdAt": { "type": "string", "format": "date-time" },
-          "entries": { "type": "array", "items": { "type": "string" } },
+          "entries": { "type": "array", "items": { "$ref": "#/components/schemas/io.papermc.hangar.model.internal.versions.JarScanEntry" } },
           "highestSeverity": { "type": "string" },
           "id": { "type": "integer", "format": "int64" },
           "platform": { "$ref": "#/components/schemas/io.papermc.hangar.model.common.Platform" }

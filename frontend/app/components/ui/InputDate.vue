@@ -15,7 +15,7 @@ const date = computed({
   },
   set: (value) => {
     let valueToEmit = value;
-    if (props.time && value) {
+    if (value && props.time) {
       // add seconds and millies back...
       valueToEmit += ":00.000Z";
     }
@@ -48,6 +48,7 @@ const { v, errors, hasError } = useValidation(props.label, props.rules, date, er
     :value="date"
     :disabled="disabled"
     :no-error-tooltip="noErrorTooltip"
+    always-filled
   >
     <template #default="slotProps">
       <!-- todo make fancy -->

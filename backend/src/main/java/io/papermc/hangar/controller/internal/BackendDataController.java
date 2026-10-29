@@ -7,7 +7,9 @@ import io.papermc.hangar.config.hangar.HangarConfig;
 import io.papermc.hangar.db.customtypes.RoleCategory;
 import io.papermc.hangar.db.dao.internal.table.roles.RolesDAO;
 import io.papermc.hangar.model.common.Color;
+import io.papermc.hangar.model.common.MemberPermissions;
 import io.papermc.hangar.model.common.NamedPermission;
+import io.papermc.hangar.model.common.PermissionGroup;
 import io.papermc.hangar.model.common.Prompt;
 import io.papermc.hangar.model.common.projects.Category;
 import io.papermc.hangar.model.common.projects.FlagReason;
@@ -85,22 +87,22 @@ public class BackendDataController extends HangarComponent {
     public record FlagReasonData(String type, String title) {
     }
 
-    @GetMapping("/projectRoles")
+    @GetMapping("/projectPermissions")
     @Cacheable(CacheConfig.PROJECT_ROLES)
-    public List<RoleData> getProjectRoles() {
-        return this.rolesDAO.getRoles(RoleCategory.PROJECT);
+    public List<PermissionGroup> getProjectPermissionGroups() {
+        return MemberPermissions.PROJECT_GROUPS;
+    }
+
+    @GetMapping("/organizationPermissions")
+    @Cacheable(CacheConfig.ORG_ROLES)
+    public List<PermissionGroup> getOrganizationPermissionGroups() {
+        return MemberPermissions.ORGANIZATION_GROUPS;
     }
 
     @GetMapping("/globalRoles")
     @Cacheable(CacheConfig.GLOBAL_ROLES)
     public List<RoleData> getGlobalRoles() {
         return this.rolesDAO.getRoles(RoleCategory.GLOBAL);
-    }
-
-    @GetMapping("/orgRoles")
-    @Cacheable(CacheConfig.ORG_ROLES)
-    public List<RoleData> getOrganizationRoles() {
-        return this.rolesDAO.getRoles(RoleCategory.ORGANIZATION);
     }
 
     @GetMapping("/licenses")

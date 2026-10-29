@@ -15,14 +15,17 @@ export function toNamedPermission(perms: string[]): NamedPermission[] {
 }
 
 export function hasPerms(...namedPermission: NamedPermission[]): boolean {
-  const perms = useAuthStore().routePermissions;
+  return hasPermsFor(useAuthStore().routePermissions, ...namedPermission);
+}
+
+export function hasPermsFor(perms: string | undefined, ...namedPermission: NamedPermission[]): boolean {
   if (!perms) return false;
   const _perms = BigInt("0b" + perms);
-  let result = true;
   const registeredPerms = useBackendData.permissions;
   if (!registeredPerms || registeredPerms.size === 0) {
     throw new Error("No perms from backend?");
   }
+  let result = true;
   for (const np of namedPermission) {
     const perm = registeredPerms.get(np);
     if (!perm) {
@@ -30,7 +33,7 @@ export function hasPerms(...namedPermission: NamedPermission[]): boolean {
     }
 
     const val = BigInt("0b" + perm.permission.toString(2));
-    result = result && (_perms & val) === val;
+    result &&= (_perms & val) === val;
   }
   return result;
 }

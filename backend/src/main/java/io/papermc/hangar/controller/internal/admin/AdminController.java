@@ -4,9 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.papermc.hangar.HangarComponent;
 import io.papermc.hangar.components.images.service.AvatarService;
+import io.papermc.hangar.controller.extras.pagination.PaginationType;
+import io.papermc.hangar.controller.extras.pagination.SorterRegistry;
 import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableFilters;
+import io.papermc.hangar.controller.extras.pagination.annotations.ApplicableSorters;
 import io.papermc.hangar.controller.extras.pagination.annotations.ConfigurePagination;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogActionFilter;
+import io.papermc.hangar.controller.extras.pagination.filters.log.LogDateFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogPageFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogProjectFilter;
 import io.papermc.hangar.controller.extras.pagination.filters.log.LogSubjectFilter;
@@ -24,12 +28,16 @@ import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.db.roles.GlobalRoleTable;
 import io.papermc.hangar.model.internal.admin.DayStats;
+import io.papermc.hangar.model.internal.admin.StatsSummary;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.admin.ChangeRoleForm;
 import io.papermc.hangar.model.internal.logs.HangarLoggedAction;
+import io.papermc.hangar.model.internal.logs.LogAction;
+import io.papermc.hangar.model.internal.logs.contexts.UserContext;
 import io.papermc.hangar.security.annotations.permission.PermissionRequired;
 import io.papermc.hangar.security.annotations.ratelimit.RateLimit;
 import io.papermc.hangar.security.annotations.unlocked.Unlocked;
+import io.papermc.hangar.components.auth.service.AuthService;
 import io.papermc.hangar.components.stats.StatService;
 import io.papermc.hangar.service.internal.perms.roles.GlobalRoleService;
 import io.papermc.hangar.service.internal.projects.ProjectAdminService;
@@ -47,6 +55,7 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -68,6 +77,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/internal/admin")
 public class AdminController extends HangarComponent {
 
+    private static final int MAX_STAT_RANGE_DAYS = 366;
+
+    private final AuthService authService;
     private final StatService statService;
     private final UserService userService;
     private final ObjectMapper mapper;
@@ -81,7 +93,8 @@ public class AdminController extends HangarComponent {
     private final AvatarService avatarService;
 
     @Autowired
-    public AdminController(final StatService statService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
+    public AdminController(final AuthService authService, final StatService statService, final UserService userService, final ObjectMapper mapper, final GlobalRoleService globalRoleService, final ProjectFactory projectFactory, final ProjectService projectService, final ProjectAdminService projectAdminService, final VersionService versionService, final ReviewService reviewService, final RolesDAO rolesDAO, final AvatarService avatarService) {
+        this.authService = authService;
         this.statService = statService;
         this.userService = userService;
         this.mapper = mapper;
@@ -134,17 +147,28 @@ public class AdminController extends HangarComponent {
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DayStats.class)))),
     })
-    public ArrayNode getStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        if (from == null) {
-            from = LocalDate.now().minusDays(30);
+    public ArrayNode getStats(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate to) {
+        final LocalDate[] range = this.statRange(from, to);
+        return this.mapper.valueToTree(this.statService.getStats(range[0], range[1]));
+    }
+
+    @PermissionRequired(NamedPermission.VIEW_STATS)
+    @GetMapping(path = "/stats/summary", produces = MediaType.APPLICATION_JSON_VALUE)
+    public StatsSummary getStatsSummary(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate from, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) final LocalDate to) {
+        final LocalDate[] range = this.statRange(from, to);
+        return this.statService.getSummary(range[0], range[1]);
+    }
+
+    private LocalDate[] statRange(final @Nullable LocalDate from, final @Nullable LocalDate to) {
+        LocalDate end = to != null ? to : LocalDate.now();
+        LocalDate start = from != null ? from : end.minusDays(30);
+        if (end.isBefore(start)) {
+            end = start;
         }
-        if (to == null) {
-            to = LocalDate.now();
+        if (start.isBefore(end.minusDays(MAX_STAT_RANGE_DAYS))) {
+            start = end.minusDays(MAX_STAT_RANGE_DAYS);
         }
-        if (to.isBefore(from)) {
-            to = from;
-        }
-        return this.mapper.valueToTree(this.statService.getStats(from, to));
+        return new LocalDate[]{start, end};
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -170,6 +194,15 @@ public class AdminController extends HangarComponent {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @PermissionRequired(NamedPermission.EDIT_ALL_USER_SETTINGS)
+    @PostMapping(value = "/user/{user}/rename", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void renameUser(@PathVariable final UserTable user, @RequestBody @Valid final StringContent newName) {
+        final String oldName = user.getName();
+        this.authService.renameUser(user, newName.getContent());
+        this.actionLogger.user(LogAction.USER_RENAMED.create(UserContext.of(user.getUserId()), newName.getContent(), oldName));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     @PostMapping(value = "/yeet/{user}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void yeetusDeletus(@PathVariable final UserTable user, @RequestBody @Valid final StringContent comment) {
@@ -187,9 +220,12 @@ public class AdminController extends HangarComponent {
 
     @GetMapping(value = "/log", produces = MediaType.APPLICATION_JSON_VALUE)
     @PermissionRequired(NamedPermission.REVIEWER)
-    @ApplicableFilters({LogActionFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})
-    // TODO add sorters
+    @ApplicableFilters({LogActionFilter.class, LogDateFilter.class, LogPageFilter.class, LogProjectFilter.class, LogSubjectFilter.class, LogUserFilter.class, LogVersionFilter.class})
+    @ApplicableSorters(SorterRegistry.LOG_TIME)
     public PaginatedResult<HangarLoggedAction> getActionLog(@ConfigurePagination(defaultLimit = 50, maxLimit = 100) final @NotNull RequestPagination pagination) {
+        if (pagination.getSorters().isEmpty()) {
+            pagination.getSorters().put("-time", SorterRegistry.LOG_TIME.descending(PaginationType.DB));
+        }
         return this.actionLogger.getLogs(pagination);
     }
 
@@ -202,8 +238,8 @@ public class AdminController extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot add role with no rank");
         }
 
-        final int rank = this.globalRoleService.getGlobalRoles(this.getHangarUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).max().orElse(-1);
-        if (rank == -1 || rank != 0 && globalRole.rank() <= rank) {
+        final int rank = this.globalRoleService.getGlobalRoles(this.getHangarUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).min().orElse(-1);
+        if (rank == -1 || rank != 0 && globalRole.rank() < rank) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot add role with higher rank than current highest role");
         }
 
@@ -219,8 +255,8 @@ public class AdminController extends HangarComponent {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot remove role with no rank");
         }
 
-        final int rank = this.globalRoleService.getGlobalRoles(this.getHangarUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).max().orElse(-1);
-        if (rank == -1 || rank != 0 && globalRole.rank() <= rank) {
+        final int rank = this.globalRoleService.getGlobalRoles(this.getHangarUserId()).stream().filter(r -> r.rank() != null).mapToInt(GlobalRole::rank).min().orElse(-1);
+        if (rank == -1 || rank != 0 && globalRole.rank() < rank) {
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "Cannot remove role with higher rank than current highest role");
         }
 

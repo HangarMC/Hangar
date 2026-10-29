@@ -15,11 +15,13 @@ import io.papermc.hangar.model.db.versions.JarScanResultEntryTable;
 import io.papermc.hangar.model.db.versions.JarScanResultTable;
 import io.papermc.hangar.model.db.versions.ProjectVersionTable;
 import io.papermc.hangar.model.db.versions.downloads.ProjectVersionDownloadTable;
+import io.papermc.hangar.model.internal.versions.JarScanEntry;
 import io.papermc.hangar.model.internal.versions.JarScanResult;
 import io.papermc.hangar.scanner.HangarJarScanner;
-import io.papermc.hangar.scanner.check.Check;
+import io.papermc.hangar.scanner.check.CheckResult;
 import io.papermc.hangar.scanner.model.ScanResult;
 import io.papermc.hangar.scanner.model.Severity;
+import io.papermc.hangar.security.authentication.HangarPrincipal;
 import io.papermc.hangar.service.internal.file.FileService;
 import io.papermc.hangar.service.internal.uploads.ProjectFiles;
 import io.papermc.hangar.service.internal.users.UserService;
@@ -29,11 +31,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -127,7 +133,7 @@ public class JarScanningService {
 
     private void scan(final VersionToScan versionToScan, final boolean partial) {
         Severity highestSeverity = Severity.UNKNOWN;
-        for (final Platform platform : versionToScan.platforms().stream().flatMap(Collection::stream).toList()) {
+        for (final Platform platform : this.distinctDownloadPlatforms(versionToScan)) {
             Severity severity = Severity.HIGH;
             try {
                 severity = this.scanPlatform(versionToScan, platform);
@@ -142,6 +148,19 @@ public class JarScanningService {
         }
 
         this.applyReview(highestSeverity, versionToScan, partial);
+    }
+
+    // A download can serve multiple platforms, so its jar only needs to be scanned once
+    private List<Platform> distinctDownloadPlatforms(final VersionToScan versionToScan) {
+        final Set<Long> seenDownloads = new HashSet<>();
+        final List<Platform> platforms = new ArrayList<>();
+        for (final Platform platform : versionToScan.platforms().stream().flatMap(Collection::stream).toList()) {
+            final ProjectVersionDownloadTable download = this.downloadsDAO.getDownloadByPlatform(versionToScan.versionId(), platform);
+            if (download == null || seenDownloads.add(download.getId())) {
+                platforms.add(platform);
+            }
+        }
+        return platforms;
     }
 
     private void applyReview(final Severity severity, final VersionToScan version, final boolean partial) {
@@ -163,44 +182,49 @@ public class JarScanningService {
     }
 
     public Severity scanPlatform(final VersionToScan versionToScan, final Platform platform) throws IOException {
-        final NamedResource resource = this.getFile(versionToScan, platform);
-
-        final ScanResult scanResult;
-        try (final InputStream inputStream = resource.resource().getInputStream()) {
-            scanResult = this.scanner.scanJar(inputStream, resource.name());
+        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownloadByPlatform(versionToScan.versionId(), platform);
+        // TODO Why can platformDownload be null at this stage
+        if (download == null) {
+            throw new RuntimeException("Couldn't find a download for version " + versionToScan + " in platform " + platform);
         }
 
-        final JarScanResultTable table = this.dao.save(new JarScanResultTable(versionToScan.versionId(), this.scanner.version(), platform, scanResult.highestSeverity().name()));
-        for (final Check.CheckResult result : scanResult.results()) {
-            this.dao.save(new JarScanResultEntryTable(table.getId(), result.location(), result.message(), result.severity().name()));
+        final Resource resource = this.getFile(versionToScan, download);
+        final ScanResult scanResult;
+        try (final InputStream inputStream = resource.getInputStream()) {
+            scanResult = this.scanner.scanJar(inputStream, download.getFileName());
+        }
+
+        // Stored against the download's own platform, so that all platforms sharing the jar share its result
+        final JarScanResultTable table = this.dao.save(new JarScanResultTable(versionToScan.versionId(), this.scanner.version(), download.getDownloadPlatform(), scanResult.highestSeverity().name()));
+        for (final CheckResult result : scanResult.results()) {
+            JarScanResultEntryTable existingEntry = this.dao.getCheckedByHash(result.hash());
+            if (existingEntry != null) {
+                this.dao.save(new JarScanResultEntryTable(table.getId(), result.location(), result.message(), result.severity().name(), result.name(), result.hash(), existingEntry.isChecked(), existingEntry.getCheckedAt(), existingEntry.getCheckedBy()));
+            } else {
+                this.dao.save(new JarScanResultEntryTable(table.getId(), result.location(), result.message(), result.severity().name(), result.name(), result.hash(), false, null, null));
+            }
         }
         return scanResult.highestSeverity();
     }
 
-    private NamedResource getFile(final VersionToScan version, final Platform platform) {
-        final long versionId = version.versionId();
-        final ProjectVersionDownloadTable platformDownload = this.downloadsDAO.getDownloadByPlatform(versionId, platform);
-        // TODO Why can platformDownload be null at this stage
-        if (platformDownload == null) {
-            throw new RuntimeException("Couldn't find a download for version " + version + " in platform " + platform);
-        }
-
+    private Resource getFile(final VersionToScan version, final ProjectVersionDownloadTable download) {
         final ProjectTable project = this.projectsDAO.getById(version.projectId());
-        final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), version.versionString(), platformDownload.getDownloadPlatform(), platformDownload.getFileName());
+        final String path = this.projectFiles.getVersionDir(project.getOwnerName(), project.getSlug(), version.versionString(), download.getDownloadPlatform(), download.getFileName());
         if (!this.fileService.exists(path)) {
             throw new RuntimeException("Couldn't find a file for version " + version + " in path " + path);
         }
-        return new NamedResource(this.fileService.getResource(path), platformDownload.getFileName());
+        return this.fileService.getResource(path);
     }
 
     public @Nullable JarScanResult getLastResult(final long versionId, final Platform platform) {
-        final JarScanResultTable lastResult = this.dao.getLastResult(versionId, platform);
+        final ProjectVersionDownloadTable download = this.downloadsDAO.getDownloadByPlatform(versionId, platform);
+        final Platform resultPlatform = download != null ? download.getDownloadPlatform() : platform;
+        final JarScanResultTable lastResult = this.dao.getLastResult(versionId, resultPlatform);
         if (lastResult == null) {
             return null;
         }
 
-        final List<String> entries = this.dao.getEntries(lastResult.getId()).stream().sorted(Comparator.comparing(s -> Severity.valueOf(s.getSeverity()))).map(this::format).toList();
-        return new JarScanResult(lastResult.getId(), platform, lastResult.getCreatedAt(), lastResult.getHighestSeverity(), entries);
+        return new JarScanResult(lastResult.getId(), resultPlatform, lastResult.getCreatedAt(), lastResult.getHighestSeverity(), this.entries(lastResult.getId()));
     }
 
     public @Nullable List<JarScanResult> getLastResults(final long versionId) {
@@ -209,20 +233,34 @@ public class JarScanningService {
             return null;
         }
 
-        return lastResult.stream().map(result -> {
-            final List<String> entries = this.dao.getEntries(result.getId()).stream().sorted(Comparator.comparing(s -> Severity.valueOf(s.getSeverity()))).map(this::format).toList();
-            return new JarScanResult(result.getId(), result.getPlatform(), result.getCreatedAt(), result.getHighestSeverity(), entries);
-        }).toList();
+        return lastResult.stream()
+            .map(result -> new JarScanResult(result.getId(), result.getPlatform(), result.getCreatedAt(), result.getHighestSeverity(), this.entries(result.getId())))
+            .toList();
     }
 
-    private String format(final JarScanResultEntryTable entry) {
-        return "[" + entry.getSeverity() + "]: " + entry.getMessage() + " at " + entry.getLocation();
+    private List<JarScanEntry> entries(final long resultId) {
+        return this.dao.getEntries(resultId).stream()
+            .sorted(Comparator.comparing(entry -> Severity.valueOf(entry.getSeverity())))
+            .map(entry -> new JarScanEntry(entry.getId(), entry.getSeverity(), entry.getCheckName(), entry.getMessage(), entry.getLocation(), entry.isChecked(), entry.getCheckedBy(), entry.getCheckedAt()))
+            .toList();
     }
 
     public UserTable getJarScannerUser() {
         return this.jarScannerUser;
     }
 
-    private record NamedResource(Resource resource, String name) {
+    public void markSafe(long entryId, HangarPrincipal user) {
+        final JarScanResultEntryTable entry = this.dao.getEntry(entryId);
+        if (entry == null) {
+            throw new HangarApiException("Entry not found");
+        }
+        entry.setChecked(true);
+        entry.setCheckedBy(user.getUserId());
+        entry.setCheckedAt(OffsetDateTime.now());
+        this.dao.update(entry);
+    }
+
+    public void markAllSafe(long resultId, HangarPrincipal user) {
+        this.dao.markAllSafe(resultId, user.getUserId());
     }
 }

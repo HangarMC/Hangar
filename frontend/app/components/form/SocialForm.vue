@@ -1,48 +1,55 @@
 <script lang="ts" setup>
 const { t } = useI18n();
-const notification = useNotificationStore();
+
+const props = withDefaults(defineProps<{ compact?: boolean }>(), {
+  compact: false,
+});
 
 const socials = defineModel<Record<string, string>>({ required: true });
 
-const linkType = ref<string>();
 const linkTypes = [
+  { value: "github", text: "GitHub", base: "github.com/" },
+  { value: "twitter", text: "Twitter", base: "twitter.com/" },
   { value: "discord", text: "Discord" },
-  { value: "github", text: "GitHub" },
-  { value: "twitter", text: "Twitter" },
-  { value: "youtube", text: "YouTube" },
   { value: "website", text: "Website" },
 ];
 
-function addLink() {
-  if (!linkType.value) {
-    return notification.error("You have to select a type");
-  }
-  if (Object.keys(socials.value).includes(linkType.value)) {
-    return notification.error("You already have a link of that type added");
-  }
-  socials.value[linkType.value] = "";
-}
+const draft = reactive(Object.fromEntries(linkTypes.map((type) => [type.value, socials.value?.[type.value] ?? ""])));
 
-function removeLink(type: string) {
-  delete socials.value[type];
+// a link exists only while it has a value, so emptying a field removes it
+// immediate so retired types stored on old profiles are dropped even if nothing is edited
+watch(
+  draft,
+  () => {
+    socials.value = Object.fromEntries(linkTypes.map((type) => [type.value, draft[type.value]?.trim() ?? ""]).filter(([, value]) => value));
+  },
+  { immediate: true }
+);
+
+function hint(type: (typeof linkTypes)[number]) {
+  if (type.value === "discord") return t("auth.settings.profile.socialLinks.discordHint");
+  if (type.value === "website") return t("auth.settings.profile.socialLinks.websiteHint");
+  return type.base + (draft[type.value]?.trim() || t("auth.settings.profile.socialLinks.usernamePlaceholder"));
 }
 </script>
 
 <template>
-  <div v-for="(_, type) in socials" :key="type" class="flex items-center mt-2">
-    <span class="w-25">{{ linkTypes.find((e) => e.value === type)?.text }}</span>
-    <div class="w-75">
-      <InputText v-if="type === 'website'" v-model="socials[type]" label="URL" :rules="[required(), validUrl()]" />
-      <InputText v-else v-model="socials[type]" :label="t('auth.settings.account.username')" :rules="[required()]" />
+  <section :class="{ 'mt-6': !props.compact }">
+    <h3 class="text-lg font-bold">{{ t("auth.settings.profile.socialLinks.title") }}</h3>
+    <p class="mt-0.5 text-sm text-gray-secondary">{{ t("auth.settings.profile.socialLinks.description") }}</p>
+
+    <div class="mt-3 flex flex-col gap-4">
+      <div v-for="type in linkTypes" :key="type.value" class="flex items-start gap-3">
+        <IconMdiGithub v-if="type.value === 'github'" class="mt-3 shrink-0 text-xl text-gray-secondary" />
+        <IconMdiTwitter v-else-if="type.value === 'twitter'" class="mt-3 shrink-0 text-xl text-gray-secondary" />
+        <IconMdiDiscord v-else-if="type.value === 'discord'" class="mt-3 shrink-0 text-xl text-gray-secondary" />
+        <IconMdiWeb v-else class="mt-3 shrink-0 text-xl text-gray-secondary" />
+
+        <div class="min-w-0 flex-1">
+          <InputText v-model="draft[type.value]" :label="type.text" :rules="type.value === 'website' ? [validUrl()] : []" />
+          <p class="mt-1 truncate text-xs text-gray-secondary">{{ hint(type) }}</p>
+        </div>
+      </div>
     </div>
-    <IconMdiBin class="ml-2 w-6 h-6 cursor-pointer hover:color-red" @click="removeLink(type)" />
-  </div>
-  <div class="flex items-center mt-2">
-    <div class="w-25">
-      <Button button-type="secondary" @click.prevent="addLink">Add link</Button>
-    </div>
-    <div class="w-75">
-      <InputSelect v-model="linkType" :values="linkTypes" :label="t('project.settings.links.typeField')" />
-    </div>
-  </div>
+  </section>
 </template>

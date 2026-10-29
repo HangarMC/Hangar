@@ -27,10 +27,13 @@ function leave() {
   <Modal :title="i18n.t('form.memberList.leaveModal.title', [name])" window-classes="w-150">
     <template #default>
       <p>{{ i18n.t("form.memberList.leaveModal.description", [name]) }}</p>
-      <Button class="mt-3" size="small" button-type="red" @click="leave()"> {{ i18n.t("form.memberList.leave") }} </Button>
     </template>
     <template #activator="{ on }">
-      <Button class="text-base" size="small" button-type="red" v-on="on"> {{ i18n.t("form.memberList.leave") }} </Button>
+      <Button variant="ghost" tone="danger" size="sm" v-on="on"> {{ i18n.t("form.memberList.leave") }} </Button>
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button tone="danger" @click="leave()"> {{ i18n.t("form.memberList.leave") }} </Button>
     </template>
   </Modal>
 </template>

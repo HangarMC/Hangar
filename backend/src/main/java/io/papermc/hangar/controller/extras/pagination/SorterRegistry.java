@@ -14,13 +14,21 @@ public enum SorterRegistry implements Sorter {
     USER_ORG("org", simpleSorter("is_organization"), null),
     USER_LOCKED("locked", simpleSorter("locked"), null),
 
+    // For the action log
+    LOG_TIME("time", simpleSorter("la.created_at"), null),
+
+    // For flags
+    FLAG_CREATED("flagCreated", simpleSorter("pf.created_at"), null),
+    // resolved_at is null for flags resolved before it was tracked, which must not outrank the recently resolved ones
+    FLAG_RESOLVED("flagResolved", (sb, dir, type) -> sb.append("pf.resolved_at").append(dir.apply(type)).append(" NULLS LAST"), null),
+
     // For Projects
     VIEWS("views", simpleSorter("hp.views"), simpleSorter("stats.views")),
     STARS("stars", simpleSorter("hp.stars"), simpleSorter("stats.stars")),
     DOWNLOADS("downloads", simpleSorter("hp.downloads"), simpleSorter("stats.downloads")),
-    NEWEST("newest", simpleSorter("hp.created_at"), simpleSorter("createdAt")),
+    NEWEST("newest", simpleSorter("hp.published_at"), simpleSorter("publishedAt")),
     UPDATED("updated", simpleSorter("last_updated_double"), simpleSorter("lastUpdated")),
-    RECENT_VIEWS("recent_views", simpleSorter("hp.recent_views"), simpleSorter("status.recentViews")),
+    RECENT_VIEWS("recent_views", simpleSorter("hp.recent_views"), simpleSorter("stats.recentViews")),
     RECENT_DOWNLOADS("recent_downloads", simpleSorter("hp.recent_downloads"), simpleSorter("stats.recentDownloads")),
     SLUG("slug", simpleSorter("LOWER(hp.slug)"), simpleSorter("name"));
 

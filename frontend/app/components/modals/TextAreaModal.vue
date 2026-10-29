@@ -1,10 +1,15 @@
 <script lang="ts" setup>
-const props = defineProps<{
-  title: string;
-  label: string;
-  submit: (msg: string) => Promise<void> | undefined;
-  requireInput?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    label: string;
+    submit: (msg: string) => Promise<void> | undefined;
+    requireInput?: boolean;
+    submitTone?: "primary" | "danger";
+    submitLabel?: string;
+  }>(),
+  { submitTone: "primary", submitLabel: undefined }
+);
 
 const message = ref("");
 const loading = ref(false);
@@ -21,12 +26,17 @@ async function _submit(close: () => void) {
 
 <template>
   <Modal :title="props.title" window-classes="w-150">
-    <template #default="{ on }">
+    <template #default>
       <InputTextarea v-model.trim="message" :label="label" :rows="2" @keydown.enter.prevent="" />
-      <Button class="mt-3" :disabled="loading || (requireInput && message.length === 0)" @click="_submit(on.click)">{{ i18n.t("general.submit") }}</Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="on" />
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button :tone="submitTone" :loading="loading" :disabled="requireInput && message.length === 0" @click="_submit(on.click)">
+        {{ submitLabel || i18n.t("general.submit") }}
+      </Button>
     </template>
   </Modal>
 </template>

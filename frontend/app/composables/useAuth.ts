@@ -19,7 +19,7 @@ class Auth {
     if (redirectUrl?.startsWith("/auth") && !redirectUrl.startsWith("/auth/settings")) {
       redirectUrl = undefined;
     }
-    return redirectUrl ? `${url}?returnUrl=${redirectUrl}` : url;
+    return redirectUrl ? `${url}?returnUrl=${encodeURIComponent(redirectUrl)}` : url;
   }
 
   async logout() {
@@ -100,14 +100,14 @@ class Auth {
         } else {
           authLog("Refresh failed");
         }
+        // eslint-disable-next-line unicorn/no-multiple-promise-resolver-calls
         resolve(false);
       }
     });
     return this.refreshPromise;
   }
 
-  async invalidate(axios: AxiosInstance) {
-    const store = useAuthStore();
+  async invalidate(axios: AxiosInstance, store: ReturnType<typeof useAuthStore>) {
     store.$patch({
       user: undefined,
       authenticated: false,
@@ -130,9 +130,14 @@ class Auth {
       authLog("no point in updating if we already have a user");
       return;
     }
+    // same short circuit as refreshToken: without the refresh cookie there is no session to load, and the request would come back empty
+    if (import.meta.env.SSR && !useCookie("HangarAuth_REFRESH").value) {
+      authLog("no cookie, no point in fetching the user");
+      return;
+    }
     const user = await useInternalApi<HangarUser>("users/@me").catch((err) => {
       authLog("no user, with err", transformAxiosError(err));
-      return this.invalidate(axios);
+      return this.invalidate(axios, authStore);
     });
     if (user) {
       authLog("patching " + user.name);

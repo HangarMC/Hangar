@@ -1,6 +1,27 @@
 import { isAxiosError } from "axios";
-import type { HangarOrganization, HangarProject, Version, User, ProjectPageTable } from "#shared/types/backend";
+import type { GlobalData, HangarOrganization, HangarProject, Version, User, ProjectPageTable } from "#shared/types/backend";
 import { useDataLoader } from "~/composables/useDataLoader";
+
+const GLOBAL_DATA_TTL = 180_000;
+let globalDataCache: { promise: Promise<GlobalData>; expiresAt: number } | undefined;
+
+function loadGlobalData() {
+  // on the client useDataLoader already keeps it for the session, so there is nothing to cache
+  if (!import.meta.server) {
+    return useInternalApi<GlobalData>("globalData/");
+  }
+
+  if (!globalDataCache || globalDataCache.expiresAt <= Date.now()) {
+    globalDataCache = {
+      promise: useInternalApi<GlobalData>("globalData/").catch((err) => {
+        globalDataCache = undefined;
+        throw err;
+      }),
+      expiresAt: Date.now() + GLOBAL_DATA_TTL,
+    };
+  }
+  return globalDataCache.promise;
+}
 
 // this middleware takes care of fetching the "important" data for pages, like user/project/org/version/page, based on route params
 // it also handles 404s and redirects to the proper casing
@@ -19,10 +40,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const promises: Promise<any>[] = [];
 
   const { loader: globalDataLoader } = useDataLoader("globalData");
-  globalDataLoader(undefined, to, from, () => useInternalApi("globalData/"), promises);
+  globalDataLoader(undefined, to, from, () => loadGlobalData(), promises);
 
   const { loader: userLoader, data: user } = useDataLoader("user");
-  const userName = userLoader("user", to, from, (userName) => useApi<User>("users/" + userName + "?resolveId=false"), promises);
+  const userPromiseIndex = promises.length;
+  userLoader("user", to, from, (username) => useApi<User>("users/" + username + "?resolveId=false"), promises);
+  const userPromise = promises[userPromiseIndex];
+  // read off the route, not the loader: routes that don't load the user still need it for the canonical redirects below
+  const username = "user" in to.params ? (to.params.user as string) : undefined;
 
   const { loader: projectLoader, data: project } = useDataLoader("project");
   const projectName = projectLoader(
@@ -33,14 +58,17 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     promises
   );
 
-  // TODO ideally we only make this request _after_ the user request returned and we know we need to fetch an org
-  // alternatively we could make a new controller that returns both
   const { loader: organizationLoader } = useDataLoader("organization");
   organizationLoader(
     "user",
     to,
     from,
-    (organizationName) => useInternalApi<HangarOrganization>("organizations/org/" + organizationName + "?resolveId=false"),
+    async (organizationName) => {
+      // the route can't tell us whether the namespace is an org, so wait for the user before spending a request
+      await userPromise;
+      if (!user.value?.isOrganization) return;
+      return useInternalApi<HangarOrganization>("organizations/org/" + organizationName + "?resolveId=false");
+    },
     promises,
     true
   );
@@ -52,7 +80,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     from,
     (versionName) => {
       if ("project" in to.params) {
-        return useApi<Version>(`projects/${to.params.project}/versions/${versionName}?resolveId=false"`);
+        return useApi<Version>(`projects/${to.params.project}/versions/${versionName}?resolveId=false`);
       }
       throw createError({ statusCode: 500, statusMessage: "No project param?!" });
     },
@@ -77,18 +105,22 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     try {
       await Promise.all(promises);
     } catch (err) {
-      if (isAxiosError(err) && err.response?.status === 404) {
+      const status = isAxiosError(err) ? err.response?.status : undefined;
+      if (status === 404) {
         throw createError({ statusCode: 404, statusMessage: "Not found" });
-      } else {
-        console.error("Failed to load data for route " + to.fullPath, err);
-        throw createError({ statusCode: 500, statusMessage: "Failed to load data" });
       }
+      // don't report a bad request as our own server error
+      if (status && status >= 400 && status < 500) {
+        throw createError({ statusCode: status, statusMessage: "Failed to load data" });
+      }
+      console.error("Failed to load data for route " + to.fullPath, err);
+      throw createError({ statusCode: 500, statusMessage: "Failed to load data" });
     }
 
     // check if we need to redirect to a proper casing
     let newPath = to.fullPath;
-    if (userName && user.value && user.value.name !== userName) {
-      newPath = newPath.replace(userName, user.value.name);
+    if (username && user.value && user.value.name !== username) {
+      newPath = newPath.replace(username, user.value.name);
     }
     if (projectName && project.value && project.value.name !== projectName) {
       newPath = newPath.replace(projectName, project.value.name);
@@ -103,8 +135,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       }
     }
     // check if we need to redirect to proper owner
-    if (projectName && userName && project.value && project.value.namespace.owner !== userName) {
-      newPath = newPath.replace(userName, project.value.namespace.owner);
+    if (projectName && username && project.value && project.value.namespace.owner !== username) {
+      newPath = newPath.replace(username, project.value.namespace.owner);
     }
 
     // do redirect

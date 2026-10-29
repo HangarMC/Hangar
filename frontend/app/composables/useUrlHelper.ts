@@ -20,7 +20,8 @@ const isSafe = (urlString: string) => {
     const host = url.hostname;
     if (url.protocol?.startsWith("mailto")) {
       return true;
-    } else if (!host || isSafeHost(host)) {
+    }
+    if (!host || isSafeHost(host)) {
       return true;
     }
   } catch {

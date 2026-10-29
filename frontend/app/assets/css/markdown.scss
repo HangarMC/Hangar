@@ -2,7 +2,6 @@
 @use "markdown-dark";
 
 .markdown {
-  margin-top: -10px;
   table tr > th {
     padding: 5px;
   }
@@ -13,13 +12,30 @@
   h4,
   h5,
   h6 {
-    margin-top: 20px;
-    margin-bottom: 0;
+    margin-top: 36px;
+    margin-bottom: 12px;
   }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 28px;
+    margin-bottom: 6px;
+  }
+
+  > :first-child,
+  > * > :first-child {
+    margin-top: 0;
+  }
+
+  line-height: 1.65;
 
   img {
     max-width: 100%;
     display: inline-block;
+    margin-block: 0;
+    vertical-align: middle;
   }
 
   table tr > td,
@@ -35,6 +51,74 @@
 
   code {
     border-radius: 3px;
+  }
+
+  :not(pre) > code {
+    padding: 0.1em 0.35em;
+  }
+
+  details {
+    margin-block: 16px;
+    padding: 0 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    background: var(--surface-sunken);
+
+    .dark & {
+      border-color: var(--gray-700);
+    }
+  }
+
+  details[open] {
+    padding-bottom: 12px;
+  }
+
+  summary {
+    margin: 0 -12px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+
+    list-style: none;
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 0;
+      height: 0;
+      margin-right: 8px;
+      vertical-align: middle;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 5px solid currentColor;
+      transition: transform 0.15s ease;
+    }
+
+    &:hover {
+      background: var(--surface-sunken-hover);
+    }
+  }
+
+  details[open] > summary {
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--gray-300);
+    border-radius: 5px 5px 0 0;
+
+    &::before {
+      transform: rotate(90deg);
+    }
+
+    .dark & {
+      border-bottom-color: var(--gray-700);
+    }
+  }
+
+  details > summary + * {
+    margin-top: 0;
   }
 
   a code &:hover {
@@ -90,17 +174,41 @@
 
   ul,
   ol {
-    padding-inline-start: 1rem;
+    margin-block: 0.5em;
+    padding-inline-start: 1.5em;
   }
 
-  p + ul,
-  p + ol {
-    margin-top: -10px;
+  li {
+    margin-block: 2px;
+    padding-inline-start: 0;
+
+    > p {
+      margin-block: 0;
+    }
   }
 
   li > ul,
   li > ol {
     margin: 0;
+  }
+
+  th,
+  td {
+    &[align="left"] {
+      text-align: left;
+    }
+
+    &[align="center"] {
+      text-align: center;
+    }
+
+    &[align="right"] {
+      text-align: right;
+    }
+
+    &[align="justify"] {
+      text-align: justify;
+    }
   }
 
   .markdown-alert {
@@ -187,4 +295,19 @@
 // ff is dum
 .prose :where(table):not(:where(.not-prose, .not-prose *)) {
   padding-left: 1px;
+}
+
+/* doubled class beats prose's :where() */
+.markdown.markdown p {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown.markdown p:has(+ ul),
+.markdown.markdown p:has(+ ol) {
+  margin-bottom: 8px;
+}
+
+.markdown.markdown details > :last-child {
+  margin-bottom: 0;
 }

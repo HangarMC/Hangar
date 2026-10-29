@@ -70,7 +70,7 @@ public class RoleTable extends Table implements Named {
         return this.permission;
     }
 
-    public static RoleTable fromRole(final Role<?> role) {
+    public static RoleTable fromRole(final Role role) {
         return new RoleTable(
             role.getRoleId(),
             role.getValue(),

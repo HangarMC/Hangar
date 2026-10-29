@@ -118,8 +118,9 @@ public class VersionService extends HangarComponent {
             return;
         }
 
+        final ProjectTable project = this.projectsDAO.getById(projectId);
         final List<ProjectVersionTable> projectVersionTables = this.projectVersionsDAO.getProjectVersions(projectId);
-        if (projectVersionTables.stream().filter(pv -> pv.getVisibility() == Visibility.PUBLIC).count() <= 1 && pvt.getVisibility() == Visibility.PUBLIC) {
+        if (project != null && project.getVisibility() == Visibility.PUBLIC && projectVersionTables.stream().filter(pv -> pv.getVisibility() == Visibility.PUBLIC).count() <= 1 && pvt.getVisibility() == Visibility.PUBLIC) {
             this.projectVisibilityService.changeVisibility(projectId, Visibility.NEW, "Visibility reset to new because no public version exists");
         }
 

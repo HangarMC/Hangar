@@ -43,7 +43,8 @@ public interface UsersApiDAO {
              JOIN home_projects hp ON ps.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
-             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
+             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
+             (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              ps.user_id = :userId
            <sorters>
            <offsetLimit>""")
@@ -56,7 +57,8 @@ public interface UsersApiDAO {
              JOIN home_projects hp ON ps.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
-             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
+             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
+             (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              ps.user_id = :userId""")
     long getUserStarredCount(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
 
@@ -84,7 +86,8 @@ public interface UsersApiDAO {
              JOIN home_projects hp ON pw.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
-             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
+             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
+             (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              pw.user_id = :userId
            <sorters>
            <offsetLimit>""")
@@ -97,7 +100,8 @@ public interface UsersApiDAO {
              JOIN home_projects hp ON pw.project_id = hp.id
          WHERE
              <if(!canSeeHidden)> (hp.visibility = 0
-             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND <endif>
+             <if(requesterId)>OR (<requesterId> = ANY(hp.project_members) AND hp.visibility != 4)<endif>) AND
+             (NOT hp.unlisted <if(requesterId)>OR <requesterId> = ANY(hp.project_members)<endif>) AND <endif>
              pw.user_id = :userId""")
     long getUserWatchingCount(long userId, @Define boolean canSeeHidden, @Define Long requesterId);
 

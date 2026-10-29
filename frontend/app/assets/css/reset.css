@@ -166,27 +166,27 @@ img {
 }
 
 input::placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
 input::webkit-input-placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
 input::-moz-placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
 input:-ms-input-placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
 input::-ms-input-placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
@@ -215,27 +215,27 @@ textarea {
 }
 
 textarea::placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
 textarea::webkit-input-placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
 textarea::-moz-placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
 textarea:-ms-input-placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 
 textarea::-ms-input-placeholder {
-  color: #a1a1aa;
+  color: var(--placeholder);
   opacity: 1;
 }
 

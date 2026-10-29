@@ -1,9 +1,12 @@
-const { I } = inject();
-const { TOTP } = require("totp-generator");
-const { jwtDecode } = require("jwt-decode");
-const { expect } = require("chai");
+import { locate } from "codeceptjs";
 
-module.exports = new (class {
+import { TOTP } from "totp-generator";
+import { jwtDecode } from "jwt-decode";
+import { expect } from "chai";
+
+const { I } = inject();
+
+export default class Util {
     url = process.env.BROWSERSTACK_LOCAL === "true" ? "http://localhost:3333" : "https://hangar.papermc.dev";
     jwt?: string = null;
 
@@ -25,7 +28,7 @@ module.exports = new (class {
         I.fillField("input[name='password']", process.env.E2E_PASSWORD);
         I.click(locate("button").withText("Login"));
         I.waitForText("Use totp");
-        const totp = TOTP.generate(process.env.E2E_TOTP_SECRET);
+        const totp = await TOTP.generate(process.env.E2E_TOTP_SECRET);
         I.fillField("input", totp.otp);
         I.click("Use totp");
         I.waitInUrl("/?done");
@@ -130,4 +133,4 @@ module.exports = new (class {
         }
         await I.expectEqual(result.status, 200, "project creation to return 200");
     }
-})();
+}

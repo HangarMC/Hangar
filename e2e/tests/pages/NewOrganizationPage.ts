@@ -7,7 +7,7 @@ Scenario("Test New Org", async ({ I, util, IndexPage }) => {
     I.fillField("input[name='name']", name);
     I.wait(1);
     I.click("button[title='Create Org']");
-    I.waitInUrl("/" + name);
+    I.waitTillUrlContains("/" + name);
     await I.see(name);
 
     await util.deleteOrg(name);

@@ -48,13 +48,23 @@ async function transfer() {
           @search="doSearch"
         />
         <Button :disabled="search.length === 0" :loading="loading" class="ml-2" @click="transfer">
-          <IconMdiRenameBox class="mr-2" />
+          <IconMdiRenameBox />
           {{ i18n.t("project.settings.transfer") }}
         </Button>
       </div>
     </template>
     <template #activator="{ on }">
-      <Button button-type="red" size="small" class="mr-1" v-on="on"><IconMdiCogTransfer /></Button>
+      <Button
+        variant="ghost"
+        tone="danger"
+        size="sm"
+        icon-only
+        class="mr-1"
+        :title="i18n.t('author.tooltips.transfer')"
+        :aria-label="i18n.t('author.tooltips.transfer')"
+        v-on="on"
+        ><IconMdiCogTransfer
+      /></Button>
     </template>
   </Modal>
 </template>

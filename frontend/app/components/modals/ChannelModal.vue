@@ -73,7 +73,7 @@ reset();
 
 <template>
   <Modal :title="edit ? i18n.t('channel.modal.titleEdit') : i18n.t('channel.modal.titleNew')" window-classes="w-150">
-    <template #default="{ on }">
+    <template #default>
       <div v-if="!frozen">
         <InputText
           v-model.trim="name"
@@ -126,13 +126,15 @@ reset();
           {{ i18n.t("channel.modal.flags." + f.toLowerCase()) }}
         </template>
       </InputCheckbox>
-
-      <Button class="mt-3" :disabled="noChange || v.$errors.length > 0" @click="create(on.click)">
-        {{ edit ? i18n.t("general.save") : i18n.t("general.create") }}
-      </Button>
     </template>
     <template #activator="{ on }">
       <slot name="activator" :on="open(on)" />
+    </template>
+    <template #footer="{ on }">
+      <Button variant="ghost" tone="neutral" v-on="on">{{ i18n.t("general.cancel") }}</Button>
+      <Button :disabled="noChange || v.$errors.length > 0" @click="create(on.click)">
+        {{ edit ? i18n.t("general.save") : i18n.t("general.create") }}
+      </Button>
     </template>
   </Modal>
 </template>

@@ -1,11 +1,12 @@
 import * as Sentry from "@sentry/nuxt";
 import { SEMANTIC_ATTRIBUTE_SENTRY_SOURCE } from "@sentry/nuxt";
+import type { RouteLocationNormalizedLoaded } from "vue-router";
 
 // this overrides the default sentry nuxt integration to look nicer
 export default defineNuxtPlugin((nitro) => {
   nitro.hooks.hook("app:rendered", (ctx) => {
     const activeSpan = Sentry.getActiveSpan();
-    const route = ctx.ssrContext?.nuxt._route;
+    const route = ctx.ssrContext?.nuxt._route as RouteLocationNormalizedLoaded | undefined;
     if (activeSpan && route) {
       const rootSpan = Sentry.getRootSpan(activeSpan);
       if (!rootSpan) {

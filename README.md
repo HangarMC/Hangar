@@ -3,7 +3,7 @@
 [![Discord](https://img.shields.io/discord/855123416889163777?)](https://discord.gg/zvrAEbvJ4a)
 ![GitHub License](https://img.shields.io/github/license/hangarmc/hangar)
 [![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fhangar.papermc.io%2Fv3%2Fapi-docs%2Fpublic)](https://hangar.papermc.io/api-docs)
-[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=OHFacEE0WmlHRldDajYrZFdsZUtDOFZBcmUyR1VWdWlUaStlQWJYS0xZVT0tLWRKODJVblZQblczRXMvejNQTGhEZ1E9PQ==--54e7c90dad3680579c945ff532d63909156aa024)](https://automate.browserstack.com/public-build/OHFacEE0WmlHRldDajYrZFdsZUtDOFZBcmUyR1VWdWlUaStlQWJYS0xZVT0tLWRKODJVblZQblczRXMvejNQTGhEZ1E9PQ==--54e7c90dad3680579c945ff532d63909156aa024)
+<!--[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=OHFacEE0WmlHRldDajYrZFdsZUtDOFZBcmUyR1VWdWlUaStlQWJYS0xZVT0tLWRKODJVblZQblczRXMvejNQTGhEZ1E9PQ==--54e7c90dad3680579c945ff532d63909156aa024)](https://automate.browserstack.com/public-build/OHFacEE0WmlHRldDajYrZFdsZUtDOFZBcmUyR1VWdWlUaStlQWJYS0xZVT0tLWRKODJVblZQblczRXMvejNQTGhEZ1E9PQ==--54e7c90dad3680579c945ff532d63909156aa024)-->
 
 This is the repository for Hangar, a plugin repository used for Paper, Velocity, and Waterfall plugins and similar software.
 
@@ -33,7 +33,7 @@ Fork the project and pull it in your IDE.
 ### Prerequisites
 
 * Docker is required in order to run the PostgreSQL database, the MeiliSearch engine and the dummy email server
-* Java 21 or higher
+* Java 25 or higher
 * [pnpm](https://pnpm.io/installation) and [node](https://nodejs.org) (v22 or higher)
 * mvn
 * git
@@ -96,7 +96,7 @@ You might want to set the env var `TRANSLATION_MODE` to true in order to get war
 
 ## Contributing
 
-Most of our current and future plans can be found in the [**Hangar Roadmap Project**](https://github.com/PaperMC/Hangar/projects/1). Your best bet is joining
+Most of our current and future plans can be found in the [**Hangar Roadmap Project**](https://github.com/orgs/HangarMC/projects/1/). Your best bet is joining
 the #development channel on the [Hangar Discord](https://discord.gg/zvrAEbvJ4a) to start discussing potential contributions and ideas. With Hangar being such a
 massive project, any contributions are welcome!
 

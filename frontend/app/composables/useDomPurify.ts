@@ -12,11 +12,13 @@ export function useDomPurify(text?: string) {
 
   // Manually handle iframe to allow YouTube video embeds
   dompurify.addHook("uponSanitizeElement", (node, data) => {
-    if (data.tagName === "iframe") {
-      const src = (node as HTMLIFrameElement).getAttribute("src") || "";
-      if (!src.startsWith("https://www.youtube.com/embed/")) {
-        return node.parentNode && (node as HTMLIFrameElement).remove();
-      }
+    if (data.tagName !== "iframe") {
+      return;
+    }
+
+    const src = (node as HTMLIFrameElement).getAttribute("src") || "";
+    if (!src.startsWith("https://www.youtube.com/embed/")) {
+      return node.parentNode && (node as HTMLIFrameElement).remove();
     }
   });
 

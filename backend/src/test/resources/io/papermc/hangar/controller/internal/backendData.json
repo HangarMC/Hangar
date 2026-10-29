@@ -149,11 +149,6 @@
             "permission": "10000000000000000000000"
         },
         {
-            "value": "post_as_organization",
-            "frontendName": "PostAsOrganization",
-            "permission": "1000000000000000000000"
-        },
-        {
             "value": "mod_notes_and_flags",
             "frontendName": "ModNotesAndFlags",
             "permission": "1000000000000000000000000"
@@ -206,7 +201,7 @@
         {
             "value": "restore_project",
             "frontendName": "RestoreProject",
-            "permission": "100000000000000"
+            "permission": "1000000000000000000000000000000000000000000000"
         },
         {
             "value": "hard_delete_project",
@@ -323,139 +318,7 @@
             "title": "visibility.name.softDelete"
         }
     ],
-    "licenses": [
-        "Unspecified",
-        "MIT",
-        "Apache 2.0",
-        "GPL",
-        "LGPL",
-        "AGPL",
-        "Other"
-    ],
-    "orgRoles": [
-        {
-            "value": "Organization_Owner",
-            "roleId": 25,
-            "permissions": "11000001111011111110100",
-            "roleCategory": "organization",
-            "title": "Owner",
-            "color": "#a855f7",
-            "rank": 10,
-            "assignable": false
-        },
-        {
-            "value": "Organization_Admin",
-            "roleId": 24,
-            "permissions": "1000001111011111110100",
-            "roleCategory": "organization",
-            "title": "Owner",
-            "color": "#a855f7",
-            "rank": 20,
-            "assignable": true
-        },
-        {
-            "value": "Organization_Maintainer",
-            "roleId": 23,
-            "permissions": "1000001111001110010000",
-            "roleCategory": "organization",
-            "title": "Maintainer",
-            "color": "#14b8a6",
-            "rank": 30,
-            "assignable": true
-        },
-        {
-            "value": "Organization_Developer",
-            "roleId": 22,
-            "permissions": "1000000000001010000000",
-            "roleCategory": "organization",
-            "title": "Developer",
-            "color": "#f97316",
-            "rank": 40,
-            "assignable": true
-        },
-        {
-            "value": "Organization_Editor",
-            "roleId": 21,
-            "permissions": "1000000000001010000000",
-            "roleCategory": "organization",
-            "title": "Editor",
-            "color": "#f59e0b",
-            "rank": 50,
-            "assignable": true
-        },
-        {
-            "value": "Organization_Support",
-            "roleId": 20,
-            "permissions": "1000000000000010000000",
-            "roleCategory": "organization",
-            "title": "Support",
-            "color": "#f59e0b",
-            "rank": 60,
-            "assignable": true
-        }
-    ],
-    "projectRoles": [
-        {
-            "value": "Project_Owner",
-            "roleId": 35,
-            "permissions": "1111011011110100",
-            "roleCategory": "project",
-            "title": "Owner",
-            "color": "#a855f7",
-            "rank": 10,
-            "assignable": false
-        },
-        {
-            "value": "Project_Admin",
-            "roleId": 34,
-            "permissions": "1111001010110100",
-            "roleCategory": "project",
-            "title": "Admin",
-            "color": "#a855f7",
-            "rank": 20,
-            "assignable": true
-        },
-        {
-            "value": "Project_Maintainer",
-            "roleId": 33,
-            "permissions": "1111001010000000",
-            "roleCategory": "project",
-            "title": "Maintainer",
-            "color": "#14b8a6",
-            "rank": 30,
-            "assignable": true
-        },
-        {
-            "value": "Project_Developer",
-            "roleId": 32,
-            "permissions": "1010000000",
-            "roleCategory": "project",
-            "title": "Developer",
-            "color": "#f97316",
-            "rank": 40,
-            "assignable": true
-        },
-        {
-            "value": "Project_Editor",
-            "roleId": 31,
-            "permissions": "1010000000",
-            "roleCategory": "project",
-            "title": "Editor",
-            "color": "#f59e0b",
-            "rank": 50,
-            "assignable": true
-        },
-        {
-            "value": "Project_Support",
-            "roleId": 30,
-            "permissions": "10000000",
-            "roleCategory": "project",
-            "title": "Support",
-            "color": "#f59e0b",
-            "rank": 60,
-            "assignable": true
-        }
-    ],
+    "licenses": ["Unspecified", "MIT", "Apache 2.0", "GPL", "LGPL", "AGPL", "Other"],
     "globalRoles": [
         {
             "value": "PaperMC_Core",
@@ -530,7 +393,7 @@
         {
             "value": "Organization",
             "roleId": 100,
-            "permissions": "11000001111011111110100",
+            "permissions": "10000001111011111110000",
             "roleCategory": "global",
             "title": "Organization",
             "color": "#a855f7",
@@ -653,6 +516,7 @@
         "user_apikey_created",
         "user_apikey_deleted",
         "user_locked",
+        "user_renamed",
         "user_socials_changed",
         "user_tagline_changed",
         "user_unlocked",
@@ -693,10 +557,38 @@
             "bstats.org",
             "img.shields.io"
         ],
-        "oauthProviders": [
-            "github",
-            "google",
-            "microsoft"
-        ]
-    }
+        "oauthProviders": ["github", "google", "microsoft"]
+    },
+    "projectPermissions": [
+        {
+            "name": "project",
+            "permissions": ["edit_subject_settings", "edit_page", "edit_channels", "delete_project"]
+        },
+        {
+            "name": "versions",
+            "permissions": ["create_version", "edit_version", "delete_version"]
+        },
+        {
+            "name": "people",
+            "permissions": ["manage_subject_members"]
+        }
+    ],
+    "organizationPermissions": [
+        {
+            "name": "organization",
+            "permissions": ["edit_subject_settings"]
+        },
+        {
+            "name": "projects",
+            "permissions": ["create_project", "edit_page", "edit_channels", "delete_project"]
+        },
+        {
+            "name": "versions",
+            "permissions": ["create_version", "edit_version", "delete_version"]
+        },
+        {
+            "name": "people",
+            "permissions": ["manage_subject_members"]
+        }
+    ]
 }

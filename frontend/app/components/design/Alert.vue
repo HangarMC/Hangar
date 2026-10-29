@@ -9,24 +9,34 @@ const props = withDefaults(
 );
 
 const color = computed(() => {
-  // map type to bg-color
+  // tinted surface + matching border, consistent with the toast notifications
   return {
-    success: "bg-green-500 border-green-600",
-    info: "bg-primary-500 border-primary-600",
-    warning: "bg-yellow-500 border-yellow-600",
-    danger: "bg-red-500 font-semibold border-red-600",
+    success: "bg-green-50 dark:bg-green-500/10 border-green-500 text-green-900 dark:text-green-100",
+    info: "bg-sky-50 dark:bg-sky-500/10 border-sky-500 text-sky-900 dark:text-sky-100",
+    warning: "bg-amber-50 dark:bg-amber-500/10 border-amber-500 text-amber-900 dark:text-amber-100",
+    danger: "bg-red-50 dark:bg-red-500/10 border-red-500 text-red-900 dark:text-red-100 font-semibold",
     neutral: "background-default border dark:border-gray-800",
+  }[props.type];
+});
+
+const iconColor = computed(() => {
+  return {
+    success: "text-green-600 dark:text-green-400",
+    info: "text-sky-600 dark:text-sky-400",
+    warning: "text-amber-600 dark:text-amber-500",
+    danger: "text-red-600 dark:text-red-400",
+    neutral: "text-gray-secondary",
   }[props.type];
 });
 </script>
 
 <template>
-  <div :class="'flex flex-row items-center rounded-md p-4 text-black dark:text-white border-l-6 border-solid ' + color">
-    <slot name="icon" clazz="mr-3 w-8 h-8 min-w-8">
-      <IconMdiAlert v-if="props.type === 'danger'" class="mr-3 w-8 h-8 min-w-8" />
-      <IconMdiAlertBox v-else-if="props.type === 'warning'" class="mr-3 w-8 h-8 min-w-8" />
-      <IconMdiInformation v-else-if="props.type === 'info' || props.type === 'neutral'" class="mr-3 w-8 h-8 min-w-8" />
-      <IconMdiTrophy v-else-if="props.type === 'success'" class="mr-3 w-8 h-8 min-w-8" />
+  <div :class="'flex flex-row items-center rounded-md p-4 border-l-6 border-solid ' + color" :role="props.type === 'danger' ? 'alert' : 'status'">
+    <slot name="icon" :clazz="'mr-3 w-8 h-8 min-w-8 ' + iconColor">
+      <IconMdiAlert v-if="props.type === 'danger'" class="mr-3 w-8 h-8 min-w-8" :class="iconColor" />
+      <IconMdiAlertBox v-else-if="props.type === 'warning'" class="mr-3 w-8 h-8 min-w-8" :class="iconColor" />
+      <IconMdiInformation v-else-if="props.type === 'info' || props.type === 'neutral'" class="mr-3 w-8 h-8 min-w-8" :class="iconColor" />
+      <IconMdiTrophy v-else-if="props.type === 'success'" class="mr-3 w-8 h-8 min-w-8" :class="iconColor" />
     </slot>
     <slot />
   </div>

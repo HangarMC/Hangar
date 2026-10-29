@@ -17,114 +17,148 @@ const isCurrentUser = computed<boolean>(() => {
 const canEditCurrentUser = computed<boolean>(() => {
   return hasPerms(NamedPermission.EditAllUserSettings) || isCurrentUser.value || hasPerms(NamedPermission.EditSubjectSettings);
 });
+
+const socialLinks = computed(() => {
+  const socials = props.viewingUser?.socials;
+  if (!socials) return [];
+  return [
+    { key: "github", label: "GitHub", href: socials.github ? `https://github.com/${socials.github}` : undefined },
+    { key: "twitter", label: "Twitter", href: socials.twitter ? `https://twitter.com/${socials.twitter}` : undefined },
+    { key: "website", label: "Website", href: socials.website ? linkout(socials.website) : undefined },
+  ].filter((link) => link.href);
+});
+
+const hasSocials = computed(() => socialLinks.value.length > 0 || Boolean(props.viewingUser?.socials?.discord));
+
+const roles = computed(() => displayRoles(props.viewingUser?.roles));
 </script>
 
 <template>
-  <Card accent class="overflow-y-hidden">
-    <div class="flex mb-4 md:mb-0">
-      <div class="relative mr-3">
-        <UserAvatar :username="viewingUser?.name" :avatar-url="viewingUser?.avatarUrl" :loading="!viewingUser" />
-        <AvatarChangeModal
+  <Card accent class="overflow-visible">
+    <div class="flex flex-wrap items-start gap-4">
+      <div class="flex-shrink-0">
+        <EditableAvatar
           v-if="viewingUser && hasPerms(NamedPermission.EditSubjectSettings)"
-          :avatar="viewingUser.avatarUrl"
+          :username="viewingUser.name"
+          :avatar-url="viewingUser.avatarUrl"
           :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/avatar`"
-        >
-          <template #activator="{ on }">
-            <Button class="absolute -bottom-3 -right-3" v-on="on"><IconMdiPencil /></Button>
-          </template>
-        </AvatarChangeModal>
+          compact
+        />
+        <UserAvatar v-else :username="viewingUser?.name" :avatar-url="viewingUser?.avatarUrl" :loading="!viewingUser" />
       </div>
 
-      <div class="overflow-clip overflow-hidden">
-        <h1 v-if="viewingUser" class="text-2xl px-1 text-strong inline-flex items-center">
-          {{ viewingUser.name }}
-          <a
-            v-if="viewingUser.socials?.github"
-            :href="`https://github.com/${viewingUser.socials.github}`"
-            class="ml-1"
-            rel="external nofollow"
-            title="GitHub Link"
-          >
-            <IconMdiGithub class="mr-1 hover:text-slate-400" />
-          </a>
-          <a
-            v-if="viewingUser.socials?.twitter"
-            :href="`https://twitter.com/${viewingUser.socials.twitter}`"
-            class="ml-1"
-            rel="external nofollow"
-            title="Twitter Link"
-          >
-            <IconMdiTwitter class="mr-1 hover:text-slate-400" />
-          </a>
-          <a
-            v-if="viewingUser.socials?.youtube"
-            :href="`https://youtube.com/${viewingUser.socials.youtube}`"
-            class="ml-1"
-            rel="external nofollow"
-            title="YouTube Link"
-          >
-            <IconMdiYoutube class="mr-1 hover:text-slate-400" />
-          </a>
-          <a v-if="viewingUser.socials?.website" :href="linkout(viewingUser.socials.website)" class="ml-1" rel="external nofollow" title="Website Link">
-            <IconMdiWeb class="mr-1 hover:text-slate-400" />
-          </a>
-          <Tooltip v-if="viewingUser.socials?.discord">
-            <template #content>
-              <span class="text-base">{{ viewingUser.socials.discord }}</span>
-            </template>
-            <IconMdiDiscord class="ml-1 hover:text-slate-400" />
-          </Tooltip>
-          <span v-if="viewingUser.locked" class="ml-1">
-            <IconMdiLockOutline />
-          </span>
-          <Popper v-if="viewingUser.nameHistory?.length > 0" placement="bottom">
-            <IconMdiChevronDown cursor="pointer" />
-            <template #content>
-              <div class="-mt-2.5 p-2 flex flex-col rounded background-default filter shadow-default text-base">
-                <div class="font-bold">Was known as:</div>
-                <div v-for="(history, idx) of viewingUser.nameHistory" :key="idx">{{ history.oldName }} until <PrettyTime :time="history.date" long /></div>
-              </div>
-            </template>
-          </Popper>
-          <SocialsModal
-            v-if="canEditCurrentUser"
-            :socials="viewingUser.socials"
-            :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/socials`"
-          />
-        </h1>
-        <Skeleton v-else class="text-2xl px-1 w-50" />
-
-        <div v-if="viewingUser" class="ml-1">
-          <span v-if="viewingUser.tagline">{{ viewingUser.tagline }}</span>
-          <span v-else-if="canEditCurrentUser">{{ i18n.t("author.addTagline") }}</span>
-          <TaglineModal
-            v-if="canEditCurrentUser"
-            :tagline="viewingUser.tagline"
-            :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/tagline`"
-          />
-        </div>
-        <Skeleton v-else class="mt-1 w-100" />
-      </div>
-      <div class="flex-grow" />
-      <div class="lt-md:hidden flex flex-col space-y-1 items-end flex-shrink-0">
+      <div class="min-w-0 flex-1">
         <template v-if="viewingUser">
-          <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}</span>
-          <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
-          <span class="inline-flex space-x-1">
-            <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
-          </span>
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <h1 class="min-w-0 truncate text-2xl text-strong">{{ viewingUser.name }}</h1>
+
+            <Chip v-if="viewingUser.isOrganization">
+              <IconMdiAccountGroupOutline />
+              {{ i18n.t("author.organizationLabel") }}
+            </Chip>
+
+            <Tooltip v-if="viewingUser.locked">
+              <template #content>{{ i18n.t("author.tooltips.lock") }}</template>
+              <IconMdiLockOutline class="flex-shrink-0 text-gray-secondary" />
+            </Tooltip>
+
+            <Popper v-if="viewingUser.nameHistory?.length > 0" placement="bottom">
+              <button
+                type="button"
+                class="inline-flex flex-shrink-0 items-center rounded text-gray-secondary hover:color-primary"
+                :aria-label="i18n.t('author.nameHistory')"
+                :title="i18n.t('author.nameHistory')"
+              >
+                <IconMdiHistory />
+              </button>
+              <template #content>
+                <DropdownPanel class="p-3 text-base">
+                  <div class="font-bold">{{ i18n.t("author.nameHistory") }}</div>
+                  <div v-for="(history, idx) of viewingUser.nameHistory" :key="idx" class="text-sm text-gray-secondary">
+                    {{ history.oldName }} until <PrettyTime :time="history.date" long />
+                  </div>
+                </DropdownPanel>
+              </template>
+            </Popper>
+
+            <div v-if="roles.length > 0" class="flex flex-wrap gap-1">
+              <Tag v-for="role in roles" :key="role.roleId" :color="{ background: role.color }" :name="role.title" />
+            </div>
+
+            <div v-if="hasSocials || canEditCurrentUser" class="flex flex-wrap items-center gap-1">
+              <a
+                v-for="link in socialLinks"
+                :key="link.key"
+                :href="link.href"
+                class="inline-flex items-center rounded p-1 text-lg text-gray-secondary transition-colors hover:color-primary"
+                rel="external nofollow"
+                :title="link.label"
+                :aria-label="link.label"
+              >
+                <IconMdiGithub v-if="link.key === 'github'" />
+                <IconMdiTwitter v-else-if="link.key === 'twitter'" />
+                <IconMdiWeb v-else />
+              </a>
+              <Tooltip v-if="viewingUser.socials?.discord">
+                <template #content>
+                  <span class="text-base">{{ viewingUser.socials.discord }}</span>
+                </template>
+                <span class="inline-flex items-center rounded p-1 text-lg text-gray-secondary"><IconMdiDiscord /></span>
+              </Tooltip>
+              <SocialsModal
+                v-if="canEditCurrentUser"
+                :socials="viewingUser.socials"
+                :label="hasSocials ? undefined : i18n.t('author.addSocials')"
+                :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/socials`"
+              />
+            </div>
+          </div>
+
+          <div class="mt-0.5">
+            <TaglineModal
+              v-if="canEditCurrentUser"
+              :tagline="viewingUser.tagline"
+              :action="`${viewingUser.isOrganization ? 'organizations/org' : 'users'}/${viewingUser.name}/settings/tagline`"
+            >
+              <template #activator="{ on }">
+                <button
+                  type="button"
+                  class="-ml-1 inline-flex max-w-full items-center gap-1 rounded px-1 py-0.5 text-left text-gray-secondary hover:background-card focus-visible:(outline-2 outline-primary-500)"
+                  :aria-label="i18n.t('author.editTagline')"
+                  v-on="on"
+                >
+                  <span class="truncate">{{ viewingUser.tagline || i18n.t("author.addTagline") }}</span>
+                  <IconMdiPencil class="shrink-0" />
+                </button>
+              </template>
+            </TaglineModal>
+            <span v-else-if="viewingUser.tagline" class="text-gray-secondary">{{ viewingUser.tagline }}</span>
+          </div>
         </template>
         <template v-else>
-          <Skeleton />
-          <Skeleton />
+          <Skeleton class="w-50 text-2xl" />
+          <Skeleton class="mt-1 w-100" />
+        </template>
+      </div>
+
+      <div class="flex gap-2 lt-md:(mt-1 basis-full) md:(ml-auto w-72 flex-shrink-0)">
+        <template v-if="viewingUser">
+          <StatTile
+            :label="viewingUser.isOrganization ? i18n.t('author.createdLabel') : i18n.t('author.memberSinceLabel')"
+            :value="i18n.d(viewingUser.createdAt, 'shortdate')"
+          >
+            <template #icon><IconMdiCalendar /></template>
+          </StatTile>
+          <StatTile :label="i18n.t('author.numProjectsLabel')" :value="viewingUser.projectCount">
+            <template #icon><IconMdiPackageVariantClosed /></template>
+          </StatTile>
+        </template>
+        <template v-else>
+          <Skeleton class="h-16 flex-1" />
+          <Skeleton class="h-16 flex-1" />
         </template>
       </div>
     </div>
-    <div v-if="viewingUser" class="md:hidden flex flex-col items-center space-y-1 flex-shrink-0">
-      <span>{{ i18n.t("author.memberSince", [i18n.d(viewingUser.createdAt, "date")]) }}</span>
-      <span>{{ i18n.t("author.numProjects", [viewingUser.projectCount], viewingUser.projectCount) }}</span>
-      <Tag v-for="roleId in viewingUser.roles" :key="roleId" :color="{ background: getRole(roleId)?.color }" :name="getRole(roleId)?.title" />
-    </div>
   </Card>
-  <hr class="border-gray-400 dark:border-gray-500 my-4 mb-4" />
+  <hr class="my-4 border-gray-300 dark:border-gray-700" />
 </template>

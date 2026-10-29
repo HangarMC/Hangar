@@ -19,6 +19,7 @@ if (import.meta.client) {
 
   useDebug();
 
+  // eslint-disable-next-line unicorn/no-global-object-property-assignment
   onNuxtReady(() => nextTick(() => (window.hangarLoaded = true)));
 }
 

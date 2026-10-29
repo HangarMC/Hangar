@@ -46,6 +46,7 @@ public class GlobalDataController {
     }
 
     @PostMapping("/announcements")
+    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     public void updateAnnouncements(@RequestBody @Valid final List<AnnouncementTable> announcements) {
         this.globalDataService.updateAnnouncements(announcements);
     }
@@ -56,6 +57,7 @@ public class GlobalDataController {
     }
 
     @PostMapping("/notifications")
+    @PermissionRequired(NamedPermission.MANUAL_VALUE_CHANGES)
     public void updateGlobalNotifications(@RequestBody @Valid final List<GlobalNotificationTable> globalNotification) {
         this.globalDataService.updateGlobalNotifications(globalNotification);
     }

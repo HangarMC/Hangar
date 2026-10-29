@@ -1,10 +1,15 @@
 package io.papermc.hangar.db.dao.internal;
 
 import io.papermc.hangar.model.internal.admin.DayStats;
+import io.papermc.hangar.model.internal.admin.PlatformDownloads;
+import io.papermc.hangar.model.internal.admin.StatsTotals;
+import io.papermc.hangar.model.internal.admin.TopProject;
 import java.time.LocalDate;
 import java.util.List;
+import org.jdbi.v3.core.enums.EnumStrategy;
 import org.jdbi.v3.spring.JdbiRepository;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+import org.jdbi.v3.sqlobject.config.UseEnumStrategy;
 import org.jdbi.v3.sqlobject.customizer.Define;
 import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -18,6 +23,53 @@ public interface HangarStatsDAO {
     @UseClasspathSqlLocator
     @RegisterConstructorMapper(DayStats.class)
     List<DayStats> getStats(LocalDate startDate, LocalDate endDate);
+
+    @SqlQuery("""
+        SELECT (SELECT count(*) FROM users)                                                          AS users,
+               (SELECT count(*) FROM projects WHERE visibility != 4)                                 AS projects,
+               (SELECT count(*) FROM project_versions WHERE visibility != 4)                         AS versions,
+               (SELECT coalesce(sum(downloads), 0) FROM project_versions_downloads)                  AS downloads,
+               (SELECT coalesce(sum(views), 0) FROM project_views)                                   AS views,
+               (SELECT count(*) FROM project_flags WHERE NOT resolved)                               AS open_flags,
+               (SELECT count(*)
+                FROM project_versions pv
+                    JOIN projects p ON pv.project_id = p.id
+                WHERE pv.review_state = 0 AND p.visibility != 4 AND pv.visibility != 4)              AS pending_reviews
+        """)
+    @RegisterConstructorMapper(StatsTotals.class)
+    StatsTotals getTotals();
+
+    @SqlQuery("""
+        SELECT pvd.platform, sum(pvd.downloads) AS downloads
+        FROM project_versions_downloads pvd
+        WHERE pvd.day BETWEEN :startDate AND :endDate AND pvd.platform >= 0
+        GROUP BY pvd.platform
+        ORDER BY downloads DESC
+        """)
+    @UseEnumStrategy(EnumStrategy.BY_ORDINAL)
+    @RegisterConstructorMapper(PlatformDownloads.class)
+    List<PlatformDownloads> getPlatformDownloads(LocalDate startDate, LocalDate endDate);
+
+    @SqlQuery("""
+        SELECT p.owner_name                    AS owner,
+               p.slug,
+               coalesce(dl.downloads, 0)       AS downloads,
+               coalesce(v.views, 0)            AS views
+        FROM projects p
+            LEFT JOIN (SELECT pvd.project_id, sum(pvd.downloads) AS downloads
+                       FROM project_versions_downloads pvd
+                       WHERE pvd.day BETWEEN :startDate AND :endDate
+                       GROUP BY pvd.project_id) dl ON dl.project_id = p.id
+            LEFT JOIN (SELECT pv.project_id, sum(pv.views) AS views
+                       FROM project_views pv
+                       WHERE pv.day BETWEEN :startDate AND :endDate
+                       GROUP BY pv.project_id) v ON v.project_id = p.id
+        WHERE p.visibility != 4 AND (dl.downloads > 0 OR v.views > 0)
+        ORDER BY downloads DESC, views DESC
+        LIMIT :limit
+        """)
+    @RegisterConstructorMapper(TopProject.class)
+    List<TopProject> getTopProjects(LocalDate startDate, LocalDate endDate, int limit);
 
     @SqlUpdate("""
         UPDATE <table> AS pvdi

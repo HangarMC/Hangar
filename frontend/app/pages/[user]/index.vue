@@ -12,6 +12,11 @@ const props = defineProps<{
   organization?: HangarOrganization;
 }>();
 
+definePageMeta({
+  dataLoader_user: true,
+  dataLoader_organization: true,
+});
+
 const i18n = useI18n();
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
@@ -46,14 +51,12 @@ const requestParams = computed(() => {
 
 // todo we can skip some of those if user is org
 const { organizationVisibility } = useOrganizationVisibility(() => route.params.user);
-const { possibleAlts } = usePossibleAlts(() => route.params.user);
+const { possibleAlts, possibleAltsStatus, loadPossibleAlts } = usePossibleAlts(() => route.params.user);
 const { projects, projectsStatus } = useProjects(() => ({ member: route.params.user, ...requestParams.value }), router);
 const { starred } = useStarred(() => route.params.user);
 const { watching } = useWatching(() => route.params.user);
 const { pinned } = usePinned(() => route.params.user);
 const { organizations } = useOrganizations(() => route.params.user);
-
-const orgRoles = useBackendData.orgRoles.filter((role) => role.assignable);
 
 interface UserButton {
   icon: FunctionalComponent;
@@ -130,153 +133,180 @@ useSeo(
 </script>
 
 <template>
-  <UserHeader :viewing-user="user" :organization="organization" />
+  <div>
+    <UserHeader :viewing-user="user" :organization="organization" />
 
-  <!-- eslint-disable-next-line vue/no-multiple-template-root -->
-  <div class="flex gap-4 flex-basis-full flex-col lg:flex-row">
-    <div class="flex-basis-full flex flex-col gap-2 flex-grow lg:max-w-7/10 lg:min-w-6/10">
-      <template v-if="pinned?.length">
-        <h2 v-if="user" class="font-bold text-xl mb-2">{{ user.name }}'s pinned Plugins</h2>
-        <ProjectCard v-for="project in pinned" :key="project.namespace.slug" :project pinned :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)" />
-        <hr class="my-2 border-zinc-200 dark:border-zinc-700" />
-      </template>
-      <div class="flex gap-2">
-        <InputText v-model="query" :label="i18n.t('hangar.projectSearch.query')" />
-        <InputSelect v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :label="i18n.t('hangar.projectSearch.sortBy')" />
+    <div class="flex gap-4 flex-basis-full flex-col lg:flex-row">
+      <div class="flex-basis-full flex flex-col gap-3 flex-grow lg:max-w-3/4 lg:min-w-7/10">
+        <template v-if="!pinned || pinned.length > 0">
+          <h2 v-if="user" class="text-xl font-bold">{{ i18n.t("author.pinnedPlugins") }}</h2>
+          <Skeleton v-if="!pinned" class="h-25" />
+          <ProjectCard v-for="project in pinned" :key="project.namespace.slug" :project pinned :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)" />
+          <hr class="my-1 border-gray-300 dark:border-gray-700" />
+        </template>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="min-w-60 flex-1">
+            <InputText v-model="query" :label="i18n.t('hangar.projectSearch.query')" />
+          </div>
+          <InputDropdown v-model="activeSorter" :values="sorters" item-text="label" item-value="id" :prefix="i18n.t('hangar.projectSearch.sortBy')" />
+        </div>
+
+        <ProjectList
+          :projects="projects"
+          :loading="projectsStatus === 'loading'"
+          :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)"
+          :pinned
+          @update:page="(newPage: number) => (page = newPage)"
+        />
       </div>
-      <h2 v-if="user" class="font-bold text-xl">{{ user.name }}'s Plugins</h2>
-      <Skeleton v-else class="text-xl" />
-      <ProjectList
-        :projects="projects"
-        :loading="projectsStatus === 'loading'"
-        :can-edit="hasPerms(NamedPermission.EditOwnUserSettings)"
-        :pinned
-        @update:page="(newPage: number) => (page = newPage)"
-      />
-    </div>
-    <div class="flex-basis-full flex-grow lg:max-w-3/10 lg:min-w-2/10">
-      <Card v-if="!user" class="mb-4" accent>
-        <template #header>
-          <Skeleton />
-        </template>
-        <Skeleton class="h-50" />
-      </Card>
 
-      <Card
-        v-if="user && (buttons.length > 0 || (organization && hasPerms(NamedPermission.IsSubjectOwner)))"
-        class="mb-4 border-solid border-top-4 border-top-red-500 dark:border-top-red-500"
-      >
-        <template #header>
-          <h2>{{ i18n.t("author.management") }}</h2>
-        </template>
-        <template v-if="organization && hasPerms(NamedPermission.IsSubjectOwner)">
-          <Tooltip>
-            <template #content>
-              {{ i18n.t("author.tooltips.transfer") }}
-            </template>
-            <OrgTransferModal :organization="user.name" />
-          </Tooltip>
-          <Tooltip>
-            <template #content>
-              {{ i18n.t("author.tooltips.delete") }}
-            </template>
-            <OrgDeleteModal :organization="user.name" />
-          </Tooltip>
-        </template>
-
-        <Tooltip v-for="btn in buttons" :key="btn.name">
-          <template #content>
-            {{ i18n.t(`author.tooltips.${btn.name}`) }}
+      <div class="flex-basis-full flex flex-col gap-4 flex-grow lg:max-w-1/4 lg:min-w-2/10">
+        <Card v-if="!user">
+          <template #header>
+            <Skeleton />
           </template>
-          <Link v-bind="btn.attr">
-            <Button size="small" class="mr-1 inline-flex">
+          <Skeleton class="h-50" />
+        </Card>
+
+        <Card v-if="user && (buttons.length > 0 || hasPerms(NamedPermission.IsStaff) || (organization && hasPerms(NamedPermission.EditSubjectSettings)))">
+          <template #header>
+            <h2>{{ i18n.t("author.management") }}</h2>
+          </template>
+          <div class="flex flex-wrap gap-2">
+            <Button v-for="btn in buttons" :key="btn.name" v-bind="btn.attr" variant="outline" tone="neutral" size="sm">
               <component :is="btn.icon" />
+              {{ i18n.t("author.tooltips." + btn.name) }}
             </Button>
-          </Link>
-        </Tooltip>
 
-        <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IsStaff)" :user="user" />
-        <DeleteUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.ManualValueChanges)" :user="user" />
-      </Card>
+            <Button
+              v-if="organization && hasPerms(NamedPermission.EditSubjectSettings)"
+              variant="outline"
+              tone="neutral"
+              size="sm"
+              :to="`/${user.name}/settings`"
+            >
+              <IconMdiCog />
+              {{ i18n.t("organization.settings.title") }}
+            </Button>
+            <LockUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.IsStaff)" :user="user" />
+            <DeleteUserModal v-if="!isCurrentUser && hasPerms(NamedPermission.ManualValueChanges)" :user="user" />
+          </div>
 
-      <Card v-if="possibleAlts?.length" class="mb-4">
-        <template #header> Shares address with</template>
-        <ul>
-          <li v-for="name in possibleAlts" :key="name">
-            <Link :to="'/' + name">
-              {{ name }}
-            </Link>
-          </li>
-        </ul>
-      </Card>
-
-      <template v-if="user && !user?.isOrganization && organizations">
-        <Card class="mb-4" accent>
-          <template #header>
-            <div class="inline-flex w-full">
-              <h2 class="flex-grow">{{ user.name }}'s {{ i18n.t("author.orgs") }}</h2>
-              <OrgVisibilityModal v-if="organizationVisibility && organizations && Object.keys(organizations).length > 0" v-model="organizationVisibility" />
-            </div>
-          </template>
-
-          <ul>
-            <li v-for="(org, orgName) in organizations" :key="orgName">
-              <NuxtLink :to="'/' + orgName" class="flex items-center mb-2">
-                <UserAvatar :username="orgName + ''" :avatar-url="org.avatarUrl" size="xs" :disable-link="true" class="flex-shrink-0 mr-2" />
-                {{ orgName }}
-                <span class="flex-grow" />
-                <Tag :color="{ background: getRole(org.roleId)?.color }" :name="getRole(org.roleId)?.title" class="ml-1" />
-                <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName + '']" class="ml-1" />
-              </NuxtLink>
-            </li>
-          </ul>
-
-          <span v-if="!organizations || Object.keys(organizations).length === 0">
-            {{ i18n.t("author.noOrgs", [user.name]) }}
-          </span>
+          <div v-if="hasPerms(NamedPermission.IsStaff)" class="mt-3 border-t border-gray-300 pt-3 dark:border-gray-700">
+            <h3 class="mb-1.5 font-semibold">{{ i18n.t("author.sharesAddress") }}</h3>
+            <Button v-if="possibleAltsStatus === 'idle'" variant="outline" tone="neutral" size="sm" @click="loadPossibleAlts">
+              <IconMdiAccountSearchOutline />
+              {{ i18n.t("author.revealSharedAddress") }}
+            </Button>
+            <Skeleton v-else-if="possibleAltsStatus === 'loading'" />
+            <ul v-else-if="possibleAlts?.length" class="flex flex-col gap-0.5">
+              <li v-for="name in possibleAlts" :key="name">
+                <Link :to="'/' + name">{{ name }}</Link>
+              </li>
+            </ul>
+            <p v-else class="text-sm text-gray-secondary">{{ i18n.t("author.noSharedAddress", [user.name]) }}</p>
+          </div>
         </Card>
 
-        <Card class="mb-4" accent>
-          <template #header>
-            <h2>{{ i18n.t("author.stars") }}</h2>
-          </template>
+        <template v-if="user && !user?.isOrganization">
+          <Card>
+            <template #header>
+              <div class="flex items-center gap-2">
+                <h2 class="min-w-0 flex-grow truncate">{{ i18n.t("author.orgs") }}</h2>
+                <OrgVisibilityModal v-if="organizationVisibility && organizations && Object.keys(organizations).length > 0" v-model="organizationVisibility" />
+              </div>
+            </template>
 
-          <Skeleton v-if="!starred" />
+            <Skeleton v-if="!organizations" />
+            <ul v-else-if="Object.keys(organizations).length > 0" class="divide-y divide-gray-300 dark:divide-gray-700">
+              <li v-for="(org, orgName) in organizations" :key="orgName">
+                <NuxtLink :to="'/' + orgName" class="flex items-center gap-2 py-2 transition-colors hover:color-primary">
+                  <UserAvatar :username="orgName + ''" :avatar-url="org.avatarUrl" size="xs" disable-link class="flex-shrink-0" />
+                  <span class="min-w-0 flex-1 truncate font-semibold">{{ orgName }}</span>
+                  <IconMdiEyeOffOutline v-if="organizationVisibility && organizationVisibility[orgName + '']" class="flex-shrink-0 text-gray-secondary" />
+                  <Chip tone="primary" class="flex-shrink-0">{{ org.title }}</Chip>
+                </NuxtLink>
+              </li>
+            </ul>
+            <p v-else class="text-sm text-gray-secondary">{{ i18n.t("author.noOrgs", [user.name]) }}</p>
+          </Card>
 
-          <ul v-else-if="starred?.result?.length">
-            <li v-for="star in starred?.result" :key="star.name">
-              <Link :to="'/' + star.namespace.owner + '/' + star.namespace.slug">
-                {{ star.namespace.owner }}/<strong>{{ star.name }}</strong>
-              </Link>
-            </li>
-          </ul>
+          <Card>
+            <template #header>
+              <div class="flex items-center gap-2">
+                <h2 class="flex-grow">{{ i18n.t("author.stars") }}</h2>
+                <span v-if="starred?.result?.length" class="text-base font-normal text-gray-secondary tabular-nums">{{ starred.result.length }}</span>
+              </div>
+            </template>
 
-          <span v-else>
-            {{ i18n.t("author.noStarred", [user.name]) }}
-          </span>
-        </Card>
+            <Skeleton v-if="!starred" />
+            <ul v-else-if="starred?.result?.length" class="divide-y divide-gray-300 dark:divide-gray-700">
+              <li v-for="star in starred.result" :key="star.namespace.owner + '/' + star.name">
+                <NuxtLink
+                  :to="'/' + star.namespace.owner + '/' + star.namespace.slug"
+                  class="flex items-center gap-2 py-2 transition-colors hover:color-primary"
+                >
+                  <UserAvatar
+                    :username="star.namespace.owner"
+                    :img-src="star.avatarUrl"
+                    :monogram-name="star.name"
+                    size="xs"
+                    disable-link
+                    class="flex-shrink-0"
+                  />
+                  <span class="min-w-0 flex-1">
+                    <span class="block truncate font-semibold">{{ star.name }}</span>
+                    <span class="block truncate text-sm text-gray-secondary">{{ star.namespace.owner }}</span>
+                  </span>
+                </NuxtLink>
+              </li>
+            </ul>
+            <p v-else class="text-sm text-gray-secondary">{{ i18n.t("author.noStarred", [user.name]) }}</p>
+          </Card>
 
-        <Card accent>
-          <template #header>
-            <h2>{{ i18n.t("author.watching") }}</h2>
-          </template>
+          <Card>
+            <template #header>
+              <div class="flex items-center gap-2">
+                <h2 class="flex-grow">{{ i18n.t("author.watching") }}</h2>
+                <span v-if="watching?.result?.length" class="text-base font-normal text-gray-secondary tabular-nums">{{ watching.result.length }}</span>
+              </div>
+            </template>
 
-          <Skeleton v-if="!watching" />
-
-          <ul v-else-if="watching?.result?.length">
-            <li v-for="watched in watching?.result" :key="watched.name">
-              <Link :to="'/' + watched.namespace.owner + '/' + watched.namespace.slug">
-                {{ watched.namespace.owner }}/<strong>{{ watched.name }}</strong>
-              </Link>
-            </li>
-          </ul>
-
-          <span v-else>
-            {{ i18n.t("author.noWatching", [user?.name]) }}
-          </span>
-        </Card>
-      </template>
-      <MemberList v-else-if="organization" :members="organization.members" :roles="orgRoles" organization :author="user?.name" />
+            <Skeleton v-if="!watching" />
+            <ul v-else-if="watching?.result?.length" class="divide-y divide-gray-300 dark:divide-gray-700">
+              <li v-for="watched in watching.result" :key="watched.namespace.owner + '/' + watched.name">
+                <NuxtLink
+                  :to="'/' + watched.namespace.owner + '/' + watched.namespace.slug"
+                  class="flex items-center gap-2 py-2 transition-colors hover:color-primary"
+                >
+                  <UserAvatar
+                    :username="watched.namespace.owner"
+                    :img-src="watched.avatarUrl"
+                    :monogram-name="watched.name"
+                    size="xs"
+                    disable-link
+                    class="flex-shrink-0"
+                  />
+                  <span class="min-w-0 flex-1">
+                    <span class="block truncate font-semibold">{{ watched.name }}</span>
+                    <span class="block truncate text-sm text-gray-secondary">{{ watched.namespace.owner }}</span>
+                  </span>
+                </NuxtLink>
+              </li>
+            </ul>
+            <p v-else class="text-sm text-gray-secondary">{{ i18n.t("author.noWatching", [user?.name]) }}</p>
+          </Card>
+        </template>
+        <MemberList
+          v-else-if="organization && user"
+          :members="organization.members"
+          organization
+          :author="user.name"
+          :manage="false"
+          :settings-link="`/${user.name}/settings/members`"
+        />
+      </div>
     </div>
   </div>
 </template>

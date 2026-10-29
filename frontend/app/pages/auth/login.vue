@@ -13,14 +13,15 @@ const loading = ref(false);
 const supportedMethods = ref<string[]>([]);
 
 const returnUrl = computed(() => (route.query.returnUrl as string) || "/auth/settings/profile");
+const oauthReturnUrl = computed(() => encodeURIComponent(returnUrl.value));
 
 // aal1
 const username = ref("");
 const password = ref("");
 
-const privileged = (route.query.privileged as unknown as boolean) || false;
+const privileged = route.query.privileged as unknown as boolean;
 if (privileged) {
-  username.value = useAuthStore().user?.name || "";
+  username.value = authStore.user?.name || "";
   loading.value = true;
   const response = await useInternalApi<LoginResponse>("auth/login/sudo", "POST");
   if (response.types?.length) {
@@ -172,26 +173,22 @@ useSeo(computed(() => ({ title: "Login", route })));
             <Button
               v-for="provider in backendData.security.oauthProviders"
               :key="provider"
+              variant="outline"
+              tone="neutral"
               :disabled="loading"
-              :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + returnUrl"
+              :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + oauthReturnUrl"
             >
               <template v-if="provider === 'github'">
-                <div class="flex flex-row gap-x-0.5 items-center">
-                  <IconMdiGithub class="mr-1" />
-                  GitHub
-                </div>
+                <IconMdiGithub />
+                GitHub
               </template>
               <template v-if="provider === 'google'">
-                <div class="flex flex-row gap-x-0.5 items-center">
-                  <IconMdiGoogle class="mr-1" />
-                  Google
-                </div>
+                <IconMdiGoogle />
+                Google
               </template>
               <template v-if="provider === 'microsoft'">
-                <div class="flex flex-row gap-x-0.5 items-center">
-                  <IconMdiMicrosoft class="mr-1" />
-                  Microsoft
-                </div>
+                <IconMdiMicrosoft />
+                Microsoft
               </template>
             </Button>
           </div>
@@ -200,7 +197,7 @@ useSeo(computed(() => ({ title: "Login", route })));
 
       <hr class="flex-grow border-zinc-200 dark:border-zinc-700 mt-1" />
 
-      <Link v-if="!privileged" button-type="secondary" to="/auth/signup" class="w-max">Don't have an account yet? Create one!</Link>
+      <Link v-if="!privileged" to="/auth/signup" class="w-max">Don't have an account yet? Create one!</Link>
       <Link v-if="!privileged" to="/auth/reset" class="w-max">Forgot your password?</Link>
     </form>
 

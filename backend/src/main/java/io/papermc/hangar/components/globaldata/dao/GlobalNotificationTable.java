@@ -3,6 +3,7 @@ package io.papermc.hangar.components.globaldata.dao;
 import io.papermc.hangar.model.db.Table;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
 
 public class GlobalNotificationTable extends Table {
@@ -12,10 +13,10 @@ public class GlobalNotificationTable extends Table {
     private String color;
     private OffsetDateTime activeFrom;
     private OffsetDateTime activeTo;
-    private long createdBy;
+    private @Nullable Long createdBy;
 
     @JdbiConstructor
-    public GlobalNotificationTable(final OffsetDateTime createdAt, final long id, final String key, final String content, final String color, final OffsetDateTime activeFrom, final OffsetDateTime activeTo, final long createdBy) {
+    public GlobalNotificationTable(final OffsetDateTime createdAt, final long id, final String key, final String content, final String color, final OffsetDateTime activeFrom, final OffsetDateTime activeTo, final @Nullable Long createdBy) {
         super(createdAt, id);
         this.key = key;
         this.content = content;
@@ -65,11 +66,11 @@ public class GlobalNotificationTable extends Table {
         this.activeTo = activeTo;
     }
 
-    public long getCreatedBy() {
+    public @Nullable Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(final long createdBy) {
+    public void setCreatedBy(final @Nullable Long createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -78,7 +79,7 @@ public class GlobalNotificationTable extends Table {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         GlobalNotificationTable that = (GlobalNotificationTable) o;
-        return createdBy == that.createdBy && Objects.equals(key, that.key) && Objects.equals(content, that.content) && Objects.equals(color, that.color) && Objects.equals(activeFrom, that.activeFrom) && Objects.equals(activeTo, that.activeTo);
+        return Objects.equals(createdBy, that.createdBy) && Objects.equals(key, that.key) && Objects.equals(content, that.content) && Objects.equals(color, that.color) && Objects.equals(activeFrom, that.activeFrom) && Objects.equals(activeTo, that.activeTo);
     }
 
     @Override

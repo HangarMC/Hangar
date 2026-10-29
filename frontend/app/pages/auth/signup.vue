@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const route = useRoute("auth-signup");
+const oauthReturnUrl = computed(() => encodeURIComponent((route.query.returnUrl as string) || "/"));
 const v = useVuelidate();
 const backendData = useBackendData;
 
@@ -62,26 +63,22 @@ useSeo(computed(() => ({ title: "Sign up", route })));
         <Button
           v-for="provider in backendData.security.oauthProviders"
           :key="provider"
+          variant="outline"
+          tone="neutral"
           :disabled="loading"
-          :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + (route.query.returnUrl ? route.query.returnUrl : '/')"
+          :href="'/api/internal/oauth/' + provider + '/login?mode=login&returnUrl=' + oauthReturnUrl"
         >
           <template v-if="provider === 'github'">
-            <div class="flex flex-row gap-x-0.5 items-center">
-              <IconMdiGithub class="mr-1" />
-              GitHub
-            </div>
+            <IconMdiGithub />
+            GitHub
           </template>
           <template v-if="provider === 'google'">
-            <div class="flex flex-row gap-x-0.5 items-center">
-              <IconMdiGoogle class="mr-1" />
-              Google
-            </div>
+            <IconMdiGoogle />
+            Google
           </template>
           <template v-if="provider === 'microsoft'">
-            <div class="flex flex-row gap-x-0.5 items-center">
-              <IconMdiMicrosoft class="mr-1" />
-              Microsoft
-            </div>
+            <IconMdiMicrosoft />
+            Microsoft
           </template>
         </Button>
       </div>

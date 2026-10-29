@@ -26,24 +26,6 @@ export enum Context {
   ORGANIZATION = "ORGANIZATION",
 }
 
-export enum ProjectRole {
-  PROJECT_SUPPORT = "PROJECT_SUPPORT",
-  PROJECT_EDITOR = "PROJECT_EDITOR",
-  PROJECT_DEVELOPER = "PROJECT_DEVELOPER",
-  PROJECT_MAINTAINER = "PROJECT_MAINTAINER",
-  PROJECT_ADMIN = "PROJECT_ADMIN",
-  PROJECT_OWNER = "PROJECT_OWNER",
-}
-
-export enum OrganizationRole {
-  ORGANIZATION_SUPPORT = "ORGANIZATION_SUPPORT",
-  ORGANIZATION_EDITOR = "ORGANIZATION_EDITOR",
-  ORGANIZATION_DEVELOPER = "ORGANIZATION_DEVELOPER",
-  ORGANIZATION_MAINTAINER = "ORGANIZATION_MAINTAINER",
-  ORGANIZATION_ADMIN = "ORGANIZATION_ADMIN",
-  ORGANIZATION_OWNER = "ORGANIZATION_OWNER",
-}
-
 /**
  * The visibility of a project or version
  * @example "PUBLIC"
@@ -137,7 +119,6 @@ export enum NamedPermission {
   EditChannels = "edit_channels",
   CreateOrganization = "create_organization",
   DeleteOrganization = "delete_organization",
-  PostAsOrganization = "post_as_organization",
   ModNotesAndFlags = "mod_notes_and_flags",
   SeeHidden = "see_hidden",
   IsStaff = "is_staff",
@@ -269,12 +250,18 @@ export interface ResetForm {
 
 export interface SettingsResponse {
   authenticators: Authenticator[];
+  /** @format date-time */
+  deletionScheduledFor?: string;
   emailConfirmed: boolean;
   emailPending: boolean;
   hasBackupCodes: boolean;
   hasPassword: boolean;
   hasTotp: boolean;
   oauthConnections: OAuthConnection[];
+  /** @format int64 */
+  ownedOrganizationCount: number;
+  /** @format int64 */
+  ownedProjectCount: number;
 }
 
 export interface Authenticator {
@@ -361,7 +348,7 @@ export interface AnnouncementTable {
   /** @format date-time */
   createdAt: string;
   /** @format int64 */
-  createdBy: number;
+  createdBy?: number;
   /** @format int64 */
   id: number;
   text: string;
@@ -377,7 +364,7 @@ export interface GlobalNotificationTable {
   /** @format date-time */
   createdAt: string;
   /** @format int64 */
-  createdBy: number;
+  createdBy?: number;
   /** @format int64 */
   id: number;
   key: string;
@@ -1140,10 +1127,16 @@ export interface MultiHangarApiException {
 export interface ApiKey {
   /** @format date-time */
   createdAt: string;
+  /** The time the key stops working, if it was created with an expiration date */
+  expiresAt?: string;
   /** @format date-time */
   lastUsed?: string;
   name: string;
   permissions: NamedPermission[];
+  /** The projects the key is limited to, empty unless the key is project scoped */
+  projects: ProjectNamespace[];
+  /** Whether the key may only be used on the projects listed below */
+  projectScoped: boolean;
   tokenIdentifier: string;
 }
 
@@ -1298,6 +1291,11 @@ export interface Project {
   name: string;
   /** The namespace of the project */
   namespace: ProjectNamespace;
+  /**
+   * The time the project's first version was published
+   * @format date-time
+   */
+  publishedAt?: string;
   /** The settings of the project */
   settings: ProjectSettings;
   /** Stats of the project */
@@ -1361,7 +1359,13 @@ export interface ProjectLicense {
 }
 
 export interface ProjectMember {
-  roles: CompactRole[];
+  /** What the member is allowed to do in this project */
+  permissions: NamedPermission[];
+  /**
+   * The member's title within the project, chosen when they were added
+   * @example "Maintainer"
+   */
+  title: string;
   user: string;
   /** @format int64 */
   userId: number;
@@ -1424,6 +1428,7 @@ export interface ProjectSettings {
   links: LinkSection[];
   sponsors: string;
   tags: Tag[];
+  unlisted: boolean;
 }
 
 export interface FileInfo {
@@ -1517,12 +1522,10 @@ export interface UnreadCount {
   notifications: number;
 }
 
-export interface CompactRole {
-  category: string;
-  color: Color;
-  /** @format int32 */
-  rank?: number;
-  title: string;
+export interface PermissionGroup {
+  /** i18n key suffix under 'permissionGroup.' */
+  name: string;
+  permissions: NamedPermission[];
 }
 
 export interface RoleData {
@@ -1587,14 +1590,14 @@ export interface OrganizationRoleTable {
   createdAt: string;
   /** @format int64 */
   id: number;
+  owner: boolean;
   /** @format int64 */
   ownerId: number;
   ownerName: string;
+  permissions: NamedPermission[];
   /** @format int64 */
   principalId: number;
-  role: OrganizationRole;
-  /** @format int64 */
-  roleId: number;
+  title: string;
   /** @format int64 */
   userId: number;
   /** @format uuid */
@@ -1607,11 +1610,11 @@ export interface ProjectRoleTable {
   createdAt: string;
   /** @format int64 */
   id: number;
+  owner: boolean;
+  permissions: NamedPermission[];
   /** @format int64 */
   principalId: number;
-  role: ProjectRole;
-  /** @format int64 */
-  roleId: number;
+  title: string;
   /** @format int64 */
   userId: number;
 }
@@ -1629,15 +1632,58 @@ export interface DayStats {
   /** @format date */
   day: string;
   /** @format int64 */
+  downloads: number;
+  /** @format int64 */
   flagsClosed: number;
   /** @format int64 */
   flagsOpened: number;
   /** @format int64 */
+  newProjects: number;
+  /** @format int64 */
+  newUsers: number;
+  /** @format int64 */
   reviews: number;
   /** @format int64 */
-  totalDownloads: number;
-  /** @format int64 */
   uploads: number;
+  /** @format int64 */
+  views: number;
+}
+
+export interface StatsSummary {
+  platformDownloads: PlatformDownloads[];
+  topProjects: TopProject[];
+  totals: StatsTotals;
+}
+
+export interface StatsTotals {
+  /** @format int64 */
+  downloads: number;
+  /** @format int64 */
+  openFlags: number;
+  /** @format int64 */
+  pendingReviews: number;
+  /** @format int64 */
+  projects: number;
+  /** @format int64 */
+  users: number;
+  /** @format int64 */
+  versions: number;
+  /** @format int64 */
+  views: number;
+}
+
+export interface PlatformDownloads {
+  /** @format int64 */
+  downloads: number;
+  platform: Platform;
+}
+
+export interface TopProject {
+  /** @format int64 */
+  downloads: number;
+  namespace: ProjectNamespace;
+  /** @format int64 */
+  views: number;
 }
 
 export interface FlagActivity {
@@ -1656,6 +1702,8 @@ export interface ReviewActivity {
 
 /** Data about the key to create */
 export interface CreateAPIKeyForm {
+  /** Point in time at which the key stops working. Leave empty for a key that never expires */
+  expiresAt?: string;
   /**
    * @min 5
    * @max 36
@@ -1665,23 +1713,39 @@ export interface CreateAPIKeyForm {
   name: string;
   /** @uniqueItems true */
   permissions: NamedPermission[];
+  /**
+   * Slugs of the projects the key may be used on. Leave empty to allow all projects
+   * @maxItems 100
+   * @uniqueItems true
+   */
+  projects?: string[];
+}
+
+export interface ScopableProject {
+  avatarUrl: string;
+  name: string;
+  namespace: ProjectNamespace;
 }
 
 export interface CreateOrganizationForm {
-  members: OrgMember[];
+  members: EditOrgMember[];
   name: string;
 }
 
-export interface OrgMember {
+export interface EditOrgMember {
   /** @minLength 1 */
   name: string;
-  role: OrganizationRole;
+  permissions?: NamedPermission[];
+  /** @maxLength 32 */
+  title?: string;
 }
 
-export interface ProjectMember {
+export interface EditProjectMember {
   /** @minLength 1 */
   name: string;
-  role: ProjectRole;
+  permissions?: NamedPermission[];
+  /** @maxLength 32 */
+  title?: string;
 }
 
 /** The path and new contents of the page */
@@ -2085,6 +2149,8 @@ export interface HangarUser {
   id: number;
   isOrganization: boolean;
   language: string;
+  /** @format date-time */
+  lastSeenChangelogAt?: string;
   locked: boolean;
   name: string;
   nameHistory: UserNameChange[];
@@ -2125,20 +2191,24 @@ export interface JoinableMemberProjectRoleTable {
 }
 
 export interface HangarOrganizationInvite {
+  /** @format date-time */
+  createdAt: string;
   name: string;
-  role: string;
   /** @format int64 */
   roleId: number;
+  title: string;
   type: InviteType;
   url: string;
 }
 
 export interface HangarProjectInvite {
+  /** @format date-time */
+  createdAt: string;
   name: string;
   representingOrg: string;
-  role: string;
   /** @format int64 */
   roleId: number;
+  title: string;
   type: InviteType;
   url: string;
 }
@@ -2197,10 +2267,22 @@ export interface Review {
   reviewerName: string;
 }
 
+export interface JarScanEntry {
+  id: number;
+  checkName?: string;
+  location: string;
+  message: string;
+  severity: string;
+  checkedBy?: number;
+  /** @format date-time */
+  checkedAt?: string;
+  checked: boolean;
+}
+
 export interface JarScanResult {
   /** @format date-time */
   createdAt: string;
-  entries: string[];
+  entries: JarScanEntry[];
   highestSeverity: string;
   /** @format int64 */
   id: number;

@@ -44,6 +44,7 @@ public class PGLoggedAction extends PGobject {
     public static final PGLoggedAction VERSION_PLATFORM_DEPENDENCIES_REMOVED = new PGLoggedAction("version_platform_dependencies_removed");
 
     // Users
+    public static final PGLoggedAction USER_RENAMED = new PGLoggedAction("user_renamed");
     public static final PGLoggedAction USER_TAGLINE_CHANGED = new PGLoggedAction("user_tagline_changed");
     public static final PGLoggedAction USER_SOCIALS_CHANGED = new PGLoggedAction("user_socials_changed");
     public static final PGLoggedAction USER_LOCKED = new PGLoggedAction("user_locked");

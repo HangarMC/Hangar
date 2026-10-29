@@ -8,6 +8,7 @@ import io.papermc.hangar.model.db.projects.ProjectTable;
 import io.papermc.hangar.model.internal.api.requests.EditMembersForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
 import io.papermc.hangar.model.internal.api.requests.projects.NewProjectForm;
+import io.papermc.hangar.model.internal.api.requests.projects.ProjectLinksForm;
 import io.papermc.hangar.model.internal.api.requests.projects.ProjectSettingsForm;
 import io.papermc.hangar.model.internal.api.responses.PossibleProjectOwner;
 import io.papermc.hangar.model.internal.projects.HangarProject;
@@ -124,6 +125,16 @@ public class ProjectController extends HangarComponent {
     @Unlocked
     @RequireAal(1)
     @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 10)
+    @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
+    @PostMapping(path = "/project/{slugOrId}/links", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveProjectLinks(@PathVariable("slugOrId") final ProjectTable project, @RequestBody final @Valid ProjectLinksForm linksForm) {
+        this.projectService.saveLinks(project, linksForm);
+    }
+
+    @Unlocked
+    @RequireAal(1)
+    @ResponseStatus(HttpStatus.OK)
     @RateLimit(overdraft = 10, refillTokens = 1, refillSeconds = 5)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
     @PostMapping(path = "/project/{slugOrId}/sponsors", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -137,8 +148,8 @@ public class ProjectController extends HangarComponent {
     @RateLimit(overdraft = 5, refillTokens = 1, refillSeconds = 60)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
     @PostMapping(path = "/project/{slugOrId}/saveIcon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void saveProjectIcon(@PathVariable("slugOrId") final ProjectTable project, @RequestParam final MultipartFile projectIcon) throws IOException {
-        this.projectService.changeAvatar(project, projectIcon.getBytes());
+    public String saveProjectIcon(@PathVariable("slugOrId") final ProjectTable project, @RequestParam final MultipartFile projectIcon) throws IOException {
+        return this.projectService.changeAvatar(project, projectIcon.getBytes());
     }
 
     @Unlocked
@@ -146,8 +157,8 @@ public class ProjectController extends HangarComponent {
     @ResponseStatus(HttpStatus.OK)
     @PermissionRequired(type = PermissionType.PROJECT, perms = NamedPermission.EDIT_SUBJECT_SETTINGS, args = "{#project}")
     @PostMapping("/project/{slugOrId}/resetIcon")
-    public void resetProjectIcon(@PathVariable("slugOrId") final ProjectTable project) {
-        this.projectService.deleteAvatar(project);
+    public String resetProjectIcon(@PathVariable("slugOrId") final ProjectTable project) {
+        return this.projectService.deleteAvatar(project);
     }
 
     @Unlocked

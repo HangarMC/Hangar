@@ -49,6 +49,14 @@ public class ProjectFiles {
         }
     }
 
+    public void renameUser(final String owner, final String newOwner) {
+        try {
+            this.fileService.move(this.getUserDir(owner), this.getUserDir(newOwner));
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void renameProject(final String owner, final String slug, final String newSlug) {
         final String oldProjectDir = this.getProjectDir(owner, slug);
         final String newProjectDir = this.getProjectDir(owner, newSlug);

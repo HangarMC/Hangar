@@ -1,32 +1,32 @@
 <script lang="ts" setup>
-import type { Tab } from "#shared/types/components/design/Tabs";
-
 definePageMeta({
   globalPermsRequired: ["ModNotesAndFlags"],
 });
 
+type FlagTab = "unresolved" | "resolved";
+
 const i18n = useI18n();
 const route = useRoute("admin-flags");
 
-const selectedTab = ref("unresolved");
-const selectedTabs = [
-  { value: "unresolved", header: i18n.t("flagReview.unresolved") },
-  { value: "resolved", header: i18n.t("flagReview.resolved") },
-] as const satisfies Tab<string>[];
+const selectedTab = ref<FlagTab>("unresolved");
+const tabs: { value: FlagTab; label: string }[] = [
+  { value: "unresolved", label: i18n.t("flagReview.unresolved") },
+  { value: "resolved", label: i18n.t("flagReview.resolved") },
+];
 
 useSeo(computed(() => ({ title: i18n.t("flagReview.title"), route })));
 </script>
 
 <template>
   <div>
-    <PageTitle>{{ i18n.t("flagReview.title") }}</PageTitle>
-    <Tabs v-model="selectedTab" :tabs="selectedTabs" :vertical="false">
-      <template #unresolved>
-        <Flags :resolved="false" />
-      </template>
-      <template #resolved>
-        <Flags resolved />
-      </template>
-    </Tabs>
+    <div class="mb-5">
+      <h1 class="text-3xl font-bold">{{ i18n.t("flagReview.title") }}</h1>
+      <p class="mt-1 text-gray-secondary">{{ i18n.t("flagReview.subtitle") }}</p>
+    </div>
+
+    <SegmentedControl v-model="selectedTab" :options="tabs" :aria-label="i18n.t('flagReview.title')" />
+
+    <Flags v-if="selectedTab === 'unresolved'" :resolved="false" class="mt-4" />
+    <Flags v-else resolved class="mt-4" />
   </div>
 </template>

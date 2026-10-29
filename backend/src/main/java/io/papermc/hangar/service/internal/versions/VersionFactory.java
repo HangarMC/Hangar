@@ -167,9 +167,10 @@ public class VersionFactory extends HangarComponent {
     private String createPendingFile(final MultipartFile file, final String channel, final ProjectTable projectTable, final Map<Platform, Set<PluginDependency>> pluginDependencies,
                                      final Map<Platform, SortedSet<String>> platformDependencies, final List<PendingVersionFile> pendingFiles, String versionString,
                                      final String userTempDir, final MultipartFileOrUrl fileOrUrl, final boolean prefillDependencies) {
-        // check extension
+        // check extension and reject path separators (the name is used to build a storage path)
         final String pluginFileName = file.getOriginalFilename();
-        if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))) {
+        if (pluginFileName == null || (!pluginFileName.endsWith(".zip") && !pluginFileName.endsWith(".jar"))
+            || pluginFileName.contains("/") || pluginFileName.contains("\\") || pluginFileName.contains("..")) {
             this.fileService.deleteDirectory(userTempDir);
             throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.fileExtension");
         }
@@ -318,11 +319,11 @@ public class VersionFactory extends HangarComponent {
             final ProjectVersionTable finalProjectVersionTable = projectVersionTable;
             CompletableFuture.runAsync(() -> {
                 try {
-                    postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish);
+                    this.postPublish(pendingVersion, projectTable, finalProjectChannelTable, finalProjectVersionTable, firstPublish);
                 } catch (Throwable ex) {
-                    logger.warn("Error in post publish for version {} of project {}", pendingVersion.getVersionString(), projectTable.getName(), ex);
+                    this.logger.warn("Error in post publish for version {} of project {}", pendingVersion.getVersionString(), projectTable.getName(), ex);
                 }
-            }, taskExecutor);
+            }, this.taskExecutor);
 
             return projectVersionTable;
         } catch (final HangarApiException e) {
@@ -469,14 +470,14 @@ public class VersionFactory extends HangarComponent {
                     this.logger.error("Could not publish version for {}", this.getHangarPrincipal().getName(), e);
                 }
             }
+        }
 
-            // Check if the platform versions are valid
-            for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
-                final Platform platform = entry.getKey();
-                final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(platform));
-                if (!versionsForPlatform.containsAll(entry.getValue())) {
-                    throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersionList", entry.getValue());
-                }
+        // Check if the platform versions are valid
+        for (final Map.Entry<Platform, SortedSet<String>> entry : pendingVersion.getPlatformDependencies().entrySet()) {
+            final Platform platform = entry.getKey();
+            final Set<String> versionsForPlatform = new HashSet<>(this.platformService.getFullVersionsForPlatform(platform));
+            if (!versionsForPlatform.containsAll(entry.getValue())) {
+                throw new HangarApiException(HttpStatus.BAD_REQUEST, "version.new.error.invalidPlatformVersionList", entry.getValue());
             }
         }
     }

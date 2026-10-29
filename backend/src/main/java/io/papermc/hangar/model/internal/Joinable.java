@@ -6,7 +6,7 @@ import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import io.papermc.hangar.model.internal.user.JoinableMember;
 import java.util.List;
 
-public interface Joinable<R extends ExtendedRoleTable<?, ?>> {
+public interface Joinable<R extends ExtendedRoleTable<?>> {
 
     default ProjectOwner getOwner2() {return null; }
 

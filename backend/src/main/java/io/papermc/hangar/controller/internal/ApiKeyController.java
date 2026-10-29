@@ -5,6 +5,7 @@ import io.papermc.hangar.model.common.NamedPermission;
 import io.papermc.hangar.model.db.UserTable;
 import io.papermc.hangar.model.internal.api.requests.CreateAPIKeyForm;
 import io.papermc.hangar.model.internal.api.requests.StringContent;
+import io.papermc.hangar.model.internal.api.responses.ScopableProject;
 import io.papermc.hangar.security.annotations.LoggedIn;
 import io.papermc.hangar.security.annotations.aal.RequireAal;
 import io.papermc.hangar.security.annotations.currentuser.CurrentUser;
@@ -61,6 +62,12 @@ public class ApiKeyController {
     @GetMapping(path = "/possible-perms/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<NamedPermission> getPossiblePermissions(@PathVariable final UserTable user) {
         return this.permissionService.getAllPossiblePermissions(user.getId()).toNamed();
+    }
+
+    @CurrentUser("#user")
+    @GetMapping(path = "/possible-projects/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ScopableProject> getPossibleProjects(@PathVariable final UserTable user) {
+        return this.apiKeyService.getScopableProjects(user.getId());
     }
 
     @Unlocked

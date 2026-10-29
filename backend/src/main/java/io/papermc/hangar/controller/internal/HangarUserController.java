@@ -277,6 +277,14 @@ public class HangarUserController extends HangarComponent {
         setThemeCookie(settings, response);
     }
 
+    @Unlocked
+    @ResponseStatus(HttpStatus.OK)
+    @RateLimit(overdraft = 5, refillTokens = 2)
+    @PostMapping("/users/settings/changelogSeen")
+    public void markChangelogSeen() {
+        this.userService.markChangelogSeen(this.getHangarPrincipal().getUserId());
+    }
+
     private static void setThemeCookie(final UserSettings settings, final HttpServletResponse response) {
         final Cookie cookie = new Cookie("HANGAR_theme", settings.getTheme());
         cookie.setPath("/");
@@ -353,7 +361,7 @@ public class HangarUserController extends HangarComponent {
         this.updateRole(this.organizationRoleService, this.organizationInviteService, id, status);
     }
 
-    private <RT extends ExtendedRoleTable<? extends Role<RT>, ?>, RS extends RoleService<RT, ?, ?>, IS extends InviteService<?, ?, RT, ?>> void updateRole(final RS roleService, final IS inviteService, final long id, final InviteStatus status) {
+    private <RT extends ExtendedRoleTable<?>, RS extends RoleService<RT, ?>, IS extends InviteService<?, RT, ?>> void updateRole(final RS roleService, final IS inviteService, final long id, final InviteStatus status) {
         final RT table = roleService.getRole(id);
         if (table == null) {
             throw new HangarApiException(HttpStatus.NOT_FOUND);

@@ -121,7 +121,7 @@ public class OAuthService extends HangarComponent {
             throw new IllegalArgumentException("Unknown provider: " + provider);
         }
 
-        final UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(oAuthProvider.authorizationEndpoint())
+        final UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(oAuthProvider.authorizationEndpoint())
             .queryParam("client_id", oAuthProvider.clientId())
             .queryParam("redirect_uri", this.config.baseUrl() + "/api/internal/oauth/" + oAuthProvider.name() + "/callback")
             .queryParam("scope", String.join("+", oAuthProvider.scopes()))

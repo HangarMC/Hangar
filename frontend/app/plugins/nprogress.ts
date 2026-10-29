@@ -13,12 +13,14 @@ const stopProgressBar = () => {
 };
 
 export default defineNuxtPlugin(() => {
-  if (!import.meta.server) {
-    useRouter().beforeEach(() => {
-      startProgressBar();
-    });
-    useRouter().afterEach(async () => {
-      await nextTick(() => stopProgressBar());
-    });
+  if (import.meta.server) {
+    return;
   }
+
+  useRouter().beforeEach(() => {
+    startProgressBar();
+  });
+  useRouter().afterEach(async () => {
+    await nextTick(() => stopProgressBar());
+  });
 });

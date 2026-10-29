@@ -25,7 +25,7 @@ public class UserService extends HangarComponent {
     private final UserDAO userDAO;
     private final HangarUsersDAO hangarUsersDAO;
 
-    private static final Set<String> ACCEPTED_SOCIAL_TYPES = Set.of("discord", "github", "twitter", "youtube", "website");
+    private static final Set<String> ACCEPTED_SOCIAL_TYPES = Set.of("discord", "github", "twitter", "website");
 
     @Autowired
     public UserService(final UserDAO userDAO, final HangarUsersDAO hangarUsersDAO) {
@@ -92,6 +92,10 @@ public class UserService extends HangarComponent {
 
     public void updateUser(final UserTable userTable) {
         this.userDAO.update(userTable);
+    }
+
+    public void markChangelogSeen(final long userId) {
+        this.userDAO.markChangelogSeen(userId);
     }
 
     public void validateSocials(Map<String, String> socials) {

@@ -1,35 +1,51 @@
 <script setup lang="ts">
 const props = defineProps<{
   to?: string;
-  href?: string;
-  icon?: string;
+  label: string;
+  active?: boolean;
 }>();
 
-const route = useRoute();
-
-const selected = computed(() => {
-  const routerPath = route.path.endsWith("/") ? route.path.slice(0, Math.max(0, route.path.length - 1)) : route.path;
-  return routerPath === props.to;
-});
-
 const clazz = computed(() => {
-  return (
-    "px-2 py-1 inline-flex items-center transition duration-300 border-b-2 border-transparent hover:border-primary-500 " +
-    (selected.value ? "!border-primary-500 font-semibold " : "")
-  );
+  return "nav-underline py-1 inline-flex items-center gap-1.5 border-b-2 border-transparent " + (props.active ? "nav-underline-active font-semibold " : "");
 });
 </script>
 
 <template>
-  <div v-if="to || href" class="mb-[-2px] mr-1">
-    <NuxtLink v-if="to" :to="to" :class="clazz">
+  <div v-if="to" class="mb-[-2px] mr-1">
+    <!-- icons carry ~2px of transparent margin in their box, so the padding is trimmed on whichever side one sits -->
+    <NuxtLink :to="to" class="pl-1.5 pr-2" :class="clazz">
       <slot />
+      <span class="nav-label" :data-label="label">{{ label }}</span>
     </NuxtLink>
-    <a v-if="href" :href="linkout(href)" :class="clazz" target="_blank">
-      <span class="mx-1">
-        <slot />
-      </span>
-      <IconMdiOpenInNew class="text-xs" />
-    </a>
   </div>
 </template>
+
+<style scoped>
+.nav-underline {
+  background-image: linear-gradient(90deg, var(--primary-500) 0%, var(--primary-400) 100%);
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-position: bottom;
+  background-size: 0 2px;
+  transition: background-size 0.25s ease;
+}
+
+.nav-underline:hover,
+.nav-underline-active {
+  background-size: 100% 2px;
+}
+
+/* a hidden bold copy holds the width, so selecting a tab can't nudge the ones after it */
+.nav-label {
+  display: inline-grid;
+  justify-items: center;
+}
+
+.nav-label::after {
+  content: attr(data-label);
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  font-weight: 600;
+}
+</style>

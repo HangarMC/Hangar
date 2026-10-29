@@ -1,5 +1,10 @@
 <script lang="ts" setup>
 import type { Tab } from "#shared/types/components/design/Tabs";
+import IconMdiAccount from "~icons/mdi/account";
+import IconMdiCog from "~icons/mdi/cog";
+import IconMdiKey from "~icons/mdi/key";
+import IconMdiLock from "~icons/mdi/lock";
+import IconMdiPalette from "~icons/mdi/palette";
 
 definePageMeta({
   loginRequired: true,
@@ -19,11 +24,11 @@ if (import.meta.client && route.path.endsWith("settings")) {
 }
 
 const tabs = [
-  { value: "profile", header: t("auth.settings.profile.header") },
-  { value: "account", header: t("auth.settings.account.header") },
-  { value: "security", header: t("auth.settings.security.header") },
-  { value: "api-keys", header: t("auth.settings.apiKeys.header") },
-  { value: "other", header: t("auth.settings.misc.header") },
+  { value: "profile", header: t("auth.settings.profile.header"), icon: IconMdiAccount },
+  { value: "account", header: t("auth.settings.account.header"), icon: IconMdiCog },
+  { value: "security", header: t("auth.settings.security.header"), icon: IconMdiLock },
+  { value: "api-keys", header: t("auth.settings.apiKeys.header"), icon: IconMdiKey },
+  { value: "other", header: t("auth.settings.misc.header"), icon: IconMdiPalette },
 ] as const satisfies Tab<string>[];
 
 const emailConfirmModal = useTemplateRef("emailConfirmModal");
@@ -72,17 +77,26 @@ useSeo(computed(() => ({ title: "Settings", route })));
 <template>
   <div v-if="auth.user" class="space-y-3">
     <Alert v-if="authSettings?.emailPending" class="col-span-1 md:col-span-2">
-      Enter the email verification code
-      <Button size="small" :disabled="loading" @click="emailConfirmModal!.isOpen = true">here</Button>
+      <div class="flex flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <div>
+          <div class="font-semibold">Check your inbox</div>
+          <div class="text-sm opacity-90">We sent a verification code to {{ auth.user.email }}. Enter it to confirm your address.</div>
+        </div>
+        <Button size="sm" :disabled="loading" @click="emailConfirmModal!.isOpen = true">Enter code</Button>
+      </div>
     </Alert>
     <Alert v-else-if="!authSettings?.emailConfirmed" class="col-span-1 md:col-span-2">
-      You haven't verified your email yet, click
-      <Button size="small" :disabled="loading" @click="emailConfirmModal!.isOpen = true">here</Button>
-      to change that
+      <div class="flex flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <div>
+          <div class="font-semibold">Email not verified</div>
+          <div class="text-sm opacity-90">Confirm {{ auth.user.email }} so we can reach you about your account.</div>
+        </div>
+        <Button size="sm" :disabled="loading" @click="emailConfirmModal!.isOpen = true">Verify email</Button>
+      </div>
     </Alert>
 
     <Card>
-      <Tabs :tabs="tabs" router>
+      <Tabs :tabs="tabs" router highlight-selected divided>
         <router-view v-slot="{ Component }">
           <Suspense>
             <div>
@@ -101,13 +115,13 @@ useSeo(computed(() => ({ title: "Settings", route })));
 
     <Modal ref="emailConfirmModal" title="Confirm email" @close="emailConfirmModal!.isOpen = false">
       <template v-if="!hasPendingMail">
-        <p class="mb-2">Your previous code expired.</p>
-        <Button :disabled="loading || hasPendingMail" @click="sendEmailCode">Resend verification code</Button>
+        <p class="mb-2">Your code has expired. Request a new one to verify your email.</p>
+        <Button :disabled="loading || hasPendingMail" @click="sendEmailCode">Send new code</Button>
       </template>
       <div v-else class="flex flex-col gap-2">
-        <p>Enter the code you received via email here</p>
+        <p>Enter the 6-digit code we emailed to {{ auth.user.email }}.</p>
         <InputText v-model="emailCode" label="Code" />
-        <Button class="w-max" :disabled="loading" @click="verifyEmail(emailCode)">Verify Code</Button>
+        <Button class="w-max" :disabled="loading" @click="verifyEmail(emailCode)">Verify code</Button>
       </div>
     </Modal>
   </div>

@@ -1,15 +1,14 @@
 package io.papermc.hangar.service.internal.perms.roles;
 
 import io.papermc.hangar.HangarComponent;
-import io.papermc.hangar.db.dao.internal.table.roles.IRolesDAO;
-import io.papermc.hangar.model.common.roles.Role;
-import io.papermc.hangar.model.db.roles.IRoleTable;
+import io.papermc.hangar.db.dao.internal.table.roles.IMemberRolesDAO;
+import io.papermc.hangar.model.db.roles.ExtendedRoleTable;
 import java.util.List;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 
-public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, D extends IRolesDAO<RT>> extends HangarComponent {
+public abstract class RoleService<RT extends ExtendedRoleTable<?>, D extends IMemberRolesDAO<RT>> extends HangarComponent {
 
     protected final D roleDao;
 
@@ -26,7 +25,8 @@ public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, 
     public RT addRole(final RT newRoleTable, final boolean ignoreIfDuplicate) {
         final RT existingRoleTable = this.roleDao.getTable(newRoleTable);
         if (existingRoleTable == null) {
-            return this.roleDao.insert(newRoleTable);
+            // the insert only hands back the generated id, so read the row to get a table carrying it
+            return this.roleDao.getTable(this.roleDao.insert(newRoleTable));
         }
         if (!ignoreIfDuplicate) {
             throw new IllegalArgumentException("User already has a role there");
@@ -34,10 +34,10 @@ public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, 
         return null;
     }
 
-    public RT changeAcceptance(RT roleTable, final boolean isAccepted) {
+    public RT changeAcceptance(final RT roleTable, final boolean isAccepted) {
         if (roleTable.isAccepted() != isAccepted) {
             roleTable.setAccepted(isAccepted);
-            roleTable = this.roleDao.update(roleTable);
+            this.roleDao.update(roleTable);
         }
         return roleTable;
     }
@@ -58,7 +58,7 @@ public abstract class RoleService<RT extends IRoleTable<R>, R extends Role<RT>, 
         return this.roleDao.getTableByPrincipal(principalId, userId);
     }
 
-    public List<RT> getRoles(final long principalId, final R role) {
-        return this.roleDao.getRoleTablesByPrincipal(principalId, role.getValue());
+    public List<RT> getOwnerRoles(final long principalId) {
+        return this.roleDao.getOwnerTables(principalId);
     }
 }

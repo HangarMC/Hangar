@@ -135,7 +135,7 @@ public class CredentialController extends HangarComponent {
     @PostMapping(value = "/webauthn/register", consumes = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void registerWebauthn(@RequestBody final String publicKeyCredentialJson, @RequestHeader(value = "X-Hangar-Verify", required = false) final String header) throws IOException {
-        final boolean confirmCodes = this.verifyBackupCodes(header);
+        final boolean confirmCodes = this.verifyBackupCodes(header, "webauthn");
 
         final var pkc = PublicKeyCredential.parseRegistrationResponseJson(publicKeyCredentialJson);
 
@@ -222,14 +222,25 @@ public class CredentialController extends HangarComponent {
     @RequireAal(1)
     @PostMapping("/totp/register")
     public ResponseEntity<?> registerTotp(@RequestBody final TotpForm form, @RequestHeader(value = "X-Hangar-Verify", required = false) final String header) {
-        final boolean confirmCodes = this.verifyBackupCodes(header);
         if (!StringUtils.hasText(form.code())) {
             throw new HangarApiException("Code is required");
         }
 
-        if (!StringUtils.hasText(form.secret()) || !this.codeVerifier.isValidCode(form.secret(), form.code()) || !this.tokenService.verifyOtp(this.getHangarPrincipal().getUserId(), header)) {
+        if (!StringUtils.hasText(form.secret())) {
             throw new HangarApiException("Invalid TOTP code");
         }
+
+        final long userId = this.getHangarPrincipal().getUserId();
+        final String verificationContext = "totp:" + form.secret();
+        if (StringUtils.hasText(header)) {
+            if (!this.tokenService.verifyOtp(userId, header, verificationContext)) {
+                throw new HangarApiException("Invalid TOTP code");
+            }
+        } else if (!this.codeVerifier.isValidCode(form.secret(), form.code())) {
+            throw new HangarApiException("Invalid TOTP code");
+        }
+
+        final boolean confirmCodes = this.verifyBackupCodes(header, verificationContext);
 
         final String totpUrl = this.qrDataFactory.newBuilder()
             .label(this.getHangarPrincipal().getName())
@@ -284,12 +295,12 @@ public class CredentialController extends HangarComponent {
         this.credentialsService.updateCredential(this.getHangarPrincipal().getId(), cred);
     }
 
-    private boolean verifyBackupCodes(final String header) {
+    private boolean verifyBackupCodes(final String header, final String verificationContext) {
         final BackupCodeCredential backupCredential = this.getBackupCredential();
         if (backupCredential == null) {
             // no codes yet? we generate some
             final HttpHeaders headers = new HttpHeaders();
-            headers.set("X-Hangar-Verify", this.tokenService.otp(this.getHangarPrincipal().getUserId()));
+            headers.set("X-Hangar-Verify", this.tokenService.otp(this.getHangarPrincipal().getUserId(), verificationContext));
             throw new HangarResponseException(HttpStatusCode.valueOf(499), "Setup backup codes first", this.setupBackupCodes(true), headers);
         } else if (backupCredential.unconfirmed()) {
             if (StringUtils.hasText(header)) {
@@ -302,7 +313,7 @@ public class CredentialController extends HangarComponent {
             } else {
                 // unconfirmed codes? better enter the code!
                 final HttpHeaders headers = new HttpHeaders();
-                headers.set("X-Hangar-Verify", this.tokenService.otp(this.getHangarPrincipal().getUserId()));
+                headers.set("X-Hangar-Verify", this.tokenService.otp(this.getHangarPrincipal().getUserId(), verificationContext));
                 throw new HangarResponseException(HttpStatusCode.valueOf(499), "Confirm backup codes first", backupCredential.backupCodes(), headers);
             }
         }

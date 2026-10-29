@@ -17,12 +17,13 @@ export default {
       return {};
     }
 
-    return savedPosition
-      ? new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(savedPosition);
-          }, 250);
-        })
-      : { top: 0 };
+    // scrolling before the old page fades makes it visually jump; delays assume transitions.css
+    const delay = savedPosition ? 250 : 100;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return savedPosition ?? { top: 0 };
+    }
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(savedPosition ?? { top: 0 }), delay);
+    });
   },
 } as RouterConfig;

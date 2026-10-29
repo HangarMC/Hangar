@@ -1,3 +1,5 @@
+import { locate } from "codeceptjs";
+
 Feature("New Project Page");
 
 Scenario("Test New Project", async ({ I, util, IndexPage }) => {
@@ -20,7 +22,7 @@ Scenario("Test New Project", async ({ I, util, IndexPage }) => {
     I.fillField(locate("input").at(2), "https://papermc.io");
     I.click("Continue");
 
-    I.waitInUrl("/e2e_user/" + name);
+    I.waitTillUrlContains("/e2e_user/" + name);
     I.waitForText("Welcome to your new project");
     await I.waitForText("Games");
 

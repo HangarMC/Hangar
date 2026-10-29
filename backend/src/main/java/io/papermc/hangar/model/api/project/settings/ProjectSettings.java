@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.papermc.hangar.controller.validations.Validate;
 import io.papermc.hangar.db.customtypes.JSONB;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.papermc.hangar.model.api.project.ProjectDonationSettings;
 import io.papermc.hangar.model.api.project.ProjectLicense;
 import jakarta.validation.Valid;
@@ -27,23 +28,28 @@ public class ProjectSettings {
     // @el(root: String)
     private final @Validate(SpEL = "@validate.max(#root, @'hangar-io.papermc.hangar.config.hangar.HangarConfig'.projects.maxSponsorsLen)", message = "project.new.error.tooLongSponsors") String sponsors;
 
+    @Schema(description = "Whether the project is reachable by link but left out of search, the homepage and profiles")
+    private final boolean unlisted;
+
     @JdbiConstructor
-    public ProjectSettings(final JSONB links, final List<Tag> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {
+    public ProjectSettings(final JSONB links, final List<Tag> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors, final boolean unlisted) {
         this.links = links.get(new TypeReference<>() {
         });
         this.tags = tags;
         this.license = license;
         this.keywords = keywords;
         this.sponsors = sponsors;
+        this.unlisted = unlisted;
     }
 
     @JsonCreator
-    public ProjectSettings(@Nested("links") final List<LinkSection> links, final Collection<Tag> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors) {
+    public ProjectSettings(@Nested("links") final List<LinkSection> links, final Collection<Tag> tags, @Nested("license") final ProjectLicense license, final Collection<String> keywords, final String sponsors, final boolean unlisted) {
         this.links = links;
         this.tags = tags;
         this.license = license;
         this.keywords = keywords;
         this.sponsors = sponsors;
+        this.unlisted = unlisted;
     }
 
     public List<LinkSection> getLinks() {
@@ -69,6 +75,10 @@ public class ProjectSettings {
 
     public String getSponsors() {
         return this.sponsors;
+    }
+
+    public boolean isUnlisted() {
+        return this.unlisted;
     }
 
     @Override
