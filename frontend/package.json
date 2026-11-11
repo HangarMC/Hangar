@@ -101,7 +101,7 @@
     "eslint-plugin-unicorn": "74.0.0",
     "husky": "9.1.7",
     "lint-staged": "17.4.1",
-    "nuxt": "4.5.2",
+    "nuxt": "4.6.2",
     "oxlint": "1.81.0",
     "pnpm": "11.25.0",
     "prettier": "3.9.6",
